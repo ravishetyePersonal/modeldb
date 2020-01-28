@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-rm -rf tmp
-rm -rf ../output/go/*
 make gw
 make code
+cp -R ../gen/python/protos ../../client/verta/verta/_protos
