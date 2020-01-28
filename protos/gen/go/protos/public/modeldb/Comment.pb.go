@@ -12,7 +12,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	math "math"
-	uac "github.com/VertaAI/modeldb-oss/protos/protos/public/uac"
+	uac "github.com/VertaAI/modeldb-oss/protos/gen/go/protos/public/uac"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
