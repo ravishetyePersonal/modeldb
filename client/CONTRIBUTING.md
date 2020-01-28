@@ -1,13 +1,9 @@
 ## Developer Installation
 
 From the root directory of the repository, run these commands:
-1. `git submodule init`
-1. `git submodule update`
 1. `cd verta/`
-1. `pip install -e .`
-   1. This means you don't have to rerun `pip install` whenever you make changes.
 1. `pip install -r requirements.txt`
-   1. This installs packages relating to PyPI publication, unit testing, and documentation.
+   1. This installs Verta from the local source, as well as packages relating to PyPI publication, unit testing, and documentation.
 
 ### Troubleshooting
 
@@ -48,15 +44,13 @@ This can be done automatically with a pre-save hook:
 
 ## Package Publication
 
-1. Run the test suite and see that they pass to an acceptable degree.
-1. Update `__version__` in [`__about__.py`](https://github.com/VertaAI/modeldb-client/blob/development/verta/verta/__about__.py) with a new version number.
+1. Run the test suite and verify that it meets expectations.
+1. Update `__version__` in [`__about__.py`](https://github.com/VertaAI/modeldb-oss/blob/master/client/verta/verta/__about__.py) with a new version number.
    - Increment the minor version for backwards-incompatible changes or a major set of new features.
    - Increment the patch version for minor new features and bug fixes.
-1. Update [changelog.rst](https://github.com/VertaAI/modeldb-client/blob/development/verta/docs/reference/changelog.rst).
-1. Add the updated `__about__.py` and `changelog.rst` in a single commit on `development` using the message `"Increment major|minor|patch version"`.
-1. Update the `master` branch to match the new commit, since this is a release.
-1. Tag the commit with the version number using e.g. `git tag -a v0.0.0 -m ''`, with the appropriate version number.
-1. Push the commit and tag using `git push --follow-tags origin development:development master:master`.
+1. Update [changelog.rst](https://github.com/VertaAI/modeldb-oss/blob/master/client/verta/docs/reference/changelog.rst).
+1. Commit the updated `__about__.py` and `changelog.rst` to a new branch and submit a pull request.
+1. Once the pull request is approved and merged, a Verta core team member shall tag the merge commit using e.g. `git tag -a client-v0.0.0 -m '' && git push --follow-tags`, with the appropriate version number.
 
 ### Publish to PyPI
 

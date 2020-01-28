@@ -13,7 +13,7 @@ This subdirectory contains the actual Python package.
 This subdirectory contains all the source code for the package.
 
 ### `verta/tests/`
-This subdirectory contains unit and integrartion test scripts.
+This subdirectory contains unit and integration test scripts.
 
 ### `verta/docs/`
 This subdirectory contains documentation source files for hosting on ReadTheDocs.

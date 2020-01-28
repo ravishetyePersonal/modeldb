@@ -107,5 +107,5 @@ and Python 2.7 for text embedding and nearest neighbor search.
 Model*\ s.
 
 
-.. _this Client example notebook: https://github.com/VertaAI/modeldb-client/blob/master/workflows/demos/Embedding-and-Lookup-TF-Hub.ipynb
-.. _This annotated example notebook: https://github.com/VertaAI/modeldb-client/blob/development/workflows/demos/Embedding-and-Lookup-TF-Hub.ipynb
+.. _this Client example notebook: https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Embedding-and-Lookup-TF-Hub.ipynb
+.. _This annotated example notebook: https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Embedding-and-Lookup-TF-Hub.ipynb

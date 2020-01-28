@@ -187,7 +187,7 @@ class TFSavedModel(object):
 
     .. note::
         Use of this utility is discouraged in favor of the simpler and more flexible class-as-model setup. See
-        `the Client repository <https://github.com/VertaAI/modeldb-client/blob/master/workflows/demos/Nearest-Neighbors-TF-Glove.ipynb>`_
+        `the Client repository <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Nearest-Neighbors-TF-Glove.ipynb>`_
         for an example.
 
     Parameters
