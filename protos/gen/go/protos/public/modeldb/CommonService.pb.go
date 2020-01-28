@@ -9,7 +9,7 @@ import (
 	_struct "github.com/golang/protobuf/ptypes/struct"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	math "math"
-	common "github.com/VertaAI/protos-all-go/protos/public/common"
+	common "github.com/VertaAI/modeldb-oss/protos/protos/public/common"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

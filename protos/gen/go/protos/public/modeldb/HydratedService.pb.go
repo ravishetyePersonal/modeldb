@@ -12,8 +12,8 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	math "math"
-	common "github.com/VertaAI/protos-all-go/protos/public/common"
-	uac "github.com/VertaAI/protos-all-go/protos/public/uac"
+	common "github.com/VertaAI/modeldb-oss/protos/protos/public/common"
+	uac "github.com/VertaAI/modeldb-oss/protos/protos/public/uac"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

@@ -12,7 +12,7 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	math "math"
-	common "github.com/VertaAI/protos-all-go/protos/public/common"
+	common "github.com/VertaAI/modeldb-oss/protos/protos/public/common"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
