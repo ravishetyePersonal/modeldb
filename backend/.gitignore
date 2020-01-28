@@ -1,0 +1,10 @@
+.DS_Store
+target/
+mongodata/
+config.yaml
+config.k8s.yaml
+/bin/
+.classpath
+.settings/*
+.project
+.factorypath
