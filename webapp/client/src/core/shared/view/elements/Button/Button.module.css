@@ -1,0 +1,90 @@
+.button {
+  display: inline-flex;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  text-transform: capitalize;
+}
+
+.extended {
+  border-radius: 24px !important;
+}
+
+.theme_default {
+  background-color: var(--main-color2);
+  color: var(--main-color3);
+}
+.theme_default:hover {
+  background-color: var(--main-hover-blue);
+}
+.theme_gray {
+  background-color: #eeeeee;
+  color: #5a5a5a;
+}
+.theme_gray:hover {
+  background-color: var(--main-color4);
+}
+.theme_red {
+  color: #ffffff;
+  background-color: var(--delete-color2);
+}
+.theme_red:hover {
+  opacity: 0.8;
+}
+
+.size_small {
+  font-weight: 500;
+  font-size: 0.85em;
+  border-radius: 2px;
+  padding: 7px;
+}
+.size_medium {
+  font-weight: 500;
+  font-size: var(--font-size3);
+  height: 34px;
+  width: 164px;
+  border-radius: 2px;
+}
+.size_large {
+  font-weight: 400;
+  font-size: var(--font-size1);
+  height: 56px;
+  width: 276px;
+  border-radius: 4px;
+}
+
+.full_width {
+  width: 100%;
+}
+
+.full_height {
+  height: 100%;
+}
+
+.icon {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 26px;
+  vertical-align: middle;
+}
+
+.disabled,
+.loading {
+  pointer-events: none;
+  color: rgba(0, 0, 0, 0.26);
+  background-color: rgba(0, 0, 0, 0.12);
+  cursor: default;
+}
+
+.loading {
+  background-color: #eeeeee !important;
+  pointer-events: none;
+}
+
+.preloader {
+  width: 28px;
+}

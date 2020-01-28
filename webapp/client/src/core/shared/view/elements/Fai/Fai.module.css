@@ -1,0 +1,69 @@
+.fai {
+  display: inline-flex;
+  height: 36px;
+  width: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  border-radius: 50%;
+  background: none;
+  font-size: var(--font-size4);
+  cursor: pointer;
+  outline: none;
+  transition: background 130ms ease-out, border-color 130ms ease-out,
+    color 130ms ease-out, box-shadow 130ms ease-out;
+}
+.fai.disabled {
+  border-color: var(--grey-light) !important;
+  background-color: var(--grey-lightest) !important;
+  color: var(--grey-light) !important;
+  cursor: default !important;
+}
+.fai.disabled i {
+  color: var(--grey-light) !important;
+}
+
+.active {
+  background-color: var(--bg-color1);
+}
+
+.theme_blue {
+  color: var(--bg-color2);
+  border-color: var(--bg-color2);
+}
+.theme_blue:hover {
+  color: #008271;
+  border-color: var(--bg-color2);
+  background-color: var(--bg-color1);
+}
+
+.theme_red {
+  color: var(--delete-color1);
+  border-color: var(--delete-color1);
+}
+
+.unmuted_icon {
+  color: red;
+  border-color: red;
+  pointer-events: visible !important;
+}
+
+.theme_green {
+  color: var(--bg-color1);
+  border-color: var(--main-color1-dark);
+}
+
+.theme_grey {
+  color: var(--text-color4);
+  border-color: var(--text-color4);
+}
+.theme_grey:hover {
+  border-color: var(--main-color3);
+  color: var(--main-color3);
+  background-color: var(--main-color2);
+}
+
+.icon {
+  font-size: 15px;
+  line-height: 0;
+}

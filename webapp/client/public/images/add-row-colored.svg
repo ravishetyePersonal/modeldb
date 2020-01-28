@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 40 40" version="1.1" width="120px" height="120px">
+<g id="surface1">
+<path style=" fill:#FFFFFF;" d="M 1.5 13.5 L 38.5 13.5 L 38.5 26.5 L 1.5 26.5 Z "/>
+<path style=" fill:#5457e3;" d="M 38 14 L 38 26 L 2 26 L 2 14 L 38 14 M 39 13 L 1 13 L 1 27 L 39 27 Z "/>
+<path style=" fill:#C5C7F0;" d="M 31 39.5 C 26.3125 39.5 22.5 35.6875 22.5 31 C 22.5 26.3125 26.3125 22.5 31 22.5 C 35.6875 22.5 39.5 26.3125 39.5 31 C 39.5 35.6875 35.6875 39.5 31 39.5 Z "/>
+<path style=" fill:#5457e3;" d="M 31 23 C 35.410156 23 39 26.589844 39 31 C 39 35.410156 35.410156 39 31 39 C 26.589844 39 23 35.410156 23 31 C 23 26.589844 26.589844 23 31 23 M 31 22 C 26.027344 22 22 26.027344 22 31 C 22 35.972656 26.027344 40 31 40 C 35.972656 40 40 35.972656 40 31 C 40 26.027344 35.972656 22 31 22 Z "/>
+<path style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke:#FFFFFF;stroke-opacity:1;stroke-miterlimit:10;" d="M 31 36 L 31 26 "/>
+<path style="fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke:#FFFFFF;stroke-opacity:1;stroke-miterlimit:10;" d="M 26 31 L 36 31 "/>
+</g>
+</svg>
