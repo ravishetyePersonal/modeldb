@@ -5,11 +5,11 @@ import Pages from 'pages';
 
 type AllProps = RouteComponentProps;
 
-class App extends React.PureComponent<AllProps> {
+class AppTest extends React.PureComponent<AllProps> {
   public render() {
     return <Pages />;
   }
 }
 
-export { App };
-export default withRouter(App);
+export { AppTest as App };
+export default withRouter(AppTest);
