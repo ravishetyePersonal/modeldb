@@ -28,6 +28,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class NFSService implements ArtifactStoreService {
@@ -168,6 +169,11 @@ public class NFSService implements ArtifactStoreService {
     if (scheme == null || scheme.isEmpty()) {
       scheme = app.getNfsUrlProtocol();
     }
+    return getUrl(artifactPath, app.getGetArtifactEndpoint(), scheme);
+  }
+
+  private String getUrl(String artifactPath, String endpoint, String scheme) {
+
     String host =
         ModelDBAuthInterceptor.METADATA_INFO
             .get()
@@ -175,12 +181,23 @@ public class NFSService implements ArtifactStoreService {
     if (host == null || host.isEmpty()) {
       host = app.getNfsServerHost();
     }
-    return ServletUriComponentsBuilder.newInstance()
-        .scheme(scheme)
-        .host(host)
-        .path(app.getGetArtifactEndpoint())
-        .queryParam("artifact_path", artifactPath)
-        .toUriString();
+
+    String[] hostArr = host.split(":");
+    String finalHost = hostArr[0];
+
+    UriComponentsBuilder uriComponentsBuilder =
+        ServletUriComponentsBuilder.newInstance()
+            .scheme(scheme)
+            .host(finalHost)
+            .path(endpoint)
+            .queryParam("artifact_path", artifactPath);
+
+    if (hostArr.length > 1) {
+      String finalPort = hostArr[1];
+      uriComponentsBuilder.port(finalPort);
+    }
+
+    return uriComponentsBuilder.toUriString();
   }
 
   /**
@@ -206,19 +223,7 @@ public class NFSService implements ArtifactStoreService {
         scheme = app.getNfsUrlProtocol();
       }
     }
-    String host =
-        ModelDBAuthInterceptor.METADATA_INFO
-            .get()
-            .get(Metadata.Key.of("x-forwarded-host", Metadata.ASCII_STRING_MARSHALLER));
-    if (host == null || host.isEmpty()) {
-      host = app.getNfsServerHost();
-    }
-    return ServletUriComponentsBuilder.newInstance()
-        .scheme(scheme)
-        .host(host)
-        .path(app.getStoreArtifactEndpoint())
-        .queryParam("artifact_path", artifactPath)
-        .toUriString();
+    return getUrl(artifactPath, app.getStoreArtifactEndpoint(), scheme);
   }
 
   @Override
