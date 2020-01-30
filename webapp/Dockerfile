@@ -28,6 +28,7 @@ COPY server.js server.js
 COPY .env.default .env
 
 COPY --from=builder /usr/src/app/client/build /usr/src/app/client/build
+ENV DEPLOYED "yes"
 
 # production environment
 EXPOSE 3000

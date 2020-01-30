@@ -1,0 +1,64 @@
+version: "3.5"
+services:
+    modeldb-backend:
+        image: modeldb-backend:latest
+        container_name: "modeldb-backend"
+        build: .
+        expose:
+            - "8085"
+        ports:
+            - "8085:8085"
+        networks:
+            - modeldb_network
+        environment:
+            - VERTA_MODELDB_CONFIG:/config/config.yaml
+        volumes:
+            - ./backend:/config/
+
+    modeldb-proxy:
+        image: modeldb-proxy:latest
+        container_name: "modeldb-proxy"
+        environment:
+            MDB_ADDRESS: "modeldb-backend:8085"
+            SERVER_HTTP_PORT: "8080"
+        expose:
+            - "8080"
+        ports:
+            - "8080:8080"
+        depends_on:
+            - modeldb-backend
+        networks:
+            - modeldb_network
+
+    modeldb-frontend:
+        image: modeldb-frontend:latest
+        container_name: "modeldb-frontend"
+        expose:
+            - "3000"
+        ports:
+            - "3000:3000"
+        depends_on:
+            - modeldb-proxy
+        environment:
+            DEPLOYED: "yes"
+            BACKEND_API_PROTOCOL: "http"
+            BACKEND_API_DOMAIN: "modeldb-proxy:8080"
+        networks:
+            - modeldb_network
+
+    modeldb-postgres:
+        image: postgres
+        container_name: "modeldb-postgres"
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: root
+            PGDATA: /var/lib/postgresql/data/pgdata
+        networks:
+            - modeldb_network
+        volumes:
+            - ./data:/var/lib/postgresql/data/pgdata
+
+networks:
+  modeldb_network:
+    # external:
+    #   name: modeldb_network

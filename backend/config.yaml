@@ -1,0 +1,53 @@
+#ModelDB Properties
+grpcServer:
+  port: 8085
+
+springServer:
+  port: 8086
+  shutdownTimeout: 30 #time in second
+
+artifactStoreConfig:
+  artifactStoreType: NFS #S3, GCP, NFS
+  NFS:
+    nfsServerHost: modeldb-backend
+    nfsServerPort: 8086
+    nfsUrlProtocol: http
+    nfsRootPath: /tmp/
+    artifactEndpoint:
+      getArtifact: "/v1/artifact1/getArtifact"
+      storeArtifact: "/v1/artifact/storeArtifact"
+
+# Database settings (type mongodb, couchbasedb, relational etc..)
+database:
+  DBType: relational
+  timeout: 4
+  liquibaseLockThreshold: 60 #time in second
+  RdbConfiguration:
+    RdbDatabaseName: postgres
+    RdbDriver: "org.postgresql.Driver"
+    RdbDialect: "org.hibernate.dialect.PostgreSQLDialect"
+    RdbUrl: "jdbc:postgresql://modeldb-postgres:5432"
+    RdbUsername: postgres
+    RdbPassword: root
+
+# Test Database settings (type mongodb, couchbasedb etc..)
+test:
+  test-database:
+    DBType: relational
+    timeout: 4
+    liquibaseLockThreshold: 60 #time in second
+    RdbConfiguration:
+      RdbDatabaseName: postgres
+      RdbDriver: "org.postgresql.Driver"
+      RdbDialect: "org.hibernate.dialect.PostgreSQLDialect"
+      RdbUrl: "jdbc:postgresql://modeldb-postgres:5432"
+      RdbUsername: postgres
+      RdbPassword: root
+
+#ArtifactStore Properties
+artifactStore_grpcServer:
+  host: modeldb-backend
+  port: 8086
+feature-flag:
+  disabled-authz: false
+  disabled-mdb-collaborator: true

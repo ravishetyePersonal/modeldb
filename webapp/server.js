@@ -30,20 +30,57 @@ const apiAddress = `${process.env.BACKEND_API_PROTOCOL}://${
 }`;
 const apiHost = `${process.env.BACKEND_API_DOMAIN}`;
 
-if (process.env.DEPLOYED !== 'yes') {
-  // Since the cloud system is configured by hostname, change the request when it's going to AWS so
-  // that it appears to be targeted to the right hostname instead of localhost:3000
-  const hostnameApiSwitch = (req, res, next) => {
-    req.headers['original-host'] = req.headers['host'];
-    req.headers['host'] = apiHost;
-    next();
-  };
+// Since the cloud system is configured by hostname, change the request when it's going to AWS so
+// that it appears to be targeted to the right hostname instead of localhost:3000
+const hostnameApiSwitch = (req, res, next) => {
+  req.headers['original-host'] = req.headers['host'];
+  req.headers['host'] = apiHost;
+  next();
+};
 
+if (process.env.DEPLOYED === 'yes') {
+  app.use((req, res, next) => {
+    if (typeof req.headers['x-envoy-original-path'] !== "undefined") {
+      // if (req.url != req.headers['x-envoy-original-path']) {
+        req.url = req.headers['x-envoy-original-path'];
+      // }
+    }
+    console.log(req.url)
+    next();
+  })
+
+  // MDB starts with /v1, while /api is used by the API gateway
+  const docker_proxy = proxy({
+    target: apiAddress,
+    pathRewrite: {'^/api/v1/modeldb' : '/v1'},
+    logLevel: "debug",
+    changeOrigin: false,
+    ws: true,
+  })
+  app.use(
+    '/api/v1/*',
+    [disableCache, hostnameApiSwitch, printer],
+    (req, res, next) => {
+      return docker_proxy(req, res, next);
+    }
+  );
+
+  app.use(express.static('client/build'));
+
+  // Any left over is sent to index
+  app.get('*', (req, res) => {
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', 0);
+    res.sendFile(path.join(__dirname + '/client/build' + '/index.html'));
+  });
+} else {
   const aws_proxy = proxy({
     target: apiAddress,
     changeOrigin: false,
     ws: true,
   });
+
   app.use(
     '/api/v1/*',
     [disableCache, hostnameApiSwitch, printer],
@@ -58,31 +95,9 @@ if (process.env.DEPLOYED !== 'yes') {
       return aws_proxy(req, res, next);
     }
   );
-}
 
-app.use(bodyParser.json());
+  // app.use(bodyParser.json());
 
-if (process.env.DEPLOYED === 'yes') {
-  app.use((req, res, next) => {
-    if (typeof req.headers['x-envoy-original-path'] !== "undefined") {
-      // if (req.url != req.headers['x-envoy-original-path']) {
-        req.url = req.headers['x-envoy-original-path'];
-      // }
-    }
-    console.log(req.url)
-    next();
-  })
-
-  app.use(express.static('client/build'));
-
-  // Any left over is sent to index
-  app.get('*', (req, res) => {
-    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.header('Pragma', 'no-cache');
-    res.header('Expires', 0);
-    res.sendFile(path.join(__dirname + '/client/build' + '/index.html'));
-  });
-} else {
   const local_proxy = proxy({
     target: 'http://localhost:3001',
     changeOrigin: false,

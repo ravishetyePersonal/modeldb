@@ -20,7 +20,7 @@ func main() {
 	log.Println("MDB_ADDRESS : " + address)
 	port := os.Getenv("SERVER_HTTP_PORT")
 	if port == "" {
-		port = "3000"
+		port = "8080"
 	}
 	log.Println("SERVER_HTTP_PORT : " + port)
 	mux := runtime.NewServeMux()

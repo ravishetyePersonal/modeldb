@@ -106,6 +106,7 @@ public class ModelDBHibernateUtil {
 
   public static SessionFactory getSessionFactory() {
     if (sessionFactory == null) {
+      LOGGER.info("Fetching sessionFactory");
       try {
         App app = App.getInstance();
         Map<String, Object> databasePropMap = app.getDatabasePropMap();
@@ -145,6 +146,7 @@ public class ModelDBHibernateUtil {
         settings.put(Environment.SHOW_SQL, "false");
         configuration.setProperties(settings);
 
+        LOGGER.trace("connectionString {}", connectionString);
         // Create registry builder
         StandardServiceRegistryBuilder registryBuilder =
             new StandardServiceRegistryBuilder().applySettings(settings);
