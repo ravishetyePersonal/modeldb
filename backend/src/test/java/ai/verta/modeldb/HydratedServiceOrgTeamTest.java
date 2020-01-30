@@ -63,7 +63,6 @@ public class HydratedServiceOrgTeamTest {
 
   private static final Logger LOGGER =
       LogManager.getLogger(HydratedServiceOrgTeamTest.class.getName());
-  public static final String RESOURCE_OWNER_ID = "998";
   /**
    * This rule manages automatic graceful shutdown for the registered servers and channels at the
    * end of test.
@@ -296,11 +295,11 @@ public class HydratedServiceOrgTeamTest {
       Mockito.doReturn(Collections.singletonList(response1.build()))
           .when(roleService)
           .getResourceCollaborators(
-              ModelDBServiceResourceTypes.PROJECT, project1.getId(), RESOURCE_OWNER_ID);
+              ModelDBServiceResourceTypes.PROJECT, project1.getId(), project1.getOwner());
       Mockito.doReturn(Collections.singletonList(response2.build()))
           .when(roleService)
           .getResourceCollaborators(
-              ModelDBServiceResourceTypes.PROJECT, project2.getId(), RESOURCE_OWNER_ID);
+              ModelDBServiceResourceTypes.PROJECT, project2.getId(), project2.getOwner());
       Mockito.doReturn(Collections.singletonList(project1.getId()))
           .when(roleService)
           .getAccessibleResourceIds(
