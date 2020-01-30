@@ -146,7 +146,7 @@ class Client(object):
         conn = _utils.Connection(scheme, socket, auth, max_retries, ignore_conn_err)
         try:
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/project/verifyConnection".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/project/verifyConnection".format(conn.scheme, conn.socket),
                                            conn)
         except requests.ConnectionError:
             _six.raise_from(requests.ConnectionError("connection failed; please check `host` and `port`"),
@@ -213,7 +213,7 @@ class Client(object):
             msg = Message(project_id=self.proj.id)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
                                            self._conn, params=data)
             _utils.raise_for_http_error(response)
 
@@ -522,7 +522,7 @@ class Client(object):
                       ascending=ascending, sort_key=sort_key)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/dataset/findDatasets".format(
+                                       "{}://{}/api/v1/modeldb/dataset/findDatasets".format(
                                            self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         _utils.raise_for_http_error(response)
@@ -553,7 +553,7 @@ class _ModelDBEntity(object):
         self._conf = conf
 
         self._service = service_module
-        self._request_url = "{}://{}/v1/{}/{}".format(self._conn.scheme,
+        self._request_url = "{}://{}/api/v1/modeldb/{}/{}".format(self._conn.scheme,
                                                       self._conn.socket,
                                                       service_url_component,
                                                       '{}')  # endpoint placeholder
@@ -1018,7 +1018,7 @@ class Project(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/project/getProjectById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/project/getProjectById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1032,7 +1032,7 @@ class Project(_ModelDBEntity):
         msg = Message(project_id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1052,7 +1052,7 @@ class Project(_ModelDBEntity):
             msg = Message(id=_proj_id)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/project/getProjectById".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/project/getProjectById".format(conn.scheme, conn.socket),
                                            conn, params=data)
 
             if response.ok:
@@ -1068,7 +1068,7 @@ class Project(_ModelDBEntity):
             msg = Message(name=proj_name, workspace_name=workspace)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/project/getProjectByName".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/project/getProjectByName".format(conn.scheme, conn.socket),
                                            conn, params=data)
 
             if response.ok:
@@ -1097,7 +1097,7 @@ class Project(_ModelDBEntity):
         msg = Message(name=proj_name, description=desc, tags=tags, attributes=attrs, workspace_name=workspace)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/project/createProject".format(conn.scheme, conn.socket),
+                                       "{}://{}/api/v1/modeldb/project/createProject".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
         if response.ok:
@@ -1170,7 +1170,7 @@ class Experiment(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment/getExperimentById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment/getExperimentById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1184,7 +1184,7 @@ class Experiment(_ModelDBEntity):
         msg = Message(experiment_id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunsInExperiment".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInExperiment".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1204,14 +1204,14 @@ class Experiment(_ModelDBEntity):
             msg = Message(id=_expt_id)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment/getExperimentById".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment/getExperimentById".format(conn.scheme, conn.socket),
                                            conn, params=data)
         elif None not in (proj_id, expt_name):
             Message = _ExperimentService.GetExperimentByName
             msg = Message(project_id=proj_id, name=expt_name)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment/getExperimentByName".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment/getExperimentByName".format(conn.scheme, conn.socket),
                                            conn, params=data)
         else:
             raise ValueError("insufficient arguments")
@@ -1236,7 +1236,7 @@ class Experiment(_ModelDBEntity):
                       description=desc, tags=tags, attributes=attrs)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment/createExperiment".format(conn.scheme, conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment/createExperiment".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
         if response.ok:
@@ -1425,7 +1425,7 @@ class ExperimentRuns(object):
                       predicates=predicates, ids_only=not ret_all_info)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/findExperimentRuns".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/findExperimentRuns".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         _utils.raise_for_http_error(response)
 
@@ -1482,7 +1482,7 @@ class ExperimentRuns(object):
                       sort_key=key, ascending=not descending, ids_only=not ret_all_info)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/sortExperimentRuns".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/sortExperimentRuns".format(self._conn.scheme, self._conn.socket),
                                        self._conn,
                                        params=data)
         _utils.raise_for_http_error(response)
@@ -1547,7 +1547,7 @@ class ExperimentRuns(object):
                       sort_key=key, ascending=False, top_k=k, ids_only=not ret_all_info)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1610,7 +1610,7 @@ class ExperimentRuns(object):
                       sort_key=key, ascending=True, top_k=k, ids_only=not ret_all_info)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1677,7 +1677,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1705,7 +1705,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1723,14 +1723,14 @@ class ExperimentRun(_ModelDBEntity):
             msg = Message(id=_expt_run_id)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment-run/getExperimentRunById".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(conn.scheme, conn.socket),
                                            conn, params=data)
         elif None not in (expt_id, expt_run_name):
             Message = _ExperimentRunService.GetExperimentRunByName
             msg = Message(experiment_id=expt_id, name=expt_run_name)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment-run/getExperimentRunByName".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunByName".format(conn.scheme, conn.socket),
                                            conn, params=data)
         else:
             raise ValueError("insufficient arguments")
@@ -1755,7 +1755,7 @@ class ExperimentRun(_ModelDBEntity):
                       description=desc, tags=tags, attributes=attrs)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/createExperimentRun".format(conn.scheme, conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/createExperimentRun".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
         if response.ok:
@@ -1827,11 +1827,11 @@ class ExperimentRun(_ModelDBEntity):
         data = _utils.proto_to_json(msg)
         if overwrite:
             response = _utils.make_request("DELETE",
-                                           "{}://{}/v1/experiment-run/deleteArtifact".format(self._conn.scheme, self._conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment-run/deleteArtifact".format(self._conn.scheme, self._conn.socket),
                                            self._conn, json={'id': self.id, 'key': key})
             _utils.raise_for_http_error(response)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logArtifact".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logArtifact".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -1881,7 +1881,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, artifact=artifact_msg)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logArtifact".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logArtifact".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -1915,7 +1915,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, key=key)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getArtifacts".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getArtifacts".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -1969,7 +1969,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getDatasets".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getDatasets".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2049,7 +2049,7 @@ class ExperimentRun(_ModelDBEntity):
         # create the new run
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/createExperimentRun".format(
+                                       "{}://{}/api/v1/modeldb/experiment-run/createExperimentRun".format(
                                            self._conn.scheme, self._conn.socket), self._conn, json=data)
         _utils.raise_for_http_error(response)
 
@@ -2077,7 +2077,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, tags=[tag])
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/addExperimentRunTags".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/addExperimentRunTags".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         _utils.raise_for_http_error(response)
 
@@ -2101,7 +2101,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, tags=tags)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/addExperimentRunTags".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/addExperimentRunTags".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         _utils.raise_for_http_error(response)
 
@@ -2119,7 +2119,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunTags".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunTags".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2144,7 +2144,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogAttribute(id=self.id, attribute=attribute)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logAttribute".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logAttribute".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2175,7 +2175,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogAttributes(id=self.id, attributes=attribute_keyvals)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logAttributes".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logAttributes".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2205,7 +2205,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, attribute_keys=[key])
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getAttributes".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getAttributes".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2230,7 +2230,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, get_all=True)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getAttributes".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getAttributes".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2257,7 +2257,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogMetric(id=self.id, metric=metric)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logMetric".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logMetric".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2288,7 +2288,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogMetrics(id=self.id, metrics=metric_keyvals)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logMetrics".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logMetrics".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2318,7 +2318,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getMetrics".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getMetrics".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2343,7 +2343,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getMetrics".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getMetrics".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2368,7 +2368,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogHyperparameter(id=self.id, hyperparameter=hyperparameter)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logHyperparameter".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logHyperparameter".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2399,7 +2399,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogHyperparameters(id=self.id, hyperparameters=hyperparameter_keyvals)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logHyperparameters".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logHyperparameters".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2429,7 +2429,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getHyperparameters".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getHyperparameters".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2454,7 +2454,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getHyperparameters".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getHyperparameters".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -2525,7 +2525,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, dataset=artifact_msg, overwrite=overwrite)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logDataset".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logDataset".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         if not response.ok:
             if response.status_code == 409:
@@ -2776,7 +2776,7 @@ class ExperimentRun(_ModelDBEntity):
         # validate that `artifacts` are actually logged
         if artifacts:
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                                           "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                                            self._conn, params={'id': self.id})
             _utils.raise_for_http_error(response)
             existing_artifact_keys = {artifact['key'] for artifact in response.json()['experiment_run'].get('artifacts', [])}
@@ -3058,7 +3058,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = _ExperimentRunService.LogObservation(id=self.id, observation=observation)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/experiment-run/logObservation".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/logObservation".format(self._conn.scheme, self._conn.socket),
                                        self._conn, json=data)
         _utils.raise_for_http_error(response)
 
@@ -3083,7 +3083,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id, observation_key=key)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getObservations".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getObservations".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -3108,7 +3108,7 @@ class ExperimentRun(_ModelDBEntity):
         msg = Message(id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -3427,7 +3427,7 @@ class ExperimentRun(_ModelDBEntity):
 
         # validate that `keys` are actually logged
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params={'id': self.id})
         _utils.raise_for_http_error(response)
         existing_artifact_keys = {artifact['key'] for artifact in response.json()['experiment_run'].get('artifacts', [])}
@@ -3437,7 +3437,7 @@ class ExperimentRun(_ModelDBEntity):
 
         # get artifact checksums
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/experiment-run/getArtifacts".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/experiment-run/getArtifacts".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params={'id': self.id})
         _utils.raise_for_http_error(response)
         paths = {artifact['key']: artifact['path']
@@ -3535,7 +3535,7 @@ class ExperimentRun(_ModelDBEntity):
             # get project ID for URL path
             response = _utils.make_request(
                 "GET",
-                "{}://{}/v1/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+                "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
                 self._conn, params={'id': self.id})
             _utils.raise_for_http_error(response)
 

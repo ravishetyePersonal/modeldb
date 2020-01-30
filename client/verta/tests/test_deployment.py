@@ -718,7 +718,7 @@ class TestDeploy:
         # delete model
         verta._utils.make_request(
             "DELETE",
-            "{}://{}/v1/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
+            "{}://{}/api/v1/modeldb/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
                                                               experiment_run._conn.socket),
             experiment_run._conn, json={'id': experiment_run.id, 'key': "model.pkl"}
         ).raise_for_status()
@@ -740,7 +740,7 @@ class TestDeploy:
         # delete model API
         verta._utils.make_request(
             "DELETE",
-            "{}://{}/v1/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
+            "{}://{}/api/v1/modeldb/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
                                                               experiment_run._conn.socket),
             experiment_run._conn, json={'id': experiment_run.id, 'key': "model_api.json"}
         ).raise_for_status()

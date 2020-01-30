@@ -94,7 +94,7 @@ class Dataset(object):
             msg = Message(id=_dataset_id)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/dataset/getDatasetById".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/dataset/getDatasetById".format(conn.scheme, conn.socket),
                                            conn, params=data)
 
             if response.ok:
@@ -110,7 +110,7 @@ class Dataset(object):
             msg = Message(name=dataset_name, workspace_name=workspace)
             data = _utils.proto_to_json(msg)
             response = _utils.make_request("GET",
-                                           "{}://{}/v1/dataset/getDatasetByName".format(conn.scheme, conn.socket),
+                                           "{}://{}/api/v1/modeldb/dataset/getDatasetByName".format(conn.scheme, conn.socket),
                                            conn, params=data)
 
             if response.ok:
@@ -141,7 +141,7 @@ class Dataset(object):
                       workspace_name=workspace)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/dataset/createDataset".format(conn.scheme, conn.socket),
+                                       "{}://{}/api/v1/modeldb/dataset/createDataset".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
         if response.ok:
@@ -166,7 +166,7 @@ class Dataset(object):
         msg = Message(dataset_id=self.id)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/dataset-version/getAllDatasetVersionsByDatasetId".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/dataset-version/getAllDatasetVersionsByDatasetId".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -197,7 +197,7 @@ class Dataset(object):
         msg = Message(dataset_id=self.id, ascending=ascending, sort_key=sort_key)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("GET",
-                                       "{}://{}/v1/dataset-version/getLatestDatasetVersionByDatasetId".format(self._conn.scheme, self._conn.socket),
+                                       "{}://{}/api/v1/modeldb/dataset-version/getLatestDatasetVersionByDatasetId".format(self._conn.scheme, self._conn.socket),
                                        self._conn, params=data)
         _utils.raise_for_http_error(response)
 
@@ -521,7 +521,7 @@ class DatasetVersion(object):
             data = _utils.proto_to_json(msg)
             response = _utils.make_request(
                 "GET",
-                "{}://{}/v1/dataset-version/getDatasetVersionById".format(conn.scheme, conn.socket),
+                "{}://{}/api/v1/modeldb/dataset-version/getDatasetVersionById".format(conn.scheme, conn.socket),
                 conn, params=data
             )
             if response.ok:
@@ -573,7 +573,7 @@ class DatasetVersion(object):
 
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
-                                       "{}://{}/v1/dataset-version/createDatasetVersion".format(conn.scheme, conn.socket),
+                                       "{}://{}/api/v1/modeldb/dataset-version/createDatasetVersion".format(conn.scheme, conn.socket),
                                        conn, json=data)
 
         if response.ok:
@@ -766,7 +766,7 @@ class S3DatasetVersionInfo(PathDatasetVersionInfo):
     @staticmethod
     def get_s3_object_info(object_info, key=None):
         # S3 also provides version info that could be used:
-        #     https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html
+        #     https://boto3.amazonaws.com/api/v1/modeldb/documentation/api/latest/reference/services/s3.html
         dataset_part_info = _DatasetVersionService.DatasetPartInfo()
         dataset_part_info.path = object_info['Key'] if key is None else key
         dataset_part_info.size = object_info['Size'] if key is None else object_info['ContentLength']
