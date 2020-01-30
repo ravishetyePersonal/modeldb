@@ -22,11 +22,11 @@ import NotFoundPage from './NotFoundPage/NotFoundPage';
 import ProjectDetailsPage from './ProjectsPages/ProjectDetailsPages/ProjectDetailsPage';
 import ProjectsPage from './ProjectsPages/ProjectsPage/ProjectsPage';
 
-import DatasetDetailPages from './DatasetPages/DatasetsPage/DatasetDetailPages/DatasetDetailPages';
-import DatasetsPage from './DatasetPages/DatasetsPage/DatasetsPage';
+import DatasetDetailPages from './DatasetPages/DatasetDetailPages/DatasetDetailPages';
+import DatasetsPage from './DatasetPages/DatasetsPage';
 
 import { IRouteWithWorkspace } from 'routes/routeWithWorkspace';
-import DatasetCreationPage from './DatasetPages/DatasetsPage/DatasetCreationPage/DatasetCreationPage';
+import DatasetCreationPage from './DatasetPages/DatasetCreationPage/DatasetCreationPage';
 import ProjectCreationPage from './ProjectsPages/ProjectCreationPage/ProjectCreationPage';
 import ExperimentCreationPage from './ProjectsPages/ProjectDetailsPages/ExperimentCreationPage/ExperimentCreationPage';
 

@@ -18,9 +18,9 @@ import {
 import PagingPanel from 'core/shared/view/elements/Table/Templates/PagingPanel/TablePagingPanel';
 import { IDatasetVersion } from 'models/DatasetVersion';
 
-import DeletingDatasetVersionsManager from './BulkDeletion/DeletingDatasetVersionsManager/DeletingDatasetVersionsManager';
-import ToggleAllDatasetVersionsForBulkDeletion from './BulkDeletion/ToggleAllDatasetVersionsForBulkDeletion/ToggleAllDatasetVersionsForBulkDeletion';
-import ToggleDatasetVersionForBulkDeletion from './BulkDeletion/ToggleDatasetVersionForBulkDeletion/ToggleDatasetVersionForBulkDeletion';
+import DeletingDatasetVersionsManager from './BulkDeletion/Manager/Manager';
+import ToggleAllDatasetVersionsForBulkDeletion from './BulkDeletion/ToggleAllRows/ToggleAllRows';
+import ToggleDatasetVersionForBulkDeletion from './BulkDeletion/ToggleRow/ToggleRow';
 import styles from './DatasetVersionsTable.module.css';
 
 interface ILocalProps {
