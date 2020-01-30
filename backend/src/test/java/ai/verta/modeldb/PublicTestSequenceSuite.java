@@ -12,6 +12,8 @@ import org.junit.runners.Suite;
   CommentTest.class,
   DatasetTest.class,
   DatasetVersionTest.class,
-  HydratedServiceTest.class
+  HydratedServiceTest.class,
+  FindProjectEntitiesTest.class,
+  FindDatasetEntitiesTest.class
 })
 public class PublicTestSequenceSuite {}

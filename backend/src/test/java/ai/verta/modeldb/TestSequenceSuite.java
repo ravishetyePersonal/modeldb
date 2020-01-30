@@ -16,7 +16,9 @@ import org.junit.runners.Suite;
   HydratedServiceOrgTeamTest.class,
   DatasetTest.class,
   DatasetVersionTest.class,
-  ModelDBUtilsTest.class
+  ModelDBUtilsTest.class,
+  FindProjectEntitiesTest.class,
+  FindDatasetEntitiesTest.class
   //  ArtifactStoreTest.class
 })
 public class TestSequenceSuite {}
