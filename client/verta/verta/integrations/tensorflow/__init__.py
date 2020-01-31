@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ... import _six
+from ...external import six
 
 import tensorflow as tf
 from tensorflow.core.framework.summary_pb2 import Summary  # pylint: disable=import-error, no-name-in-module

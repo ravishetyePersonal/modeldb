@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ... import _six
+from ...external import six
 
 import torch
 

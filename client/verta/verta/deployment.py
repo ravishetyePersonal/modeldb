@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from . import _six
-from ._six.moves.urllib.parse import urljoin, urlparse  # pylint: disable=import-error, no-name-in-module
+from .external import six
+from .external.six.moves.urllib.parse import urljoin, urlparse  # pylint: disable=import-error, no-name-in-module
 
 import json
 import gzip
@@ -71,11 +71,11 @@ class DeployedModel:
             try:
                 self._session.headers.update({_utils._GRPC_PREFIX+'email': os.environ['VERTA_EMAIL']})
             except KeyError:
-                _six.raise_from(EnvironmentError("${} not found in environment".format('VERTA_EMAIL')), None)
+                six.raise_from(EnvironmentError("${} not found in environment".format('VERTA_EMAIL')), None)
             try:
                 self._session.headers.update({_utils._GRPC_PREFIX+'developer_key': os.environ['VERTA_DEV_KEY']})
             except KeyError:
-                _six.raise_from(EnvironmentError("${} not found in environment".format('VERTA_DEV_KEY')), None)
+                six.raise_from(EnvironmentError("${} not found in environment".format('VERTA_DEV_KEY')), None)
 
         back_end_url = urlparse(host)
         self._socket = back_end_url.netloc + back_end_url.path.rstrip('/')
@@ -154,9 +154,9 @@ class DeployedModel:
 
         if compress:
             # create gzip
-            gzstream = _six.BytesIO()
+            gzstream = six.BytesIO()
             with gzip.GzipFile(fileobj=gzstream, mode='wb') as gzf:
-                gzf.write(_six.ensure_binary(json.dumps(x)))
+                gzf.write(six.ensure_binary(json.dumps(x)))
             gzstream.seek(0)
 
             return self._session.post(

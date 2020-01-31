@@ -2,9 +2,9 @@
 
 from __future__ import print_function
 
-from . import _six
-from ._six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
-from ._six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
+from .external import six
+from .external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
+from .external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
 
 import ast
 import copy
@@ -149,14 +149,14 @@ class Client(object):
                                            "{}://{}/api/v1/modeldb/project/verifyConnection".format(conn.scheme, conn.socket),
                                            conn)
         except requests.ConnectionError:
-            _six.raise_from(requests.ConnectionError("connection failed; please check `host` and `port`"),
+            six.raise_from(requests.ConnectionError("connection failed; please check `host` and `port`"),
                            None)
 
         def is_unauthorized(response): return response.status_code == 401
 
         if is_unauthorized(response):
             auth_error_msg = "authentication failed; please check `VERTA_EMAIL` and `VERTA_DEV_KEY`"
-            _six.raise_from(requests.HTTPError(auth_error_msg), None)
+            six.raise_from(requests.HTTPError(auth_error_msg), None)
 
         _utils.raise_for_http_error(response)
         print("connection successfully established")
@@ -764,7 +764,7 @@ class _ModelDBEntity(object):
             try:
                 repo_root_dir = _utils.get_git_repo_root_dir()
             except OSError:
-                _six.raise_from(OSError("failed to locate Git repository; please check your working directory"),
+                six.raise_from(OSError("failed to locate Git repository; please check your working directory"),
                                None)
             print("Git repository successfully located at {}".format(repo_root_dir))
         elif repo_url is not None or commit_hash is not None:
@@ -830,7 +830,7 @@ class _ModelDBEntity(object):
                     msg.code_version.git_snapshot.is_dirty = _CommonCommonService.TernaryEnum.FALSE
         else:  # log code as Artifact
             # write ZIP archive
-            zipstream = _six.BytesIO()
+            zipstream = six.BytesIO()
             with zipfile.ZipFile(zipstream, 'w') as zipf:
                 # TODO: save notebook
                 zipf.write(exec_path, os.path.basename(exec_path))  # write as base filename
@@ -939,7 +939,7 @@ class _ModelDBEntity(object):
             response = _utils.make_request("GET", url, self._conn)
             _utils.raise_for_http_error(response)
 
-            code_archive = _six.BytesIO(response.content)
+            code_archive = six.BytesIO(response.content)
             return zipfile.ZipFile(code_archive, 'r')  # TODO: return a util class instead, maybe
         else:
             raise RuntimeError("unable find code in response")
@@ -995,7 +995,7 @@ class Project(_ModelDBEntity):
                     if proj is not None:
                         print("set existing Project: {} from {}".format(proj.name, WORKSPACE_PRINT_MSG))
                     else:  # no accessible project in other workspace
-                        _six.raise_from(e, None)
+                        six.raise_from(e, None)
                 elif e.response.status_code == 409:  # already exists
                     if any(param is not None for param in (desc, tags, attrs)):
                         warnings.warn("Project with name {} already exists;"
@@ -1093,7 +1093,7 @@ class Project(_ModelDBEntity):
     def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
-                     for key, value in _six.viewitems(attrs)]
+                     for key, value in six.viewitems(attrs)]
 
         Message = _ProjectService.CreateProject
         msg = Message(name=proj_name, description=desc, tags=tags, attributes=attrs, workspace_name=workspace)
@@ -1232,7 +1232,7 @@ class Experiment(_ModelDBEntity):
     def _create(conn, proj_id, expt_name, desc=None, tags=None, attrs=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
-                     for key, value in _six.viewitems(attrs)]
+                     for key, value in six.viewitems(attrs)]
 
         Message = _ExperimentService.CreateExperiment
         msg = Message(project_id=proj_id, name=expt_name,
@@ -1301,7 +1301,7 @@ class ExperimentRuns(object):
                '>=': _CommonService.OperatorEnum.GTE,
                '<':  _CommonService.OperatorEnum.LT,
                '<=': _CommonService.OperatorEnum.LTE}
-    _OP_PATTERN = re.compile(r"({})".format('|'.join(sorted(_six.viewkeys(_OP_MAP), key=lambda s: len(s), reverse=True))))
+    _OP_PATTERN = re.compile(r"({})".format('|'.join(sorted(six.viewkeys(_OP_MAP), key=lambda s: len(s), reverse=True))))
 
     # keys that yield predictable, sensible results
     _VALID_QUERY_KEYS = {
@@ -1388,14 +1388,14 @@ class ExperimentRuns(object):
             expt_run_ids = None
 
         predicates = []
-        if isinstance(where, _six.string_types):
+        if isinstance(where, six.string_types):
             where = [where]
         for predicate in where:
             # split predicate
             try:
                 key, operator, value = map(lambda token: token.strip(), self._OP_PATTERN.split(predicate, maxsplit=1))
             except ValueError:
-                _six.raise_from(ValueError("predicate `{}` must be a two-operand comparison".format(predicate)),
+                six.raise_from(ValueError("predicate `{}` must be a two-operand comparison".format(predicate)),
                                None)
 
             if key.split('.')[0] not in self._VALID_QUERY_KEYS:
@@ -1409,7 +1409,7 @@ class ExperimentRuns(object):
             try:
                 expr_node = ast.parse(value, mode='eval')
             except SyntaxError:
-                _six.raise_from(ValueError("value `{}` must be a number or string literal".format(value)),
+                six.raise_from(ValueError("value `{}` must be a number or string literal".format(value)),
                                None)
             value_node = expr_node.body
             if type(value_node) is ast.Num:
@@ -1752,7 +1752,7 @@ class ExperimentRun(_ModelDBEntity):
     def _create(conn, proj_id, expt_id, expt_run_name, desc=None, tags=None, attrs=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
-                     for key, value in _six.viewitems(attrs)]
+                     for key, value in six.viewitems(attrs)]
 
         Message = _ExperimentRunService.CreateExperimentRun
         msg = Message(project_id=proj_id, experiment_id=expt_id, name=expt_run_name,
@@ -1792,7 +1792,7 @@ class ExperimentRun(_ModelDBEntity):
             Whether to allow overwriting an existing artifact with key `key`.
 
         """
-        if isinstance(artifact, _six.string_types):
+        if isinstance(artifact, six.string_types):
             artifact = open(artifact, 'rb')
 
         if hasattr(artifact, 'read') and method is not None:  # already a verta-produced stream
@@ -1984,7 +1984,7 @@ class ExperimentRun(_ModelDBEntity):
             try:
                 dataset, path_only = self._get_artifact(key)
             except KeyError:
-                _six.raise_from(KeyError("no dataset found with key {}".format(key)),
+                six.raise_from(KeyError("no dataset found with key {}".format(key)),
                                None)
             else:
                 return dataset, path_only, None
@@ -2074,7 +2074,7 @@ class ExperimentRun(_ModelDBEntity):
             Tag.
 
         """
-        if not isinstance(tag, _six.string_types):
+        if not isinstance(tag, six.string_types):
             raise TypeError("`tag` must be a string")
 
         Message = _ExperimentRunService.AddExperimentRunTags
@@ -2095,10 +2095,10 @@ class ExperimentRun(_ModelDBEntity):
             Tags.
 
         """
-        if isinstance(tags, _six.string_types):
+        if isinstance(tags, six.string_types):
             raise TypeError("`tags` must be an iterable of strings")
         for tag in tags:
-            if not isinstance(tag, _six.string_types):
+            if not isinstance(tag, six.string_types):
                 raise TypeError("`tags` must be an iterable of strings")
 
         Message = _ExperimentRunService.AddExperimentRunTags
@@ -2168,12 +2168,12 @@ class ExperimentRun(_ModelDBEntity):
 
         """
         # validate all keys first
-        for key in _six.viewkeys(attributes):
+        for key in six.viewkeys(attributes):
             _utils.validate_flat_key(key)
 
         # build KeyValues
         attribute_keyvals = []
-        for key, value in _six.viewitems(attributes):
+        for key, value in six.viewitems(attributes):
             attribute_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True)))
 
         msg = _ExperimentRunService.LogAttributes(id=self.id, attributes=attribute_keyvals)
@@ -2218,7 +2218,7 @@ class ExperimentRun(_ModelDBEntity):
         try:
             return attributes[key]
         except KeyError:
-            _six.raise_from(KeyError("no attribute found with key {}".format(key)), None)
+            six.raise_from(KeyError("no attribute found with key {}".format(key)), None)
 
     def get_attributes(self):
         """
@@ -2281,12 +2281,12 @@ class ExperimentRun(_ModelDBEntity):
 
         """
         # validate all keys first
-        for key in _six.viewkeys(metrics):
+        for key in six.viewkeys(metrics):
             _utils.validate_flat_key(key)
 
         # build KeyValues
         metric_keyvals = []
-        for key, value in _six.viewitems(metrics):
+        for key, value in six.viewitems(metrics):
             metric_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
 
         msg = _ExperimentRunService.LogMetrics(id=self.id, metrics=metric_keyvals)
@@ -2331,7 +2331,7 @@ class ExperimentRun(_ModelDBEntity):
         try:
             return metrics[key]
         except KeyError:
-            _six.raise_from(KeyError("no metric found with key {}".format(key)), None)
+            six.raise_from(KeyError("no metric found with key {}".format(key)), None)
 
     def get_metrics(self):
         """
@@ -2392,12 +2392,12 @@ class ExperimentRun(_ModelDBEntity):
 
         """
         # validate all keys first
-        for key in _six.viewkeys(hyperparams):
+        for key in six.viewkeys(hyperparams):
             _utils.validate_flat_key(key)
 
         # build KeyValues
         hyperparameter_keyvals = []
-        for key, value in _six.viewitems(hyperparams):
+        for key, value in six.viewitems(hyperparams):
             hyperparameter_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
 
         msg = _ExperimentRunService.LogHyperparameters(id=self.id, hyperparameters=hyperparameter_keyvals)
@@ -2442,7 +2442,7 @@ class ExperimentRun(_ModelDBEntity):
         try:
             return hyperparameters[key]
         except KeyError:
-            _six.raise_from(KeyError("no hyperparameter found with key {}".format(key)), None)
+            six.raise_from(KeyError("no hyperparameter found with key {}".format(key)), None)
 
     def get_hyperparameters(self):
         """
@@ -2602,7 +2602,7 @@ class ExperimentRun(_ModelDBEntity):
             try:
                 return pickle.loads(dataset)
             except pickle.UnpicklingError:
-                return _six.BytesIO(dataset)
+                return six.BytesIO(dataset)
 
     def get_dataset_version(self, key):
         """
@@ -2666,11 +2666,11 @@ class ExperimentRun(_ModelDBEntity):
             raise ValueError("`train_features` and `train_targets` must be provided together")
 
         # open files
-        if isinstance(model, _six.string_types):
+        if isinstance(model, six.string_types):
             model = open(model, 'rb')
-        if isinstance(model_api, _six.string_types):
+        if isinstance(model_api, six.string_types):
             model_api = open(model_api, 'rb')
-        if isinstance(requirements, _six.string_types):
+        if isinstance(requirements, six.string_types):
             requirements = open(requirements, 'rb')
 
         # prehandle model
@@ -2711,7 +2711,7 @@ class ExperimentRun(_ModelDBEntity):
 
         # handle requirements
         _artifact_utils.reset_stream(requirements)  # reset cursor to beginning in case user forgot
-        req_deps = _six.ensure_str(requirements.read()).splitlines()  # get list repr of reqs
+        req_deps = six.ensure_str(requirements.read()).splitlines()  # get list repr of reqs
         _artifact_utils.reset_stream(requirements)  # reset cursor to beginning as a courtesy
         try:
             self.log_requirements(req_deps)
@@ -2719,11 +2719,11 @@ class ExperimentRun(_ModelDBEntity):
             if "artifact with key requirements.txt already exists" in e.args[0]:
                 print("requirements.txt already logged; skipping")
             else:
-                _six.raise_from(e, None)
+                six.raise_from(e, None)
 
         # prehandle train_features and train_targets
         if train_features is not None and train_targets is not None:
-            stringstream = _six.StringIO()
+            stringstream = six.StringIO()
             train_df = train_features.join(train_targets)
             train_df.to_csv(stringstream, index=False)  # write as CSV
             stringstream.seek(0)
@@ -2774,7 +2774,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         if (artifacts is not None
                 and not (isinstance(artifacts, list)
-                         and all(isinstance(artifact_key, _six.string_types) for artifact_key in artifacts))):
+                         and all(isinstance(artifact_key, six.string_types) for artifact_key in artifacts))):
             raise TypeError("`artifacts` must be list of str, not {}".format(type(artifacts)))
 
         # validate that `artifacts` are actually logged
@@ -2869,7 +2869,7 @@ class ExperimentRun(_ModelDBEntity):
         _utils.validate_flat_key(key)
 
         # convert pyplot, Figure or Image to bytestream
-        bytestream, extension = _six.BytesIO(), 'png'
+        bytestream, extension = six.BytesIO(), 'png'
         try:  # handle matplotlib
             image.savefig(bytestream, format=extension)
         except AttributeError:
@@ -2935,11 +2935,11 @@ class ExperimentRun(_ModelDBEntity):
             return image
         else:
             if PIL is None:  # Pillow not installed
-                return _six.BytesIO(image)
+                return six.BytesIO(image)
             try:
-                return PIL.Image.open(_six.BytesIO(image))
+                return PIL.Image.open(six.BytesIO(image))
             except IOError:  # can't be handled by Pillow
-                return _six.BytesIO(image)
+                return six.BytesIO(image)
 
     def log_artifact(self, key, artifact, overwrite=False):
         """
@@ -2967,7 +2967,7 @@ class ExperimentRun(_ModelDBEntity):
             extension = None
 
         # zip if `artifact` is directory path
-        if isinstance(artifact, _six.string_types) and os.path.isdir(artifact):
+        if isinstance(artifact, six.string_types) and os.path.isdir(artifact):
             tempf = tempfile.TemporaryFile()
 
             with zipfile.ZipFile(tempf, 'w') as zipf:
@@ -3028,7 +3028,7 @@ class ExperimentRun(_ModelDBEntity):
             try:
                 return pickle.loads(artifact)
             except:
-                return _six.BytesIO(artifact)
+                return six.BytesIO(artifact)
 
     def log_observation(self, key, value, timestamp=None):
         """
@@ -3164,7 +3164,7 @@ class ExperimentRun(_ModelDBEntity):
             scikit-learn==0.21.3
 
         """
-        if isinstance(requirements, _six.string_types):
+        if isinstance(requirements, six.string_types):
             with open(requirements, 'r') as f:
                 requirements = f.readlines()
 
@@ -3173,7 +3173,7 @@ class ExperimentRun(_ModelDBEntity):
             requirements = [req for req in requirements if not req.startswith('#')]  # comment line
             requirements = [req for req in requirements if req]  # empty line
         elif (isinstance(requirements, list)
-              and all(isinstance(req, _six.string_types) for req in requirements)):
+              and all(isinstance(req, six.string_types) for req in requirements)):
             requirements = copy.copy(requirements)
 
             # replace importable module names with PyPI package names in case of user error
@@ -3188,7 +3188,7 @@ class ExperimentRun(_ModelDBEntity):
             print("[DEBUG] requirements are:")
             print(requirements)
 
-        requirements = _six.BytesIO(_six.ensure_binary('\n'.join(requirements)))  # as file-like
+        requirements = six.BytesIO(six.ensure_binary('\n'.join(requirements)))  # as file-like
         self._log_artifact("requirements.txt", requirements, _CommonService.ArtifactTypeEnum.BLOB, 'txt', overwrite=overwrite)
 
     def log_modules(self, paths, search_path=None):
@@ -3220,7 +3220,7 @@ class ExperimentRun(_ModelDBEntity):
         self._log_modules(paths)
 
     def _log_modules(self, paths=None, overwrite=False):
-        if isinstance(paths, _six.string_types):
+        if isinstance(paths, six.string_types):
             paths = [paths]
         if paths is not None:
             paths = list(map(os.path.abspath, paths))
@@ -3281,7 +3281,7 @@ class ExperimentRun(_ModelDBEntity):
         depl_sys_paths = list(map(lambda path: os.path.relpath(path, common_dir), local_sys_paths))
         depl_sys_paths = list(map(lambda path: os.path.join(_CUSTOM_MODULES_DIR, path), depl_sys_paths))
 
-        bytestream = _six.BytesIO()
+        bytestream = six.BytesIO()
         with zipfile.ZipFile(bytestream, 'w') as zipf:
             for filepath in local_filepaths:
                 zipf.write(filepath, os.path.relpath(filepath, common_dir))
@@ -3290,7 +3290,7 @@ class ExperimentRun(_ModelDBEntity):
             working_dir = os.path.join(_CUSTOM_MODULES_DIR, os.path.relpath(curr_dir, common_dir))
             zipf.writestr(
                 "_verta_config.py",
-                _six.ensure_binary('\n'.join([
+                six.ensure_binary('\n'.join([
                     "import os, sys",
                     "",
                     "",
@@ -3344,15 +3344,15 @@ class ExperimentRun(_ModelDBEntity):
             reason = e.args[0]
             line_no = e.args[1][1]
             line = script.splitlines()[line_no-1]
-            _six.raise_from(SyntaxError("{} in provided script on line {}:\n{}"
+            six.raise_from(SyntaxError("{} in provided script on line {}:\n{}"
                                        .format(reason, line_no, line)),
                            e)
 
         # convert into bytes for upload
-        script = _six.ensure_binary(script)
+        script = six.ensure_binary(script)
 
         # convert to file-like for `_log_artifact()`
-        script = _six.BytesIO(script)
+        script = six.BytesIO(script)
 
         self._log_artifact("setup_script", script, _CommonService.ArtifactTypeEnum.BLOB, 'py', overwrite=overwrite)
 
@@ -3426,7 +3426,7 @@ class ExperimentRun(_ModelDBEntity):
 
         """
         if not (isinstance(keys, list)
-                and all(isinstance(key, _six.string_types) for key in keys)):
+                and all(isinstance(key, six.string_types) for key in keys)):
             raise TypeError("`keys` must be list of str, not {}".format(type(keys)))
 
         # validate that `keys` are actually logged
@@ -3561,7 +3561,7 @@ class ExperimentRun(_ModelDBEntity):
             # TODO: recommend user call log_model() / log_requirements()
             error_text = e.response.text.strip()
             if error_text.startswith("missing artifact"):
-                _six.raise_from(RuntimeError("unable to deploy due to {}".format(error_text)), None)
+                six.raise_from(RuntimeError("unable to deploy due to {}".format(error_text)), None)
             else:
                 raise e
 

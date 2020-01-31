@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ... import _six
+from ...external import six
 
 # TODO: use `keras` module imported in calling scope
 try:
@@ -40,7 +40,7 @@ class VertaCallback(keras.callbacks.Callback):
 
     def set_params(self, params):
         if isinstance(params, dict):
-            for key, val in _six.viewitems(params):
+            for key, val in six.viewitems(params):
                 try:
                     self.run.log_hyperparameter(key, val)
                 except:
@@ -53,7 +53,7 @@ class VertaCallback(keras.callbacks.Callback):
             pass  # don't halt execution
 
         try:
-            if isinstance(model.loss, _six.string_types):
+            if isinstance(model.loss, six.string_types):
                 self.run.log_hyperparameter("loss", model.loss)
             elif isinstance(model.loss, keras.losses.Loss):
                 self.run.log_hyperparameter("loss", model.loss.__class__.__name__)
@@ -85,7 +85,7 @@ class VertaCallback(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         if isinstance(logs, dict):
-            for key, val in _six.viewitems(logs):
+            for key, val in six.viewitems(logs):
                 try:
                     self.run.log_observation(key, val)
                 except:

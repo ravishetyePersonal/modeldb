@@ -18,8 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# pylint: disable-all
-
 """Utilities for writing code that runs on Python 2 and 3"""
 
 from __future__ import absolute_import
@@ -167,6 +165,7 @@ class _SixMetaPathImporter(object):
 
     """
     A meta path importer to import six.moves and its submodules.
+
     This class implements a PEP302 finder and loader. It should be compatible
     with Python 2.5 and all existing versions of Python3
     """
@@ -210,6 +209,7 @@ class _SixMetaPathImporter(object):
     def is_package(self, fullname):
         """
         Return true, if the named module is a package.
+
         We need this method to get correct spec objects with
         Python 3.4 (see PEP451)
         """
@@ -217,6 +217,7 @@ class _SixMetaPathImporter(object):
 
     def get_code(self, fullname):
         """Return None
+
         Required, if is_package is implemented"""
         self.__get_module(fullname)  # eventually raises ImportError
         return None
@@ -851,9 +852,11 @@ def add_metaclass(metaclass):
 
 def ensure_binary(s, encoding='utf-8', errors='strict'):
     """Coerce **s** to six.binary_type.
+
     For Python 2:
       - `unicode` -> encoded to `str`
       - `str` -> `str`
+
     For Python 3:
       - `str` -> encoded to `bytes`
       - `bytes` -> `bytes`
@@ -868,9 +871,11 @@ def ensure_binary(s, encoding='utf-8', errors='strict'):
 
 def ensure_str(s, encoding='utf-8', errors='strict'):
     """Coerce *s* to `str`.
+
     For Python 2:
       - `unicode` -> encoded to `str`
       - `str` -> `str`
+
     For Python 3:
       - `str` -> `str`
       - `bytes` -> decoded to `str`
@@ -886,9 +891,11 @@ def ensure_str(s, encoding='utf-8', errors='strict'):
 
 def ensure_text(s, encoding='utf-8', errors='strict'):
     """Coerce *s* to six.text_type.
+
     For Python 2:
       - `unicode` -> `unicode`
       - `str` -> `unicode`
+
     For Python 3:
       - `str` -> `str`
       - `bytes` -> decoded to `str`
@@ -906,6 +913,7 @@ def python_2_unicode_compatible(klass):
     """
     A decorator that defines __unicode__ and __str__ methods under Python 2.
     Under Python 3 it does nothing.
+
     To support Python 2 and 3 with a single code base, define a __str__ method
     returning text and apply this decorator to the class.
     """

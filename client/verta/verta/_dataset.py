@@ -1,4 +1,4 @@
-from . import _six
+from .external import six
 
 import hashlib
 import os
@@ -55,7 +55,7 @@ class Dataset(object):
                     if dataset is not None:
                         print("set existing Dataset: {} from {}".format(dataset.name, WORKSPACE_PRINT_MSG))
                     else:  # no accessible dataset in other workspace
-                        _six.raise_from(e, None)
+                        six.raise_from(e, None)
                 elif e.response.status_code == 409:  # already exists
                     if any(param is not None for param in (desc, tags, attrs)):
                         warnings.warn("Dataset with name {} already exists;"
@@ -133,7 +133,7 @@ class Dataset(object):
     def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
-                     for key, value in _six.viewitems(attrs)]
+                     for key, value in six.viewitems(attrs)]
 
         Message = _DatasetService.CreateDataset
         msg = Message(name=dataset_name, dataset_type=dataset_type,
@@ -544,7 +544,7 @@ class DatasetVersion(object):
                 version=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
-                     for key, value in _six.viewitems(attrs)]
+                     for key, value in six.viewitems(attrs)]
 
         if dataset_type == _DatasetService.DatasetTypeEnum.PATH:
             msg = PathDatasetVersion.make_create_message(
@@ -745,7 +745,7 @@ class S3DatasetVersionInfo(PathDatasetVersionInfo):
 
     def get_dataset_part_infos(self):
         if boto3 is None:  # Boto 3 not installed
-            _six.raise_from(ImportError("Boto 3 is not installed; try `pip install boto3`"), None)
+            six.raise_from(ImportError("Boto 3 is not installed; try `pip install boto3`"), None)
 
         conn = boto3.client('s3')
         dataset_part_infos = []
@@ -850,7 +850,7 @@ class AtlasHiveDatasetVersionInfo(QueryDatasetVersionInfo):
         attributes['created_time'] = table_obj['createTime']
         attributes['update_time'] = table_obj['updateTime']
         attributes['load_queries'] = AtlasHiveDatasetVersionInfo.get_inbound_queries(table_obj)
-        # for key, value in _six.viewitems(attributes):
+        # for key, value in six.viewitems(attributes):
             # attribute_keyvals.append(_CommonService.KeyValue(key=key,
             #                                                  value=_utils.python_to_val_proto(value, allow_collection=True)))
         # return attribute_keyvals
@@ -893,7 +893,7 @@ class BigQueryDatasetVersionInfo(QueryDatasetVersionInfo):
     @staticmethod
     def get_bq_job(job_id, location):
         if bigquery is None:  # BigQuery not installed
-            _six.raise_from(ImportError("BigQuery is not installed;"
+            six.raise_from(ImportError("BigQuery is not installed;"
                                        " try `pip install google-cloud-bigquery`"),
                            None)
 

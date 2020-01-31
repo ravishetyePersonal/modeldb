@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from . import _six
-from ._six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
+from .external import six
+from .external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
 
 import csv
 import importlib
@@ -64,7 +64,7 @@ def get_file_ext(file):
         If the filepath lacks an extension.
 
     """
-    if isinstance(file, _six.string_types):
+    if isinstance(file, six.string_types):
         filepath = file
     elif hasattr(file, 'read') and hasattr(file, 'name'):  # `open()` object
         filepath = file.name
@@ -75,7 +75,7 @@ def get_file_ext(file):
     try:
         _, extension = filename.split(os.extsep, 1)
     except ValueError:
-        _six.raise_from(ValueError("no extension found in \"{}\"".format(filepath)),
+        six.raise_from(ValueError("no extension found in \"{}\"".format(filepath)),
                        None)
     else:
         return extension
@@ -161,12 +161,12 @@ def ensure_bytestream(obj):
         reset_stream(obj)  # reset cursor to beginning as a courtesy
         if not len(contents):
             raise ValueError("object contains no data")
-        bytestring = _six.ensure_binary(contents)
-        bytestream = _six.BytesIO(bytestring)
+        bytestring = six.ensure_binary(contents)
+        bytestream = six.BytesIO(bytestring)
         bytestream.seek(0)
         return bytestream, None
     else:  # `obj` is not file-like
-        bytestream = _six.BytesIO()
+        bytestream = six.BytesIO()
 
         try:
             cloudpickle.dump(obj, bytestream)
@@ -188,7 +188,7 @@ def ensure_bytestream(obj):
         try:
             pickle.dump(obj, bytestream)
         except pickle.PicklingError:  # can't be handled by pickle
-            _six.raise_from(pickle.PicklingError("unable to serialize artifact"), None)
+            six.raise_from(pickle.PicklingError("unable to serialize artifact"), None)
         else:
             bytestream.seek(0)
             return bytestream, "pickle"
@@ -225,7 +225,7 @@ def serialize_model(model):
             reset_stream(model)  # reset cursor to beginning as a courtesy
 
     # `model` is a class
-    if isinstance(model, _six.class_types):
+    if isinstance(model, six.class_types):
         model_type = "class"
         bytestream, method = ensure_bytestream(model)
         return bytestream, method, model_type
@@ -295,7 +295,7 @@ def deserialize_model(bytestring):
             pass
 
     # try deserializing with cloudpickle
-    bytestream = _six.BytesIO(bytestring)
+    bytestream = six.BytesIO(bytestring)
     try:
         return cloudpickle.load(bytestream)
     except:  # not a pickled object
@@ -352,11 +352,11 @@ def process_requirements(requirements):
             try:
                 mod = importlib.import_module(mod_name)
             except ImportError:
-                _six.raise_from(error, None)
+                six.raise_from(error, None)
             try:
                 ver = mod.__version__
             except AttributeError:
-                _six.raise_from(error, None)
+                six.raise_from(error, None)
 
             requirements[i] = req + "==" + ver
 
