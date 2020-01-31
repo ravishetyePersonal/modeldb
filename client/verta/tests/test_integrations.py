@@ -126,6 +126,52 @@ class TestKeras:
         assert 'loss' in logged_observations
 
 
+class TestScikitLearn:
+    def test_patch_overwrite(self, experiment_run):
+        """Patches add `run` parameter."""
+        verta_integrations_sklearn = pytest.importorskip("verta.integrations.sklearn")
+
+        np = pytest.importorskip("numpy")
+
+        for cls in verta_integrations_sklearn.classes:
+            with pytest.raises(TypeError) as excinfo:
+                cls().fit(run=experiment_run)
+            assert str(excinfo.value).strip() != "fit() got an unexpected keyword argument 'run'"
+
+    def test_patch_log(self, client):
+        """Patches log things."""
+        client.set_project()
+        client.set_experiment()
+
+        verta_integrations_sklearn = pytest.importorskip("verta.integrations.sklearn")
+
+        linear_model = pytest.importorskip("sklearn.linear_model")
+        tree = pytest.importorskip("sklearn.tree")
+        svm = pytest.importorskip("sklearn.svm")
+        ensemble = pytest.importorskip("sklearn.ensemble")
+        neural_network = pytest.importorskip("sklearn.neural_network")
+        np = pytest.importorskip("numpy")
+
+        samples = 5
+        num_features = 3
+        num_classes = 10
+        X = np.random.randint(0, 17, size=(samples, num_features))
+        y = np.random.randint(0, num_classes, size=(samples,))
+
+        models = [
+            linear_model.Ridge(),
+            tree.DecisionTreeClassifier(),
+            svm.SVC(),
+            ensemble.GradientBoostingClassifier(),
+            neural_network.MLPClassifier(),
+        ]
+        for model in models:
+            run = client.set_experiment_run()
+            model.fit(X, y, run=run)
+
+            assert run.get_hyperparameters()
+
+
 class TestTensorFlow:
     def test_estimator_hook(self, experiment_run):
         verta_integrations_tensorflow = pytest.importorskip("verta.integrations.tensorflow")

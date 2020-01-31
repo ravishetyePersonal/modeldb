@@ -4,6 +4,9 @@ Integrations
 .. automodule:: verta.integrations.keras
     :members:
 
+*module* ``verta.integrations.sklearn``
+    .. automodule:: verta.integrations.sklearn
+
 .. automodule:: verta.integrations.tensorflow
     :members:
 
