@@ -10,7 +10,7 @@ import CompareClickAction from 'components/CompareEntities/CompareClickAction/Co
 import ComparedEntitesManager from 'components/CompareEntities/ComparedEntitesManager/ComparedEntitesManager';
 import Attributes from 'components/ModelRecordProps/Attributes/Attributes/Attributes';
 import DatasetEntityTagsManager from 'components/TagsManager/DatasetEntityTagsManager/DatasetEntityTagsManager';
-import { defaultQuickFilters, IFilterData } from 'core/shared/models/Filters';
+import { defaultQuickFilters, IFilterData } from 'core/features/filter/Model';
 import { IPagination } from 'core/shared/models/Pagination';
 import { getFormattedDateTime } from 'core/shared/utils/formatters/dateTime';
 import { formatBytes } from 'core/shared/utils/mapperConverters/DataSizeConverted';
@@ -36,7 +36,10 @@ import {
   selectDatasetVersions,
   selectDatasetVersionsPagination,
 } from 'store/datasetVersions';
-import { IFilterContext, selectCurrentContextFilters } from 'store/filter';
+import {
+  IFilterContext,
+  selectCurrentContextFilters,
+} from 'core/features/filter';
 import { IApplicationState } from 'store/store';
 
 import DatasetDetailsLayout from '../shared/DatasetDetailsLayout/DatasetDetailsLayout';

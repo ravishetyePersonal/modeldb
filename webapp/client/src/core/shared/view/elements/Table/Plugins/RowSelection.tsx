@@ -1,9 +1,5 @@
-import { Plugin, Getter, Getters, Action } from '@devexpress/dx-react-core';
-import { bind } from 'decko';
-import * as R from 'ramda';
+import { Plugin, Getter } from '@devexpress/dx-react-core';
 import * as React from 'react';
-
-import { ISorting } from 'core/shared/models/Sorting';
 
 interface ILocalProps {
   getHeaderRow: (row: any, ref: any) => any;

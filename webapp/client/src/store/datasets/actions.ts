@@ -1,17 +1,17 @@
 import { History } from 'history';
 import { action } from 'typesafe-actions';
 
+import { selectCurrentContextFilters } from 'core/features/filter';
+import { IFilterData } from 'core/features/filter/Model';
 import { AppError } from 'core/shared/models/Error';
-import { IFilterData } from 'core/shared/models/Filters';
 import normalizeError from 'core/shared/utils/normalizeError';
-import * as ActionHelpers from 'core/shared/utils/redux/actions';
 import * as Dataset from 'models/Dataset';
 import { IWorkspace } from 'models/Workspace';
 import routes from 'routes';
-import { selectCurrentContextFilters } from 'store/filter';
 import { handleDeleteEntities } from 'store/shared/deletion';
 import { ActionResult } from 'store/store';
 import { selectCurrentWorkspaceNameOrDefault } from 'store/workspaces';
+import { makeThunkApiRequest } from 'utils/redux/actions';
 
 import { selectDatasetsPagination } from './selectors';
 import {
@@ -41,7 +41,7 @@ import {
   resetDatasetsForDeletingActionType,
 } from './types';
 
-export const createDataset = ActionHelpers.makeThunkApiRequest(
+export const createDataset = makeThunkApiRequest(
   '@@datasets/CREATE_DATASET_REQUEST',
   '@@datasets/CREATE_DATASET_SUCCESS',
   '@@datasets/CREATE_DATASET_FAILURE',

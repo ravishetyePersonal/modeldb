@@ -1,18 +1,18 @@
 import axios from 'axios';
 
 import {
+  makeFilterConverter,
+  IServerFiltersInRequest,
+} from 'core/features/filter/service/serverModel/Filters/converters';
+import {
   IFilterData,
   PropertyType,
   IIdFilterData,
   IExperimentNameFilterData,
-} from 'core/shared/models/Filters';
+} from 'core/features/filter/Model';
 import { IPagination } from 'core/shared/models/Pagination';
 import { ISorting } from 'core/shared/models/Sorting';
-import {
-  makeAddFiltersToRequest,
-  makeFilterConverter,
-  IServerFiltersInRequest,
-} from 'services/serverModel/Filters/converters';
+import { makeAddFiltersToRequestWithDefaultFilters } from 'features/filter/service/serverModel/Filter/converters';
 import { addPaginationToRequest } from 'services/serverModel/Pagination/converters';
 import { IServerPaginationInRequest } from 'services/serverModel/Pagination/Pagination';
 import { getServerSorting } from 'services/serverModel/Sorting/Sorting';
@@ -20,7 +20,7 @@ import { getServerSorting } from 'services/serverModel/Sorting/Sorting';
 import {
   ServerFilterValueType,
   getServerFilterOperator,
-} from '../../serverModel/Filters/Filters';
+} from 'core/features/filter/service/serverModel/Filters/Filters';
 
 export type IGetExperimentRunsRequest = {
   project_id: string;
@@ -90,7 +90,7 @@ const addServerFilters = (
     },
   });
 
-  return makeAddFiltersToRequest([
+  return makeAddFiltersToRequestWithDefaultFilters([
     idFilterConverter,
     experimentNameFilterConverter,
   ])(filters)(request);

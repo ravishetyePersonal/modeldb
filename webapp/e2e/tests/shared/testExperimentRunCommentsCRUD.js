@@ -36,7 +36,7 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
     this.retries(testSuitRetry);
     const mockExperimentRun = { name: 'experiment-run-with-comments' };
     const mockComments = [
-      { message: 'message-1', author: config.user.username },
+      { message: 'message-1' },
     ];
 
     let driver;
@@ -61,13 +61,10 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
       return driver.findElements(By.css('[data-test=comment]')).then(elems => {
         return Promise.all(
           elems.map(async elem => {
-            const author = await elem
-              .findElement(By.css('[data-test=comment-author]'))
-              .then(e => e.getText());
             const message = await elem
               .findElement(By.css('[data-test=comment-message]'))
               .then(e => e.getText());
-            return { author, message, elem };
+            return { message, elem };
           })
         );
       });
@@ -77,7 +74,6 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
         .then(displayedCommentInfo =>
           displayedCommentInfo.find(
             displayedCommentInfo =>
-              displayedCommentInfo.author === commentInfo.author &&
               displayedCommentInfo.message === commentInfo.message
           )
         )
@@ -127,15 +123,14 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
       );
 
       const displayedCommentsInfo = await getDispayedCommentsInfo(driver);
-      mockComments.forEach(({ message, author }) => {
+      mockComments.forEach(({ message }) => {
         const found = displayedCommentsInfo.find(
           displayedCommentInfo =>
-            displayedCommentInfo.message === message &&
-            displayedCommentInfo.author === author
+            displayedCommentInfo.message === message
         );
         assert.exists(
           found,
-          `should display comment with message = "${message}" and author = "${author}"`
+          `should display comment with message = "${message}"`
         );
       });
     });
@@ -145,7 +140,6 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
 
       const newComment = {
         message: 'new comment',
-        author: config.user.username,
       };
 
       await openExperimentRunCommentsAndWaitLoading(driver);
@@ -167,16 +161,13 @@ const testExperimentRunCommentsCRUD = ({ navigateToPage }) => {
       );
 
       const createdNewComment = displayedCommentsInfo.find(
-        ({ message, author }) =>
-          message === newComment.message && author === newComment.author
+        ({ message }) =>
+          message === newComment.message
       );
       await driver.sleep(1000);
       assert.isTrue(
-        createdNewComment.message === newComment.message &&
-          createdNewComment.author === newComment.author,
-        `should add the new comment with message = ${
-          newComment.message
-        } and author = ${newComment.author}`
+        createdNewComment.message === newComment.message,
+        `should add the new comment with message = ${newComment.message}`
       );
     });
 

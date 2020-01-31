@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import ComparedEntitesManager from 'components/CompareEntities/ComparedEntitesManager/ComparedEntitesManager';
+import { ExperimentRunsTableConfig } from 'core/features/experimentRunsTableConfig';
 import Fai from 'core/shared/view/elements/Fai/Fai';
 import { Icon } from 'core/shared/view/elements/Icon/Icon';
 import ShareLink from 'core/shared/view/elements/ShareLink/ShareLink';
@@ -12,7 +13,6 @@ import { ComparedEntityIds } from 'store/compareEntities';
 import { resetExperimentRunsSettings } from 'store/experimentRuns';
 
 import styles from './DashboardActions.module.css';
-import DashboardConfig from './DashboardConfig/DashboardConfig';
 
 interface ILocalProps {
   projectId: string;
@@ -77,8 +77,8 @@ class DashboardActions extends React.PureComponent<AllProps> {
               <ShareLink link={window.location.href} buttonType="fai" />
             </div>
           </div>
-          <div className={styles.dashboard_config_wrapper}>
-            <DashboardConfig />
+          <div className={styles.experiment_runs_table_config_wrapper}>
+            <ExperimentRunsTableConfig />
           </div>
         </div>
       </div>

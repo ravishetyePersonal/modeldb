@@ -1,7 +1,6 @@
 const { By, until } = require('selenium-webdriver');
 const { assert } = require('chai');
 
-const login = require('../../helpers/pageObjects/login');
 const getConfig = require('../../getConfig');
 const getDriver = require('../../helpers/getDriver');
 const testEntityDescriptionUpdating = require('../shared/testEntityDescriptionUpdating');
@@ -20,7 +19,6 @@ const navigateToExperimentRunPage = async (
   driver,
   { projectId, experimentRunId }
 ) => {
-  await login(driver);
   await driver.get(
     routes.projectsRoutes.makeExperimentRunRoute({
       projectId,

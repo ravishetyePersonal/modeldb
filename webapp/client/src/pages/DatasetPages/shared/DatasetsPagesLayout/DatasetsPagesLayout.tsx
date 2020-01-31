@@ -5,15 +5,16 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Dataset } from 'models/Dataset';
 import { IDatasetVersion } from 'models/DatasetVersion';
-import BreadcrumbsBuilder from 'core/shared/view/pages/Layout/Breadcrumbs/BreadcrumbsBuilder';
 import routes, { GetRouteParams } from 'routes';
 import { selectDatasets } from 'store/datasets';
 import { selectDatasetVersions } from 'store/datasetVersions';
 import { IApplicationState } from 'store/store';
 
-import AuthorizedLayout, {
+import {
+  AuthorizedLayout,
   IAuthorizedLayoutLocalProps,
-} from 'pages/shared/AuthorizedLayout/AuthorizedLayout';
+  BreadcrumbsBuilder,
+} from 'pages/shared/AuthorizedLayout';
 
 type ILocalProps = IAuthorizedLayoutLocalProps;
 

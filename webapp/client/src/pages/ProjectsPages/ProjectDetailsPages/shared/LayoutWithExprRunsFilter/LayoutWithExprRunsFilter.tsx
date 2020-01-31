@@ -2,16 +2,19 @@ import React from 'react';
 import { Omit, connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { defaultQuickFilters } from 'core/shared/models/Filters';
+import { IFilterContext } from 'core/features/filter';
+import { defaultQuickFilters } from 'features/filter/Model';
 import routes, { GetRouteParams } from 'routes';
 import {
   loadExperimentRuns,
   resetPagination,
   getExperimentRunsOptions,
+  lazyLoadChartData,
+  selectSequentialChartData,
 } from 'store/experimentRuns';
-import { IFilterContext } from 'store/filter';
-import { IConnectedReduxProps } from 'store/store';
+import { IConnectedReduxProps, IApplicationState } from 'store/store';
 
+import ModelRecord from 'models/ModelRecord';
 import ProjectsPagesLayout from '../../../shared/ProjectsPagesLayout/ProjectsPagesLayout';
 import makeExprRunsFilterContextName from '../makeExprRunsFilterContextName';
 import ProjectPageTabs, {
@@ -20,6 +23,10 @@ import ProjectPageTabs, {
 
 import styles from './LayoutWithExprRunsFilter.module.css';
 
+interface IPropsFromState {
+  sequentialChartData: ModelRecord[] | null;
+}
+
 interface ILocalProps {
   children: Exclude<React.ReactNode, null | undefined>;
   tabsSetting?: Omit<IProjectPageTabsLocalProps, 'projectId'>;
@@ -27,6 +34,7 @@ interface ILocalProps {
 
 type IUrlProps = GetRouteParams<typeof routes.experimentRuns>;
 type AllProps = RouteComponentProps<IUrlProps> &
+  IPropsFromState &
   ILocalProps &
   IConnectedReduxProps;
 
@@ -48,6 +56,9 @@ class ProjectDetailsPage extends React.Component<AllProps, ILocalState> {
       quickFilters: [defaultQuickFilters.name, defaultQuickFilters.tag],
       name: makeExprRunsFilterContextName(projectId),
       onApplyFilters: (filters, dispatch) => {
+        const isChartsPage = Boolean(
+          routes.charts.getMatch(window.location.pathname)
+        );
         if (
           Boolean(routes.experimentRuns.getMatch(window.location.pathname)) &&
           this.state.isNeedResetPagination
@@ -55,7 +66,17 @@ class ProjectDetailsPage extends React.Component<AllProps, ILocalState> {
           dispatch(resetPagination(projectId));
         }
 
-        dispatch(loadExperimentRuns(projectId, filters));
+        if (isChartsPage) {
+          if (this.props.sequentialChartData) {
+            if (this.props.sequentialChartData.length === 0) {
+              dispatch(lazyLoadChartData(projectId, filters));
+            }
+          } else {
+            dispatch(lazyLoadChartData(projectId, filters));
+          }
+        } else {
+          dispatch(loadExperimentRuns(projectId, filters));
+        }
 
         if (!this.state.isNeedResetPagination) {
           this.setState({ isNeedResetPagination: true });
@@ -86,4 +107,8 @@ class ProjectDetailsPage extends React.Component<AllProps, ILocalState> {
   }
 }
 
-export default withRouter(connect()(ProjectDetailsPage));
+const mapStateToProps = (state: IApplicationState): IPropsFromState => ({
+  sequentialChartData: selectSequentialChartData(state),
+});
+
+export default withRouter(connect(mapStateToProps)(ProjectDetailsPage));

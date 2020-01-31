@@ -14,8 +14,10 @@ import InlineCommunicationError from 'core/shared/view/elements/Errors/InlineCom
 import InlineErrorView from 'core/shared/view/elements/Errors/InlineErrorView/InlineErrorView';
 import { PageCard, PageHeader } from 'core/shared/view/elements/PageComponents';
 import { IProjectCreationSettings } from 'models/Project';
-import AuthorizedLayout from 'pages/shared/AuthorizedLayout/AuthorizedLayout';
-import BreadcrumbsBuilder from 'core/shared/view/pages/Layout/Breadcrumbs/BreadcrumbsBuilder';
+import {
+  AuthorizedLayout,
+  BreadcrumbsBuilder,
+} from 'pages/shared/AuthorizedLayout';
 import routes from 'routes';
 import {
   createProject,

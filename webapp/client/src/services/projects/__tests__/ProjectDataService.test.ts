@@ -2,14 +2,14 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
 import {
-  makeDefaultTagFilter,
-  makeDefaultStringFilter,
-} from 'core/shared/models/Filters';
-import { IPagination } from 'core/shared/models/Pagination';
-import {
   ServerFilterValueType,
   ServerFilterOperator,
-} from 'services/serverModel/Filters/Filters';
+} from 'core/features/filter/service/serverModel/Filters/Filters';
+import {
+  makeDefaultTagFilter,
+  makeDefaultStringFilter,
+} from 'core/features/filter/Model';
+import { IPagination } from 'core/shared/models/Pagination';
 import { userWorkspacesWithCurrentUser } from 'utils/tests/mocks/models/workspace';
 
 import ProjectDataService from '../ProjectDataService';

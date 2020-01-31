@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios';
-import { CommentsService } from './comments';
 import { DatasetsDataService } from './datasets';
 import { DatasetVersionsDataService } from './datasetVersions';
 import { DescActionDataService } from './descriptionActions';
@@ -39,10 +38,6 @@ export default class ServiceFactory {
 
   public static getExperimentRunsService() {
     return new ExperimentRunsDataService();
-  }
-
-  public static getCommentsService() {
-    return new CommentsService();
   }
 
   public static crudTagsService(): TagActionDataService {

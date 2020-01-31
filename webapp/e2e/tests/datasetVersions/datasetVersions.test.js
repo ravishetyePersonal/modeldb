@@ -2,7 +2,6 @@ const { By, until } = require('selenium-webdriver');
 const { assert } = require('chai');
 const faker = require('faker');
 
-const login = require('../../helpers/pageObjects/login');
 const getConfig = require('../../getConfig');
 const getDriver = require('../../helpers/getDriver');
 const entitiesTests = require('../shared/entitiesTests');
@@ -23,7 +22,6 @@ const defaultMock = {
 };
 
 const navigateToDatasetVersionsPage = async (driver, { datasetId }) => {
-  await login(driver);
   await driver.get(routes.datasetsRoutes.makeDatasetVersionsRoute({
     datasetId
   }));

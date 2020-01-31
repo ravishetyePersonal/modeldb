@@ -101,6 +101,7 @@ class Pages extends React.Component<AllProps> {
               route: routes.experimentRuns,
               Component: ProjectDetailsPage,
             },
+            { route: routes.charts, Component: ProjectDetailsPage },
             {
               route: routes.experiments,
               Component: ProjectDetailsPage,

@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { Dispatch, bindActionCreators } from 'redux';
 
 import { EntityWithDescription } from 'core/shared/models/Description';
-
 import DescriptionManager from 'core/shared/view/domain/BaseDescriptionManager/DescriptionManager';
+import { addOrEditDescription } from 'store/descriptionAction';
 
 interface ILocalProps {
   entityType: EntityWithDescription;
@@ -10,7 +12,18 @@ interface ILocalProps {
   description: string;
 }
 
-class ProjectEntityDescriptionManager extends React.Component<ILocalProps> {
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators(
+    {
+      addOrEditDescription,
+    },
+    dispatch
+  );
+};
+
+type AllProps = ILocalProps & ReturnType<typeof mapDispatchToProps>;
+
+class ProjectEntityDescriptionManager extends React.Component<AllProps> {
   public render() {
     return (
       <DescriptionManager
@@ -19,9 +32,13 @@ class ProjectEntityDescriptionManager extends React.Component<ILocalProps> {
         entityId={this.props.entityId}
         isLoadingAccess={false}
         isReadOnly={false}
+        onAddOrEditDescription={this.props.addOrEditDescription}
       />
     );
   }
 }
 
-export default ProjectEntityDescriptionManager;
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(ProjectEntityDescriptionManager);

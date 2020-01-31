@@ -1,9 +1,7 @@
-import { IFilterData } from 'core/shared/models/Filters';
+import { IServerFiltersInRequest } from 'core/features/filter/service/serverModel/Filters/converters';
+import { IFilterData } from 'core/features/filter/Model';
 import { IPagination } from 'core/shared/models/Pagination';
-import {
-  makeAddFiltersToRequest,
-  IServerFiltersInRequest,
-} from 'services/serverModel/Filters/converters';
+import { makeAddFiltersToRequestWithDefaultFilters } from 'features/filter/service/serverModel/Filter/converters';
 import { addPaginationToRequest } from 'services/serverModel/Pagination/converters';
 import { IServerPaginationInRequest } from 'services/serverModel/Pagination/Pagination';
 
@@ -31,7 +29,7 @@ const addPagination = (
 ): TransformGetExperimentRunsRequest => request =>
   Promise.resolve(addPaginationToRequest(pagination)(request));
 
-const addFilters = makeAddFiltersToRequest();
+const addFilters = makeAddFiltersToRequestWithDefaultFilters();
 
 const makeGetExperimentsRequest = (
   projectId: string,

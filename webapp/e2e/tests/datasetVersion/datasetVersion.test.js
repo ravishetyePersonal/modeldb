@@ -1,7 +1,6 @@
 const { By, until } = require('selenium-webdriver');
 const { assert } = require('chai');
 
-const login = require('../../helpers/pageObjects/login');
 const getDriver = require('../../helpers/getDriver');
 const testEntityDescriptionUpdating = require('../shared/testEntityDescriptionUpdating');
 const testEntityTagsCRUD = require('../shared/testEntityTagsCRUD');
@@ -16,7 +15,6 @@ const navigateToDatasetVersionPage = async (
   driver,
   { datasetId, datasetVersionId }
 ) => {
-  await login(driver);
   await driver.get(
     routes.datasetsRoutes.makeDatasetVersionRoute({
       datasetId,

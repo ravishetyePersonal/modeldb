@@ -2,7 +2,7 @@ import * as R from 'ramda';
 
 import { IArtifact } from 'core/shared/models/Artifact';
 import { EntityErrorType } from 'core/shared/models/Common';
-import { IFilterData } from 'core/shared/models/Filters';
+import { IFilterData } from 'core/features/filter/Model';
 import { DataWithPagination, IPagination } from 'core/shared/models/Pagination';
 import { Markdown } from 'core/shared/utils/types';
 import {

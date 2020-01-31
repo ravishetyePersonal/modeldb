@@ -29,7 +29,7 @@
 .dashboard_action_link {
 }
 
-.dashboard_config_wrapper {
+.experiment_runs_table_config_wrapper {
   display: flex;
   align-self: center;
   margin-right: 10px;

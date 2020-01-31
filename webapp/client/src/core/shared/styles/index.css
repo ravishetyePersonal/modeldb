@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
 @import './theme.css';
 @import './global-element-styles.css';
+@import './global-chart-styles.css';
 
 html {
   box-sizing: border-box;

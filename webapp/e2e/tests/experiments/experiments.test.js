@@ -1,6 +1,5 @@
 const { By, until } = require('selenium-webdriver');
 
-const login = require('../../helpers/pageObjects/login');
 const entitiesTests = require('../shared/entitiesTests');
 const testEntityDescriptionUpdating = require('../shared/testEntityDescriptionUpdating');
 const testEntityTagsCRUD = require('../shared/testEntityTagsCRUD');
@@ -14,7 +13,6 @@ const defaultMock = {
 };
 
 const navigateToProjectExperimentsPage = async (driver, projectId) => {
-  await login(driver);
   await driver.get(routes.projectsRoutes.makeExperimentsRoute({ projectId }));
 };
 

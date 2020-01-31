@@ -12,6 +12,18 @@ export const selectExperimentRuns = (state: IApplicationState) =>
 export const selectLoadingExperimentRuns = (state: IApplicationState) =>
   selectState(state).communications.loadingExperimentRuns;
 
+export const selectSequentialChartData = (state: IApplicationState) =>
+  selectState(state).data.sequentialChartData;
+
+export const selectLazyChartData = (state: IApplicationState) =>
+  selectState(state).data.lazyChartData;
+
+export const selectLoadingSequentialChartData = (state: IApplicationState) =>
+  selectState(state).communications.loadingSequentialChartData;
+
+export const selectLoadingLazyChartData = (state: IApplicationState) =>
+  selectState(state).communications.loadingLazyChartData;
+
 export const selectExperimentRunsPagination = (state: IApplicationState) =>
   selectState(state).data.pagination;
 

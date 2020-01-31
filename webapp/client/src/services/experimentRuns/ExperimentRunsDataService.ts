@@ -1,25 +1,32 @@
 import { JsonConvert } from 'json2typescript';
 import * as R from 'ramda';
 
+import { BaseDataService } from 'core/services/BaseDataService';
 import { IArtifact } from 'core/shared/models/Artifact';
 import {
   IFilterData,
   PropertyType,
   ComparisonType,
-} from 'core/shared/models/Filters';
+} from 'core/features/filter/Model';
 import { IPagination, DataWithPagination } from 'core/shared/models/Pagination';
 import { ISorting } from 'core/shared/models/Sorting';
-import { IComment } from 'models/Comments';
+import * as Comments from 'features/comments';
 import { ShortExperiment } from 'models/Experiment';
 import ModelRecord, { LoadExperimentRunErrorType } from 'models/ModelRecord';
 import { convertServerCodeVersion } from 'services/serverModel/CodeVersion/converters';
-import { convertServerComment } from 'services/serverModel/Comments/converters';
 import { convertServerEntityWithLoggedDates } from 'services/serverModel/Common/converters';
 
-import { BaseDataService } from 'core/services/BaseDataService';
-
 import makeLoadExperimentRunsRequest from './responseRequest/makeLoadExperimentRunsRequest';
-import { ILoadExperimentRunsResult, ILoadModelRecordResult } from './types';
+import {
+  ILoadExperimentRunsResult,
+  ILoadModelRecordResult,
+  ILazyLoadChartData,
+} from './types';
+
+export const chartsPageSettings = {
+  pageSize: 50,
+  datapointLimit: 500,
+};
 
 export default class ExperimentRunsDataService extends BaseDataService {
   constructor() {
@@ -68,6 +75,42 @@ export default class ExperimentRunsDataService extends BaseDataService {
     );
   }
 
+  public async lazyLoadChartData(
+    projectId: string,
+    filters: IFilterData[] = []
+  ): Promise<ILazyLoadChartData> {
+    const sorting = null;
+    const paginationInitialLoad: IPagination = {
+      currentPage: 0,
+      pageSize: chartsPageSettings.pageSize,
+      totalCount: 0,
+    };
+
+    return makeLoadExperimentRunsRequest(
+      projectId,
+      filters,
+      paginationInitialLoad,
+      sorting
+    ).then(request => {
+      let totalCount = 0;
+      return this.post({
+        url: '/v1/modeldb/hydratedData/findHydratedExperimentRuns',
+        data: request,
+      })
+        .then(serverResponse => {
+          totalCount = serverResponse.data.total_records;
+          return this.convertExperimentRuns(serverResponse.data);
+        })
+        .then(response => {
+          const res: ILazyLoadChartData = {
+            lazyChartData: response.map(({ experimentRun }) => experimentRun),
+            totalCount,
+          };
+          return res;
+        });
+    });
+  }
+
   public async loadModelRecord(
     modelId: string
   ): Promise<ILoadModelRecordResult> {
@@ -107,7 +150,7 @@ export default class ExperimentRunsDataService extends BaseDataService {
     const result: ILoadModelRecordResult = {
       experimentRun: modelRecord,
       comments: (hydrated_experiment_run.comments || []).map((comment: any) =>
-        convertServerComment(comment)
+        Comments.convertServerComment(comment)
       ),
     };
     return result;
@@ -198,7 +241,10 @@ export default class ExperimentRunsDataService extends BaseDataService {
 
   private convertExperimentRuns(
     data: any
-  ): Array<{ experimentRun: ModelRecord; comments: IComment[] }> {
+  ): Array<{
+    experimentRun: ModelRecord;
+    comments: Comments.Model.IComment[];
+  }> {
     if (!data.hydrated_experiment_runs) {
       return [];
     }
@@ -206,7 +252,7 @@ export default class ExperimentRunsDataService extends BaseDataService {
     const jsonConvert = new JsonConvert();
     const experimentRunsWithComments: Array<{
       experimentRun: ModelRecord;
-      comments: IComment[];
+      comments: Comments.Model.IComment[];
     }> = data.hydrated_experiment_runs.map((serverData: any) => {
       const experimentRun = jsonConvert.deserializeObject(
         serverData.experiment_run,
@@ -233,7 +279,7 @@ export default class ExperimentRunsDataService extends BaseDataService {
       return {
         experimentRun,
         comments: (serverData.comments || []).map((comment: any) =>
-          convertServerComment(comment)
+          Comments.convertServerComment(comment)
         ),
       };
     });

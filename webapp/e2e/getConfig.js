@@ -13,7 +13,7 @@ const getConfig = () => {
       developerKey: process.env.USER_DEVELOPER_KEY,
       password: process.env.USER_PASSWORD,
       username: process.env.USER_USERNAME,
-      workspace: process.env.USER_USERNAME,
+      workspace: 'personal',
     },
     anotherUser: {
       email: process.env.ANOTHER_USER_EMAIL,

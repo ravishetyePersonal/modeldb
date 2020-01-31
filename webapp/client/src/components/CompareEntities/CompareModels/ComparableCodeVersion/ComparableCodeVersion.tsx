@@ -225,19 +225,16 @@ class CompareCodeVersionsPopup extends React.PureComponent<{
     codeVersion2?: ICodeVersion
   ) {
     if (
-      !codeVersion1 ||
-      !codeVersion2 ||
-      codeVersion1.type !== codeVersion2.type
+      codeVersion1 &&
+      codeVersion2 &&
+      codeVersion1.type === 'git' &&
+      codeVersion2.type === 'git'
     ) {
-      return false;
-    }
-    if (codeVersion1.type === 'git' && codeVersion2.type === 'git') {
       return this.checkAvailableCompareGitCodeVersions(
         codeVersion1,
         codeVersion2
       );
     }
-    return true;
   }
 
   @bind
@@ -274,25 +271,16 @@ class CompareCodeVersionsPopup extends React.PureComponent<{
     const {
       comparedCodeVersions: { currentEntityInfo, otherEntityInfo },
     } = this.props;
-    if (currentEntityInfo.codeVersion && otherEntityInfo.codeVersion) {
-      if (
-        currentEntityInfo.codeVersion.type === 'git' &&
-        otherEntityInfo.codeVersion.type === 'git'
-      ) {
-        this.compareGitCodeVersions(
-          currentEntityInfo.codeVersion,
-          otherEntityInfo.codeVersion
-        );
-      } else if (
-        currentEntityInfo.codeVersion.type === 'artifact' &&
-        otherEntityInfo.codeVersion.type === 'artifact'
-      ) {
-        const url = `${process.env.REACT_APP_BACKEND_API ||
-          ''}/api/v1/nbdiff/query/?base=${currentEntityInfo.id}&remote=${
-          otherEntityInfo.id
-        }`;
-        window.open(url, '_blank');
-      }
+    if (
+      currentEntityInfo.codeVersion &&
+      otherEntityInfo.codeVersion &&
+      currentEntityInfo.codeVersion.type === 'git' &&
+      otherEntityInfo.codeVersion.type === 'git'
+    ) {
+      this.compareGitCodeVersions(
+        currentEntityInfo.codeVersion,
+        otherEntityInfo.codeVersion
+      );
     }
   }
 }

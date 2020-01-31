@@ -34,6 +34,12 @@ export default class ProjectPageTabs extends React.Component<ILocalProps> {
               projectId,
             }),
           },
+          {
+            label: 'Charts',
+            to: routes.charts.getRedirectPathWithCurrentWorkspace({
+              projectId,
+            }),
+          },
         ]}
         isDisabled={isDisabled}
         rightContent={rightContent}

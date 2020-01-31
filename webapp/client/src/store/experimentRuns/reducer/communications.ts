@@ -11,6 +11,8 @@ import {
   ILoadExperimentRunActions,
   loadExperimentRunActionTypes,
   loadExperimentRunsActionTypes,
+  loadSequentialChartDataActionTypes,
+  lazyLoadChartDataActionTypes,
   IDeleteExperimentRunActions,
   deleteExperimentRunActionTypes,
   IDeleteExperimentRunArtifactActions,
@@ -21,6 +23,12 @@ import {
 export default combineReducers<IExperimentRunsState['communications']>({
   loadingExperimentRuns: makeCommunicationReducerFromEnum(
     loadExperimentRunsActionTypes
+  ),
+  loadingSequentialChartData: makeCommunicationReducerFromEnum(
+    loadSequentialChartDataActionTypes
+  ),
+  loadingLazyChartData: makeCommunicationReducerFromEnum(
+    lazyLoadChartDataActionTypes
   ),
   loadingExperimentRun: makeCommunicationReducerByIdFromEnum<
     CommunicationActionsToObj<

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import ProjectWidget from 'components/ProjectWidget/ProjectWidget';
 import { createCodeError } from 'core/shared/models/Error';
-import { makeDefaultStringFilter } from 'core/shared/models/Filters';
+import { makeDefaultStringFilter } from 'core/features/filter/Model';
 import { initialCommunication } from 'core/shared/utils/redux/communication';
 import { makeRouterMockProps } from 'core/shared/utils/tests/react/routeComponentProps';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';

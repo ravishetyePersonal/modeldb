@@ -1,9 +1,6 @@
 import { bind } from 'decko';
 import * as React from 'react';
 
-import Pile from '../Pile/Pile';
-import Popup from '../PilePopup/PilePopup';
-
 interface ILocalProps {
   pileComponent: (props: { showPopup(): void }) => React.ReactNode;
   popupComponent: (props: {

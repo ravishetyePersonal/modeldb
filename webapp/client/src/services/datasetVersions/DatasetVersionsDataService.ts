@@ -1,6 +1,6 @@
 import { BaseDataService } from 'core/services/BaseDataService';
 import { EntityErrorType } from 'core/shared/models/Common';
-import { IFilterData } from 'core/shared/models/Filters';
+import { IFilterData } from 'core/features/filter/Model';
 import { DataWithPagination, IPagination } from 'core/shared/models/Pagination';
 import {
   IDatasetVersion,

@@ -9,6 +9,10 @@ import { bind } from 'decko';
 import * as R from 'ramda';
 import * as React from 'react';
 
+import {
+  IColumnConfig,
+  IColumnMetaData,
+} from 'core/features/experimentRunsTableConfig';
 import { IPagination } from 'core/shared/models/Pagination';
 import { ISorting } from 'core/shared/models/Sorting';
 import {
@@ -22,7 +26,6 @@ import {
 import RowSelection from 'core/shared/view/elements/Table/Plugins/RowSelection';
 import PagingPanel from 'core/shared/view/elements/Table/Templates/PagingPanel/TablePagingPanel';
 import ModelRecord from 'models/ModelRecord';
-import { IColumnConfig, IColumnMetaData } from 'store/dashboardConfig';
 
 import DeletingExperimentRunsManager from './BulkDeletion/DeletingExperimentRunsManager/DeletingExperimentRunsManager';
 import ToggleAllExperimentRunsForBulkDeletion from './BulkDeletion/ToggleAllExperimentRunsForBulkDeletion/ToggleAllExperimentRunsForBulkDeletion';

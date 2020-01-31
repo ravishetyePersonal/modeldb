@@ -3,6 +3,7 @@ import { History } from 'history';
 import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import reduxThunk, { ThunkMiddleware } from 'redux-thunk';
 
+import * as Comments from 'features/comments';
 import ServiceFactory from 'services/ServiceFactory';
 
 import {
@@ -18,6 +19,7 @@ export default function configureStore(
   const reduxThunkExtraArgument: IThunkActionDependencies = {
     ServiceFactory,
     history,
+    makeCommentsService: Comments.makeCommentsService,
   };
 
   const store = createStore<IApplicationState, any, any, any>(

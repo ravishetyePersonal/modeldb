@@ -1,4 +1,17 @@
-## Setup environment
+# Verta: WebApp
+
+Frontend for ModelDB version 2
+
+### `/`
+This directory contains proxy-server for development
+
+### `client/`
+This subdirectory contains the actual frontend
+
+### `e2e/`
+This subdirectory contains e2e tests
+
+## Setup environment for proxy-server
 
 ### Install node
 
@@ -26,49 +39,33 @@ https://yarnpkg.com/en/docs/install
 
 `yarn install`
 
-### Run app in development mode
-
-`yarn start`
-
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the proxy server on the 3000 PORT.<br>
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.<br>
+Example:<br>
+BACKEND_API_PROTOCOL='https'<br>
+BACKEND_API_DOMAIN='dev.verta.ai'
 
-Note, `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required env variables in the root folder.
+### `yarn start-with-client`
+
+Runs the proxy server on the 3000 PORT and the frontend in the development mode on 3001 PORT.<br>
+
+Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.<br>
+Example:<br>
+BACKEND_API_PROTOCOL='https'<br>
+BACKEND_API_DOMAIN='dev.verta.ai'
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br>
+Launches the test runner in the interactive watch mode of the frontend.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+### `yarn pretty`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## `yarn lint`
-
-Check code by TSLint with rules tslint.json
+Run prettier for code formatting

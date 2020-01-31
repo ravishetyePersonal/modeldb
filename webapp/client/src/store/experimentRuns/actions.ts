@@ -1,15 +1,18 @@
 import { History } from 'history';
 import { action, createAction } from 'typesafe-actions';
 
-import { IFilterData } from 'core/shared/models/Filters';
+import { IFilterData } from 'core/features/filter/Model';
 import { IPagination } from 'core/shared/models/Pagination';
 import { ISorting } from 'core/shared/models/Sorting';
 import normalizeError from 'core/shared/utils/normalizeError';
-import { setEntitiesComments, ISetEntitiesComments } from 'store/comments';
+import {
+  ISetEntitiesCommentsWithAuthor,
+  setEntitiesCommentsWithAuthor,
+} from 'features/comments';
 import {
   resetCurrentContextFilters,
   selectCurrentContextAppliedFilters,
-} from 'store/filter';
+} from 'core/features/filter';
 import { handleDeleteEntities } from 'store/shared/deletion';
 import { ActionResult } from 'store/store';
 
@@ -21,17 +24,25 @@ import {
 import {
   ILoadExperimentRunActions,
   ILoadExperimentRunsActions,
+  ILoadSequentialChartDataActions,
+  ILazyLoadChartDataActions,
   IUpdateExpRunTags,
   updateExpRunTagsActionType,
   IUpdateExpRunDesc,
   updateExpRunDescActionType,
   loadExperimentRunActionTypes,
   loadExperimentRunsActionTypes,
+  loadSequentialChartDataActionTypes,
+  lazyLoadChartDataActionTypes,
+  cleanChartDataPayload,
   IChangePagination,
   changePaginationActionType,
   IChangeSorting,
   changeSortingActionType,
   ISuccessLoadExperimentRunsPayload,
+  ISuccessLoadSequentialChartDataPayload,
+  ISuccessLazyLoadChartDataPayload,
+  ICleanChartDataPayload,
   deleteExperimentRunActionTypes,
   IDeleteExperimentRunActions,
   IExprRunsOptions as IExperimentRunsOptions,
@@ -57,7 +68,7 @@ export const loadExperimentRuns = (
   filters?: IFilterData[]
 ): ActionResult<
   void,
-  ILoadExperimentRunsActions | ISetEntitiesComments
+  ILoadExperimentRunsActions | ISetEntitiesCommentsWithAuthor
 > => async (dispatch, getState, { ServiceFactory }) => {
   dispatch(action(loadExperimentRunsActionTypes.REQUEST));
 
@@ -73,7 +84,7 @@ export const loadExperimentRuns = (
       };
       dispatch(action(loadExperimentRunsActionTypes.SUCCESS, payload));
       dispatch(
-        setEntitiesComments(
+        setEntitiesCommentsWithAuthor(
           data.map(({ comments, experimentRun }) => ({
             comments,
             entityId: experimentRun.id,
@@ -88,12 +99,108 @@ export const loadExperimentRuns = (
     });
 };
 
+export const cleanChartData = (): ActionResult<
+  void,
+  ICleanChartDataPayload
+> => dispatch => {
+  dispatch(action(cleanChartDataPayload.CLEAN_CHART_DATA));
+};
+
+export const chartsPageSettings = {
+  pageSize: 50,
+  datapointLimit: 500,
+};
+
+export const loadSequentialChartData = (
+  projectId: string,
+  pagination: IPagination,
+  filters?: IFilterData[]
+): ActionResult<void, ILoadSequentialChartDataActions> => async (
+  dispatch,
+  getState,
+  { ServiceFactory }
+) => {
+  dispatch(action(loadSequentialChartDataActionTypes.REQUEST));
+
+  const paginationUpdated: IPagination = {
+    ...pagination,
+    currentPage: pagination.currentPage + 1,
+  };
+  pagination = paginationUpdated;
+
+  const numOfCalls = Math.floor(
+    pagination.totalCount / chartsPageSettings.pageSize
+  );
+  const callLimit =
+    chartsPageSettings.datapointLimit / chartsPageSettings.pageSize - 1;
+  const maxCalls = numOfCalls > callLimit ? callLimit : numOfCalls;
+
+  await ServiceFactory.getExperimentRunsService()
+    .loadExperimentRuns(projectId, filters, pagination, null)
+    .then(({ data }) => {
+      if (data && data.length > 0) {
+        const payload: ISuccessLoadSequentialChartDataPayload = {
+          sequentialChartData: data.map(({ experimentRun }) => experimentRun),
+        };
+
+        dispatch(action(loadSequentialChartDataActionTypes.SUCCESS, payload));
+        if (maxCalls > pagination.currentPage) {
+          dispatch(loadSequentialChartData(projectId, pagination, filters));
+        }
+      }
+    })
+    .catch(error => {
+      dispatch(
+        action(
+          loadSequentialChartDataActionTypes.FAILURE,
+          normalizeError(error)
+        )
+      );
+    });
+};
+
+export const lazyLoadChartData = (
+  projectId: string,
+  filters?: IFilterData[]
+): ActionResult<void, ILazyLoadChartDataActions> => async (
+  dispatch,
+  getState,
+  { ServiceFactory }
+) => {
+  dispatch(action(lazyLoadChartDataActionTypes.REQUEST));
+
+  await ServiceFactory.getExperimentRunsService()
+    .lazyLoadChartData(projectId, filters)
+    .then(({ lazyChartData, totalCount }) => {
+      const payload: ISuccessLazyLoadChartDataPayload = {
+        lazyChartData,
+        totalCount,
+      };
+
+      const pagination: IPagination = {
+        currentPage: 0,
+        pageSize: chartsPageSettings.pageSize,
+        totalCount,
+      };
+      if (totalCount > chartsPageSettings.pageSize) {
+        dispatch(loadSequentialChartData(projectId, pagination, filters));
+      }
+
+      dispatch(action(lazyLoadChartDataActionTypes.SUCCESS, payload));
+    })
+    .catch(error => {
+      dispatch(
+        action(lazyLoadChartDataActionTypes.FAILURE, normalizeError(error))
+      );
+    });
+};
+
 export const loadExperimentRun = (
   projectId: string,
   modelId: string
 ): ActionResult<
   void,
-  ILoadExperimentRunActions | ISetEntitiesComments
+  ILoadExperimentRunActions | ISetEntitiesCommentsWithAuthor
 > => async (dispatch, getState, { ServiceFactory }) => {
   dispatch(action(loadExperimentRunActionTypes.REQUEST, modelId));
 
@@ -102,7 +209,7 @@ export const loadExperimentRun = (
     .then(res => {
       dispatch(action(loadExperimentRunActionTypes.SUCCESS, res.experimentRun));
       dispatch(
-        setEntitiesComments([
+        setEntitiesCommentsWithAuthor([
           { entityId: res.experimentRun.id, comments: res.comments },
         ])
       );

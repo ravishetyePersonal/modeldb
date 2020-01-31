@@ -1,4 +1,3 @@
-import cn from 'classnames';
 import { Markdown } from 'core/shared/utils/types';
 import * as React from 'react';
 

@@ -1,16 +1,14 @@
 import { Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import { ActionType } from 'typesafe-actions';
 
 import normalizeError from 'core/shared/utils/normalizeError';
-import {
-  IApplicationState,
-  IThunkActionDependencies,
-  ActionResult,
-} from 'store/store';
 
 import { IResetableAsyncAction, GetActionCreatorPayload } from './types';
 
 const makeSimpleApiRequest = <
+  State,
+  Deps,
   ResetableAsyncAction extends IResetableAsyncAction<any, any, any, any>
 >(
   resetableAsyncAction: ResetableAsyncAction
@@ -18,16 +16,16 @@ const makeSimpleApiRequest = <
   requestApi: (params: {
     payload: GetActionCreatorPayload<ResetableAsyncAction['request']>;
     dispatch: Dispatch;
-    getState: () => IApplicationState;
-    dependencies: IThunkActionDependencies;
+    getState: () => State;
+    dependencies: Deps;
   }) => Promise<GetActionCreatorPayload<ResetableAsyncAction['success']>>,
   handlers?: {
     onSuccess: (params: {
       requestPayload: GetActionCreatorPayload<ResetableAsyncAction['request']>;
       successPayload: GetActionCreatorPayload<ResetableAsyncAction['success']>;
       dispatch: Dispatch;
-      getState: () => IApplicationState;
-      dependencies: IThunkActionDependencies;
+      getState: () => State;
+      dependencies: Deps;
     }) => Promise<any>;
   },
   getFailureActionPayload?: ({
@@ -40,7 +38,7 @@ const makeSimpleApiRequest = <
 ) => {
   return (
     requestPayload: GetActionCreatorPayload<ResetableAsyncAction['request']>
-  ): ActionResult<void, ActionType<ResetableAsyncAction>> => async (
+  ): ThunkAction<void, State, Deps, ActionType<ResetableAsyncAction>> => async (
     dispatch,
     getState,
     dependencies

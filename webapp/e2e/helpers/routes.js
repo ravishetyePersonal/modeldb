@@ -38,12 +38,8 @@ const datasetsRoutes = {
     makeDatasetVersionRoute
 };
 
-const makeProfileRoute = () => `${config.baseURL}/settings/profile`;
-const settings = { makeProfileRoute };
-
 module.exports = {
     projectsRoutes,
     datasetsRoutes,
-    settings,
     makeIndexRoute
 };

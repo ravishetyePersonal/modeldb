@@ -2,13 +2,15 @@ import { bind } from 'decko';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import BreadcrumbsBuilder from 'core/shared/view/pages/Layout/Breadcrumbs/BreadcrumbsBuilder';
+import {
+  AuthorizedLayout,
+  IAuthorizedLayoutLocalProps,
+  BreadcrumbsBuilder,
+} from 'pages/shared/AuthorizedLayout';
 import routes from 'routes';
 import { selectExperimentRuns } from 'store/experimentRuns';
 import { selectProjects } from 'store/projects';
 import { IApplicationState } from 'store/store';
-import AuthorizedLayout from 'pages/shared/AuthorizedLayout/AuthorizedLayout';
-import { IAuthorizedLayoutLocalProps } from 'pages/shared/AuthorizedLayout/AuthorizedLayout';
 
 type ILocalProps = IAuthorizedLayoutLocalProps;
 
@@ -45,6 +47,7 @@ class ProjectsPagesLayout extends React.Component<AllProps> {
         routes: [
           routes.projectSummary,
           routes.experimentRuns,
+          routes.charts,
           routes.experiments,
         ],
         checkLoaded: params =>

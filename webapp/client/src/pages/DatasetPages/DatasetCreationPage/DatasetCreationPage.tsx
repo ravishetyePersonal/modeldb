@@ -14,8 +14,10 @@ import InlineCommunicationError from 'core/shared/view/elements/Errors/InlineCom
 import InlineErrorView from 'core/shared/view/elements/Errors/InlineErrorView/InlineErrorView';
 import { PageCard, PageHeader } from 'core/shared/view/elements/PageComponents';
 import * as Dataset from 'models/Dataset';
-import AuthorizedLayout from 'pages/shared/AuthorizedLayout/AuthorizedLayout';
-import BreadcrumbsBuilder from 'core/shared/view/pages/Layout/Breadcrumbs/BreadcrumbsBuilder';
+import {
+  AuthorizedLayout,
+  BreadcrumbsBuilder,
+} from 'pages/shared/AuthorizedLayout';
 import routes from 'routes';
 import * as DatasetsStore from 'store/datasets';
 import { IApplicationState } from 'store/store';

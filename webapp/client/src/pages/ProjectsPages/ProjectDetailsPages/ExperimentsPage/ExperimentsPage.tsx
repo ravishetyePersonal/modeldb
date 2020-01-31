@@ -7,10 +7,14 @@ import routes, { GetRouteParams } from 'routes';
 
 import ExperimentWidget from 'components/ExperimentWidget/ExperimentWidget';
 import {
-  defaultQuickFilters,
+  IFilterContext,
+  selectCurrentContextAppliedFilters,
+  updateContextFilters,
+} from 'core/features/filter';
+import {
   makeDefaultExprNameFilter,
   PropertyType,
-} from 'core/shared/models/Filters';
+} from 'core/features/filter/Model';
 import Button from 'core/shared/view/elements/Button/Button';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';
 import Pagination from 'core/shared/view/elements/Pagination/Pagination';
@@ -27,11 +31,7 @@ import {
   selectExperimentsPagination,
   selectLoadingExperiments,
 } from 'store/experiments';
-import {
-  IFilterContext,
-  selectCurrentContextAppliedFilters,
-  updateContextFilters,
-} from 'store/filter';
+import { defaultQuickFilters } from 'features/filter/Model';
 import { selectProject } from 'store/projects';
 import { IApplicationState } from 'store/store';
 

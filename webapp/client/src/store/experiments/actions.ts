@@ -1,15 +1,15 @@
 import { History } from 'history';
 import { action } from 'typesafe-actions';
 
+import { selectCurrentContextFilters } from 'core/features/filter';
+import { IFilterData } from 'core/features/filter/Model';
 import { AppError } from 'core/shared/models/Error';
-import { IFilterData } from 'core/shared/models/Filters';
 import normalizeError from 'core/shared/utils/normalizeError';
-import * as ActionHelpers from 'core/shared/utils/redux/actions';
 import * as Experiment from 'models/Experiment';
 import routes from 'routes';
-import { selectCurrentContextFilters } from 'store/filter';
 import { handleDeleteEntities } from 'store/shared/deletion';
 import { ActionResult } from 'store/store';
+import { makeThunkApiRequest } from 'utils/redux/actions';
 
 import { selectExperimentsPagination } from './selectors';
 import {
@@ -35,7 +35,7 @@ import {
   resetExperimentsForDeletingActionType,
 } from './types';
 
-export const createExperiment = ActionHelpers.makeThunkApiRequest(
+export const createExperiment = makeThunkApiRequest(
   '@@datasets/CREATE_EXPERIMENT_REQUEST',
   '@@datasets/CREATE_EXPERIMENT_SUCCESS',
   '@@datasets/CREATE_EXPERIMENT_FAILURE',

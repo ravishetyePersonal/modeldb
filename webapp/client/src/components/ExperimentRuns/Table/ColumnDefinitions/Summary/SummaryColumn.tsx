@@ -8,7 +8,7 @@ import ResizeDetector from 'react-resize-detector';
 import { Link } from 'react-router-dom';
 
 import ProjectEntityTagsManager from 'components/TagsManager/ProjectEntityTagsManager/ProjectEntityTagsManager';
-import { makeDefaultExprNameFilter } from 'core/shared/models/Filters';
+import { makeDefaultExprNameFilter } from 'core/features/filter/Model';
 import { getFormattedDateTime } from 'core/shared/utils/formatters/dateTime';
 import withProps from 'core/shared/utils/react/withProps';
 import Draggable from 'core/shared/view/elements/Draggable/Draggable';

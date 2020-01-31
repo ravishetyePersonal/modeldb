@@ -3,19 +3,18 @@ import { History } from 'history';
 import { Action, AnyAction, combineReducers, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
-import { ISidebarState, sidebarReducer } from 'core/store/sidebar';
 import ServiceFactory from 'services/ServiceFactory';
+
+import * as ExperimentRunsTableConfig from 'core/features/experimentRunsTableConfig';
+import * as Filter from 'core/features/filter';
+import * as Layout from 'core/features/Layout';
+import * as Comment from 'features/comments';
 
 import {
   IArtifactManagerState,
   artifactManagerReducer,
 } from './artifactManager';
-import { commentsReducer, ICommentsState } from './comments';
 import { compareModelsReducer, ICompareEntitiesState } from './compareEntities';
-import {
-  dashboardConfigReducer,
-  IDashboardConfigState,
-} from './dashboardConfig';
 import { IDatasetsState, datasetsReducer } from './datasets';
 import {
   IDatasetVersionsState,
@@ -27,7 +26,6 @@ import {
 } from './descriptionAction';
 import { experimentRunsReducer, IExperimentRunsState } from './experimentRuns';
 import { IExperimentsState, experimentsReducer } from './experiments';
-import { filtersReducer, IFilterState } from './filter';
 import {
   IProjectCreationState,
   projectCreationReducer,
@@ -36,23 +34,23 @@ import { IProjectsState, projectsReducer } from './projects';
 import { IProjectsPageState, projectsPageReducer } from './projectsPage';
 import { ITagActionState, tagActionReducer } from './tagAction';
 
-export interface IApplicationState {
+export interface IApplicationState
+  extends Filter.IFilterRootState,
+    Comment.ICommentsRootState,
+    ExperimentRunsTableConfig.IExperimentRunsTableConfigRootState,
+    Layout.ILayoutRootState {
   experiments: IExperimentsState;
-  comments: ICommentsState;
   compareEntities: ICompareEntitiesState;
-  dashboardConfig: IDashboardConfigState;
   experimentRuns: IExperimentRunsState;
   projectCreation: IProjectCreationState;
   projects: IProjectsState;
   projectsPage: IProjectsPageState;
   router: RouterState;
-  filters: IFilterState;
   tagAction: ITagActionState;
   descriptionAction: IDescriptionActionState;
   artifactManager: IArtifactManagerState;
   datasets: IDatasetsState;
   datasetVersions: IDatasetVersionsState;
-  sidebar: ISidebarState;
 }
 
 // Additional props for connected React components. This prop is passed by default with `connect()`
@@ -62,13 +60,14 @@ export interface IConnectedReduxProps<A extends Action = any> {
 
 export const createRootReducer = (history: History) =>
   combineReducers<IApplicationState>({
-    sidebar: sidebarReducer,
+    layout: Layout.layoutReducer,
     experiments: experimentsReducer,
-    comments: commentsReducer,
+    comments: Comment.commentsReducer,
     compareEntities: compareModelsReducer,
-    dashboardConfig: dashboardConfigReducer,
+    experimentRunsTableConfig:
+      ExperimentRunsTableConfig.experimentRunsTableConfigReducer,
     experimentRuns: experimentRunsReducer,
-    filters: filtersReducer,
+    filters: Filter.filtersReducer,
     projectCreation: projectCreationReducer,
     projects: projectsReducer,
     projectsPage: projectsPageReducer,
@@ -80,7 +79,12 @@ export const createRootReducer = (history: History) =>
     datasetVersions: datasetVersionsReducer,
   });
 
-export interface IThunkActionDependencies {
+export interface IThunkActionDependencies
+  extends Filter.IThunkActionDependencies,
+    Comment.IThunkActionDependencies<
+      IApplicationState,
+      Comment.Model.IComment
+    > {
   ServiceFactory: typeof ServiceFactory;
   history: History;
 }

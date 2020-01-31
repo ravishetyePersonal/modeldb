@@ -1,18 +1,21 @@
+import { ThunkAction } from 'redux-thunk';
 import { ActionType, PayloadAction } from 'typesafe-actions';
-
-import { ActionResult } from 'store/store';
 
 import makeResetableAsyncAction from './makeResetableAsyncAction';
 import { IResetableAsyncAction, GetActionCreatorPayload } from './types';
 
 export type IThunkActionWithResetableAsyncAction<
+  State,
+  Deps,
   T extends IResetableAsyncAction<any, any, any, any>
 > = ((
   payload: GetActionCreatorPayload<T['request']>
-) => ActionResult<any, ActionType<T>>) &
+) => ThunkAction<void, State, Deps, ActionType<T>>) &
   T;
 
 export default function makeCommunicationThunk<
+  State,
+  Deps,
   RequestT extends string,
   SuccessT extends string,
   FailureT extends string,
@@ -36,8 +39,10 @@ export default function makeCommunicationThunk<
         PayloadAction<FailureT, FailurePayload>,
         PayloadAction<ResetT, undefined>
       >
-    ) => (payload: RequestPayload) => ActionResult<any, any>
+    ) => (payload: RequestPayload) => ThunkAction<void, State, Deps, any>
   ): IThunkActionWithResetableAsyncAction<
+    State,
+    Deps,
     IResetableAsyncAction<
       PayloadAction<RequestT, RequestPayload>,
       PayloadAction<SuccessT, SuccessPayload>,
@@ -52,6 +57,8 @@ export default function makeCommunicationThunk<
       resetType
     )<RequestPayload, SuccessPayload, FailurePayload>();
     const res: IThunkActionWithResetableAsyncAction<
+      State,
+      Deps,
       IResetableAsyncAction<
         PayloadAction<RequestT, RequestPayload>,
         PayloadAction<SuccessT, SuccessPayload>,

@@ -17,10 +17,14 @@ export interface IExperimentRunsState {
     pagination: IPagination;
     sorting: ISorting | null;
     modelRecordIdsForDeleting: string[];
+    lazyChartData: ModelRecord[] | null;
+    sequentialChartData: ModelRecord[] | null;
     totalCount: number;
   };
   communications: {
     loadingExperimentRuns: ICommunication;
+    loadingLazyChartData: ICommunication;
+    loadingSequentialChartData: ICommunication;
     loadingExperimentRun: ICommunicationById<string, AppError<EntityErrorType>>;
     deletingExperimentRun: ICommunicationById;
     deletingExperimentRuns: ICommunication;
@@ -57,6 +61,39 @@ export type ILoadExperimentRunsActions = MakeCommunicationActions<
   typeof loadExperimentRunsActionTypes,
   { success: ISuccessLoadExperimentRunsPayload }
 >;
+
+export const lazyLoadChartDataActionTypes = makeCommunicationActionTypes({
+  REQUEST: '@@experimentRuns/LAZY_LOAD_CHART_DATA_REQUEST',
+  SUCCESS: '@@experimentRuns/LAZY_LOAD_CHART_DATA_SUCСESS',
+  FAILURE: '@@experimentRuns/LAZY_LOAD_CHART_DATA_FAILURE',
+});
+export interface ISuccessLazyLoadChartDataPayload {
+  lazyChartData: ModelRecord[];
+  totalCount: number;
+}
+export type ILazyLoadChartDataActions = MakeCommunicationActions<
+  typeof lazyLoadChartDataActionTypes,
+  { success: ISuccessLazyLoadChartDataPayload }
+>;
+export const loadSequentialChartDataActionTypes = makeCommunicationActionTypes({
+  REQUEST: '@@experimentRuns/LOAD_SEQUENTIAL_CHART_DATA_REQUEST',
+  SUCCESS: '@@experimentRuns/LOAD_SEQUENTIAL_CHART_DATA_SUCСESS',
+  FAILURE: '@@experimentRuns/LOAD_SEQUENTIAL_CHART_DATA_FAILURE',
+});
+export interface ISuccessLoadSequentialChartDataPayload {
+  sequentialChartData: ModelRecord[];
+}
+export type ILoadSequentialChartDataActions = MakeCommunicationActions<
+  typeof loadSequentialChartDataActionTypes,
+  { success: ISuccessLoadSequentialChartDataPayload }
+>;
+
+export enum cleanChartDataPayload {
+  CLEAN_CHART_DATA = '@@experimentRuns/CLEAN_CHART_DATA',
+}
+export interface ICleanChartDataPayload {
+  type: cleanChartDataPayload.CLEAN_CHART_DATA;
+}
 
 export const loadExperimentRunActionTypes = makeCommunicationActionTypes({
   REQUEST: '@@experimentRuns/LOAD_EXPERIMENT_RUN_REQUEST',
@@ -183,6 +220,9 @@ export type IDeleteExperimentRunsActions = MakeCommunicationActions<
 
 export type FeatureAction =
   | ILoadExperimentRunsActions
+  | ILoadSequentialChartDataActions
+  | ICleanChartDataPayload
+  | ILazyLoadChartDataActions
   | ILoadExperimentRunActions
   | IUpdateExpRunTags
   | IUpdateExpRunDesc

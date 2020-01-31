@@ -2,11 +2,12 @@ import { Dispatch } from 'redux';
 
 import { AppError } from 'core/shared/models/Error';
 
-import { IApplicationState, IThunkActionDependencies } from 'store/store';
 import makeCommunicationThunk from './makeCommunicationThunk';
 import makeSimpleApiRequest from './makeSimpleApiRequest';
 
 export default function makeThunkApiRequest<
+  State,
+  Deps,
   RequestType extends string,
   SuccessType extends string,
   FailureType extends string,
@@ -21,16 +22,16 @@ export default function makeThunkApiRequest<
     requestApi: (params: {
       payload: RequestPayload;
       dispatch: Dispatch;
-      getState: () => IApplicationState;
-      dependencies: IThunkActionDependencies;
+      getState: () => State;
+      dependencies: Deps;
     }) => Promise<SuccessPayload>,
     handlers?: {
       onSuccess: (params: {
         requestPayload: RequestPayload;
         successPayload: SuccessPayload;
         dispatch: Dispatch;
-        getState: () => IApplicationState;
-        dependencies: IThunkActionDependencies;
+        getState: () => State;
+        dependencies: Deps;
       }) => Promise<any>;
     },
     getFailureActionPayload?: ({

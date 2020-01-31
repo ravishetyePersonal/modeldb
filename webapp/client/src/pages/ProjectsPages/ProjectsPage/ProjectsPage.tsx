@@ -4,14 +4,19 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 
 import ProjectWidget from 'components/ProjectWidget/ProjectWidget';
-import { defaultQuickFilters } from 'core/shared/models/Filters';
+import {
+  IFilterContext,
+  selectCurrentContextFilters,
+} from 'core/features/filter';
 import Button from 'core/shared/view/elements/Button/Button';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';
+import NoEntitiesStub from 'core/shared/view/elements/NoEntitiesStub/NoEntitiesStub';
 import NoResultsStub from 'core/shared/view/elements/NoResultsStub/NoResultsStub';
 import Pagination from 'core/shared/view/elements/Pagination/Pagination';
 import Preloader from 'core/shared/view/elements/Preloader/Preloader';
+import { defaultQuickFilters } from 'features/filter/Model';
 import routes, { GetRouteParams } from 'routes';
-import { IFilterContext, selectCurrentContextFilters } from 'store/filter';
+import { cleanChartData } from 'store/experimentRuns';
 import {
   loadProjects,
   selectCommunications,
@@ -26,7 +31,6 @@ import { IApplicationState, IConnectedReduxProps } from 'store/store';
 import ProjectsPagesLayout from '../shared/ProjectsPagesLayout/ProjectsPagesLayout';
 import DeletingProjectsManager from './DeletingProjectsManager/DeletingProjectsManager';
 import styles from './ProjectsPage.module.css';
-import NoEntitiesStub from 'core/shared/view/elements/NoEntitiesStub/NoEntitiesStub';
 
 const mapStateToProps = (state: IApplicationState) => ({
   projects: selectProjects(state),
@@ -71,6 +75,7 @@ class ProjectsPage extends React.PureComponent<AllProps, ILocalState> {
       },
     };
     this.props.dispatch(getDefaultProjectsOptions());
+    this.props.dispatch(cleanChartData());
   }
 
   public render() {

@@ -63,6 +63,11 @@ const routes = {
   }>({
     getPath: () => '/projects/:projectId/exp-runs',
   }),
+  charts: makeRouteWithWorkspace<{
+    projectId: string;
+  }>({
+    getPath: () => '/projects/:projectId/charts',
+  }),
   experiments: makeRouteWithWorkspace<{
     projectId: string;
   }>({

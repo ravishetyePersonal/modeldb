@@ -1,18 +1,13 @@
 const { By, until } = require('selenium-webdriver');
 
-const login = require('../../helpers/pageObjects/login');
 const entitiesTests = require('../shared/entitiesTests');
 const testEntityDescriptionUpdating = require('../shared/testEntityDescriptionUpdating');
-const testWorkspaces = require('../shared/testWorkspaces');
 const testEntityTagsCRUD = require('../shared/testEntityTagsCRUD');
-const testEntityCollaboration = require('../shared/testEntityCollaboration');
-const { createDatasets, deleteAllDatasets, deleteDatasetsByIds, getDatasets } = require('../../helpers/userData');
-const { createDatasetWithCollaborator } = require('./mocks');
+const { createDatasets, deleteAllDatasets } = require('../../helpers/userData');
 const { testSuitRetry } = require('../shared/testRetrySettings');
 const routes = require('../../helpers/routes');
 
 const navigateToDatasetsPage = async driver => {
-  await login(driver);
   await driver.get(routes.datasetsRoutes.makeDatasetsRoute());
 };
 
@@ -70,22 +65,5 @@ describe('datasets', function() {
     entityName: 'dataset',
     createEntities: createDatasets,
     navigateToPage: navigateToDatasetsPageWithWaitingLoadingEntities,
-  });
-
-  testEntityCollaboration({
-    entityName: 'dataset',
-    createEntityWithCollaborator: createDatasetWithCollaborator,
-    createEntityWithoutCollaborator: dataset => createDatasets([dataset]),
-    navigateToPage: navigateToDatasetsPageWithWaitingLoadingEntities,
-  });
-
-  testWorkspaces({
-    entityName: 'dataset',
-    createEntities: createDatasets,
-    deleteAllEntities: deleteDatasetsByIds,
-    getAllEntities: getDatasets,
-    getExpectedRouteAfterChangingWorkspace: (workspaceName) => routes.datasetsRoutes.makeDatasetsRoute({ workspaceName }),
-    navigateToPage: navigateToDatasetsPageWithWaitingLoadingEntities,
-    deleteEntitiesByIds: getDatasets,
   });
 });

@@ -21,6 +21,7 @@ import {
 import { IApplicationState } from 'store/store';
 import { selectCurrentWorkspaceNameOrDefault } from 'store/workspaces';
 
+import ChartsPage from './ChartsPage/ChartsPage';
 import CompareModelsPage from './CompareModelsPage/CompareModelsPage';
 import ExperimentRunsPage from './ExperimentRunsPage/ExperimentRunsPage';
 import ExperimentsPage from './ExperimentsPage/ExperimentsPage';
@@ -93,6 +94,11 @@ class ProjectDetailsPage extends React.Component<AllProps> {
             exact={true}
             path={routes.projectSummary.getPath()}
             component={ProjectSummaryPage}
+          />
+          <Route
+            exact={true}
+            path={routes.charts.getPath()}
+            component={ChartsPage}
           />
           <Route
             exact={true}

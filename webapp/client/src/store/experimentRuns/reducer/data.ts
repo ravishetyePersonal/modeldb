@@ -11,6 +11,9 @@ import {
   FeatureAction,
   IExperimentRunsState,
   loadExperimentRunsActionTypes,
+  loadSequentialChartDataActionTypes,
+  lazyLoadChartDataActionTypes,
+  cleanChartDataPayload,
   updateExpRunTagsActionType,
   updateExpRunDescActionType,
   changePaginationActionType,
@@ -35,6 +38,8 @@ const initial: IExperimentRunsState['data'] = {
     totalCount: 0,
   },
   modelRecordIdsForDeleting: [],
+  sequentialChartData: [],
+  lazyChartData: [],
   totalCount: 0,
 };
 
@@ -65,6 +70,36 @@ const dataReducer = (
           ...state.pagination,
           totalCount: action.payload.totalCount,
         },
+      };
+    }
+    case loadSequentialChartDataActionTypes.SUCCESS: {
+      let prevChartData: any;
+      if (state.sequentialChartData && state.sequentialChartData.length === 0) {
+        prevChartData = state.lazyChartData;
+      } else {
+        prevChartData = state.sequentialChartData;
+      }
+      return {
+        ...state,
+        sequentialChartData: [
+          ...prevChartData,
+          ...action.payload.sequentialChartData,
+        ],
+      };
+    }
+    case lazyLoadChartDataActionTypes.SUCCESS: {
+      return {
+        ...state,
+        lazyChartData: action.payload.lazyChartData,
+        totalCount: action.payload.totalCount,
+      };
+    }
+    case cleanChartDataPayload.CLEAN_CHART_DATA: {
+      return {
+        ...state,
+        lazyChartData: [],
+        sequentialChartData: [],
+        totalCount: 0,
       };
     }
     case loadExperimentRunActionTypes.SUCCESS: {

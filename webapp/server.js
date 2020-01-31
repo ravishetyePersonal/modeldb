@@ -7,6 +7,11 @@ const app = express();
 var bodyParser = require('body-parser');
 var proxy = require('http-proxy-middleware');
 
+if (process.env.DISABLE_LOGS) {
+  console.log = function() {};
+  console.info = function() {};
+}
+
 const disableCache = (req, res, next) => {
   res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.header('Pragma', 'no-cache');

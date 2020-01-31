@@ -2,14 +2,18 @@ import { bind } from 'decko';
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { IFilterData } from 'core/shared/models/Filters';
+import {
+  IColumnConfig,
+  selectColumnConfig,
+} from 'core/features/experimentRunsTableConfig';
+import { selectCurrentContextAppliedFilters } from 'core/features/filter';
+import { IFilterData } from 'core/features/filter/Model';
 import { IPagination } from 'core/shared/models/Pagination';
 import { ISorting } from 'core/shared/models/Sorting';
 import { ICommunication } from 'core/shared/utils/redux/communication';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';
 import Preloader from 'core/shared/view/elements/Preloader/Preloader';
 import ModelRecord from 'models/ModelRecord';
-import { IColumnConfig, selectColumnConfig } from 'store/dashboardConfig';
 import {
   selectExperimentRuns,
   selectExperimentRunsPagination,
@@ -18,7 +22,6 @@ import {
   changeSortingWithLoadingExperimentRuns,
   selectLoadingExperimentRuns,
 } from 'store/experimentRuns';
-import { selectCurrentContextAppliedFilters } from 'store/filter';
 import { IApplicationState, IConnectedReduxProps } from 'store/store';
 
 import DashboardActions from './DashboardActions/DashboardActions';

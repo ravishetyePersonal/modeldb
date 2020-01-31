@@ -1,12 +1,9 @@
 import { bind } from 'decko';
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
 
 import { EntityWithDescription } from 'core/shared/models/Description';
 import { Icon } from 'core/shared/view/elements/Icon/Icon';
 import Tooltip from 'core/shared/view/elements/Tooltip/Tooltip';
-import { addOrEditDescription } from 'store/descriptionAction';
 
 import AddEditDescModal from './AddEditDescModal/AddEditDescModal';
 import styles from './DescriptionManager.module.css';
@@ -17,10 +14,11 @@ interface ILocalProps {
   isReadOnly: boolean;
   isLoadingAccess: boolean;
   description: string;
-}
-
-interface IActionProps {
-  addOrEditDescription: typeof addOrEditDescription;
+  onAddOrEditDescription(
+    id: string,
+    description: string,
+    entityType: EntityWithDescription
+  ): void;
 }
 
 interface ILocalState {
@@ -28,7 +26,7 @@ interface ILocalState {
   showTooltip: boolean;
 }
 
-type AllProps = ILocalProps & IActionProps;
+type AllProps = ILocalProps;
 
 class DescriptionManager extends React.Component<AllProps, ILocalState> {
   public state: ILocalState = {
@@ -119,21 +117,10 @@ class DescriptionManager extends React.Component<AllProps, ILocalState> {
   @bind
   private addEditDesc(descCreated: string) {
     const { entityId: id, entityType } = this.props;
-    this.props.addOrEditDescription(id, descCreated, entityType);
+    this.props.onAddOrEditDescription(id, descCreated, entityType);
     this.setState({ isShowModal: false });
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): IActionProps =>
-  bindActionCreators(
-    {
-      addOrEditDescription,
-    },
-    dispatch
-  );
-
 export type IDescriptionManagerLocalProps = ILocalProps;
-export default connect(
-  null,
-  mapDispatchToProps
-)(DescriptionManager);
+export default DescriptionManager;

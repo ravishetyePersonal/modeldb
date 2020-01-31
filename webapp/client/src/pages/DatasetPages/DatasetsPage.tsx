@@ -5,7 +5,11 @@ import { RouteComponentProps } from 'react-router-dom';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import DatasetWidget from 'components/DatasetWidget/DatasetWidget';
-import { defaultQuickFilters } from 'core/shared/models/Filters';
+import {
+  IFilterContext,
+  selectCurrentContextFilters,
+} from 'core/features/filter';
+import { defaultQuickFilters } from 'features/filter/Model';
 import Button from 'core/shared/view/elements/Button/Button';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';
 import NoEntitiesStub from 'core/shared/view/elements/NoEntitiesStub/NoEntitiesStub';
@@ -22,7 +26,6 @@ import {
   selectDatasets,
   selectDatasetsPagination,
 } from 'store/datasets';
-import { IFilterContext, selectCurrentContextFilters } from 'store/filter';
 import { IApplicationState } from 'store/store';
 
 import styles from './DatasetsPage.module.css';
