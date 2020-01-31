@@ -1059,7 +1059,8 @@ class Project(_ModelDBEntity):
                 response_msg = _utils.json_to_proto(response.json(), Message.Response)
                 return response_msg.project
             else:
-                if response.status_code == 404 and response.json()['code'] == 5:
+                if ((response.status_code == 403 and response.json()['code'] == 7)
+                        or (response.status_code == 404 and response.json()['code'] == 5)):
                     return None
                 else:
                     _utils.raise_for_http_error(response)
@@ -1080,7 +1081,8 @@ class Project(_ModelDBEntity):
                 else:
                     return response_msg.shared_projects[0]
             else:
-                if response.status_code == 404 and response.json()['code'] == 5:
+                if ((response.status_code == 403 and response.json()['code'] == 7)
+                        or (response.status_code == 404 and response.json()['code'] == 5)):
                     return None
                 else:
                     _utils.raise_for_http_error(response)
@@ -1220,7 +1222,8 @@ class Experiment(_ModelDBEntity):
             response_msg = _utils.json_to_proto(response.json(), Message.Response)
             return response_msg.experiment
         else:
-            if response.status_code == 404 and response.json()['code'] == 5:
+            if ((response.status_code == 403 and response.json()['code'] == 7)
+                    or (response.status_code == 404 and response.json()['code'] == 5)):
                 return None
             else:
                 _utils.raise_for_http_error(response)
@@ -1739,7 +1742,8 @@ class ExperimentRun(_ModelDBEntity):
             response_msg = _utils.json_to_proto(response.json(), Message.Response)
             return response_msg.experiment_run
         else:
-            if response.status_code == 404 and response.json()['code'] == 5:
+            if ((response.status_code == 403 and response.json()['code'] == 7)
+                    or (response.status_code == 404 and response.json()['code'] == 5)):
                 return None
             else:
                 _utils.raise_for_http_error(response)

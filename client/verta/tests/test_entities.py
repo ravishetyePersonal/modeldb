@@ -148,7 +148,7 @@ class TestProject:
         assert proj.id == client.set_project(id=proj.id).id
 
     def test_get_nonexistent_id(self, client):
-        with pytest.raises(requests.HTTPError):  # 403 b/c Not Found == Unauth
+        with pytest.raises(ValueError):
             client.set_project(id="nonexistent_id")
 
 
