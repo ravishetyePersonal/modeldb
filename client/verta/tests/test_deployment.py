@@ -51,6 +51,7 @@ def model_packaging():
     }
 
 
+@pytest.mark.not_oss
 class TestLogModelForDeployment:
     def test_model(self, experiment_run, model_for_deployment):
         experiment_run.log_model_for_deployment(**model_for_deployment)
@@ -89,6 +90,7 @@ class TestLogModelForDeployment:
         assert X_train.join(y_train).to_csv(index=False) == six.ensure_str(data_csv)
 
 
+@pytest.mark.not_oss
 class TestLogModel:
     def test_model(self, experiment_run, model_for_deployment):
         experiment_run.log_model(model_for_deployment['model'])
@@ -234,6 +236,7 @@ class TestLogModel:
             )
 
 
+@pytest.mark.not_oss
 class TestFetchArtifacts:
     def test_fetch_artifacts(self, experiment_run, strs, flat_dicts):
         for key, artifact in zip(strs, flat_dicts):
@@ -422,6 +425,7 @@ class TestFetchArtifacts:
             experiment_run.fetch_artifacts(strs[1:])
 
 
+@pytest.mark.not_oss
 class TestLogRequirements:
     NONSPECIFIC_REQ = "verta>0.1.0"
     INVALID_REQ = "@==1.2.3"
@@ -528,6 +532,7 @@ class TestLogRequirements:
         assert set(self.VALID_REQS) == reqs
 
 
+@pytest.mark.not_oss
 class TestLogTrainingData:
     def test_numpy_error(self, experiment_run, model_for_deployment):
         with pytest.raises(TypeError):
@@ -573,6 +578,7 @@ class TestLogTrainingData:
         assert X_train.join(y_train).to_csv(index=False) == six.ensure_str(data_csv)
 
 
+@pytest.mark.not_oss
 class TestDeploy:
     def test_auto_path_auto_token_deploy(self, experiment_run, model_for_deployment):
         experiment_run.log_model(model_for_deployment['model'], custom_modules=[])
@@ -786,6 +792,7 @@ class TestDeploy:
             )
 
 
+@pytest.mark.not_oss
 class TestUndeploy:
     def test_undeploy(self, experiment_run, model_for_deployment):
         experiment_run.log_model(model_for_deployment['model'], custom_modules=[])
@@ -809,6 +816,7 @@ class TestUndeploy:
         experiment_run.undeploy()
 
 
+@pytest.mark.not_oss
 class TestGetDeployedModel:
     def test_get(self, experiment_run, model_for_deployment):
         model = model_for_deployment['model'].fit(

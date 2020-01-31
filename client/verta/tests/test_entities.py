@@ -7,6 +7,7 @@ import shutil
 import requests
 
 import pytest
+import utils
 
 import verta
 
@@ -23,6 +24,17 @@ KWARGS_COMBOS = [dict(zip(KWARGS.keys(), values))
 
 
 class TestClient:
+    @pytest.mark.oss
+    def test_no_auth(self, host):
+        client = verta.Client(host)
+
+        # it's just been revoked
+        client._conn.auth = None
+
+        assert client.set_project()
+        utils.delete_project(client.proj.id, client._conn)
+
+    @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_verta_https(self):
         hosts = [
             "dev.verta.ai",

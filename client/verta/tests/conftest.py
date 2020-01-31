@@ -29,6 +29,28 @@ hypothesis.settings.register_profile("default", suppress_health_check=[hypothesi
 hypothesis.settings.load_profile("default")
 
 
+def pytest_addoption(parser):
+    parser.addoption("--oss", action="store_true", help="run OSS-compatible tests")
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "oss: mark the given test function as only applicable to OSS.")
+    config.addinivalue_line("markers", "not_oss: mark the given test function not available in OSS.")
+
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--oss"):
+        skip_not_oss = pytest.mark.skip(reason="not available in OSS")
+        for item in items:
+            if 'not_oss' in item.keywords:
+                item.add_marker(skip_not_oss)
+    else:
+        skip_oss = pytest.mark.skip(reason="only applicable to OSS")
+        for item in items:
+            if 'oss' in item.keywords:
+                item.add_marker(skip_oss)
+
+
 @pytest.fixture(scope='session')
 def host():
     return os.environ.get("VERTA_HOST", DEFAULT_HOST)
