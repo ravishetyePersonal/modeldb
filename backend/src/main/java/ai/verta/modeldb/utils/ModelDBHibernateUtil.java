@@ -104,6 +104,14 @@ public class ModelDBHibernateUtil {
 
   private ModelDBHibernateUtil() {}
 
+  public static Connection getConnection() throws SQLException {
+    return sessionFactory
+        .getSessionFactoryOptions()
+        .getServiceRegistry()
+        .getService(ConnectionProvider.class)
+        .getConnection();
+  }
+
   public static SessionFactory getSessionFactory() {
     if (sessionFactory == null) {
       LOGGER.info("Fetching sessionFactory");

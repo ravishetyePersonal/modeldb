@@ -84,6 +84,9 @@ public interface ModelDBConstants {
   String WORKSPACE = "workspace";
   String WORKSPACE_NAME = "workspace_name";
   String WORKSPACE_TYPE = "workspace_type";
+  String PROJECTS = "projects";
+  String EXPERIMENTS = "experiments";
+  String EXPERIMENT_RUNS = "experimentRuns";
 
   // Common verb constants
   String ORDER_ASC = "asc";
@@ -171,4 +174,10 @@ public interface ModelDBConstants {
   String ROLE_PROJECT_DEPLOY = "PROJECT_DEPLOY";
   String ROLE_PROJECT_ADMIN = "PROJECT_ADMIN";
   String ROLE_DATASET_ADMIN = "DATASET_ADMIN";
+
+  // Telemetry Constants
+  String TELEMETRY = "telemetry";
+  String OPT_IN = "opt_in";
+  String TELEMENTRY_FREQUENCY = "frequency"; // frequency to share data in hours
+  String TELEMETRY_CONSUMER = "consumer";
 }

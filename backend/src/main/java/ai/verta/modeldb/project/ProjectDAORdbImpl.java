@@ -31,6 +31,7 @@ import ai.verta.modeldb.entities.ProjectEntity;
 import ai.verta.modeldb.entities.TagsMapping;
 import ai.verta.modeldb.experiment.ExperimentDAO;
 import ai.verta.modeldb.experimentRun.ExperimentRunDAO;
+import ai.verta.modeldb.telemetry.TelemetryUtils;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.utils.RdbmsUtils;
@@ -252,6 +253,7 @@ public class ProjectDAORdbImpl implements ProjectDAO {
 
       transaction.commit();
       LOGGER.debug("Project created successfully");
+      TelemetryUtils.insertModelDBDeploymentInfo();
       return projectEntity.getProtoObject();
     }
   }

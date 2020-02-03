@@ -20,6 +20,7 @@ import ai.verta.modeldb.entities.AttributeEntity;
 import ai.verta.modeldb.entities.DatasetEntity;
 import ai.verta.modeldb.entities.DatasetVersionEntity;
 import ai.verta.modeldb.entities.TagsMapping;
+import ai.verta.modeldb.telemetry.TelemetryUtils;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.utils.RdbmsUtils;
@@ -163,6 +164,7 @@ public class DatasetDAORdbImpl implements DatasetDAO {
 
       transaction.commit();
       LOGGER.debug("Dataset created successfully");
+      TelemetryUtils.insertModelDBDeploymentInfo();
       return datasetEntity.getProtoObject();
     }
   }
