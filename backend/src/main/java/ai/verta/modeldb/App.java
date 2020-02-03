@@ -535,7 +535,7 @@ public class App implements ApplicationContextAware {
       TimerTask task = new TelemetryUtils(consumer);
       // scheduling the timer instance
       ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.scheduleAtFixedRate(task, 10, 10, TimeUnit.SECONDS);
+      executor.scheduleAtFixedRate(task, frequency, frequency, TimeUnit.HOURS);
       LOGGER.info("Telemetry scheduled successfully");
     } else {
       LOGGER.info("Telemetry opt by user");

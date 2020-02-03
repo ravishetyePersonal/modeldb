@@ -51,3 +51,8 @@ artifactStore_grpcServer:
 feature-flag:
   disabled-authz: false
   disabled-mdb-collaborator: true
+
+telemetry:
+  opt_in: true
+  frequency: 1 #frequency to share data in hours, default 1
+  consumer: https://app.verta.ai/api/v1/uac-proxy/telemetry/collectTelemetry
