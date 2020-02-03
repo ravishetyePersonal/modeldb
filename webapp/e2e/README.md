@@ -1,28 +1,29 @@
-e2e tests for the webapp
+# Verta: WebApp E2E tests
+
+E2E tests for the webapp
 
 ## Setup environment
 
 ### Install node
 
-`curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash`
-
-`nvm install 11.3.0`
-
-`nvm alias default 11.3.0`
-
-`nvm use default`
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+nvm install 11.3.0
+nvm alias default 11.3.0
+nvm use default
+```
 
 ### Install yarn
 
 https://yarnpkg.com/en/docs/install
 
-**Ubuntu**: 
+**Ubuntu**:
 
-`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
-
-`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
-
-`sudo apt-get update && sudo apt-get install yarn`
+```
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+```
 
 ### Install dependencies
 

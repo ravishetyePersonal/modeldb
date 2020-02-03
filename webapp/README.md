@@ -27,7 +27,7 @@ This subdirectory contains e2e tests
 
 https://yarnpkg.com/en/docs/install
 
-**Ubuntu**: 
+**Ubuntu**:
 
 `curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
 
@@ -45,27 +45,31 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the proxy server on the 3000 PORT.<br>
+Runs the proxy server on the 3000 PORT.
 
-Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.<br>
-Example:<br>
-BACKEND_API_PROTOCOL='https'<br>
+Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.
+Example:
+```
+BACKEND_API_PROTOCOL='https'
 BACKEND_API_DOMAIN='dev.verta.ai'
+```
 
 ### `yarn start-with-client`
 
-Runs the proxy server on the 3000 PORT and the frontend in the development mode on 3001 PORT.<br>
+Runs the proxy server on the 3000 PORT and the frontend in the development mode on 3001 PORT.
 
-Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.<br>
-Example:<br>
+Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.
+Example:
+```
 BACKEND_API_PROTOCOL='https'<br>
 BACKEND_API_DOMAIN='dev.verta.ai'
+```
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode of the frontend.<br>
+Launches the test runner in the interactive watch mode of the frontend.
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn pretty`
 
-Run prettier for code formatting
+Run `prettier` for code formatting.

@@ -1,28 +1,29 @@
+# Verta: WebApp client
+
 Frontend for ModelDB version 2
 
 ## Setup environment
 
 ### Install node
 
-`curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash`
-
-`nvm install 11.3.0`
-
-`nvm alias default 11.3.0`
-
-`nvm use default`
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+nvm install 11.3.0
+nvm alias default 11.3.0
+nvm use default
+```
 
 ### Install yarn
 
 https://yarnpkg.com/en/docs/install
 
-**Ubuntu**: 
+**Ubuntu**:
 
-`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
-
-`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
-
-`sudo apt-get update && sudo apt-get install yarn`
+```
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+```
 
 ### Install dependencies
 
@@ -38,49 +39,49 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-Runs the app in the development mode.<br>
+Runs the app in the development mode.
 Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
 
-The page will reload if you make edits.<br>
+The page will reload if you make edits.
 You will also see any lint errors in the console.
 
-Note, that you should run proxy-server from the root directory and set .env variables in the root directory before using of the app
+Note that you should run `proxy-server` from the root directory and set `.env` variables in the root directory before using of the app.
 
 ### `yarn test`
 
-Launches the test runner in the interactive watch mode.<br>
+Launches the test runner in the interactive watch mode.
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn test:CI`
 
-Launches the test runner in the interactive watch mode.<br>
+Launches the test runner in the interactive watch mode.
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.<br>
+Builds the app for production to the `build` folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
+The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `yarn lint`
 
-Check code by TSLint with rules tslint.json
+Check code by TSLint with rules `tslint.json`.
 
 ### `yarn pretty`
 
-Run prettier for code formatting
+Run prettier for code formatting.
 
 ### `yarn lint-fix`
 
-Fixes linting errors for select rules
+Fixes linting errors for select rules.
 
 ### `yarn check-types`
 
-Run typescript for checking types
+Run typescript for checking types.
 
 ### `yarn eject`
 
