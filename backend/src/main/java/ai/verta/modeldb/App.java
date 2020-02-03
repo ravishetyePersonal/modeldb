@@ -101,8 +101,8 @@ public class App implements ApplicationContextAware {
   private String cloudSecretKey = null;
 
   // NFS Artifact store
+  private Boolean pickNFSHostFromConfig = null;
   private String nfsServerHost = null;
-  private Integer nfsServerPort = null;
   private String nfsUrlProtocol = null;
   private String storeArtifactEndpoint = null;
   private String getArtifactEndpoint = null;
@@ -468,11 +468,12 @@ public class App implements ApplicationContextAware {
         LOGGER.trace("NFS server root path {}", rootDir);
         app.storeTypePathPrefix = "nfs://" + rootDir + ModelDBConstants.PATH_DELIMITER;
 
+        app.pickNFSHostFromConfig =
+            (Boolean) nfsConfigMap.getOrDefault(ModelDBConstants.PICK_NFS_HOST_FROM_CONFIG, true);
+        LOGGER.trace("NFS pick host from config flag : {}", app.pickNFSHostFromConfig);
         app.nfsServerHost =
             (String) nfsConfigMap.getOrDefault(ModelDBConstants.NFS_SERVER_HOST, "");
         LOGGER.trace("NFS server host URL found : {}", app.nfsServerHost);
-        app.nfsServerPort = springServerPort;
-        LOGGER.trace("NFS server port number found : {}", app.nfsServerPort);
         app.nfsUrlProtocol =
             (String)
                 nfsConfigMap.getOrDefault(
@@ -525,6 +526,10 @@ public class App implements ApplicationContextAware {
 
   public void setAuthServerPort(Integer authServerPort) {
     this.authServerPort = authServerPort;
+  }
+
+  public Boolean getPickNFSHostFromConfig() {
+    return pickNFSHostFromConfig;
   }
 
   public String getNfsServerHost() {

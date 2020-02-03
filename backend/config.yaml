@@ -9,8 +9,8 @@ springServer:
 artifactStoreConfig:
   artifactStoreType: NFS #S3, GCP, NFS
   NFS:
-    nfsServerHost: modeldb-backend
-    nfsServerPort: 8086
+    pickNFSHostFromConfig: true
+    nfsServerHost: modeldb-backend:8086
     nfsUrlProtocol: http
     nfsRootPath: /tmp/
     artifactEndpoint:

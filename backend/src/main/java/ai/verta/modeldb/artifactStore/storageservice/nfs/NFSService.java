@@ -178,7 +178,7 @@ public class NFSService implements ArtifactStoreService {
         ModelDBAuthInterceptor.METADATA_INFO
             .get()
             .get(Metadata.Key.of("x-forwarded-host", Metadata.ASCII_STRING_MARSHALLER));
-    if (host == null || host.isEmpty()) {
+    if (host == null || host.isEmpty() || app.getPickNFSHostFromConfig()) {
       host = app.getNfsServerHost();
     }
 

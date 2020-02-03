@@ -20,8 +20,8 @@ public interface ModelDBConstants {
   String HOST = "host";
   String HTTPS_STR = "https";
   String NFS = "NFS";
+  String PICK_NFS_HOST_FROM_CONFIG = "pickNFSHostFromConfig";
   String NFS_ROOT_PATH = "nfsRootPath";
-  String NFS_SERVER_PORT = "nfsServerPort";
   String NFS_SERVER_HOST = "nfsServerHost";
   String NFS_URL_PROTOCOL = "nfsUrlProtocol";
   String PATH = "path";
