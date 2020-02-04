@@ -4,6 +4,7 @@ import ai.verta.common.KeyValue;
 import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
+import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.uac.CollectTelemetry;
 import com.google.api.client.http.HttpMethods;
 import com.google.protobuf.Value;
@@ -63,7 +64,7 @@ public class TelemetryCron extends TimerTask {
         httpClient.setRequestProperty("grpc-metadata-source", "PythonClient");
 
         try (OutputStream os = httpClient.getOutputStream()) {
-          collectTelemetry.writeTo(os);
+          os.write(ModelDBUtils.getStringFromProtoObject(collectTelemetry).getBytes());
         }
 
         int responseCode = httpClient.getResponseCode();
