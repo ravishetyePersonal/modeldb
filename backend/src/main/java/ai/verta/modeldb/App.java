@@ -531,7 +531,7 @@ public class App implements ApplicationContextAware {
     if (optIn) {
       // creating an instance of task to be scheduled
       TimerTask task = new TelemetryCron(consumer);
-      ModelDBUtils.scheduleTask(task, frequency, TimeUnit.SECONDS);
+      ModelDBUtils.scheduleTask(task, frequency, TimeUnit.HOURS);
       LOGGER.info("Telemetry scheduled successfully");
     } else {
       LOGGER.info("Telemetry opt out by user");
