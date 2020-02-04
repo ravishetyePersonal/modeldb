@@ -2,6 +2,11 @@ import pytest
 
 import six
 
+import os
+import shutil
+import tempfile
+import time
+
 
 class TestKeras:
     def test_sequential_api(self, experiment_run):
@@ -202,6 +207,111 @@ class TestTensorFlow:
         linear_est.train(train_input_fn, hooks=[VertaHook(experiment_run, every_n_steps=1)])
 
         assert 'loss' in experiment_run.get_observations()
+
+    def test_tensorboard_with_keras(self, experiment_run):
+        verta_integrations_tensorflow = pytest.importorskip("verta.integrations.tensorflow")
+        log_tensorboard_events = verta_integrations_tensorflow.log_tensorboard_events
+
+        np = pytest.importorskip("numpy")
+        tf = pytest.importorskip("tensorflow")
+
+        samples = 5
+        num_classes = 10
+        X_train = np.random.random((samples, samples, samples))
+        y_train = np.random.randint(num_classes, size=(samples,))
+
+        model = tf.keras.models.Sequential([
+            tf.keras.layers.Flatten(input_shape=(samples, samples)),
+            tf.keras.layers.Dense(512, activation='relu'),
+            tf.keras.layers.Dropout(0.2),
+            tf.keras.layers.Dense(10, activation='softmax')
+        ])
+
+        model.compile(
+            optimizer='adam',
+            loss='sparse_categorical_crossentropy',
+            metrics=['accuracy'],
+        )
+
+        log_dir = tempfile.mkdtemp()
+
+        try:
+            model.fit(
+                X_train, y_train,
+                epochs=5,
+                validation_data=(X_train, y_train),
+                callbacks=[tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)],
+            )
+
+            log_tensorboard_events(experiment_run, log_dir)
+
+            assert experiment_run.get_observations()
+        finally:
+            shutil.rmtree(log_dir)
+            tf.compat.v1.reset_default_graph()
+
+    def test_tensorboard_with_tf1X(self, experiment_run):
+        verta_integrations_tensorflow = pytest.importorskip("verta.integrations.tensorflow")
+        log_tensorboard_events = verta_integrations_tensorflow.log_tensorboard_events
+
+        tf = pytest.importorskip("tensorflow.compat.v1")
+        np = pytest.importorskip("numpy")
+
+        with tf.Graph().as_default():
+            shape = (5, 5)
+            x = tf.placeholder(tf.float64, shape=shape)
+            mean = tf.reduce_mean(x)
+            tf.summary.scalar("mean", mean)
+            merged_summary_op = tf.summary.merge_all()
+            init = tf.global_variables_initializer()
+
+            log_dir = tempfile.mkdtemp()
+
+            try:
+                with tf.Session() as sess:
+                    sess.run(init)
+
+                    summary_writer = tf.summary.FileWriter(log_dir, graph=sess.graph)
+
+                    for i in range(5):
+                        data = np.random.random(shape)
+                        _ = sess.run(mean, feed_dict={x: data})
+
+                        summary = sess.run(merged_summary_op, feed_dict={x: data})
+                        summary_writer.add_summary(summary, i)
+                        time.sleep(.1)
+                    summary_writer.flush()
+                    summary_writer.close()
+
+                    log_tensorboard_events(experiment_run, log_dir)
+
+                    assert experiment_run.get_observations()
+            finally:
+                shutil.rmtree(log_dir)
+
+    def test_tensorboard_with_tf2X(self, experiment_run):
+        verta_integrations_tensorflow = pytest.importorskip("verta.integrations.tensorflow")
+        log_tensorboard_events = verta_integrations_tensorflow.log_tensorboard_events
+
+        tf = pytest.importorskip("tensorflow", minversion="2.0.0", reason="only applicable to TF 2.X")
+        np = pytest.importorskip("numpy")
+
+        log_dir = tempfile.mkdtemp()
+
+        try:
+            writer = tf.summary.create_file_writer(log_dir)
+            with writer.as_default():
+                for step in range(5):
+                    tf.summary.scalar("my_metric", np.random.random(), step=step)
+                    time.sleep(.1)
+                writer.flush()
+                writer.close()
+
+            log_tensorboard_events(experiment_run, log_dir)
+
+            assert experiment_run.get_observations()
+        finally:
+            shutil.rmtree(log_dir)
 
 
 class TestXGBoost:
