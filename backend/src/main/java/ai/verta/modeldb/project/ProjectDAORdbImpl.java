@@ -1,19 +1,19 @@
 package ai.verta.modeldb.project;
 
+import ai.verta.common.KeyValue;
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.App;
 import ai.verta.modeldb.Artifact;
 import ai.verta.modeldb.CodeVersion;
 import ai.verta.modeldb.Experiment;
 import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.FindProjects;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBMessages;
 import ai.verta.modeldb.OperatorEnum;
 import ai.verta.modeldb.Project;
 import ai.verta.modeldb.ProjectVisibility;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;

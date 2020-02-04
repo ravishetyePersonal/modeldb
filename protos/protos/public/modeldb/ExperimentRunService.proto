@@ -4,6 +4,7 @@ package ai.verta.modeldb;
 
 option java_multiple_files = true;
 
+import "protos/public/common/CommonService.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
@@ -28,11 +29,11 @@ message ExperimentRun {
     string parent_id = 12;
 
     repeated string tags = 20;
-    repeated KeyValue attributes = 21;
-    repeated KeyValue hyperparameters = 22;
+    repeated common.KeyValue attributes = 21;
+    repeated common.KeyValue hyperparameters = 22;
     repeated Artifact artifacts = 23;
     repeated Artifact datasets = 24;
-    repeated KeyValue metrics = 25;
+    repeated common.KeyValue metrics = 25;
     repeated Observation observations = 26;
     repeated Feature features = 27;
     string job_id = 28;
@@ -42,7 +43,7 @@ message ExperimentRun {
 // observations with the same key are not overwritten, the are appended to a list
 message Observation {
     oneof oneOf {
-        KeyValue attribute = 1;
+        common.KeyValue attribute = 1;
         Artifact artifact = 2;
     }
     int64 timestamp = 3;
@@ -63,11 +64,11 @@ message CreateExperimentRun {
     string parent_id = 12;
 
     repeated string tags = 20;
-    repeated KeyValue attributes = 21;
-    repeated KeyValue hyperparameters = 22;
+    repeated common.KeyValue attributes = 21;
+    repeated common.KeyValue hyperparameters = 22;
     repeated Artifact artifacts = 23;
     repeated Artifact datasets = 24;
-    repeated KeyValue metrics = 25;
+    repeated common.KeyValue metrics = 25;
     repeated Observation observations = 26;
     repeated Feature features = 27;
 
@@ -186,7 +187,7 @@ message DeleteExperimentRunTag {
 // attributes
 message AddExperimentRunAttributes {
     string id = 1;
-    repeated KeyValue attributes = 2;
+    repeated common.KeyValue attributes = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -254,7 +255,7 @@ message GetObservations {
 // metric
 message LogMetric {
     string id = 1;
-    KeyValue metric = 2;
+    common.KeyValue metric = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -264,7 +265,7 @@ message LogMetric {
 // metrics
 message LogMetrics {
     string id = 1;
-    repeated KeyValue metrics = 2;
+    repeated common.KeyValue metrics = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -275,7 +276,7 @@ message GetMetrics {
     string id = 1;
 
     message Response {
-        repeated KeyValue metrics = 1;
+        repeated common.KeyValue metrics = 1;
     }
 }
 
@@ -341,7 +342,7 @@ message DeleteArtifact {
 // hyperparameter
 message LogHyperparameter {
     string id = 1;
-    KeyValue hyperparameter = 2;
+    common.KeyValue hyperparameter = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -351,7 +352,7 @@ message LogHyperparameter {
 // hyperparameters
 message LogHyperparameters {
     string id = 1;
-    repeated KeyValue hyperparameters = 2;
+    repeated common.KeyValue hyperparameters = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -362,14 +363,14 @@ message GetHyperparameters {
     string id = 1;
 
     message Response {
-        repeated KeyValue hyperparameters = 1;
+        repeated common.KeyValue hyperparameters = 1;
     }
 }
 
 // attribute
 message LogAttribute {
     string id = 1;
-    KeyValue attribute = 2;
+    common.KeyValue attribute = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -379,7 +380,7 @@ message LogAttribute {
 // attributes
 message LogAttributes {
     string id = 1;
-    repeated KeyValue attributes = 2;
+    repeated common.KeyValue attributes = 2;
 
     message Response {
         ExperimentRun experiment_run = 1;

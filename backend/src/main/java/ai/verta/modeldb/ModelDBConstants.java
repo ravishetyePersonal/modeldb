@@ -86,7 +86,13 @@ public interface ModelDBConstants {
   String WORKSPACE_TYPE = "workspace_type";
   String PROJECTS = "projects";
   String EXPERIMENTS = "experiments";
-  String EXPERIMENT_RUNS = "experimentRuns";
+  String EXPERIMENT_RUNS = "experimentruns";
+  String DATASETS_VERSIONS = "datasetversions";
+  String COMMENTS = "comments";
+  String CODEVERSIONS = "codeversions";
+  String GIT_SNAPSHOTS = "gitsnapshots";
+  String KEY_VALUES = "keyvalues";
+  String TAG_MAPPINGS = "tagmappings";
 
   // Common verb constants
   String ORDER_ASC = "asc";
@@ -180,4 +186,6 @@ public interface ModelDBConstants {
   String OPT_IN = "opt_in";
   String TELEMENTRY_FREQUENCY = "frequency"; // frequency to share data in hours
   String TELEMETRY_CONSUMER = "consumer";
+  String TELEMETRY_CONSUMER_URL =
+      "https://app.verta.ai/api/v1/uac-proxy/telemetry/collectTelemetry";
 }

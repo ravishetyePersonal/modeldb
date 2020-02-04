@@ -37,7 +37,7 @@ import ai.verta.modeldb.job.JobServiceImpl;
 import ai.verta.modeldb.project.ProjectDAO;
 import ai.verta.modeldb.project.ProjectDAORdbImpl;
 import ai.verta.modeldb.project.ProjectServiceImpl;
-import ai.verta.modeldb.telemetry.TelemetryUtils;
+import ai.verta.modeldb.telemetry.TelemetryCron;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import io.grpc.Server;
@@ -48,8 +48,6 @@ import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
 import java.util.Map;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
@@ -516,14 +514,14 @@ public class App implements ApplicationContextAware {
 
   public static void initializeTelemetryBasedOnConfig(Map<String, Object> propertiesMap) {
     boolean optIn = true;
-    Integer frequency = 1;
+    int frequency = 1;
     String consumer = null;
     if (propertiesMap.containsKey(ModelDBConstants.TELEMETRY)) {
       Map<String, Object> telemetryMap =
           (Map<String, Object>) propertiesMap.get(ModelDBConstants.TELEMETRY);
       if (telemetryMap != null) {
         optIn = (boolean) telemetryMap.getOrDefault(ModelDBConstants.OPT_IN, true);
-        frequency = (Integer) telemetryMap.getOrDefault(ModelDBConstants.TELEMENTRY_FREQUENCY, 1);
+        frequency = (int) telemetryMap.getOrDefault(ModelDBConstants.TELEMENTRY_FREQUENCY, 1);
         if (telemetryMap.containsKey(ModelDBConstants.TELEMETRY_CONSUMER)) {
           consumer = (String) telemetryMap.get(ModelDBConstants.TELEMETRY_CONSUMER);
         }
@@ -532,13 +530,11 @@ public class App implements ApplicationContextAware {
 
     if (optIn) {
       // creating an instance of task to be scheduled
-      TimerTask task = new TelemetryUtils(consumer);
-      // scheduling the timer instance
-      ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.scheduleAtFixedRate(task, frequency, frequency, TimeUnit.HOURS);
+      TimerTask task = new TelemetryCron(consumer);
+      ModelDBUtils.scheduleTask(task, frequency, TimeUnit.SECONDS);
       LOGGER.info("Telemetry scheduled successfully");
     } else {
-      LOGGER.info("Telemetry opt by user");
+      LOGGER.info("Telemetry opt out by user");
     }
   }
 

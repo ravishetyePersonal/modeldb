@@ -1,5 +1,6 @@
 package ai.verta.modeldb.utils;
 
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.Artifact;
 import ai.verta.modeldb.CollaboratorUserInfo;
 import ai.verta.modeldb.CollaboratorUserInfo.Builder;
@@ -7,7 +8,6 @@ import ai.verta.modeldb.GetHydratedProjects;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.OperatorEnum;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.collaborator.CollaboratorBase;
@@ -44,6 +44,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -385,5 +389,11 @@ public class ModelDBUtils {
       workspaceQueries.add(workspaceTypePredicates);
     }
     return workspaceQueries;
+  }
+
+  public static void scheduleTask(TimerTask task, int frequency, TimeUnit timeUnit) {
+    // scheduling the timer instance
+    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    executor.scheduleAtFixedRate(task, frequency, frequency, timeUnit);
   }
 }

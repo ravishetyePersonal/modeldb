@@ -1,6 +1,6 @@
 package ai.verta.modeldb.entities;
 
-import ai.verta.modeldb.KeyValue;
+import ai.verta.common.KeyValue;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;

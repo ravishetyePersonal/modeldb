@@ -1,5 +1,7 @@
 package ai.verta.modeldb.dataset;
 
+import ai.verta.common.KeyValue;
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.AddDatasetAttributes;
 import ai.verta.modeldb.AddDatasetTags;
 import ai.verta.modeldb.App;
@@ -24,7 +26,6 @@ import ai.verta.modeldb.GetDatasetById;
 import ai.verta.modeldb.GetDatasetByName;
 import ai.verta.modeldb.GetExperimentRunByDataset;
 import ai.verta.modeldb.GetTags;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.LastExperimentByDatasetId;
 import ai.verta.modeldb.ModelDBAuthInterceptor;
@@ -38,7 +39,6 @@ import ai.verta.modeldb.UpdateDatasetAttributes;
 import ai.verta.modeldb.UpdateDatasetDescription;
 import ai.verta.modeldb.UpdateDatasetName;
 import ai.verta.modeldb.UpdateProjectName;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
