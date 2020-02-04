@@ -1688,7 +1688,7 @@ class ExperimentRun(_ModelDBEntity):
         run_msg = response_msg.experiment_run
         return '\n'.join((
             "name: {}".format(run_msg.name),
-            "url: {}://{}/project/{}/exp-runs/{}".format(self._conn.scheme, self._conn.socket, run_msg.project_id, self.id),
+            "url: {}://{}/{}/projects/{}/exp-runs/{}".format(self._conn.scheme, self._conn.socket, self.workspace, run_msg.project_id, self.id),
             "description: {}".format(run_msg.description),
             "tags: {}".format(run_msg.tags),
             "attributes: {}".format(_utils.unravel_key_values(run_msg.attributes)),
@@ -1701,6 +1701,51 @@ class ExperimentRun(_ModelDBEntity):
             "artifact keys: {}".format(_utils.unravel_artifacts(run_msg.artifacts)),
         ))
 
+    @property
+    def workspace(self):
+        response = _utils.make_request(
+            "GET",
+            "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunById".format(self._conn.scheme, self._conn.socket),
+            self._conn, params={'id': self.id},
+        )
+        _utils.raise_for_http_error(response)
+
+        proj_id = response.json()['experiment_run']['project_id']
+        response = _utils.make_request(
+            "GET",
+            "{}://{}/api/v1/modeldb/project/getProjectById".format(self._conn.scheme, self._conn.socket),
+            self._conn, params={'id': proj_id},
+        )
+        _utils.raise_for_http_error(response)
+
+        project_json = response.json()['project']
+        if 'workspace_id' not in project_json:
+            # workspace is OSS default
+            return "personal"
+        else:
+            workspace_id = project_json['workspace_id']
+        # try getting organization
+        response = _utils.make_request(
+            "GET",
+            "{}://{}/api/v1/uac-proxy/organization/getOrganizationById".format(self._conn.scheme, self._conn.socket),
+            self._conn, params={'org_id': workspace_id},
+        )
+        try:
+            _utils.raise_for_http_error(response)
+        except requests.HTTPError:
+            # try getting user
+            response = _utils.make_request(
+                "GET",
+                "{}://{}/api/v1/uac-proxy/uac/getUser".format(self._conn.scheme, self._conn.socket),
+                self._conn, params={'user_id': workspace_id},
+            )
+            _utils.raise_for_http_error(response)
+
+            # workspace is user
+            return response.json()['verta_info']['username']
+        else:
+            # workspace is organization
+            return response.json()['organization']['name']
 
     @property
     def name(self):
