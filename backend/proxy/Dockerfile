@@ -6,8 +6,8 @@ WORKDIR /tmp/build
 ADD protos/gen/go ./protos/gen/go
 ADD go.mod .
 ADD go.sum .
-ADD backend/proxy ./backend/proxy
-RUN go build -o /proxy ./backend/proxy
+COPY backend/proxy/proxy.go ./backend/proxy/proxy.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /proxy ./backend/proxy
 
 FROM scratch
 COPY --from=builder /proxy /app/bin/proxy
