@@ -1,0 +1,12 @@
+# Default values for modeldb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  modeldbBackendProxyImage:  vertaaiofficial/modeldb-proxy:latest
+  modeldbBackendImage: vertaaiofficial/modeldb-backend:latest
+  modeldbDatabaseImage: postgres
+  modeldbWebappImage: vertaaiofficial/modeldb-frontend:latest
+service:
+  modeldbWebappService: LoadBalancer
+modeldbPostgresPvcSize: 20Gi
+modeldbArtifactStorePvcSize: 1Gi
