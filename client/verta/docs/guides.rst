@@ -34,3 +34,4 @@ Guides
     Workflow Logging <guides/workflow>
     Data Versioning <guides/dataset>
     Class Models <guides/class>
+    Examples <guides/examples>
