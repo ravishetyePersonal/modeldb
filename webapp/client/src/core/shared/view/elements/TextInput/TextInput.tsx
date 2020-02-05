@@ -64,7 +64,9 @@ class TextInput extends React.PureComponent<ILocalProps, ILocalState> {
           <div className={styles.left_content}>{leftContent}</div>
         )}
         <input
-          className={styles.field}
+          className={cn(styles.field, {
+            [styles.disabled]: isDisabled === true,
+          })}
           ref={onInputRef}
           type="input"
           defaultValue={defaultValue}

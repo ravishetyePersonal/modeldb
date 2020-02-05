@@ -1,6 +1,7 @@
 import { ClickAwayListener } from '@material-ui/core';
 import cn from 'classnames';
 import { bind } from 'decko';
+import * as R from 'ramda';
 import * as React from 'react';
 
 import Button from '../Button/Button';
@@ -25,6 +26,8 @@ interface IAction {
 interface ILocalState {
   isShowOtherActions: boolean;
 }
+
+const caretDownIcon = <Icon type="caret-down" />;
 
 class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
   public state: ILocalState = { isShowOtherActions: false };
@@ -61,6 +64,7 @@ class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
             dataTest={primaryAction.dataTest}
             isLoading={isLoading}
             disabled={disabled}
+            fullWidth={true}
             onClick={this.makeOnActionClick(primaryAction)}
           >
             {primaryAction.label}
@@ -74,41 +78,48 @@ class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
             fullWidth={true}
             onClick={this.toggleOtherActions}
           >
-            <Icon type="caret-down" />
+            {caretDownIcon}
           </Button>
         </div>
-        <ClickAwayListener onClickAway={this.closeOtherActions}>
-          <div
-            className={cn(styles.otherActions, {
-              [styles.opened]: isShowOtherActions,
-            })}
-          >
-            {otherActions.map((action, i) => (
-              <div
-                key={i}
-                className={styles.otherAction}
-                onClick={this.makeOnActionClick(action)}
-              >
-                {action.label}
-              </div>
-            ))}
-          </div>
-        </ClickAwayListener>
+        {isShowOtherActions && (
+          <ClickAwayListener onClickAway={this.closeOtherActions}>
+            <div
+              className={cn(styles.otherActions, {
+                [styles.opened]: isShowOtherActions,
+              })}
+            >
+              {otherActions.map((action, i) => (
+                <div
+                  key={i}
+                  className={styles.otherAction}
+                  onClick={this.makeOnActionClick(action)}
+                >
+                  {action.label}
+                </div>
+              ))}
+            </div>
+          </ClickAwayListener>
+        )}
       </div>
     );
   }
 
-  private makeOnActionClick(action: IAction) {
-    return () => {
-      action.onApply();
-      if (this.state.isShowOtherActions) {
-        this.closeOtherActions();
-      }
-    };
-  }
+  // tslint:disable-next-line: member-ordering
+  private makeOnActionClick = R.memoizeWith(
+    action => action.label,
+    (action: IAction) => {
+      return () => {
+        action.onApply();
+        if (this.state.isShowOtherActions) {
+          this.closeOtherActions();
+        }
+      };
+    }
+  );
 
   @bind
   private toggleOtherActions() {
+    console.log('toggle');
     if (this.state.isShowOtherActions) {
       this.closeOtherActions();
     } else {
@@ -121,15 +132,9 @@ class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
   }
   @bind
   private closeOtherActions() {
+    console.log('close');
     this.setState({ isShowOtherActions: false });
   }
 }
-
-const changeTranslate3d = (
-  args: { x: string },
-  transform3d: string
-): string => {
-  return transform3d.replace(/translate3d\(.+?,/, `translate3d(${args.x},`);
-};
 
 export default SplitButton;

@@ -1,3 +1,3 @@
-import ShowCommentsWithAuthorButton from './ShowCommentsWithAuthorButton/ShowCommentsWithAuthorButton';
-
-export { ShowCommentsWithAuthorButton };
+export {
+  default as ShowCommentsButton,
+} from './ShowCommentsButton/ShowCommentsButton';

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import ScrollableContainer from '../ScrollableContainer/ScrollableContainer';
+import ScrollableContainer from 'core/shared/view/elements/ScrollableContainer/ScrollableContainer';
+
 import styles from './Collapsable.module.css';
 
 interface ILocalProps {

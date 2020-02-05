@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 ROOT_DIR=$PWD
 BACKEND_DIR='backend'
 BACKEND_PROXY_DIR='backend/proxy'

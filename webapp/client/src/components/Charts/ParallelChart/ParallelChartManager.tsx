@@ -4,7 +4,7 @@ import React from 'react';
 import Collapsable from 'core/shared/view/elements/Collapsable/Collapsable';
 import ChartConfigDropdown, {
   IOption,
-} from 'core/shared/view/elements/Dropdown/ChartConfigDropdown/ChartConfigDropdown';
+} from 'core/shared/view/elements/ChartConfigDropdown/ChartConfigDropdown';
 import { Icon } from 'core/shared/view/elements/Icon/Icon';
 
 import { IParallelChartSelection } from '../shared/types/chartConfiguration';

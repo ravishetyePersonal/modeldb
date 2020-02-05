@@ -45,12 +45,14 @@ class ExperimentWidget extends React.PureComponent<AllProps> {
                 <div className={styles.title} data-test="experiment-name">
                   {experiment.name}
                 </div>
-                <div onClick={this.preventOnViewExprRuns}>
-                  <ProjectEntityDescriptionManager
-                    entityId={experiment.id}
-                    description={experiment.description}
-                    entityType={'experiment'}
-                  />
+                <div>
+                  <span onClick={this.preventOnViewExprRuns}>
+                    <ProjectEntityDescriptionManager
+                      entityId={experiment.id}
+                      description={experiment.description}
+                      entityType={'experiment'}
+                    />
+                  </span>
                 </div>
               </div>
               <div className={styles.tags_block}>

@@ -174,4 +174,34 @@
             <column name="workspace_type" type="int" />
         </createIndex>
     </changeSet>
+	<changeSet id="19-create-tables-lineage" author="lezhevg">
+		<createTable catalogName="modeldb"
+			schemaName="public"
+			tableName="lineage">
+			<column name="input_external_id" type="varchar(256)">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="input_type" type="int4">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="output_external_id" type="varchar(256)">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="output_type" type="int4">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet id="20-create-indexes-lineage" author="lezhevg">
+		<createIndex catalogName="cat" indexName="p_input_lineage"
+			schemaName="public" tableName="lineage">
+			<column name="input_external_id" type="varchar(256)" />
+			<column name="input_type" type="int4" />
+		</createIndex>
+		<createIndex catalogName="cat" indexName="p_output_lineage"
+			schemaName="public" tableName="lineage">
+			<column name="output_external_id" type="varchar(256)" />
+			<column name="output_type" type="int4" />
+		</createIndex>
+	</changeSet>
 </databaseChangeLog>

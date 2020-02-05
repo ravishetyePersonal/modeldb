@@ -5,12 +5,12 @@ import logo from './images/Verta_logo.svg';
 import styles from './LayoutHeader.module.css';
 
 interface ILocalProps {
-  userBar: React.ReactNode;
+  rightContent: React.ReactNode;
 }
 
 class LayoutHeader extends React.PureComponent<ILocalProps> {
   public render() {
-    const { userBar } = this.props;
+    const { rightContent } = this.props;
     return (
       <header className={styles.header}>
         <div className={styles.logo}>
@@ -18,7 +18,9 @@ class LayoutHeader extends React.PureComponent<ILocalProps> {
             <img src={logo} />
           </Link>
         </div>
-        {userBar && <div className={styles.userBar}>{userBar}</div>}
+        {rightContent && (
+          <div className={styles.rightContent}>{rightContent}</div>
+        )}
       </header>
     );
   }

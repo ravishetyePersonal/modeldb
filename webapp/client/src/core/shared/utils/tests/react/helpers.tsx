@@ -2,6 +2,7 @@ import { shallow, mount, ShallowWrapper, ReactWrapper } from 'enzyme';
 import * as R from 'ramda';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
+import { flushAllPromisesFor } from '../integrations/flushAllPromisesFor';
 
 export function makeShallowRenderer<Props = {}, State = {}>(
   Component: React.ComponentClass<Props, State>,
@@ -63,8 +64,13 @@ export const makeInputHelpers = (
 };
 
 export const makeAsyncInputHelpersByName = (name: string) => {
-  const getInput = (component: ReactWrapper) =>
-    component.find(`input[name="${name}"]`);
+  const getInput = (component: ReactWrapper) => {
+    const inputNode = component.find(`input[name="${name}"]`);
+    if (inputNode.length === 0) {
+      return component.find(`textarea[name="${name}"]`);
+    }
+    return inputNode;
+  };
   const change = async (value: string, component: ReactWrapper) => {
     await act(async () => {
       getInput(component).simulate('change', { target: { name, value } });
@@ -85,6 +91,18 @@ export const makeAsyncInputHelpersByName = (name: string) => {
     getInput(component).prop('value');
 
   return { change, blur, changeAndBlur, getValue, getInput };
+};
+
+export const submitAsyncForm = async (
+  nativeFormWrapper: ReactWrapper<any, any, React.Component<{}, {}, any>>,
+  component: ReactWrapper
+) => {
+  await act(async () => {
+    nativeFormWrapper.simulate('submit', { preventDefault: () => {} });
+    if (component) {
+      await flushAllPromisesFor(component);
+    }
+  });
 };
 
 export const makeAsyncCheckboxHelpersByName = (name: string) => {

@@ -18,6 +18,7 @@
 .desc_action_block {
   display: inline-flex;
   line-height: 12px;
+  margin-left: 10px;
 }
 
 .desc_readonly {
@@ -28,7 +29,6 @@
   font-size: 12px;
   color: var(--main-color2);
   opacity: 0.8;
-  margin: 0 10px;
   display: inline;
   cursor: pointer;
 }
@@ -41,7 +41,6 @@
   font-size: 14px;
   color: var(--main-color2);
   opacity: 0.8;
-  margin: 0 10px;
   display: inline;
   cursor: pointer;
 }

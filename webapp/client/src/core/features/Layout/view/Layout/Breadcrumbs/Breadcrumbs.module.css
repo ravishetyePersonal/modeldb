@@ -12,13 +12,12 @@
 }
 
 .breadcrumb_item {
-  display: inline;
+  display: inline-block;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
   color: #777777;
   outline: none;
-  text-transform: uppercase;
 }
 .breadcrumb_item:hover {
   color: var(--main-text-color1);

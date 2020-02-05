@@ -9,13 +9,11 @@ springServer:
 artifactStoreConfig:
   artifactStoreType: NFS #S3, GCP, NFS
   NFS:
-    pickNFSHostFromConfig: true
-    nfsServerHost: modeldb-backend:8086
     nfsUrlProtocol: http
-    nfsRootPath: /tmp/
+    nfsRootPath: /artifact-store/
     artifactEndpoint:
-      getArtifact: "/v1/artifact1/getArtifact"
-      storeArtifact: "/v1/artifact/storeArtifact"
+      getArtifact: "api/v1/artifact/getArtifact"
+      storeArtifact: "api/v1/artifact/storeArtifact"
 
 # Database settings (type mongodb, couchbasedb, relational etc..)
 database:
@@ -48,9 +46,6 @@ test:
 artifactStore_grpcServer:
   host: modeldb-backend
   port: 8086
-feature-flag:
-  disabled-authz: false
-  disabled-mdb-collaborator: true
 
 telemetry:
   opt_in: true

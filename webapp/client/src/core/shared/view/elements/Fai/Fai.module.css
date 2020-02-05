@@ -18,9 +18,14 @@
   background-color: var(--grey-lightest) !important;
   color: var(--grey-light) !important;
   cursor: default !important;
+  pointer-events: none;
 }
 .fai.disabled i {
   color: var(--grey-light) !important;
+}
+.fai.disabled path,
+.fai.disabled polygon {
+  fill: var(--grey-light);
 }
 
 .active {
@@ -31,10 +36,16 @@
   color: var(--bg-color2);
   border-color: var(--bg-color2);
 }
+.theme_blue path,
+.theme_blue polygon {
+  fill: var(--bg-color2);
+}
 .theme_blue:hover {
-  color: #008271;
-  border-color: var(--bg-color2);
-  background-color: var(--bg-color1);
+  background: var(--bg-color2);
+}
+.theme_blue:hover path,
+.theme_blue:hover polygon {
+  fill: #ffffff;
 }
 
 .theme_red {
@@ -57,10 +68,18 @@
   color: var(--text-color4);
   border-color: var(--text-color4);
 }
+.theme_grey path,
+.theme_grey polygon {
+  fill: var(--text-color4);
+}
 .theme_grey:hover {
   border-color: var(--main-color3);
   color: var(--main-color3);
   background-color: var(--main-color2);
+}
+.theme_grey:hover path,
+.theme_grey:hover polygon {
+  fill: var(--main-color3);
 }
 
 .icon {

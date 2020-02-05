@@ -1,9 +1,12 @@
 ## Developer Installation
 
 From the root directory of the repository, run these commands:
-1. `cd verta/`
-1. `pip install -r requirements.txt`
-   1. This installs Verta from the local source, as well as packages relating to PyPI publication, unit testing, and documentation.
+1. `cd client/verta/`
+1. `pip install -e .`
+   1. This installs Verta from the local source in "editable" mode, allowing the Client code to be
+      changed and re-imported without needing to reinstall the package.
+1. (optional) `pip install -r requirements.txt`
+   1. This installs packages relating to PyPI publication, unit testing, and documentation.
 
 ### Troubleshooting
 

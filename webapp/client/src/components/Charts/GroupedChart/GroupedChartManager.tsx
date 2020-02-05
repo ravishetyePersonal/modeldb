@@ -1,11 +1,12 @@
 import * as d3 from 'd3';
 import React from 'react';
 
-import Collapsable from 'core/shared/view/elements/Collapsable/Collapsable';
 import ChartConfigDropdown, {
   IOption,
-} from 'core/shared/view/elements/Dropdown/ChartConfigDropdown/ChartConfigDropdown';
+} from 'core/shared/view/elements/ChartConfigDropdown/ChartConfigDropdown';
+import Collapsable from 'core/shared/view/elements/Collapsable/Collapsable';
 import { Icon } from 'core/shared/view/elements/Icon/Icon';
+import { cssTheme } from 'core/shared/styles/theme';
 
 import { IGroupedChartSelection } from '../shared/types/chartConfiguration';
 import GroupedChart from './chart/GroupedChart';
@@ -119,7 +120,7 @@ class GroupedChartManager extends React.Component<ILocalProps, ILocalState> {
   public colorScale = d3
     .scaleOrdinal()
     .range([
-      '#6863ff',
+      cssTheme.bgColor2,
       '#CBE11E',
       '#1ECBE1',
       '#E11ECB',

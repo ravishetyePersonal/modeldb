@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch, bindActionCreators } from 'redux';
 
-import { selectCurrentContextAppliedFilters } from 'core/features/filter';
 import { IFilterData } from 'core/features/filter/Model';
 import PageCommunicationError from 'core/shared/view/elements/Errors/PageCommunicationError/PageCommunicationError';
 import Preloader from 'core/shared/view/elements/Preloader/Preloader';
@@ -18,6 +17,7 @@ import {
   selectLazyChartData,
   selectLoadingLazyChartData,
 } from 'store/experimentRuns';
+import { selectCurrentContextAppliedFilters } from 'core/features/filter';
 import { IApplicationState } from 'store/store';
 
 import AggregationChartManager from './AggregationChart/AggregationChartManager';

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { ShowCommentsWithAuthorButton } from 'features/comments';
+import { ShowCommentsButton } from 'features/comments';
 import CodeVersion from 'components/CodeVersion/CodeVersion';
 import ProjectEntityDescriptionManager from 'components/DescriptionManager/ProjectEntityDescriptionManager/ProjectEntityDescriptionManager';
 import Artifacts from 'components/ModelRecordProps/Artifacts/Artifacts/Artifacts';
@@ -194,7 +194,7 @@ class ModelRecordView extends React.PureComponent<AllProps> {
               style={{ marginTop: '5px' }}
             >
               <div className={styles.meta_label_container}>Comments</div>
-              <ShowCommentsWithAuthorButton
+              <ShowCommentsButton
                 entityInfo={{ id: data.id, name: data.name }}
                 buttonType="fai"
               />

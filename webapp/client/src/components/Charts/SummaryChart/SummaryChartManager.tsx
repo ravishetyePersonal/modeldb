@@ -4,7 +4,7 @@ import React from 'react';
 
 import ChartConfigDropdown, {
   IOption,
-} from 'core/shared/view/elements/Dropdown/ChartConfigDropdown/ChartConfigDropdown';
+} from 'core/shared/view/elements/ChartConfigDropdown/ChartConfigDropdown';
 
 import { ISummaryChartSelection } from '../shared/types/chartConfiguration';
 import { IGenericChartData, Category } from '../shared/types/chartDataTypes';

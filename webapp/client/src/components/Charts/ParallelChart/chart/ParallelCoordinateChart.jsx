@@ -5,6 +5,7 @@ import { withScientificNotationOrRounded } from 'core/shared/utils/formatters/nu
 import { getFormattedDateTime } from 'core/shared/utils/formatters/dateTime';
 import { errorMessageOnLayer } from 'components/Charts/shared/errorMessages';
 import ScrollableContainer from 'core/shared/view/elements/ScrollableContainer/ScrollableContainer';
+import { cssTheme } from 'core/shared/styles/theme';
 
 import ModelRecordCard from '../../ModelRecordCard/ModelRecordCard';
 import styles from '../ParallelChartManager.module.css';
@@ -20,7 +21,7 @@ let categoryAccessor,
 let colorScale = d3
   .scaleOrdinal()
   .range([
-    '#6863ff',
+    cssTheme.bgColor2,
     '#CBE11E',
     '#1ECBE1',
     '#E11ECB',

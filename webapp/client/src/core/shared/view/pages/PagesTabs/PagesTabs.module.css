@@ -29,14 +29,14 @@
   color: var(--main-text-color1);
 }
 .tabs a:hover {
-  border-bottom: var(--item-border-bottom-width) solid #514eb5;
+  border-bottom: var(--item-border-bottom-width) solid #0bdac0;
 }
 .tabs a:first-child {
   margin-left: 0;
 }
 
 .tabs .active {
-  border-bottom: var(--item-border-bottom-width) solid #514eb5;
+  border-bottom: var(--item-border-bottom-width) solid #0bdac0;
 }
 
 .rightContent {

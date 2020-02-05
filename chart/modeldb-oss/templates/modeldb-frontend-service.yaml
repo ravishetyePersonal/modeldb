@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    app: modeldb
+  name: modeldb-webapp
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: modeldb
+    tier: webapp
+  type: {{ .Values.service.modeldbWebappService }}

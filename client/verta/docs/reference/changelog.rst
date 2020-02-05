@@ -38,14 +38,14 @@ v0.13.19 (2020-01-08)
 New Features
 ^^^^^^^^^^^^
 - `enable overwriting code and dataset versions
-  <https://github.com/VertaAI/modeldb-client/pull/323>`_
+  <https://github.com/VertaAI/modeldb-client/pull/323>`__
 - `unpack tarballs in run.fetch_artifacts()
-  <https://github.com/VertaAI/modeldb-client/pull/316>`_
+  <https://github.com/VertaAI/modeldb-client/pull/316>`__
 
 Bug Fixes
 ^^^^^^^^^
 - `include virtual environment-like directories when automatically logging custom modules
-  <https://github.com/VertaAI/modeldb-client/pull/324>`_
+  <https://github.com/VertaAI/modeldb-client/pull/324>`__
 
 
 v0.13.18 (2019-12-12)
@@ -539,7 +539,7 @@ Internal Changes
 - `implement internal Configuration utility struct
   <https://github.com/VertaAI/modeldb-client/pull/134>`__
 - `add PyTorch example notebook
-  <https://github.com/VertaAI/modeldb-client/blob/master/workflows/examples/pytorch.ipynb>`__
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/pytorch.ipynb>`__
 - `implement internal utility for unwrapping directory paths into contained filepaths
   <https://github.com/VertaAI/modeldb-client/pull/124>`__
 - `implement internal utilities for reading Git information from the local filesystem

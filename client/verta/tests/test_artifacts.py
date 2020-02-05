@@ -164,7 +164,7 @@ class TestModels:
 
     def test_keras(self, seed, experiment_run, strs):
         np = pytest.importorskip("numpy")
-        tensorflow = pytest.importorskip("tensorflow")
+        tf = pytest.importorskip("tensorflow")
         from tensorflow import keras
 
         np.random.seed(seed)
@@ -196,6 +196,8 @@ class TestModels:
         assert len(net.weights) == len(retrieved_net.weights)
         # NOTE: weight states have weird shenanigans when model is saved
         # for weight, retrieved_weight in zip(net.weights, retrieved_net.weights):
+
+        tf.compat.v1.reset_default_graph()
 
     def test_function(self, experiment_run, strs, flat_lists, flat_dicts):
         key = strs[0]

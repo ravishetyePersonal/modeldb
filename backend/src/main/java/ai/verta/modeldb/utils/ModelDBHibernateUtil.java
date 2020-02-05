@@ -17,6 +17,7 @@ import ai.verta.modeldb.entities.FeatureEntity;
 import ai.verta.modeldb.entities.GitSnapshotEntity;
 import ai.verta.modeldb.entities.JobEntity;
 import ai.verta.modeldb.entities.KeyValueEntity;
+import ai.verta.modeldb.entities.LineageEntity;
 import ai.verta.modeldb.entities.ObservationEntity;
 import ai.verta.modeldb.entities.PathDatasetVersionInfoEntity;
 import ai.verta.modeldb.entities.ProjectEntity;
@@ -99,7 +100,8 @@ public class ModelDBHibernateUtil {
     CommentEntity.class,
     UserCommentEntity.class,
     ArtifactStoreMapping.class,
-    AttributeEntity.class
+    AttributeEntity.class,
+    LineageEntity.class
   };
 
   private ModelDBHibernateUtil() {}

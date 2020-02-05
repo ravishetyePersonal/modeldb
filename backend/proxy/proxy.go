@@ -33,6 +33,7 @@ func main() {
 		gw.RegisterHydratedServiceHandlerFromEndpoint,
 		gw.RegisterDatasetServiceHandlerFromEndpoint,
 		gw.RegisterDatasetVersionServiceHandlerFromEndpoint,
+		gw.RegisterLineageServiceHandlerFromEndpoint,
 	}
 	for i, endpoint := range endpoints {
 		if err := endpoint(context.Background(), mux, address, opts); err != nil {

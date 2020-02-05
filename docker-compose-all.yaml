@@ -6,14 +6,17 @@ services:
         build: .
         expose:
             - "8085"
+            - "8086"
         ports:
             - "8085:8085"
+            - "8086:8086"
         networks:
             - modeldb_network
         environment:
             - VERTA_MODELDB_CONFIG:/config/config.yaml
         volumes:
             - ./backend:/config/
+            - ./artifact-store:/artifact-store/
 
     modeldb-proxy:
         image: modeldb-proxy:latest
@@ -43,6 +46,8 @@ services:
             DEPLOYED: "yes"
             BACKEND_API_PROTOCOL: "http"
             BACKEND_API_DOMAIN: "modeldb-proxy:8080"
+            MDB_ADDRESS: http://modeldb-proxy:8080
+            ARTIFACTORY_ADDRESS: http://modeldb-backend:8086
         networks:
             - modeldb_network
 
