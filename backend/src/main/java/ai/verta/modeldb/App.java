@@ -469,7 +469,7 @@ public class App implements ApplicationContextAware {
         app.storeTypePathPrefix = "nfs://" + rootDir + ModelDBConstants.PATH_DELIMITER;
 
         app.pickNFSHostFromConfig =
-            (Boolean) nfsConfigMap.getOrDefault(ModelDBConstants.PICK_NFS_HOST_FROM_CONFIG, true);
+            (Boolean) nfsConfigMap.getOrDefault(ModelDBConstants.PICK_NFS_HOST_FROM_CONFIG, false);
         LOGGER.trace("NFS pick host from config flag : {}", app.pickNFSHostFromConfig);
         app.nfsServerHost =
             (String) nfsConfigMap.getOrDefault(ModelDBConstants.NFS_SERVER_HOST, "");

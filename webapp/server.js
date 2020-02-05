@@ -38,6 +38,7 @@ const apiHost = `${process.env.BACKEND_API_DOMAIN}`;
 // Since the cloud system is configured by hostname, change the request when it's going to AWS so
 // that it appears to be targeted to the right hostname instead of localhost:3000
 const hostnameApiSwitch = (req, res, next) => {
+  req.headers['x-forwarded-host'] = req.headers['host'];
   req.headers['original-host'] = req.headers['host'];
   req.headers['host'] = apiHost;
   next();
@@ -55,18 +56,33 @@ if (process.env.DEPLOYED === 'yes') {
   })
 
   // MDB starts with /v1, while /api is used by the API gateway
-  const docker_proxy = proxy({
-    target: apiAddress,
+  const mdb_proxy = proxy({
+    target: process.env.MDB_ADDRESS,
     pathRewrite: {'^/api/v1/modeldb' : '/v1'},
-    logLevel: "debug",
+    // logLevel: "debug",
     changeOrigin: false,
     ws: true,
   })
   app.use(
-    '/api/v1/*',
+    '/api/v1/modeldb/*',
     [disableCache, hostnameApiSwitch, printer],
     (req, res, next) => {
-      return docker_proxy(req, res, next);
+      return mdb_proxy(req, res, next);
+    }
+  );
+
+  const artifactory_proxy = proxy({
+    target: process.env.ARTIFACTORY_ADDRESS,
+    // pathRewrite: {'^/api/v1/artifact' : '/v1'},
+    // logLevel: "debug",
+    changeOrigin: false,
+    ws: true,
+  })
+  app.use(
+    '/api/v1/artifact/*',
+    [disableCache, hostnameApiSwitch, printer],
+    (req, res, next) => {
+      return artifactory_proxy(req, res, next);
     }
   );
 
