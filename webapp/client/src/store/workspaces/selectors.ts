@@ -31,8 +31,20 @@ export const selectCurrentWorkspaceNameOrDefault = (
     : defaultWorkspaceName;
 };
 
+export const selectCurrentWorkspaceOrDefault = (state: IApplicationState) => {
+  const params = routes.workspace.getMatch(window.location.pathname, false);
+  const defaultWorkspace = selectDefaultWorkspace(state);
+  const currentWorkspace =
+    params && selectWorkspaceByName(state, params.workspaceName);
+  return currentWorkspace ? currentWorkspace : defaultWorkspace;
+};
+
 export const selectDefaultWorkspaceName = (state: IApplicationState) => {
   return selectUserWorkspace(state).name;
+};
+
+export const selectDefaultWorkspace = (state: IApplicationState) => {
+  return selectUserWorkspace(state);
 };
 
 export const selectWorkspaceByName = (

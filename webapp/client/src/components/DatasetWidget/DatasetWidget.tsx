@@ -37,16 +37,18 @@ class DatasetWidget extends React.PureComponent<AllProps> {
                   <div className={styles.title} data-test="dataset-name">
                     {dataset.name}
                   </div>
-                  <div
-                    className={styles.description}
-                    onClick={this.preventRedirect}
-                  >
-                    <DatasetEntityDescriptionManager
-                      datasetId={dataset.id}
-                      entityId={dataset.id}
-                      entityType="dataset"
-                      description={dataset.description}
-                    />
+                  <div className={styles.description}>
+                    <span
+                      className={styles.description}
+                      onClick={this.preventRedirect}
+                    >
+                      <DatasetEntityDescriptionManager
+                        datasetId={dataset.id}
+                        entityId={dataset.id}
+                        entityType="dataset"
+                        description={dataset.description}
+                      />
+                    </span>
                   </div>
                 </div>
                 <div className={styles.tags_block}>

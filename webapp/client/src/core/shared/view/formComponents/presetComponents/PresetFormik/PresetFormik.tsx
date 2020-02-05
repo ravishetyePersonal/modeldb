@@ -15,7 +15,9 @@ export default class PresetFormik<Values> extends React.Component<
         }
         validateOnBlur={true}
       >
-        {childrenProps => (this.props.children as any)(childrenProps)}
+        {childrenProps => (
+          <Form>{(this.props.children as any)(childrenProps)}</Form>
+        )}
       </Formik>
     );
   }

@@ -18,7 +18,7 @@ type ILocalProps = {
   breadcrumbsBuilder?: IBreadcrumbsBuilder;
   children: Exclude<React.ReactNode, null | undefined>;
   additionalSidebar?: React.ReactNode;
-  userBar?: React.ReactNode;
+  rightContent?: React.ReactNode;
 } & Pick<
   React.ComponentProps<typeof Sidebar>,
   'filterBarSettings' | 'mainNavigationRoutes'
@@ -43,7 +43,7 @@ class AuthorizedLayout extends React.Component<AllProps> {
       additionalSidebar,
       mainNavigationRoutes,
       children,
-      userBar,
+      rightContent,
     } = this.props;
     return (
       <div
@@ -53,7 +53,7 @@ class AuthorizedLayout extends React.Component<AllProps> {
         })}
       >
         <div className={styles.header}>
-          <LayoutHeader userBar={userBar} />
+          <LayoutHeader rightContent={rightContent} />
         </div>
         <div className={styles.content_area}>
           <div className={styles.sidebar}>

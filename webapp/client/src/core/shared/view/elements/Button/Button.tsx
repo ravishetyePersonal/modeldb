@@ -47,6 +47,7 @@ class Button extends React.PureComponent<ILocalProps> {
       ) : (
         <button
           data-test={dataTest}
+          onBlur={onBlur}
           {...props}
           type={this.props.type || 'button'}
         />

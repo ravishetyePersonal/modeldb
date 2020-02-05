@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import Pages from 'pages';
+import Pages from 'pages/authorized';
 
 type AllProps = RouteComponentProps;
 

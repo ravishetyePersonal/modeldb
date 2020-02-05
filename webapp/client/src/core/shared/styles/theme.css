@@ -1,3 +1,4 @@
+/* when you change any root variable also please change theme.ts */
 :root {
   --bg-color1: var(--main-color1);
   --bg-color2: var(--main-color2);
@@ -6,6 +7,7 @@
   --bg-color5: var(--main-color5);
   --bg-color6: rgba(0, 0, 0, 0.2);
   --bg-color7: #fafafa;
+  --bg-color8: #dedede;
   --bg-color-charts: #f9fafc;
 
   --fr-color1: #5457e3;
@@ -40,6 +42,10 @@
   --text-color3: rgba(0, 0, 0, 0.5);
   --text-color4: rgba(0, 0, 0, 0.2);
   --text-color5: rgba(0, 0, 0, 0.4);
+  --text-color6: #000000;
+  --text-color7: #222222;
+  --text-color8: #4e77b5;
+  --text-color9: #aaaaaa;
   --text-color-grey: #8d8d8d;
   --medium-grey: #cacaca;
   --lightgrey: #dddddd;

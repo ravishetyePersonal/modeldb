@@ -61,3 +61,9 @@
 .theme_dark .icon {
   color: #777777;
 }
+
+.disabled {
+  color: #dddddd;
+  cursor: default;
+  background-color: #dddddd;
+}

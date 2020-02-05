@@ -31,6 +31,7 @@ import { ReactComponent as Database } from './imgs/database.svg';
 import { ReactComponent as DeviceHub } from './imgs/device-hub.svg';
 import { ReactComponent as DoubleDownLite } from './imgs/double-down-lite.svg';
 import { ReactComponent as ArrowDownLite } from './imgs/down-arrow-lite.svg';
+import { ReactComponent as ArrowDown } from './imgs/down-arrow.svg';
 import { ReactComponent as Email } from './imgs/email.svg';
 import { ReactComponent as Error } from './imgs/error.svg';
 import { ReactComponent as ExclamationTriangleLite } from './imgs/exclamation-triangle-lite.svg';
@@ -73,8 +74,13 @@ import { ReactComponent as SortSolid } from './imgs/sort-solid.svg';
 import { ReactComponent as Trash } from './imgs/trash.svg';
 import { ReactComponent as Twitter } from './imgs/twitter-logo.svg';
 import { ReactComponent as ArrowUpLite } from './imgs/up-arrow-lite.svg';
+import { ReactComponent as ArrowUp } from './imgs/up-arrow.svg';
 import { ReactComponent as UpDownArrow } from './imgs/up-down-arrow.svg';
 import { ReactComponent as Upload } from './imgs/upload.svg';
+import { ReactComponent as User } from './imgs/user.svg';
+import { ReactComponent as Users } from './imgs/users.svg';
+import { ReactComponent as Workspaces } from './imgs/workspaces.svg';
+import { ReactComponent as Leave } from './imgs/leave.svg';
 
 import styles from './Icon.module.css';
 
@@ -102,6 +108,8 @@ export type IconType =
   | 'cog'
   | 'arrow-right'
   | 'arrow-left'
+  | 'arrow-up'
+  | 'arrow-down'
   | 'error'
   | 'check'
   | 'check-solid'
@@ -159,7 +167,11 @@ export type IconType =
   | 'bookmarks'
   | 'device-hub'
   | 'link'
-  | 'help-outline';
+  | 'help-outline'
+  | 'workspaces'
+  | 'user'
+  | 'users'
+  | 'leave';
 
 export class Icon extends React.PureComponent<ILocalProps> {
   public render() {
@@ -193,6 +205,8 @@ export class Icon extends React.PureComponent<ILocalProps> {
       cog: Cog,
       'arrow-right': ArrowRight,
       'arrow-left': ArrowLeft,
+      'arrow-up': ArrowUp,
+      'arrow-down': ArrowDown,
       error: Error,
       check: Check,
       'check-solid': CheckSolid,
@@ -252,6 +266,10 @@ export class Icon extends React.PureComponent<ILocalProps> {
       'device-hub': DeviceHub,
       link: Link,
       'help-outline': HelpOutline,
+      workspaces: Workspaces,
+      user: User,
+      users: Users,
+      leave: Leave,
     };
     return icons[this.props.type];
   }

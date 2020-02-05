@@ -11,12 +11,17 @@
   border-bottom: 1px solid var(--border-color1);
 }
 .pageHeader__title {
-  font-size: 24px;
   font-weight: 500;
   margin: 0;
 }
 .pageHeader__title::first-letter {
   text-transform: uppercase;
+}
+.pageHeader__title_size_medium {
+  font-size: 24px;
+}
+.pageHeader__title_size_small {
+  font-size: 21px;
 }
 .pageHeader__rightContent {
   margin-left: auto;

@@ -2,6 +2,9 @@ import { bind } from 'decko';
 import _ from 'lodash';
 import React from 'react';
 
+import ChartConfigDropdown, {
+  IOption,
+} from 'core/shared/view/elements/ChartConfigDropdown/ChartConfigDropdown';
 import {
   listAverage,
   listCount,
@@ -11,9 +14,6 @@ import {
   listVariance,
 } from 'core/shared/utils/statMethods/AggregationTypes';
 import { isNumeric } from 'core/shared/utils/typeChecker/numFormatChecker';
-import ChartConfigDropdown, {
-  IOption,
-} from 'core/shared/view/elements/Dropdown/ChartConfigDropdown/ChartConfigDropdown';
 
 import { IAggregationChartSelection } from '../shared/types/chartConfiguration';
 import { IGenericChartData } from '../shared/types/chartDataTypes';

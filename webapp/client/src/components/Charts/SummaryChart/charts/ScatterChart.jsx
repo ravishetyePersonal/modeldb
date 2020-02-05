@@ -6,6 +6,7 @@ import { errorMessage } from 'components/Charts/shared/errorMessages';
 import { getFormattedDateTime } from 'core/shared/utils/formatters/dateTime';
 import { withScientificNotationOrRounded } from 'core/shared/utils/formatters/number';
 import ScrollableContainer from 'core/shared/view/elements/ScrollableContainer/ScrollableContainer';
+import { cssTheme } from 'core/shared/styles/theme';
 
 import ModelRecordCard from '../../ModelRecordCard/ModelRecordCard';
 import styles from '../SummaryChartManager.module.css';
@@ -13,7 +14,7 @@ import styles from '../SummaryChartManager.module.css';
 let colorScale = d3
   .scaleOrdinal()
   .range([
-    '#6863ff',
+    cssTheme.bgColor2,
     '#CBE11E',
     '#1ECBE1',
     '#E11ECB',

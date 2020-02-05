@@ -12,7 +12,7 @@ import { SelectModelToFilter } from 'core/features/filter';
 import { ICommunication } from 'core/shared/utils/redux/communication';
 import DeleteFAIWithLabel from 'core/shared/view/elements/DeleteFaiWithLabel/DeleteFaiWithLabel';
 import GroupFai from 'core/shared/view/elements/GroupFai/GroupFai';
-import { ShowCommentsWithAuthorButton } from 'features/comments';
+import { ShowCommentsButton } from 'features/comments';
 import {
   deleteExperimentRun,
   selectDeletingExperimentRun,
@@ -79,7 +79,7 @@ class ActionsColumn extends React.PureComponent<AllProps> {
                 />
               ),
               requiredProps => (
-                <ShowCommentsWithAuthorButton
+                <ShowCommentsButton
                   buttonType="faiWithLabel"
                   entityInfo={{ id, name }}
                   {...requiredProps}

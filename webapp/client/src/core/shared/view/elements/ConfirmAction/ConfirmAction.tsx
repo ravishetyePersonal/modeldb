@@ -7,7 +7,9 @@ import Confirm from '../Confirm/Confirm';
 interface ILocalProps {
   confirmText: Exclude<React.ReactNode, null | undefined>;
   children: (
-    withConfirmAction: (f: (...args: any[]) => any) => (...args: any[]) => any
+    withConfirmAction: <T extends any[]>(
+      f: (...args: T) => any
+    ) => (...args: T) => any
   ) => React.ReactNode;
 }
 
@@ -39,8 +41,8 @@ class ConfirmAction extends React.Component<ILocalProps, ILocalState> {
 
   @bind
   private saveConfirmAction(action: (...args: any[]) => any) {
-    this.action = action;
-    return () => {
+    return (...args: any[]) => {
+      this.action = () => action(...args);
       this.showConfirm();
     };
   }

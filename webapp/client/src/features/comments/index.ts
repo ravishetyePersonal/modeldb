@@ -27,7 +27,7 @@ export const makeCommentsService: Deps.IMakeCommentsService<
 };
 
 export { CommentsService, convertServerComment } from './service';
-export { ShowCommentsWithAuthorButton } from './view';
+export { ShowCommentsButton } from './view';
 
 export type ICommentsRootState = ICommentsRootState_;
 export * from 'core/features/comments/store/deps';

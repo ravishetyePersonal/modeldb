@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
 
+import { cssTheme } from 'core/shared/styles/theme';
+
 import styles from '../ObservationsModelPage.module.css';
 
 const width = 520,
@@ -13,7 +15,7 @@ const width = 520,
 const colorScale = d3
   .scaleOrdinal()
   .range([
-    '#6863ff',
+    cssTheme.bgColor2,
     '#CBE11E',
     '#1ECBE1',
     '#E11ECB',

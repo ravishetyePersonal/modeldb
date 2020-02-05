@@ -27,12 +27,21 @@ export const PageHeader = React.memo(
   ({
     title,
     rightContent,
+    size = 'medium',
   }: {
     title: string;
     rightContent?: React.ReactNode;
+    size?: 'medium' | 'small';
   }) => (
     <div className={cn(styles.pageHeader)}>
-      <div className={cn(styles.pageHeader__title)}>{title.toLowerCase()}</div>
+      <div
+        className={cn(styles.pageHeader__title, {
+          [styles.pageHeader__title_size_medium]: size === 'medium',
+          [styles.pageHeader__title_size_small]: size === 'small',
+        })}
+      >
+        {title.toLowerCase()}
+      </div>
       {rightContent && (
         <div className={styles.pageHeader__rightContent}>{rightContent}</div>
       )}

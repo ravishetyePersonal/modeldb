@@ -22,8 +22,8 @@ import {
   IRawDatasetVersionInfo,
   IPathBasedDatasetVersion,
 } from 'models/DatasetVersion';
-import DatasetVersionExperimentRuns from 'pages/DatasetPages/DatasetDetailPages/DatasetVersionPage/DatasetVersionExperimentRuns/DatasetVersionExperimentRuns';
-import { pathLocationLabels } from 'pages/DatasetPages/DatasetDetailPages/shared/constants';
+import DatasetVersionExperimentRuns from 'pages/authorized/DatasetPages/DatasetDetailPages/DatasetVersionPage/DatasetVersionExperimentRuns/DatasetVersionExperimentRuns';
+import { pathLocationLabels } from 'pages/authorized/DatasetPages/DatasetDetailPages/shared/constants';
 import {
   ComparedDatasetVersions,
   ComparedEntityIds,
