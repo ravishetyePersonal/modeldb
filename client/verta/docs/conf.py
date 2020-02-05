@@ -52,8 +52,11 @@ autodoc_mock_imports = [
     'google',
     'joblib',
     'pathlib2',
+    'sklearn',
     'tensorflow',
+    'torch',
     'verta._protos',
+    'xgboost',
 ]
 
 napoleon_use_rtype = False

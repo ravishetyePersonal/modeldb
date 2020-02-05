@@ -21,10 +21,6 @@ except ImportError:  # tensorflow<2.0
 from ... import _utils
 
 
-# this can't be cast to an int here, because Sphinx mocks `tf` and will throw a TypeError
-TF_MAJOR_VERSION_STR = tf.__version__.split('.')[0]  # pylint: disable=no-member
-
-
 def _parse_summary_proto_str(proto_str):
     """
     Converts the serialized protobuf `SessionRunValues.results['summary']` into a `Message` object.
@@ -123,7 +119,8 @@ def _collect_observations(events_filepath, prefix=None):
     else:
         raise TypeError("`prefix` must be str")
 
-    if TF_MAJOR_VERSION_STR == '1' or not tf.executing_eagerly():
+    tf_major_version = int(tf.__version__.split('.')[0])  # pylint: disable=no-member
+    if tf_major_version == 1 or not tf.executing_eagerly():
         events = tf.compat.v1.train.summary_iterator(events_filepath)
     else:
         events = (
