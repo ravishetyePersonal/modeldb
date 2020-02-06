@@ -1,5 +1,6 @@
 package ai.verta.modeldb;
 
+import ai.verta.modeldb.lineage.LineageServiceImplNegativeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -13,6 +14,8 @@ import org.junit.runners.Suite;
   DatasetTest.class,
   DatasetVersionTest.class,
   HydratedServiceTest.class,
+  LineageTest.class,
+  LineageServiceImplNegativeTest.class,
   FindProjectEntitiesTest.class,
   FindDatasetEntitiesTest.class
 })

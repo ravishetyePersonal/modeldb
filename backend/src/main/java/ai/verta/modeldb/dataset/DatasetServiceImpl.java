@@ -225,7 +225,7 @@ public class DatasetServiceImpl extends DatasetServiceImplBase {
               .setAscending(request.getAscending())
               .setSortKey(request.getSortKey())
               .setWorkspaceName(request.getWorkspaceName());
-      ;
+
       DatasetPaginationDTO datasetPaginationDTO =
           datasetDAO.findDatasets(findDatasets.build(), userInfo, DatasetVisibility.PRIVATE);
 

@@ -50,7 +50,8 @@ public class TelemetryUtils {
           try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(createModelDBDeploymentInfoQuery);
             statement.executeUpdate(createTelemetryInformationQuery);
-            LOGGER.info("modeldb_deployment_info & telemetry_information table created successfully");
+            LOGGER.info(
+                "modeldb_deployment_info & telemetry_information table created successfully");
           } catch (Exception e) {
             LOGGER.error(
                 "Error while insertion entry on ModelDB deployment info : {}", e.getMessage(), e);

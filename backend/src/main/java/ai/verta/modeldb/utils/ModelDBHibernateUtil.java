@@ -120,7 +120,6 @@ public class ModelDBHibernateUtil {
       try {
         App app = App.getInstance();
         Map<String, Object> databasePropMap = app.getDatabasePropMap();
-        Map<String, Object> propertiesMap = app.getPropertiesMap();
 
         Map<String, Object> rDBPropMap =
             (Map<String, Object>) databasePropMap.get("RdbConfiguration");
@@ -339,22 +338,6 @@ public class ModelDBHibernateUtil {
           releaseLiquibaseLock(metaDataSrc);
         }
       }
-    }
-  }
-
-  private static void runLiquibaseMigration(MetadataSources metaDataSrc)
-      throws LiquibaseException, SQLException {
-    // Get database connection
-    try (Connection con =
-        metaDataSrc.getServiceRegistry().getService(ConnectionProvider.class).getConnection()) {
-      JdbcConnection jdbcCon = new JdbcConnection(con);
-
-      // Initialize Liquibase and run the update
-      Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcCon);
-      String rootPath = System.getProperty(ModelDBConstants.userDir);
-      rootPath = rootPath + "\\src\\main\\resources\\liquibase\\db-changelog-master.xml";
-      Liquibase liquibase = new Liquibase(rootPath, new FileSystemResourceAccessor(), database);
-      liquibase.update(new Contexts(), new LabelExpression());
     }
   }
 

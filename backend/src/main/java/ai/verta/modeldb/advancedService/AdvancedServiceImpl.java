@@ -1,5 +1,6 @@
 package ai.verta.modeldb.advancedService;
 
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.AdvancedQueryDatasetVersionsResponse;
 import ai.verta.modeldb.AdvancedQueryDatasetsResponse;
 import ai.verta.modeldb.AdvancedQueryExperimentRunsResponse;
@@ -23,6 +24,7 @@ import ai.verta.modeldb.FindHydratedProjectsByOrganization;
 import ai.verta.modeldb.FindHydratedProjectsByTeam;
 import ai.verta.modeldb.FindHydratedProjectsByUser;
 import ai.verta.modeldb.FindProjects;
+import ai.verta.modeldb.GetDatasetByName;
 import ai.verta.modeldb.GetHydratedDatasetByName;
 import ai.verta.modeldb.GetHydratedDatasetsByProjectId;
 import ai.verta.modeldb.GetHydratedExperimentRunById;
@@ -80,6 +82,7 @@ import ai.verta.uac.UserInfo;
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Value;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -1429,34 +1432,42 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
       // Get the user info from the Context
       UserInfo userInfo = authService.getCurrentLoginUserInfo();
 
-      List<Dataset> datasets =
-          datasetDAO.getDatasets(ModelDBConstants.NAME, request.getName(), userInfo);
+      FindDatasets.Builder findDatasets =
+          FindDatasets.newBuilder()
+              .addPredicates(
+                  KeyValueQuery.newBuilder()
+                      .setKey(ModelDBConstants.NAME)
+                      .setValue(Value.newBuilder().setStringValue(request.getName()).build())
+                      .setOperator(OperatorEnum.Operator.EQ)
+                      .setValueType(ValueTypeEnum.ValueType.STRING)
+                      .build())
+              .setWorkspaceName(
+                  request.getWorkspaceName().isEmpty()
+                      ? authService.getUsernameFromUserInfo(userInfo)
+                      : request.getWorkspaceName());
 
-      Dataset datasetByUser = null;
-      List<Dataset> sharedDatasets = new ArrayList<>();
-      boolean isDatasetFound = false;
-      StatusRuntimeException statusRuntimeException = null;
+      DatasetPaginationDTO datasetPaginationDTO =
+          datasetDAO.findDatasets(findDatasets.build(), userInfo, DatasetVisibility.PRIVATE);
 
-      for (Dataset dataset : datasets) {
-        try {
-          // Validate if current user has access to the entity or not
-          roleService.validateEntityUserWithUserInfo(
-              ModelDBServiceResourceTypes.DATASET, dataset.getId(), ModelDBServiceActions.READ);
-          if (userInfo == null
-              || dataset.getOwner().equals(authService.getVertaIdFromUserInfo(userInfo))) {
-            datasetByUser = dataset;
-          } else {
-            sharedDatasets.add(dataset);
-          }
-          isDatasetFound = true;
-        } catch (StatusRuntimeException e) {
-          statusRuntimeException = e;
-        }
+      if (datasetPaginationDTO.getTotalRecords() == 0) {
+        Status status =
+            Status.newBuilder()
+                .setCode(Code.NOT_FOUND_VALUE)
+                .setMessage("Dataset not found")
+                .addDetails(Any.pack(GetDatasetByName.Response.getDefaultInstance()))
+                .build();
+        throw StatusProto.toStatusRuntimeException(status);
       }
+      Dataset selfOwnerdataset = null;
+      List<Dataset> sharedDatasets = new ArrayList<>();
 
-      if (!isDatasetFound) {
-        responseObserver.onError(statusRuntimeException);
-        responseObserver.onCompleted();
+      for (Dataset dataset : datasetPaginationDTO.getDatasets()) {
+        if (userInfo == null
+            || dataset.getOwner().equals(authService.getVertaIdFromUserInfo(userInfo))) {
+          selfOwnerdataset = dataset;
+        } else {
+          sharedDatasets.add(dataset);
+        }
       }
 
       List<HydratedDataset> sharedHydratedDatasets = new ArrayList<>();
@@ -1468,9 +1479,9 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
           GetHydratedDatasetByName.Response.newBuilder()
               .addAllSharedHydratedDatasets(sharedHydratedDatasets);
 
-      if (datasetByUser != null) {
+      if (selfOwnerdataset != null) {
         getHydratedDatasetByNameResponse.setHydratedDatasetByUser(
-            getHydratedDatasets(Collections.singletonList(datasetByUser)).get(0));
+            getHydratedDatasets(Collections.singletonList(selfOwnerdataset)).get(0));
       }
 
       responseObserver.onNext(getHydratedDatasetByNameResponse.build());

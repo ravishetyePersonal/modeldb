@@ -492,6 +492,10 @@ public class DatasetDAORdbImpl implements DatasetDAO {
         accessibleDatasetIds =
             roleService.getSelfDirectlyAllowedResources(
                 ModelDBServiceResourceTypes.DATASET, ModelDBActionEnum.ModelDBServiceActions.READ);
+        if (queryParameters.getDatasetIdsList() != null
+            && !queryParameters.getDatasetIdsList().isEmpty()) {
+          accessibleDatasetIds.retainAll(queryParameters.getDatasetIdsList());
+        }
         // user is in his workspace and has no datasets, return empty
         if (accessibleDatasetIds.isEmpty()) {
           DatasetPaginationDTO datasetPaginationDTO = new DatasetPaginationDTO();
