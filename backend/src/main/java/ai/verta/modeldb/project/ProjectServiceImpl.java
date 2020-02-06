@@ -1,5 +1,7 @@
 package ai.verta.modeldb.project;
 
+import ai.verta.common.KeyValue;
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.AddProjectAttributes;
 import ai.verta.modeldb.AddProjectTag;
 import ai.verta.modeldb.AddProjectTags;
@@ -30,7 +32,6 @@ import ai.verta.modeldb.GetPublicProjects;
 import ai.verta.modeldb.GetSummary;
 import ai.verta.modeldb.GetTags;
 import ai.verta.modeldb.GetUrlForArtifact;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.LastModifiedExperimentRunSummary;
 import ai.verta.modeldb.LogProjectArtifacts;
@@ -50,7 +51,6 @@ import ai.verta.modeldb.SetProjectWorkspace;
 import ai.verta.modeldb.UpdateProjectAttributes;
 import ai.verta.modeldb.UpdateProjectDescription;
 import ai.verta.modeldb.UpdateProjectName;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.VerifyConnectionResponse;
 import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.artifactStore.ArtifactStoreDAO;

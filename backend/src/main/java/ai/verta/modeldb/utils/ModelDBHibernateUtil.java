@@ -106,6 +106,14 @@ public class ModelDBHibernateUtil {
 
   private ModelDBHibernateUtil() {}
 
+  public static Connection getConnection() throws SQLException {
+    return sessionFactory
+        .getSessionFactoryOptions()
+        .getServiceRegistry()
+        .getService(ConnectionProvider.class)
+        .getConnection();
+  }
+
   public static SessionFactory getSessionFactory() {
     if (sessionFactory == null) {
       LOGGER.info("Fetching sessionFactory");
@@ -246,24 +254,17 @@ public class ModelDBHibernateUtil {
     // Get database connection
     try (Connection con =
         metaDataSrc.getServiceRegistry().getService(ConnectionProvider.class).getConnection()) {
+
+      boolean existsStatus = tableExists(con, "databasechangeloglock");
+      if (!existsStatus) {
+        LOGGER.info("Table databasechangeloglock does not exists in DB");
+        LOGGER.info("Proceeding with liquibase assuming it has never been run");
+        return;
+      }
+
       JdbcConnection jdbcCon = new JdbcConnection(con);
 
       Statement stmt = jdbcCon.createStatement();
-
-      // FIXME: Verify if this is the bestway to check if database exists
-      // This might not work on non Postgres RDBMS
-      String existsSql =
-          "SELECT EXISTS (   SELECT 1   FROM   information_schema.tables    WHERE  table_schema = 'public'  AND    table_name = 'databasechangeloglock');";
-      ResultSet existTable = stmt.executeQuery(existsSql);
-      if (existTable.next()) {
-        if (!existTable.getBoolean(1)) {
-          LOGGER.info("Table databasechangeloglock does not exists in DB");
-          LOGGER.info("Proceeding with liquibase assuming it has never been run");
-          existTable.close();
-          stmt.close();
-          return;
-        }
-      }
 
       String sql = "SELECT * FROM DATABASECHANGELOGLOCK WHERE ID = 1";
       ResultSet rs = stmt.executeQuery(sql);
@@ -392,5 +393,19 @@ public class ModelDBHibernateUtil {
 
   public static HealthCheckResponse.ServingStatus checkLive() {
     return HealthCheckResponse.ServingStatus.SERVING;
+  }
+
+  public static boolean tableExists(Connection conn, String tableName) throws SQLException {
+    boolean tExists = false;
+    try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
+      while (rs.next()) {
+        String tName = rs.getString("TABLE_NAME");
+        if (tName != null && tName.equals(tableName)) {
+          tExists = true;
+          break;
+        }
+      }
+    }
+    return tExists;
   }
 }

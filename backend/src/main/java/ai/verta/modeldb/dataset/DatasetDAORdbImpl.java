@@ -1,14 +1,14 @@
 package ai.verta.modeldb.dataset;
 
+import ai.verta.common.KeyValue;
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.Dataset;
 import ai.verta.modeldb.DatasetVisibilityEnum.DatasetVisibility;
 import ai.verta.modeldb.FindDatasets;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBMessages;
 import ai.verta.modeldb.OperatorEnum;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
@@ -20,6 +20,7 @@ import ai.verta.modeldb.entities.AttributeEntity;
 import ai.verta.modeldb.entities.DatasetEntity;
 import ai.verta.modeldb.entities.DatasetVersionEntity;
 import ai.verta.modeldb.entities.TagsMapping;
+import ai.verta.modeldb.telemetry.TelemetryUtils;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.utils.RdbmsUtils;
@@ -163,6 +164,7 @@ public class DatasetDAORdbImpl implements DatasetDAO {
 
       transaction.commit();
       LOGGER.debug("Dataset created successfully");
+      TelemetryUtils.insertModelDBDeploymentInfo();
       return datasetEntity.getProtoObject();
     }
   }

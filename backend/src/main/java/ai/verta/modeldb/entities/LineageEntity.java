@@ -62,10 +62,10 @@ public class LineageEntity implements Serializable {
       return false;
     }
     LineageEntity that = (LineageEntity) o;
-    return Objects.equals(inputExternalId, that.inputExternalId) &&
-        Objects.equals(inputType, that.inputType) &&
-        Objects.equals(outputExternalId, that.outputExternalId) &&
-        Objects.equals(outputType, that.outputType);
+    return Objects.equals(inputExternalId, that.inputExternalId)
+        && Objects.equals(inputType, that.inputType)
+        && Objects.equals(outputExternalId, that.outputExternalId)
+        && Objects.equals(outputType, that.outputType);
   }
 
   @Override

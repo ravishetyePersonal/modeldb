@@ -40,6 +40,7 @@ import ai.verta.modeldb.lineage.LineageServiceImpl;
 import ai.verta.modeldb.project.ProjectDAO;
 import ai.verta.modeldb.project.ProjectDAORdbImpl;
 import ai.verta.modeldb.project.ProjectServiceImpl;
+import ai.verta.modeldb.telemetry.TelemetryCron;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import io.grpc.Server;
@@ -49,6 +50,8 @@ import io.prometheus.client.Gauge;
 import io.prometheus.client.exporter.MetricsServlet;
 import io.prometheus.client.hotspot.DefaultExports;
 import java.util.Map;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -321,6 +324,7 @@ public class App implements ApplicationContextAware {
 
     // --------------- Finish Initialize Database base on configuration --------------------------
 
+    initializeTelemetryBasedOnConfig(propertiesMap);
   }
 
   private static void initializeRelationalDBServices(
@@ -514,6 +518,32 @@ public class App implements ApplicationContextAware {
     LOGGER.info(
         "ArtifactStore service initialized and resolved storage dependency before server start");
     return artifactStoreService;
+  }
+
+  public static void initializeTelemetryBasedOnConfig(Map<String, Object> propertiesMap) {
+    boolean optIn = true;
+    int frequency = 1;
+    String consumer = null;
+    if (propertiesMap.containsKey(ModelDBConstants.TELEMETRY)) {
+      Map<String, Object> telemetryMap =
+          (Map<String, Object>) propertiesMap.get(ModelDBConstants.TELEMETRY);
+      if (telemetryMap != null) {
+        optIn = (boolean) telemetryMap.getOrDefault(ModelDBConstants.OPT_IN, true);
+        frequency = (int) telemetryMap.getOrDefault(ModelDBConstants.TELEMENTRY_FREQUENCY, 1);
+        if (telemetryMap.containsKey(ModelDBConstants.TELEMETRY_CONSUMER)) {
+          consumer = (String) telemetryMap.get(ModelDBConstants.TELEMETRY_CONSUMER);
+        }
+      }
+    }
+
+    if (optIn) {
+      // creating an instance of task to be scheduled
+      TimerTask task = new TelemetryCron(consumer);
+      ModelDBUtils.scheduleTask(task, frequency, TimeUnit.HOURS);
+      LOGGER.info("Telemetry scheduled successfully");
+    } else {
+      LOGGER.info("Telemetry opt out by user");
+    }
   }
 
   public String getStarterProjectID() {

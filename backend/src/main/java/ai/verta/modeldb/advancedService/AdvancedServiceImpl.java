@@ -1,5 +1,6 @@
 package ai.verta.modeldb.advancedService;
 
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.AdvancedQueryDatasetVersionsResponse;
 import ai.verta.modeldb.AdvancedQueryDatasetsResponse;
 import ai.verta.modeldb.AdvancedQueryExperimentRunsResponse;
@@ -47,7 +48,6 @@ import ai.verta.modeldb.Project;
 import ai.verta.modeldb.ProjectVisibility;
 import ai.verta.modeldb.SortExperimentRuns;
 import ai.verta.modeldb.TopExperimentRunsSelector;
-import ai.verta.modeldb.ValueTypeEnum;
 import ai.verta.modeldb.artifactStore.ArtifactStoreDAO;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;

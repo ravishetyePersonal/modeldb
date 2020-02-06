@@ -4,6 +4,8 @@ import static ai.verta.modeldb.CollaboratorTest.addCollaboratorRequestProject;
 import static ai.verta.modeldb.CollaboratorTest.addCollaboratorRequestProjectInterceptor;
 import static org.junit.Assert.*;
 
+import ai.verta.common.KeyValue;
+import ai.verta.common.ValueTypeEnum;
 import ai.verta.modeldb.ExperimentRunServiceGrpc.ExperimentRunServiceBlockingStub;
 import ai.verta.modeldb.ExperimentServiceGrpc.ExperimentServiceBlockingStub;
 import ai.verta.modeldb.OperatorEnum.Operator;

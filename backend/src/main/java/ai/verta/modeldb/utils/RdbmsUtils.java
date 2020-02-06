@@ -1,5 +1,6 @@
 package ai.verta.modeldb.utils;
 
+import ai.verta.common.KeyValue;
 import ai.verta.modeldb.Artifact;
 import ai.verta.modeldb.CodeVersion;
 import ai.verta.modeldb.Comment;
@@ -12,7 +13,6 @@ import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.Feature;
 import ai.verta.modeldb.GitSnapshot;
 import ai.verta.modeldb.Job;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.Observation;

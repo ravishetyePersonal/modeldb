@@ -4,6 +4,7 @@ package ai.verta.modeldb;
 
 option java_multiple_files = true;
 
+import "protos/public/common/CommonService.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "google/api/annotations.proto";
 
@@ -19,7 +20,7 @@ message Experiment {
     int64 date_created = 5;
     int64 date_updated = 6;
 
-    repeated KeyValue attributes = 20;
+    repeated common.KeyValue attributes = 20;
     repeated string tags = 21;
     string owner = 22;
     CodeVersion code_version_snapshot = 23;
@@ -63,7 +64,7 @@ message CreateExperiment {
     int64 date_created = 4;
     int64 date_updated = 5;
 
-    repeated KeyValue attributes = 20;
+    repeated common.KeyValue attributes = 20;
     repeated string tags = 21;
     repeated Artifact artifacts = 22;
 
@@ -146,7 +147,7 @@ message DeleteExperimentTag {
 
 message AddExperimentAttributes {
     string id = 1;
-    repeated KeyValue attributes = 2;
+    repeated common.KeyValue attributes = 2;
 
     message Response {
         Experiment experiment = 1;

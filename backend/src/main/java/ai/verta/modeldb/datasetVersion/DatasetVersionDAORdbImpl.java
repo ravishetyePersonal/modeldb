@@ -1,12 +1,12 @@
 package ai.verta.modeldb.datasetVersion;
 
+import ai.verta.common.KeyValue;
 import ai.verta.modeldb.CreateDatasetVersion;
 import ai.verta.modeldb.Dataset;
 import ai.verta.modeldb.DatasetTypeEnum;
 import ai.verta.modeldb.DatasetVersion;
 import ai.verta.modeldb.DatasetVisibilityEnum;
 import ai.verta.modeldb.FindDatasetVersions;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBMessages;

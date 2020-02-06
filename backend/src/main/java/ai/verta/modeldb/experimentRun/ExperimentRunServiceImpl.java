@@ -1,5 +1,6 @@
 package ai.verta.modeldb.experimentRun;
 
+import ai.verta.common.KeyValue;
 import ai.verta.modeldb.AddExperimentRunAttributes;
 import ai.verta.modeldb.AddExperimentRunTag;
 import ai.verta.modeldb.AddExperimentRunTags;
@@ -35,7 +36,6 @@ import ai.verta.modeldb.GetMetrics;
 import ai.verta.modeldb.GetObservations;
 import ai.verta.modeldb.GetTags;
 import ai.verta.modeldb.GetUrlForArtifact;
-import ai.verta.modeldb.KeyValue;
 import ai.verta.modeldb.LogArtifact;
 import ai.verta.modeldb.LogArtifacts;
 import ai.verta.modeldb.LogAttribute;
