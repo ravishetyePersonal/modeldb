@@ -159,8 +159,15 @@ public class CollaboratorServiceImpl extends CollaboratorServiceImplBase {
         && collaboratorType.equals(CollaboratorTypeEnum.CollaboratorType.READ_ONLY)) {
       return ModelDBConstants.ROLE_DATASET_READ_ONLY;
     } else {
-      // TODO: throw runtime exception
-      return null;
+      String errorMessage = "collaborator type and resource type are not found as expected";
+      LOGGER.warn(errorMessage);
+      Status status =
+          Status.newBuilder()
+              .setCode(Code.INVALID_ARGUMENT_VALUE)
+              .setMessage(errorMessage)
+              .addDetails(Any.pack(AddCollaboratorRequest.Response.getDefaultInstance()))
+              .build();
+      throw StatusProto.toStatusRuntimeException(status);
     }
   }
 

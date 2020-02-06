@@ -1165,6 +1165,10 @@ public class ProjectDAORdbImpl implements ProjectDAO {
         accessibleProjectIds =
             roleService.getSelfDirectlyAllowedResources(
                 ModelDBServiceResourceTypes.PROJECT, ModelDBServiceActions.READ);
+        if (queryParameters.getProjectIdsList() != null
+            && !queryParameters.getProjectIdsList().isEmpty()) {
+          accessibleProjectIds.retainAll(queryParameters.getProjectIdsList());
+        }
         // user is in his workspace and has no projects, return empty
         if (accessibleProjectIds.isEmpty()) {
           ProjectPaginationDTO projectPaginationDTO = new ProjectPaginationDTO();
@@ -1176,7 +1180,7 @@ public class ProjectDAORdbImpl implements ProjectDAO {
             roleService.listMyOrganizations().stream()
                 .map(Organization::getId)
                 .collect(Collectors.toList());
-        if (orgIds != null && !orgIds.isEmpty()) {
+        if (!orgIds.isEmpty()) {
           finalPredicatesList.add(
               builder.not(
                   builder.and(

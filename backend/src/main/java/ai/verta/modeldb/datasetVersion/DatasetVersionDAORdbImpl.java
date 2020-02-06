@@ -1,6 +1,5 @@
 package ai.verta.modeldb.datasetVersion;
 
-import ai.verta.modeldb.App;
 import ai.verta.modeldb.CreateDatasetVersion;
 import ai.verta.modeldb.Dataset;
 import ai.verta.modeldb.DatasetTypeEnum;
@@ -350,7 +349,6 @@ public class DatasetVersionDAORdbImpl implements DatasetVersionDAO {
 
       // Validate if current user has access to the entity or not where predicate key has a
       // datasetId
-      App app = App.getInstance();
       for (KeyValueQuery predicate : predicates) {
         if (predicate.getKey().equals(ModelDBConstants.ID)) {
           if (!predicate.getOperator().equals(OperatorEnum.Operator.EQ)) {

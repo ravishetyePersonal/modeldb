@@ -960,18 +960,16 @@ public class RoleServiceUtils implements RoleService {
       ModelDBServiceResourceTypes modelDBServiceResourceTypes,
       ModelDBServiceActions modelDBServiceActions,
       List<String> requestedIdList) {
-    List<String> allowedResourceIds = new ArrayList<>();
     if (requestedIdList.size() == 1) {
       isSelfAllowed(modelDBServiceResourceTypes, modelDBServiceActions, requestedIdList.get(0));
-      allowedResourceIds.addAll(requestedIdList);
+      return requestedIdList;
     } else {
       List<String> allowedResourceIdList =
           getSelfAllowedResources(modelDBServiceResourceTypes, modelDBServiceActions);
       // Validate if current user has access to the entity or not
       allowedResourceIdList.retainAll(requestedIdList);
-      allowedResourceIds.addAll(allowedResourceIdList);
+      return allowedResourceIdList;
     }
-    return allowedResourceIds;
   }
 
   @Override
