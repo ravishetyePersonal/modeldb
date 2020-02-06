@@ -1,7 +1,6 @@
 package ai.verta.modeldb.lineage;
 
 import ai.verta.modeldb.AddLineage;
-import ai.verta.modeldb.AddLineage.Response;
 import ai.verta.modeldb.DeleteLineage;
 import ai.verta.modeldb.FindAllInputs;
 import ai.verta.modeldb.FindAllInputsOutputs;
@@ -15,16 +14,16 @@ public interface LineageDAO {
    *
    * @param addLineage : request information
    * @return {@link AddLineage.Response} : status
-   * @throws ModelDBExceptionWithCode wrong data format
+   * @throws ModelDBException wrong data format
    */
-  Response addLineage(AddLineage addLineage) throws ModelDBException;
+  AddLineage.Response addLineage(AddLineage addLineage) throws ModelDBException;
 
   /**
    * Delete a Lineage.
    *
    * @param deleteLineage : request information
    * @return {@link DeleteLineage.Response} : status
-   * @throws ModelDBExceptionWithCode wrong data format
+   * @throws ModelDBException wrong data format
    */
   DeleteLineage.Response deleteLineage(DeleteLineage deleteLineage) throws ModelDBException;
 
@@ -33,7 +32,7 @@ public interface LineageDAO {
    *
    * @param findAllInputs : request information
    * @return {@link FindAllInputs.Response} : status
-   * @throws ModelDBExceptionWithCode wrong data format
+   * @throws ModelDBException wrong data format
    */
   FindAllInputs.Response findAllInputs(FindAllInputs findAllInputs) throws ModelDBException;
 
@@ -42,7 +41,7 @@ public interface LineageDAO {
    *
    * @param findAllOutputs : request information
    * @return {@link FindAllOutputs.Response} : status
-   * @throws ModelDBExceptionWithCode wrong data format
+   * @throws ModelDBException wrong data format
    */
   FindAllOutputs.Response findAllOutputs(FindAllOutputs findAllOutputs) throws ModelDBException;
 
@@ -51,7 +50,7 @@ public interface LineageDAO {
    *
    * @param findAllInputsOutputs : request information
    * @return {@link FindAllInputsOutputs.Response} : status
-   * @throws ModelDBExceptionWithCode wrong data format
+   * @throws ModelDBException wrong data format
    */
   FindAllInputsOutputs.Response findAllInputsOutputs(FindAllInputsOutputs findAllInputsOutputs)
       throws ModelDBException;

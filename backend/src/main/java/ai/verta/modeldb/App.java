@@ -34,6 +34,9 @@ import ai.verta.modeldb.health.HealthStatusManager;
 import ai.verta.modeldb.job.JobDAO;
 import ai.verta.modeldb.job.JobDAORdbImpl;
 import ai.verta.modeldb.job.JobServiceImpl;
+import ai.verta.modeldb.lineage.LineageDAO;
+import ai.verta.modeldb.lineage.LineageDAORdbImpl;
+import ai.verta.modeldb.lineage.LineageServiceImpl;
 import ai.verta.modeldb.project.ProjectDAO;
 import ai.verta.modeldb.project.ProjectDAORdbImpl;
 import ai.verta.modeldb.project.ProjectServiceImpl;
@@ -335,6 +338,7 @@ public class App implements ApplicationContextAware {
     JobDAO jobDAO = new JobDAORdbImpl(authService);
     CommentDAO commentDAO = new CommentDAORdbImpl(authService);
     DatasetDAO datasetDAO = new DatasetDAORdbImpl(authService, roleService);
+    LineageDAO lineageDAO = new LineageDAORdbImpl();
     DatasetVersionDAO datasetVersionDAO = new DatasetVersionDAORdbImpl(authService, roleService);
     LOGGER.info("All DAO initialized");
     // --------------- Finish Initialize DAO --------------------------
@@ -348,6 +352,7 @@ public class App implements ApplicationContextAware {
         artifactStoreDAO,
         jobDAO,
         commentDAO,
+        lineageDAO,
         authService,
         roleService);
   }
@@ -362,6 +367,7 @@ public class App implements ApplicationContextAware {
       ArtifactStoreDAO artifactStoreDAO,
       JobDAO jobDAO,
       CommentDAO commentDAO,
+      LineageDAO lineageDAO,
       AuthService authService,
       RoleService roleService) {
     App app = App.getInstance();
@@ -416,6 +422,8 @@ public class App implements ApplicationContextAware {
           new CollaboratorServiceImpl(authService, roleService, projectDAO, datasetDAO));
       LOGGER.debug("Collaborator serviceImpl initialized");
     }
+    serverBuilder.addService(new LineageServiceImpl(lineageDAO));
+    LOGGER.trace("Lineage serviceImpl initialized");
     LOGGER.info("All services initialized and resolved dependency before server start");
   }
 
