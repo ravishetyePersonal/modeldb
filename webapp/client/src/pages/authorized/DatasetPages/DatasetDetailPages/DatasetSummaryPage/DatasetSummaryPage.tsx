@@ -66,7 +66,7 @@ class DatasetSummaryPage extends React.PureComponent<AllProps> {
           rightContent:
             dataset && loadingSelectedDataset.isSuccess ? (
               <DeleteFAI
-                theme="grey"
+                theme="blue"
                 confirmText={
                   <>
                     You're about to delete all data associated with this

@@ -24,27 +24,3 @@
 .desc_readonly {
   display: inline-flex;
 }
-
-.desc_action_icon {
-  font-size: 12px;
-  color: var(--main-color2);
-  opacity: 0.8;
-  display: inline;
-  cursor: pointer;
-}
-
-.desc_action_icon:hover {
-  color: var(--main-color1);
-}
-
-.desc_readonly_icon {
-  font-size: 14px;
-  color: var(--main-color2);
-  opacity: 0.8;
-  display: inline;
-  cursor: pointer;
-}
-
-.desc_readonly_icon:hover {
-  color: var(--main-color1);
-}

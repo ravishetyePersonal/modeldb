@@ -14,18 +14,13 @@
     color 130ms ease-out, box-shadow 130ms ease-out;
 }
 .fai.disabled {
-  border-color: var(--grey-light) !important;
-  background-color: var(--grey-lightest) !important;
-  color: var(--grey-light) !important;
+  color: var(--disabled-color) !important;
+  border-color: var(--disabled-color) !important;
   cursor: default !important;
   pointer-events: none;
 }
-.fai.disabled i {
-  color: var(--grey-light) !important;
-}
-.fai.disabled path,
-.fai.disabled polygon {
-  fill: var(--grey-light);
+.fai:focus {
+  box-shadow: 0 2px 2px 0 rgba(57, 55, 128, 0.5);
 }
 
 .active {
@@ -36,16 +31,9 @@
   color: var(--bg-color2);
   border-color: var(--bg-color2);
 }
-.theme_blue path,
-.theme_blue polygon {
-  fill: var(--bg-color2);
-}
 .theme_blue:hover {
+  color: #ffffff;
   background: var(--bg-color2);
-}
-.theme_blue:hover path,
-.theme_blue:hover polygon {
-  fill: #ffffff;
 }
 
 .theme_red {
@@ -62,24 +50,6 @@
 .theme_green {
   color: var(--bg-color1);
   border-color: var(--main-color1-dark);
-}
-
-.theme_grey {
-  color: var(--text-color4);
-  border-color: var(--text-color4);
-}
-.theme_grey path,
-.theme_grey polygon {
-  fill: var(--text-color4);
-}
-.theme_grey:hover {
-  border-color: var(--main-color3);
-  color: var(--main-color3);
-  background-color: var(--main-color2);
-}
-.theme_grey:hover path,
-.theme_grey:hover polygon {
-  fill: var(--main-color3);
 }
 
 .icon {

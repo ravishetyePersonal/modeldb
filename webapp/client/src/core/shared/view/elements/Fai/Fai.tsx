@@ -6,7 +6,7 @@ import styles from './Fai.module.css';
 interface ILocalProps {
   isActive?: boolean;
   isDisabled?: boolean;
-  theme: 'blue' | 'green' | 'red' | 'grey';
+  theme: 'blue' | 'green' | 'red';
   icon: React.ReactNode;
   variant?: 'outlined';
   dataTest?: string;
@@ -19,7 +19,7 @@ class Fai extends React.PureComponent<ILocalProps> {
   public render() {
     const {
       icon,
-      theme,
+      theme = 'blue',
       isDisabled = false,
       isActive = false,
       dataTest,
@@ -36,7 +36,6 @@ class Fai extends React.PureComponent<ILocalProps> {
           [styles.theme_blue]: theme === 'blue',
           [styles.theme_green]: theme === 'green',
           [styles.theme_red]: theme === 'red',
-          [styles.theme_grey]: theme === 'grey',
         })}
         disabled={isDisabled}
         data-test={dataTest}

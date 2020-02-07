@@ -34,6 +34,8 @@
   --main-color3: #ffffff;
   --main-color4: #f3f3f3;
   --main-color5: rgba(0, 0, 0, 0.9);
+  --main-color6: #514eb5;
+  --main-color7: #393780;
   --main-hover-blue: #6a84ff;
 
   --main-text-color1: #444444;
@@ -50,6 +52,7 @@
   --medium-grey: #cacaca;
   --lightgrey: #dddddd;
   --grey-borders: #eaeaea;
+  --disabled-color: #bbbbbb;
 
   --line-color1: rgba(0, 0, 0, 0.3);
   --line-color2: rgba(0, 0, 0, 0.15);
@@ -91,6 +94,19 @@
   --input-padding-left: 12px;
   --input-border: 1px solid var(--border-color1);
   --input-color: var(--text-color2);
+
+  --button-primary-bg: var(--main-color6);
+  --button-primary-hover-bg: var(--main-color7);
+  --button-primary-disabled-bg: var(--disabled-color);
+  --button-primary-color: #ffffff;
+
+  --button-secondary-bg: #ffffff;
+  --button-secondary-border: var(--main-color7);
+  --button-secondary-color: var(--main-color7);
+  --button-secondary-hover-bg: #d6d6e0;
+  --button-secondary-disabled-bg: #ffffff;
+  --button-secondary-disabled-color: var(--disabled-color);
+  --button-secondary-disabled-border: #dedede;
 }
 
 /* theme of scrollbars */

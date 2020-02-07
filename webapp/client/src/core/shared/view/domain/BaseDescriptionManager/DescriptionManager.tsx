@@ -7,6 +7,7 @@ import Tooltip from 'core/shared/view/elements/Tooltip/Tooltip';
 
 import AddEditDescModal from './AddEditDescModal/AddEditDescModal';
 import styles from './DescriptionManager.module.css';
+import ActionIcon from '../../elements/ActionIcon/ActionIcon';
 
 interface ILocalProps {
   entityId: string;
@@ -60,7 +61,7 @@ class DescriptionManager extends React.Component<AllProps, ILocalState> {
                 onClick={this.showModal}
                 data-test="description-open-editor-button"
               >
-                <Icon className={styles.desc_action_icon} type={'pencil'} />
+                <ActionIcon iconType="pencil" />
               </div>
               <AddEditDescModal
                 description={description}
@@ -81,7 +82,7 @@ class DescriptionManager extends React.Component<AllProps, ILocalState> {
                   onMouseOver={this.showTooltip}
                   onMouseOut={this.hideTooltip}
                 >
-                  <Icon className={styles.desc_readonly_icon} type={'eye'} />
+                  <ActionIcon iconType="eye" />
                 </div>
               </Tooltip>
             </span>

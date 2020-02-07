@@ -1,12 +1,11 @@
 import { bind } from 'decko';
 import * as React from 'react';
 
-import { Icon } from 'core/shared/view/elements/Icon/Icon';
-
 import AddTagModal from './AddTagModal/AddTagModal';
 import Tag from './Tag/Tag';
 
 import styles from './TagsManager.module.css';
+import ActionIcon from '../../elements/ActionIcon/ActionIcon';
 
 interface ILocalProps {
   tags: string[];
@@ -64,9 +63,9 @@ class TagManager extends React.Component<ILocalProps, ILocalState> {
         ))}
         {isAvailableTagAdding && (
           <div className={styles.open_add_tag_modal_wrapper}>
-            <Icon
+            <ActionIcon
               className={styles.open_add_tag_icon}
-              type="rounded-plus-filled"
+              iconType="rounded-plus-filled"
               dataTest="tags-manager-open-tag-creator-button"
               onClick={this.showAddTagModal}
             />

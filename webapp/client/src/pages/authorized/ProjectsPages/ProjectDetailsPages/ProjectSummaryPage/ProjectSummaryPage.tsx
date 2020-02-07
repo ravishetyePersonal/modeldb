@@ -66,7 +66,7 @@ class ProjectSummaryPage extends React.PureComponent<AllProps> {
             rightContent={
               project && loadingProject.isSuccess ? (
                 <DeleteFAI
-                  theme="grey"
+                  theme="blue"
                   confirmText={
                     <span>
                       You're about to delete all data associated with this

@@ -18,20 +18,36 @@
 }
 
 .theme_default {
-  background-color: var(--main-color2);
-  color: var(--main-color3);
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
 }
 .theme_default:hover {
-  background-color: var(--main-hover-blue);
+  background-color: var(--button-primary-hover-bg);
 }
+.theme_default:focus {
+  box-shadow: 2px 2px 2px 0 rgba(57, 55, 128, 0.5);
+}
+.theme_default.disabled {
+  background-color: var(--button-primary-disabled-bg);
+}
+
 .theme_gray {
-  background-color: #ffffff;
-  color: #444444;
-  border: 1px solid #888888;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-color);
+  border: 1px solid var(--button-secondary-border);
 }
 .theme_gray:hover {
-  background-color: var(--main-color4);
+  background-color: var(--button-secondary-hover-bg);
 }
+.theme_gray:focus {
+  box-shadow: 2px 2px 2px 0 rgba(57, 55, 128, 0.15);
+}
+.theme_gray.disabled {
+  background-color: var(--button-secondary-disabled-bg);
+  color: var(--button-secondary-disabled-color);
+  border-color: var(--button-secondary-disabled-border);
+}
+
 .theme_red {
   color: #ffffff;
   background-color: var(--delete-color2);
