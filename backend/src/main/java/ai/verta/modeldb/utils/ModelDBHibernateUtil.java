@@ -164,6 +164,14 @@ public class ModelDBHibernateUtil {
           metaDataSrc.addAnnotatedClass(entity);
         }
 
+        // Check DB is up or not
+        boolean dbConnectionStatus =
+            checkDBConnection(
+                rDBDriver, rDBUrl, databaseName, configUsername, configPassword, timeout);
+        if (!dbConnectionStatus) {
+          checkDBConnectionInLoop(true);
+        }
+
         releaseLiquibaseLock(metaDataSrc);
 
         // Run tables liquibase migration
@@ -181,7 +189,8 @@ public class ModelDBHibernateUtil {
         isReady = true;
         return sessionFactory;
       } catch (Exception e) {
-        LOGGER.warn("ModelDBHibernateUtil getSessionFactory() getting error ", e);
+        LOGGER.warn(
+            "ModelDBHibernateUtil getSessionFactory() getting error : {}", e.getMessage(), e);
         if (registry != null) {
           StandardServiceRegistryBuilder.destroy(registry);
         }
@@ -200,28 +209,8 @@ public class ModelDBHibernateUtil {
       if (dbConnectionLive) {
         return sessionFactory;
       }
-      int loopBackTime = 5;
-      int loopIndex = 0;
-      while (!dbConnectionLive) {
-        if (loopIndex < 10) {
-          Thread.sleep(loopBackTime);
-          LOGGER.debug(
-              "ModelDBHibernateUtil getSessionFactory() retrying for DB connection after {} millisecond ",
-              loopBackTime);
-          loopBackTime = loopBackTime * 2;
-          loopIndex = loopIndex + 1;
-          dbConnectionLive =
-              checkDBConnection(
-                  rDBDriver, rDBUrl, databaseName, configUsername, configPassword, timeout);
-        } else {
-          Status status =
-              Status.newBuilder()
-                  .setCode(Code.UNAVAILABLE_VALUE)
-                  .setMessage("DB connection not found after 2560 millisecond")
-                  .build();
-          throw StatusProto.toStatusRuntimeException(status);
-        }
-      }
+      // Check DB connection based on the periodic time logic
+      checkDBConnectionInLoop(false);
       ModelDBHibernateUtil.sessionFactory = null;
       sessionFactory = getSessionFactory();
       LOGGER.debug("ModelDBHibernateUtil getSessionFactory() DB connection got successfully");
@@ -231,6 +220,36 @@ public class ModelDBHibernateUtil {
       Status status =
           Status.newBuilder().setCode(Code.UNAVAILABLE_VALUE).setMessage(ex.getMessage()).build();
       throw StatusProto.toStatusRuntimeException(status);
+    }
+  }
+
+  private static void checkDBConnectionInLoop(boolean isStartUpTime)
+      throws InterruptedException {
+    int loopBackTime = 5;
+    int loopIndex = 0;
+    boolean dbConnectionLive = false;
+    while (!dbConnectionLive) {
+      if (loopIndex < 10 || isStartUpTime) {
+        Thread.sleep(loopBackTime);
+        LOGGER.debug(
+            "ModelDBHibernateUtil getSessionFactory() retrying for DB connection after {} millisecond ",
+            loopBackTime);
+        loopBackTime = loopBackTime * 2;
+        loopIndex = loopIndex + 1;
+        dbConnectionLive =
+            checkDBConnection(
+                rDBDriver, rDBUrl, databaseName, configUsername, configPassword, timeout);
+        if (isStartUpTime && loopBackTime >= 2560) {
+          loopBackTime = 2560;
+        }
+      } else {
+        Status status =
+            Status.newBuilder()
+                .setCode(Code.UNAVAILABLE_VALUE)
+                .setMessage("DB connection not found after 2560 millisecond")
+                .build();
+        throw StatusProto.toStatusRuntimeException(status);
+      }
     }
   }
 
