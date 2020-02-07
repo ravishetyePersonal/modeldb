@@ -7,7 +7,7 @@ import os
 
 import tensorflow as tf
 from tensorflow.core.framework.summary_pb2 import Summary  # pylint: disable=import-error, no-name-in-module
-from tensorflow.core.util.event_pb2 import Event  # pylint: disable=import-error
+from tensorflow.core.util.event_pb2 import Event  # pylint: disable=import-error, no-name-in-module
 from tensorflow.compat.v1 import summary  # pylint: disable=import-error
 try:
     from tensorflow.estimator import SessionRunArgs
@@ -165,6 +165,10 @@ def log_tensorboard_events(run, log_dir):
     This integration logs scalars that have been written as TensorFlow summaries.
 
     This integration has been verified to work with TensorFlow >=1.14 and 2.X.
+
+    See our `GitHub repository
+    <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/tensorboard-integration.ipynb>`_
+    for an example of this intergation in action.
 
     Parameters
     ----------

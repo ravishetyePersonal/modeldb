@@ -13,6 +13,10 @@ def verta_hook(run):
 
     This hook logs details about the network topology.
 
+    See our `GitHub repository
+    <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/pytorch-integration.ipynb>`_
+    for an example of this intergation in action.
+
     .. versionadded:: 0.13.20
 
     Parameters

@@ -40,6 +40,8 @@ Keras
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/basic_text_classification_with_tfhub.ipynb>`__
 - `Tokenizer Training and Text Classification
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/tf-text-classification.ipynb>`__
+- `Client Integration
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/keras-integration.ipynb>`__
 
 NLTK
 ^^^^
@@ -52,6 +54,8 @@ PyTorch
 ^^^^^^^
 - `Fully-Connected Neural Network
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/pytorch.ipynb>`__
+- `Client Integration
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/pytorch-integration.ipynb>`__
 
 scikit-learn
 ^^^^^^^^^^^^
@@ -65,6 +69,8 @@ scikit-learn
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/census-end-to-end-local-data-example.ipynb>`__
 - `Spam Detection with NLTK and Verta Class Model Deployment
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Spam-Detection.ipynb>`__
+- `Client Integration
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/sklearn-integration.ipynb>`__
 
 SpaCy
 ^^^^^
@@ -77,8 +83,12 @@ TensorFlow
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Nearest-Neighbors-TF-Glove.ipynb>`__
 - `Nearest Neighbor Search with TensorFlow Hub and Verta Class Model Deployment
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/demos/Embedding-and-Lookup-TF-Hub.ipynb>`__
+- `Client Integration
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/tensorboard-integration.ipynb>`__
 
 XGBoost
 ^^^^^^^
 - `Random Forest with Grid Search
   <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/xgboost.ipynb>`__
+- `Client Integration
+  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/xgboost-integration.ipynb>`__

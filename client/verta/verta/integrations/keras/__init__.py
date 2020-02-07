@@ -18,6 +18,10 @@ class VertaCallback(keras.callbacks.Callback):
     This callback logs details about the network topology, training hyperparameters, and loss
     and accuracy during fitting.
 
+    See our `GitHub repository
+    <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/keras-integration.ipynb>`_
+    for an example of this intergation in action.
+
     .. versionadded:: 0.13.20
 
     Parameters
