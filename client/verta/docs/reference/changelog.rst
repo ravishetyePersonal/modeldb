@@ -539,7 +539,7 @@ Internal Changes
 - `implement internal Configuration utility struct
   <https://github.com/VertaAI/modeldb-client/pull/134>`__
 - `add PyTorch example notebook
-  <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/pytorch.ipynb>`__
+  <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/pytorch.ipynb>`__
 - `implement internal utility for unwrapping directory paths into contained filepaths
   <https://github.com/VertaAI/modeldb-client/pull/124>`__
 - `implement internal utilities for reading Git information from the local filesystem

@@ -14,7 +14,7 @@ def verta_callback(run):
     This callback logs ``eval_metric``\ s passed into ``xgb.train()``.
 
     See our `GitHub repository
-    <https://github.com/VertaAI/modeldb-oss/blob/master/client/workflows/examples/xgboost-integration.ipynb>`_
+    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/xgboost-integration.ipynb>`_
     for an example of this intergation in action.
 
     .. versionadded:: 0.13.20
