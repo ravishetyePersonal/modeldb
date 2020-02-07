@@ -2,13 +2,18 @@
 
 Frontend for ModelDB version 2
 
+## Directory Structure
+
 ### `/`
+
 This directory contains proxy-server for development
 
 ### `client/`
+
 This subdirectory contains the actual frontend
 
 ### `e2e/`
+
 This subdirectory contains e2e tests
 
 ## Setup environment for proxy-server
@@ -25,7 +30,7 @@ This subdirectory contains e2e tests
 
 ### Install yarn
 
-https://yarnpkg.com/en/docs/install
+<https://yarnpkg.com/en/docs/install>
 
 **Ubuntu**:
 
@@ -49,7 +54,8 @@ Runs the proxy server on the 3000 PORT.
 
 Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.
 Example:
-```
+
+```yaml
 BACKEND_API_PROTOCOL='https'
 BACKEND_API_DOMAIN='dev.verta.ai'
 ```
@@ -60,7 +66,8 @@ Runs the proxy server on the 3000 PORT and the frontend in the development mode 
 
 Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required.
 Example:
-```
+
+```yaml
 BACKEND_API_PROTOCOL='https'<br>
 BACKEND_API_DOMAIN='dev.verta.ai'
 ```

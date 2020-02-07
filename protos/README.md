@@ -2,11 +2,10 @@
 
 Repo with protobufs for all services
 
+## Generate go and python protos
 
-## generate go and python protos
-
-```cd scripts```
-
-``` ./build.sh```
-
-```add the files added/ mdofied in gen```
+```bash
+cd scripts
+./build.sh
+#add and commit the files generated/ modified in gen
+```

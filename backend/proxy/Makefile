@@ -1,2 +1,2 @@
 all:
-	pushd ../.. && docker build -t modeldb-proxy -f backend/proxy/Dockerfile . && popd
+	pushd ../.. && docker build -t vertaaiofficial/modeldb-proxy -f backend/proxy/Dockerfile . && popd

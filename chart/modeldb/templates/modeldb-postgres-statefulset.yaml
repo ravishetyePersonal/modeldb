@@ -5,7 +5,7 @@ metadata:
     app: modeldb
   name: postgres
 spec:
-  serviceName: "modeldb-postgres-backend"
+  serviceName: "modeldb-postgres"
   selector:
     matchLabels:
       app: modeldb

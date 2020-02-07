@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-  name: modeldb-postgres-backend
+  name: modeldb-postgres
   labels:
     app: postgres
 spec:

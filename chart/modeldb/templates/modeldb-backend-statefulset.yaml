@@ -21,7 +21,6 @@ spec:
         - name: VERTA_MODELDB_CONFIG
           value: /config-backend/config.yaml
         image: {{ .Values.image.modeldbBackendImage }}
-        imagePullPolicy: Always
         name: modeldb-backend
         ports:
         - containerPort: 8085

@@ -2,8 +2,8 @@
 import os
 
 SECRET_NAME = "modeldb-backend-config-secret"
-INPUT_CONFIG = "config.yaml"
-OUTPUT_CONFIG = "config.k8s.yaml"
+INPUT_CONFIG = "config/config.yaml"
+OUTPUT_CONFIG = "../chart/modeldb/templates/modeldb-backend-config-secret.yaml"
 SPACES_TO_TABS=2
 SPACE=' '
 
@@ -22,7 +22,8 @@ with open(OUTPUT_CONFIG, 'w') as f:
         ) 
     f.write(''.join(s))
     for line in inner_config:
-        f.write(''.join([SPACES_TO_TABS * SPACE * 2]) + line)
+        if line != "\n":
+            f.write(''.join([SPACES_TO_TABS * SPACE * 2]) + line)
+        else:
+            f.write(line)
 
-# encrypt using sops
-os.system("sh encrypt-config.sh")
