@@ -647,4 +647,11 @@ public class DatasetVersionDAORdbImpl implements DatasetVersionDAO {
       return datasetVersionObj.getProtoObject();
     }
   }
+
+  @Override
+  public boolean isDatasetVersionExists(Session session, String datasetVersionId) {
+    DatasetVersionEntity datasetVersionEntity =
+        session.get(DatasetVersionEntity.class, datasetVersionId);
+    return datasetVersionEntity != null;
+  }
 }

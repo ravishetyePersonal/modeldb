@@ -5,10 +5,13 @@ import ai.verta.modeldb.DeleteLineage;
 import ai.verta.modeldb.FindAllInputs;
 import ai.verta.modeldb.FindAllInputsOutputs;
 import ai.verta.modeldb.FindAllOutputs;
+import ai.verta.modeldb.LineageEntryEnum.LineageEntryType;
 import ai.verta.modeldb.LineageServiceGrpc.LineageServiceImplBase;
 import ai.verta.modeldb.ModelDBAuthInterceptor;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBException;
+import ai.verta.modeldb.datasetVersion.DatasetVersionDAO;
+import ai.verta.modeldb.experimentRun.ExperimentRunDAO;
 import ai.verta.modeldb.monitoring.ErrorCountResource;
 import ai.verta.modeldb.monitoring.QPSCountResource;
 import ai.verta.modeldb.monitoring.RequestLatencyResource;
@@ -20,14 +23,22 @@ import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 
 public class LineageServiceImpl extends LineageServiceImplBase {
 
   private static final Logger LOGGER = LogManager.getLogger(LineageServiceImpl.class);
+  private final ExperimentRunDAO experimentDAO;
+  private final DatasetVersionDAO datasetVersionDAO;
   private LineageDAO lineageDAO;
 
-  public LineageServiceImpl(LineageDAO lineageDAO) {
+  public LineageServiceImpl(
+      LineageDAO lineageDAO,
+      ExperimentRunDAO experimentRunDAO,
+      DatasetVersionDAO datasetVersionDAO) {
     this.lineageDAO = lineageDAO;
+    this.experimentDAO = experimentRunDAO;
+    this.datasetVersionDAO = datasetVersionDAO;
   }
 
   private <T> void observeError(StreamObserver<T> responseObserver, Exception e) {
@@ -70,7 +81,7 @@ public class LineageServiceImpl extends LineageServiceImplBase {
       }
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(ModelDBAuthInterceptor.METHOD_NAME.get())) {
-        AddLineage.Response response = lineageDAO.addLineage(request);
+        AddLineage.Response response = lineageDAO.addLineage(request, this::isResourceExists);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -159,6 +170,18 @@ public class LineageServiceImpl extends LineageServiceImplBase {
       }
     } catch (Exception e) {
       observeError(responseObserver, e);
+    }
+  }
+
+  private boolean isResourceExists(Session session, String id, LineageEntryType type)
+      throws ModelDBException {
+    switch (type) {
+      case EXPERIMENT_RUN:
+        return experimentDAO.isExperimentRunExists(session, id);
+      case DATASET_VERSION:
+        return datasetVersionDAO.isDatasetVersionExists(session, id);
+      default:
+        throw new ModelDBException("Unexpected type", Code.INTERNAL);
     }
   }
 }

@@ -35,7 +35,7 @@ public class LineageServiceImplNegativeTest {
 
   @Before
   public void before() {
-    sut = new LineageServiceImpl(lineageDAO);
+    sut = new LineageServiceImpl(lineageDAO, null, null);
   }
 
   @Test

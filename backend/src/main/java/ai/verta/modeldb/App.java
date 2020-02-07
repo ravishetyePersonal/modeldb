@@ -426,7 +426,8 @@ public class App implements ApplicationContextAware {
           new CollaboratorServiceImpl(authService, roleService, projectDAO, datasetDAO));
       LOGGER.debug("Collaborator serviceImpl initialized");
     }
-    serverBuilder.addService(new LineageServiceImpl(lineageDAO));
+    serverBuilder.addService(
+        new LineageServiceImpl(lineageDAO, experimentRunDAO, datasetVersionDAO));
     LOGGER.trace("Lineage serviceImpl initialized");
     LOGGER.info("All services initialized and resolved dependency before server start");
   }

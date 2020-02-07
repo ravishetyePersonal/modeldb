@@ -15,6 +15,7 @@ import ai.verta.uac.UserInfo;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.List;
 import java.util.Map;
+import org.hibernate.Session;
 
 public interface ExperimentRunDAO {
 
@@ -96,6 +97,8 @@ public interface ExperimentRunDAO {
    * @throws InvalidProtocolBufferException
    */
   ExperimentRun getExperimentRun(String experimentRunId) throws InvalidProtocolBufferException;
+
+  boolean isExperimentRunExists(Session session, String experimentRunId);
 
   /**
    * @param experimentRunId : experimentRun.id

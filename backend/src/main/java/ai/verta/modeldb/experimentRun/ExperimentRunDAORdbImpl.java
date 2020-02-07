@@ -414,6 +414,13 @@ public class ExperimentRunDAORdbImpl implements ExperimentRunDAO {
   }
 
   @Override
+  public boolean isExperimentRunExists(Session session, String experimentRunId) {
+    ExperimentRunEntity experimentRunEntity =
+        session.get(ExperimentRunEntity.class, experimentRunId);
+    return experimentRunEntity != null;
+  }
+
+  @Override
   public ExperimentRun updateExperimentRunName(String experimentRunId, String experimentRunName)
       throws InvalidProtocolBufferException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {

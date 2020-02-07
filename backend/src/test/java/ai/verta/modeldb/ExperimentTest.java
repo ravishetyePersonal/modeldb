@@ -125,7 +125,8 @@ public class ExperimentTest {
     }
   }
 
-  public CreateExperiment getCreateExperimentRequest(String projectId, String experimentName) {
+  public static CreateExperiment getCreateExperimentRequest(
+      String projectId, String experimentName) {
     List<KeyValue> attributeList = new ArrayList<>();
     Value stringValue =
         Value.newBuilder()

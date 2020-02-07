@@ -16,7 +16,8 @@ public interface LineageDAO {
    * @return {@link AddLineage.Response} : status
    * @throws ModelDBException wrong data format
    */
-  AddLineage.Response addLineage(AddLineage addLineage) throws ModelDBException;
+  AddLineage.Response addLineage(AddLineage addLineage, IsExistsPredicate isExistsPredicate)
+      throws ModelDBException;
 
   /**
    * Delete a Lineage.

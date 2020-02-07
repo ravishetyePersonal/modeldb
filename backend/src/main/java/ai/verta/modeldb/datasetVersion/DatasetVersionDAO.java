@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 
 public interface DatasetVersionDAO {
 
@@ -381,4 +382,6 @@ public interface DatasetVersionDAO {
     datasetVersionList.add(datasetVersionBuilder.build());
     return datasetVersionList;
   }
+
+  boolean isDatasetVersionExists(Session session, String id);
 }
