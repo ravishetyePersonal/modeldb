@@ -77,9 +77,7 @@ message Repository {
 message GetRepository {
     string id = 1;
     string name = 2;
-
-    string workspace_id = 5;
-    WorkspaceTypeEnum.WorkspaceType workspace_type = 6;
+    string workspace_name = 3;
 
     message Response {
         Repository repository = 1;
@@ -88,6 +86,7 @@ message GetRepository {
 
 message SetRepository {
     Repository repository = 1;
+    string workspace_name = 2; // Only used during creation
 
     message Response {
         Repository repository = 1;
