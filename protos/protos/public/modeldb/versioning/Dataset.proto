@@ -17,6 +17,7 @@ message PathDatasetBlob {
     uint64 last_modified_at_source = 3;
 
     string sha256 = 4;
+    string md5 = 5;
 }
 
 message S3DatasetBlob {
