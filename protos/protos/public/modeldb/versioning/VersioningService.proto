@@ -18,6 +18,7 @@ message Commit {
 message CommitContent {
     string author = 1;  // Author of the message. Also called "owner" in older commits
     string message = 2; // Message associated with the commit
+    uint64 date_created = 3;
 }
 
 message TreeElement {
