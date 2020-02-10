@@ -16,9 +16,8 @@ message Commit {
 }
 
 message CommitContent {
-    string author = 1;  // Author of the message. Also called "owner" in older commits
-    string message = 2; // Message associated with the commit
-    uint64 date_created = 3;
+    string message = 1; // Message associated with the commit
+    uint64 date_created = 2;
 }
 
 message TreeElement {
@@ -70,8 +69,6 @@ message Repository {
 
     string workspace_id = 5;
     WorkspaceTypeEnum.WorkspaceType workspace_type = 6;
-
-    string owner = 7;
 }
 
 message GetRepository {
