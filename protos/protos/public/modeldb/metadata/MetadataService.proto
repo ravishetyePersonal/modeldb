@@ -15,7 +15,7 @@ message IDTypeEnum {
 }
 
 message AddLabels {
-    IDTypeEnum id_type = 1;
+    IDTypeEnum.IDType id_type = 1;
     string id = 2;
     repeated string labels = 3;
 
@@ -25,7 +25,7 @@ message AddLabels {
 }
 
 message DeleteLabels {
-    IDTypeEnum id_type = 1;
+    IDTypeEnum.IDType id_type = 1;
     string id = 2;
     repeated string labels = 3;
 
@@ -35,7 +35,7 @@ message DeleteLabels {
 }
 
 message GetLabels {
-    IDTypeEnum id_type = 1;
+    IDTypeEnum.IDType id_type = 1;
     string id = 2;
 
     message Response {
@@ -44,7 +44,7 @@ message GetLabels {
 }
 
 message SetCreator {
-    IDTypeEnum id_type = 1;
+    IDTypeEnum.IDType id_type = 1;
     string id = 2;
     string creator_id = 3;
 
@@ -54,7 +54,7 @@ message SetCreator {
 }
 
 message GetCreator {
-    IDTypeEnum id_type = 1;
+    IDTypeEnum.IDType id_type = 1;
     string id = 2;
 
     message Response {
