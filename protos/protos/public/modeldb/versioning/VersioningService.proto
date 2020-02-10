@@ -128,6 +128,7 @@ message DeleteEntity {
 
 message GetRepositoryBlobs {
     string repository_id = 1;
+    string commit = 2;
 
     message Response {
         repeated BlobExpanded blobs = 1;
