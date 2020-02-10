@@ -35,4 +35,5 @@ Guides
     Data Versioning <guides/dataset>
     Class Models <guides/class>
     Workspaces <guides/workspaces>
+    Querying <guides/querying>
     Examples <guides/examples>

@@ -1258,8 +1258,8 @@ class ExperimentRuns(object):
     There should not be a need to instantiate this class directly; please use other classes'
     attributes to access Experiment Runs.
 
-    Warnings
-    --------
+    Notes
+    -----
     After an :class:`ExperimentRuns` instance is assigned to a variable, it will be detached from
     the method that created it, and *will never automatically update itself*.
 
@@ -1306,8 +1306,9 @@ class ExperimentRuns(object):
     # keys that yield predictable, sensible results
     _VALID_QUERY_KEYS = {
         'id', 'project_id', 'experiment_id',
-        'date_created', 'date_updated', 'start_time', 'end_time',
-        'tags', 'attributes', 'hyperparameters', 'metrics',
+        'name',
+        'date_created',
+        'attributes', 'hyperparameters', 'metrics',
     }
 
     def __init__(self, conn, conf, expt_run_ids=None):
