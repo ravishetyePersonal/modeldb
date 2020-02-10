@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package ai.verta.modeldb.versioning;
+
+option java_multiple_files = true;
+
+message DatasetBlob {
+    oneof content {
+        S3DatasetBlob s3_dataset_blob = 1;     // Blob of the type S3 dataset
+        PathDatasetBlob path_dataset_blob = 2; // Blob of the type path dataset
+    }
+}
+
+message PathDatasetBlob {
+    string path = 1; // Full path to the file
+    uint64 size = 2;
+    uint64 last_modified_at_source = 3;
+
+    string sha256 = 4;
+}
+
+message S3DatasetBlob {
+    PathDatasetBlob path_blob = 1;
+}
+
+message DatasetBlobDiff {
+    oneof content {
+        S3DatasetDiff s3_dataset_diff = 1;
+        PathDatasetDiff path_dataset_diff = 2;
+    }
+}
+
+message PathDatasetDiff {
+    bool deleted = 1;
+    bool added = 2;
+
+    PathDatasetBlob A = 3;
+    PathDatasetBlob B = 4;
+}
+
+message S3DatasetDiff {
+    PathDatasetDiff path_diff = 1;
+}
