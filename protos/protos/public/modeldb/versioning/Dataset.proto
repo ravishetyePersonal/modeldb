@@ -6,8 +6,8 @@ option java_multiple_files = true;
 
 message DatasetBlob {
     oneof content {
-        S3DatasetBlob s3_dataset_blob = 1;     // Blob of the type S3 dataset
-        PathDatasetBlob path_dataset_blob = 2; // Blob of the type path dataset
+        S3DatasetBlob s3 = 1;     // Blob of the type S3 dataset
+        PathDatasetBlob path = 2; // Blob of the type path dataset
     }
 }
 
@@ -21,13 +21,13 @@ message PathDatasetBlob {
 }
 
 message S3DatasetBlob {
-    PathDatasetBlob path_blob = 1;
+    PathDatasetBlob path = 1;
 }
 
-message DatasetBlobDiff {
+message DatasetDiff {
     oneof content {
-        S3DatasetDiff s3_dataset_diff = 1;
-        PathDatasetDiff path_dataset_diff = 2;
+        S3DatasetDiff s3 = 1;
+        PathDatasetDiff path = 2;
     }
 }
 
@@ -40,5 +40,5 @@ message PathDatasetDiff {
 }
 
 message S3DatasetDiff {
-    PathDatasetDiff path_diff = 1;
+    PathDatasetDiff path = 1;
 }
