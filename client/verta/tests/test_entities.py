@@ -10,6 +10,7 @@ import pytest
 import utils
 
 import verta
+import json
 
 
 KWARGS = {
@@ -57,6 +58,41 @@ class TestClient:
             conn = verta.Client("https://{}".format(host))._conn
             assert conn.scheme == "https"
             assert conn.scheme == conn.auth['Grpc-Metadata-scheme']
+
+    @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
+    def test_config_file(self):
+        SOCKET = "sandbox.app.verta.ai"
+        EMAIL_KEY = "VERTA_EMAIL"
+        DEV_KEY_KEY = "VERTA_DEV_KEY"
+        email = os.environ[EMAIL_KEY]
+        dev_key = os.environ[DEV_KEY_KEY]
+        del os.environ[EMAIL_KEY]
+        del os.environ[DEV_KEY_KEY]
+        PROJECT_NAME = "test_project"
+        DATASET_NAME = "test_dataset"
+        EXPERIMENT_NAME = "test_experiment"
+        CONFIG_FILENAME = "verta_config.json"
+        open(CONFIG_FILENAME, 'w').write(json.dumps({"email": email, "dev_key": dev_key,
+                                                         "host": SOCKET,
+                                                         "project": PROJECT_NAME,
+                                                         "dataset": DATASET_NAME,
+                                                         "experiment": EXPERIMENT_NAME}))
+        client = verta.Client()
+        conn = client._conn
+        assert conn.socket == SOCKET
+        assert conn.auth['Grpc-Metadata-email'] == email
+        assert conn.auth['Grpc-Metadata-developer_key'] == dev_key
+        proj = client.set_project()
+        assert proj.name == PROJECT_NAME
+        expt = client.set_experiment()
+        assert expt.name == EXPERIMENT_NAME
+        dataset = client.set_dataset()
+        assert dataset.name == DATASET_NAME
+        utils.delete_project(proj.id, conn)
+        utils.delete_datasets([dataset.id], conn)
+        os.environ[EMAIL_KEY] = email
+        os.environ[DEV_KEY_KEY] = dev_key
+        os.remove(CONFIG_FILENAME)
 
     def test_else_http(self):
         # test hosts must not redirect http to https

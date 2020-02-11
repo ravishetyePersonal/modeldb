@@ -19,6 +19,7 @@ import tarfile
 import tempfile
 import time
 import warnings
+import yaml
 import zipfile
 
 import requests
@@ -69,7 +70,7 @@ class Client(object):
 
     Parameters
     ----------
-    host : str
+    host : str, optional
         Hostname of the Verta Web App.
     email : str, optional
         Authentication credentials for managed service. If this does not sound familiar, then there
@@ -104,14 +105,18 @@ class Client(object):
         Currently active Experiment.
 
     """
-    def __init__(self, host, port=None, email=None, dev_key=None,
+    def __init__(self, host=None, port=None, email=None, dev_key=None,
                  max_retries=5, ignore_conn_err=False, use_git=True, debug=False):
+        self._load_config()
         if email is None and 'VERTA_EMAIL' in os.environ:
             email = os.environ['VERTA_EMAIL']
             print("set email from environment")
+        email = self._set_from_config_if_none(email, "email")
         if dev_key is None and 'VERTA_DEV_KEY' in os.environ:
             dev_key = os.environ['VERTA_DEV_KEY']
             print("set developer key from environment")
+        dev_key = self._set_from_config_if_none(dev_key, "dev_key")
+        host = self._set_from_config_if_none(host, "host")
 
         scheme = auth = None
         if email is None and dev_key is None:
@@ -223,6 +228,34 @@ class Client(object):
                             if expt_run.experiment_id == self.expt.id]
             return ExperimentRuns(self._conn, self._conf, expt_run_ids)
 
+    def _load_config(self):
+        config_file = self._find_config_in_all_dirs()
+        if config_file is not None:
+            stream = open(config_file, 'r')
+            self._config = yaml.load(stream, Loader=yaml.FullLoader)
+        else:
+            self._config = None
+        if self._config is None:
+            self._config = {}
+
+    def _find_config_in_all_dirs(self):
+        res = self._find_config('./', True)
+        if res is None:
+            return self._find_config("{}/.verta/".format(os.path.expanduser("~")))
+        return res
+
+    def _find_config(self, prefix, recursive = False):
+        f = ('verta_config.yaml', 'verta_config.json')
+        for ff in f:
+            if os.path.isfile(prefix + ff):
+                return prefix + ff
+        if recursive:
+            for dir in [os.path.join(prefix, o) for o in os.listdir(prefix) if os.path.isdir(os.path.join(prefix, o))]:
+                config_file = self._find_config(dir + "/", True)
+                if config_file is not None:
+                    return config_file
+        return None
+
     def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, id=None):
         """
         Attaches a Project to this Client.
@@ -264,6 +297,8 @@ class Client(object):
         if self.proj is not None:
             self.expt = None
 
+        name = self._set_from_config_if_none(name, "project")
+        workspace = self._set_from_config_if_none(workspace, "workspace")
         self.proj = Project(self._conn, self._conf,
                             name,
                             desc, tags, attrs,
@@ -307,6 +342,7 @@ class Client(object):
             If a Project is not yet in progress.
 
         """
+        name = self._set_from_config_if_none(name, "experiment")
         if name is not None and id is not None:
             raise ValueError("cannot specify both `name` and `id`")
         elif id is not None:
@@ -457,10 +493,18 @@ class Client(object):
         else:
             raise ValueError("`type` must be one of {'local', 's3', 'big query', 'atlas hive', 'postgres'}")
 
+        name = self._set_from_config_if_none(name, "dataset")
+        workspace = self._set_from_config_if_none(workspace, "workspace")
         return DatasetSubclass(self._conn, self._conf,
                                name=name, desc=desc, tags=tags, attrs=attrs,
                                workspace=workspace,
                                _dataset_id=id)
+
+    def _set_from_config_if_none(self, var, resource_name):
+        if var is None and resource_name in self._config:
+            print("set {} from config".format(resource_name))
+            return self._config[resource_name]
+        return var
 
     def get_dataset(self, name=None, id=None):
         """
