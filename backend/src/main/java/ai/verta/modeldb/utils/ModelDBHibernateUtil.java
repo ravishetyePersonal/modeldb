@@ -223,8 +223,7 @@ public class ModelDBHibernateUtil {
     }
   }
 
-  private static void checkDBConnectionInLoop(boolean isStartUpTime)
-      throws InterruptedException {
+  private static void checkDBConnectionInLoop(boolean isStartUpTime) throws InterruptedException {
     int loopBackTime = 5;
     int loopIndex = 0;
     boolean dbConnectionLive = false;
@@ -323,7 +322,7 @@ public class ModelDBHibernateUtil {
         Database database =
             DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcCon);
         LockServiceFactory.getInstance().getLockService(database).forceReleaseLock();
-        LOGGER.debug("Release database lock executing query froom backend");
+        LOGGER.debug("Release database lock executing query from backend");
       }
     }
   }
@@ -416,7 +415,7 @@ public class ModelDBHibernateUtil {
 
   public static boolean tableExists(Connection conn, String tableName) throws SQLException {
     boolean tExists = false;
-    try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
+    try (ResultSet rs = conn.getMetaData().getTables("modeldb", null, tableName, null)) {
       while (rs.next()) {
         String tName = rs.getString("TABLE_NAME");
         if (tName != null && tName.equals(tableName)) {

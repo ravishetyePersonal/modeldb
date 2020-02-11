@@ -721,7 +721,7 @@ public class FindProjectEntitiesTest {
     assertEquals(
         "Project Id not match with expected project Id",
         project4.getId(),
-        response.getProjects(0).getId());
+        response.getProjects(3).getId());
 
     LOGGER.info("FindProjects by attributes test stop ................................");
   }

@@ -186,6 +186,12 @@
 			<artifactId>simpleclient_hotspot</artifactId>
 			<version>${prometheus.version}</version>
 		</dependency>
+		<!-- Mysql Connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.17</version>
+		</dependency>
 	</dependencies>
 
 	<build>
