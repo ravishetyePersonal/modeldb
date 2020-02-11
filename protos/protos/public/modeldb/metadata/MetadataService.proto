@@ -43,27 +43,6 @@ message GetLabels {
     }
 }
 
-// The initial value for creator should be automatically set by the endpoint at the moment that the object was created
-// This method allows changing for flexibility
-message SetCreator {
-    IDTypeEnum.IDType id_type = 1;
-    string id = 2;
-    string creator_id = 3;
-
-    message Response {
-        bool status = 1;
-    }
-}
-
-message GetCreator {
-    IDTypeEnum.IDType id_type = 1;
-    string id = 2;
-
-    message Response {
-        string creator_id = 1;
-    }
-}
-
 service MetadataService {
     rpc getLabels(GetLabels) returns (GetLabels.Response) {
         option (google.api.http) = {
@@ -81,19 +60,6 @@ service MetadataService {
     rpc deleteLabels(DeleteLabels) returns (DeleteLabels.Response) {
         option (google.api.http) = {
             post: "/v1/metadata/deleteLabels"
-            body: "*"
-        };
-    };
-
-    rpc getCreator(GetCreator) returns (GetCreator.Response) {
-        option (google.api.http) = {
-            get: "/v1/metadata/getCreator"
-        };
-    };
-
-    rpc setCreator(SetCreator) returns (SetCreator.Response) {
-        option (google.api.http) = {
-            post: "/v1/metadata/setCreator"
             body: "*"
         };
     };
