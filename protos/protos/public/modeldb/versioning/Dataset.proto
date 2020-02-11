@@ -35,6 +35,7 @@ message PathDatasetDiff {
     bool deleted = 1;
     bool added = 2;
 
+    //things are modified when they have same path but different metadata.
     PathDatasetBlob A = 3;
     PathDatasetBlob B = 4;
 }
