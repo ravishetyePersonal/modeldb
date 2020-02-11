@@ -133,7 +133,7 @@ message CommitRepositoryBlobs {
     repeated BlobExpanded blobs = 4;
 
     message Response {
-        repeated Commit commit = 1;
+        Commit commit = 1;
     }
 }
 
