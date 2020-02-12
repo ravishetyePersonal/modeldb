@@ -1450,21 +1450,24 @@ class ExperimentRuns(object):
             # cast operator into protobuf enum variant
             operator = self._OP_MAP[operator]
 
-            # parse value
             try:
-                expr_node = ast.parse(value, mode='eval')
-            except SyntaxError:
-                six.raise_from(ValueError("value `{}` must be a number or string literal".format(value)),
-                               None)
-            value_node = expr_node.body
-            if type(value_node) is ast.Num:
-                value = value_node.n
-            elif type(value_node) is ast.Str:
-                value = value_node.s
-            elif type(value_node) is ast.Compare:
-                raise ValueError("predicate `{}` must be a two-operand comparison".format(predicate))
-            else:
-                raise ValueError("value `{}` must be a number or string literal".format(value))
+                value = float(value)
+            except ValueError:  # not a number
+                # parse value
+                try:
+                    expr_node = ast.parse(value, mode='eval')
+                except SyntaxError:
+                    e = ValueError("value `{}` must be a number or string literal".format(value))
+                    six.raise_from(e, None)
+                value_node = expr_node.body
+                if type(value_node) is ast.Str:
+                    value = value_node.s
+                elif type(value_node) is ast.Compare:
+                    e = ValueError("predicate `{}` must be a two-operand comparison".format(predicate))
+                    six.raise_from(e, None)
+                else:
+                    e = ValueError("value `{}` must be a number or string literal".format(value))
+                    six.raise_from(e, None)
 
             predicates.append(_CommonService.KeyValueQuery(key=key, value=_utils.python_to_val_proto(value),
                                                            operator=operator))

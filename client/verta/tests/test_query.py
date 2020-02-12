@@ -138,6 +138,20 @@ class TestFind:
         backend_filtered_run_ids = set(run.id for run in expt_runs.find("hyperparameters.val >= {}".format(threshold)))
         assert local_filtered_run_ids == backend_filtered_run_ids
 
+    def test_negative_values(self, client):
+        """There was a bug that rejected negative numbers as values."""
+        proj = client.set_project()
+        client.set_experiment()
+
+        for val in range(-6, 0):
+            client.set_experiment_run().log_metric('val', val)
+        expt_runs = proj.expt_runs
+
+        threshold = -3
+        local_filtered_run_ids = set(run.id for run in expt_runs if run.get_metric('val') >= threshold)
+        backend_filtered_run_ids = set(run.id for run in expt_runs.find("metrics.val >= {}".format(threshold)))
+        assert local_filtered_run_ids == backend_filtered_run_ids
+
 
 class TestSort:
     @pytest.mark.xfail(reason="back end sorts numbers lexicographically")
