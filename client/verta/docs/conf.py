@@ -16,12 +16,14 @@
 
 import os
 import sys
+import sphinx_rtd_theme
+
 sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'verta'
+project = 'Verta'
 copyright = '2019, Verta Inc'
 author = 'Verta Inc.'
 
@@ -44,6 +46,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
+    'sphinx_copybutton',
 ]
 
 autodoc_member_order = 'bysource'
@@ -112,7 +115,7 @@ rst_prolog = '\n'.join([
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+# html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -139,6 +142,8 @@ html_static_path = ['_static/']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
+
+html_style = 'custom.css'
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
@@ -217,3 +222,6 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+def setup(app):
+    app.add_javascript('custom.js')
+    app.add_stylesheet('custom.css')
