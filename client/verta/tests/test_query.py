@@ -10,23 +10,23 @@ OPERATORS = six.viewkeys(verta.client.ExperimentRuns._OP_MAP)
 
 class TestFind:
     def test_reject_unsupported_keys(self, client, floats):
-        keys = (
-            'name', 'description',
-            'code_version', 'code_version_snapshot',
-            'parent_id',
-            'artifacts', 'datasets',
-            'observations', 'features',
-            'job_id', 'owner',
-        )
+        # known unsupported keys
+        all_keys = {
+            attr
+            for attr
+            in verta.client._ExperimentRunService.ExperimentRun.__dict__.keys()
+            if not attr[0].isupper()
+            and not attr.startswith('_')
+        }
+        unsupported_keys = all_keys - verta.client.ExperimentRuns._VALID_QUERY_KEYS
         proj = client.set_project()
         expt = client.set_experiment()
 
         for _ in range(3):
             client.set_experiment_run()
 
-        # known unsupported keys
         for expt_runs in (proj.expt_runs, expt.expt_runs):
-            for key in keys:
+            for key in unsupported_keys:
                 for op, val in zip(OPERATORS, floats):
                     with pytest.raises(ValueError):
                         expt_runs.find("{} {} {}".format(key, op, val))
@@ -90,6 +90,7 @@ class TestFind:
     def test_end_time(self, client):
         key = "end_time"
 
+    @pytest.mark.skip(reason="not implemented")
     def test_tags(self, client, strs):
         tags = strs[:5]
         proj = client.set_project()
@@ -115,7 +116,6 @@ class TestFind:
     def test_attributes(self, client):
         key = "attributes"
 
-    @pytest.mark.xfail(reason="back end sorts numbers lexicographically")
     def test_metrics_and_hyperparameters(self, client, strs, bools, floats):
         proj = client.set_project()
         client.set_experiment()
@@ -128,12 +128,12 @@ class TestFind:
             run.log_hyperparameter('val', hyperparam_val)
         expt_runs = proj.expt_runs
 
-        threshold = metric_vals[len(metric_vals)//2]
+        threshold = int(metric_vals[len(metric_vals)//2])
         local_filtered_run_ids = set(run.id for run in expt_runs if run.get_metric('val') >= threshold)
         backend_filtered_run_ids = set(run.id for run in expt_runs.find("metrics.val >= {}".format(threshold)))
         assert local_filtered_run_ids == backend_filtered_run_ids
 
-        threshold = hyperparam_vals[len(hyperparam_vals)//2]
+        threshold = int(hyperparam_vals[len(hyperparam_vals)//2])
         local_filtered_run_ids = set(run.id for run in expt_runs if run.get_hyperparameter('val') >= threshold)
         backend_filtered_run_ids = set(run.id for run in expt_runs.find("hyperparameters.val >= {}".format(threshold)))
         assert local_filtered_run_ids == backend_filtered_run_ids

@@ -30,7 +30,7 @@ setup(
         "googleapis-common-protos>=1.5",
         "pathlib2>=2.2",
         "protobuf>=3.8",
-        "requests>=2.21, <3.0",
         "pyyaml>=5.1",
+        "requests>=2.21, <3.0",
     ],
 )

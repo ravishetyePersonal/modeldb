@@ -25,8 +25,7 @@ torch
 xgboost
 
 # documentation
-sphinx>=1.8.5,<2.0
-sphinx_copybutton
+-r docs/requirements.txt
 
 # verta
 -e .

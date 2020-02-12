@@ -4,7 +4,7 @@ Release Notes
 
 .. This comment block is a template for version release notes.
    v.. (--)
-   ---------------------
+   --------------------
 
    Backwards Incompatibilities
    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -30,6 +30,48 @@ Release Notes
    ^^^^^^^^^^^^^^^^
    - `
      <>`__
+
+
+v0.14.0 (2020-02-11)
+--------------------
+
+Backwards Incompatibilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- `require token in DeployedModel::from_url(), even if it's None
+  <https://github.com/VertaAI/modeldb-client/pull/335>`__
+
+New Features
+^^^^^^^^^^^^
+- `add a workspace parameter to client.set_project() and client.set_dataset()
+  <https://github.com/VertaAI/modeldb-client/pull/328>`__
+- `enable logging singleton scalar NumPy arrays as metrics
+  <https://github.com/VertaAI/modeldb-client/pull/338>`_
+- `implement Keras Client integration
+  <https://github.com/VertaAI/modeldb-client/pull/330>`__
+- `implement PyTorch Client integration
+  <https://github.com/VertaAI/modeldb-client/pull/337>`__
+- `implement scikit-learn Client integration
+  <https://github.com/VertaAI/modeldb/pull/23>`__
+- `implement TensorFlow Client integration
+  <https://github.com/VertaAI/modeldb-client/pull/331>`__
+- `implement TensorBoard Client integration
+  <https://github.com/VertaAI/modeldb/pull/38>`__
+- `implement XGBoost Client intergation
+  <https://github.com/VertaAI/modeldb-client/pull/334>`__
+
+Bug Fixes
+^^^^^^^^^
+- `allow negative numbers in Python 3 expt_runs.find() queries
+  <https://github.com/VertaAI/modeldb/pull/77>`__
+
+Internal Changes
+^^^^^^^^^^^^^^^^
+- `interpret HTTP 403s on getProject as project not found
+  <https://github.com/VertaAI/modeldb/pull/10>`__
+- `include gorilla as internal dependency
+  <https://github.com/VertaAI/modeldb/pull/22>`__
+- `explicitly include ModelDB in RPC endpoints
+  <https://github.com/VertaAI/modeldb/pull/28>`__
 
 
 v0.13.19 (2020-01-08)
@@ -310,7 +352,7 @@ Deprecations
 
 New Features
 ^^^^^^^^^^^^
-- `implement Client.set_experiment_run(id=…)
+- `implement client.set_experiment_run(id=…)
   <https://github.com/VertaAI/modeldb-client/pull/184>`__
 - `implement dataset retrieval functions
   <https://github.com/VertaAI/modeldb-client/pull/205>`__
@@ -709,7 +751,7 @@ v0.11.2 (2019-05-30)
 
 Backwards Incompatibilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- `Parameters for Client.set_* functions have been renamed to name and id, from e.g. proj_name and
+- `Parameters for client.set_* functions have been renamed to name and id, from e.g. proj_name and
   _proj_id.
   <https://github.com/VertaAI/modeldb-client/commit/889130d>`__
 - `The _id attribute of Project, Experiment, and ExperimentRun have been renamed to id.
@@ -719,7 +761,7 @@ Backwards Incompatibilities
 
 Bug Fixes
 ^^^^^^^^^
-- `fix typos in Client.set_* error messages
+- `fix typos in client.set_* error messages
   <https://github.com/VertaAI/modeldb-client/commit/0b8e4f9>`__
 
 

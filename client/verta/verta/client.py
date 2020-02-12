@@ -60,10 +60,10 @@ class Client(object):
     Object for interfacing with the ModelDB backend.
 
     .. deprecated:: 0.12.0
-       The `port` parameter will removed in v0.14.0; please combine `port` with the first parameter,
+       The `port` parameter will removed in v0.15.0; please combine `port` with the first parameter,
        e.g. `Client("localhost:8080")`.
     .. deprecated:: 0.13.3
-       The `expt_runs` attribute will removed in v0.14.0; consider using `proj.expt_runs` and
+       The `expt_runs` attribute will removed in v0.15.0; consider using `proj.expt_runs` and
        `expt.expt_runs` instead.
 
     This class provides functionality for starting/resuming Projects, Experiments, and Experiment Runs.
@@ -1389,7 +1389,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection that match predicates `where`.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A predicate in `where` is a string containing a simple boolean expression consisting of:
 
@@ -1491,7 +1491,7 @@ class ExperimentRuns(object):
         Sorts the Experiment Runs from this collection by `key`.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as
         ``metrics.accuracy``.
@@ -1549,7 +1549,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection with the `k` highest `key`\ s.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as
         ``metrics.accuracy``.
@@ -1613,7 +1613,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection with the `k` lowest `key`\ s.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as ``metrics.accuracy``.
 
@@ -2636,7 +2636,7 @@ class ExperimentRun(_ModelDBEntity):
         Logs the filesystem path of an dataset to this Experiment Run.
 
         .. deprecated:: 0.13.0
-           The `log_dataset_path()` method will removed in v0.14.0; consider using
+           The `log_dataset_path()` method will removed in v0.15.0; consider using
            `client.set_dataset(…, type="local")` and `run.log_dataset_version()` instead.
 
         This function makes no attempt to open a file at `dataset_path`. Only the path string itself
@@ -3292,7 +3292,7 @@ class ExperimentRun(_ModelDBEntity):
            The behavior of this function has been merged into :meth:`log_model` as its
            ``custom_modules`` parameter; consider using that instead.
         .. deprecated:: 0.12.4
-           The `search_path` parameter is no longer necessary and will removed in v0.14.0; consider
+           The `search_path` parameter is no longer necessary and will removed in v0.15.0; consider
            removing it from the function call.
 
         Parameters
