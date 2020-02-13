@@ -51,7 +51,7 @@ class DashboardActions extends React.PureComponent<AllProps> {
               </div>
               <div>
                 <Fai
-                  theme={'blue'}
+                  theme="primary"
                   variant="outlined"
                   icon={<Icon type="list" />}
                   isActive={isBulkMenuSelected}
@@ -64,7 +64,7 @@ class DashboardActions extends React.PureComponent<AllProps> {
             <div className={styles.dashboard_actione_label}>Reset:</div>
             <div>
               <Fai
-                theme={'blue'}
+                theme="primary"
                 variant="outlined"
                 icon={<Icon type="share-change" />}
                 onClick={this.resetExperimentRunsSettings}

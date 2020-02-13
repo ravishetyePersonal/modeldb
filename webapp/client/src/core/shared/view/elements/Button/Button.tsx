@@ -15,7 +15,7 @@ interface ILocalProps {
   fullHeight?: boolean;
   size?: 'small' | 'medium' | 'large'; // todo maybe default rename to medium
   icon?: React.ReactNode;
-  theme?: 'default' | 'gray' | 'red';
+  theme?: 'primary' | 'secondary' | 'red' | 'tertiary';
   isExtended?: boolean;
   dataTest?: string;
   type?: any;
@@ -33,7 +33,7 @@ class Button extends React.PureComponent<ILocalProps> {
       fullWidth = false,
       fullHeight = false,
       size = 'medium',
-      theme = 'default',
+      theme = 'primary',
       disabled,
       isLoading,
       isExtended,
@@ -60,8 +60,9 @@ class Button extends React.PureComponent<ILocalProps> {
           [styles.size_small]: size === 'small',
           [styles.size_medium]: size === 'medium',
           [styles.size_large]: size === 'large',
-          [styles.theme_default]: theme === 'default',
-          [styles.theme_gray]: theme === 'gray',
+          [styles.theme_primary]: theme === 'primary',
+          [styles.theme_secondary]: theme === 'secondary',
+          [styles.theme_tertiary]: theme === 'tertiary',
           [styles.theme_red]: theme === 'red',
           [styles.disabled]: disabled,
           [styles.loading]: isLoading,

@@ -266,7 +266,6 @@ class DatasetVersionPage extends React.PureComponent<AllProps> {
                     </this.SummaryMetaRecord>
                     <this.SummaryMetaRecord label="Delete">
                       <DeleteFAI
-                        theme="blue"
                         faiDataTest="delete-dataset-version-button"
                         onDelete={this.deleteDatasetVersion}
                         confirmText={<>Are you sure?</>}

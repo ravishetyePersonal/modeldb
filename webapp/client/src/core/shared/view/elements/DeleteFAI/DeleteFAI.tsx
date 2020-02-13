@@ -7,7 +7,6 @@ import { Icon } from '../Icon/Icon';
 
 interface ILocalProps {
   confirmText: Exclude<React.ReactNode, null | undefined>;
-  theme: IFaiLocalProps['theme'];
   faiDataTest?: string;
   isDisabled?: boolean;
   onDelete(): void;
@@ -15,18 +14,12 @@ interface ILocalProps {
 
 class DeleteFAI extends React.PureComponent<ILocalProps> {
   public render() {
-    const {
-      faiDataTest,
-      confirmText,
-      theme,
-      isDisabled,
-      onDelete,
-    } = this.props;
+    const { faiDataTest, confirmText, isDisabled, onDelete } = this.props;
     return (
       <ConfirmAction confirmText={confirmText}>
         {withConfirmAction => (
           <Fai
-            theme={theme}
+            theme="tertiary"
             isDisabled={isDisabled}
             variant="outlined"
             icon={<Icon type="trash" />}

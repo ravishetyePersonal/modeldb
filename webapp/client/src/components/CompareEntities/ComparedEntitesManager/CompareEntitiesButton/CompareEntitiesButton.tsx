@@ -28,7 +28,7 @@ class CompareEntitiesButton extends React.PureComponent<AllProps> {
     const { isEnableEntitiesComparing } = this.props;
     return (
       <Button
-        theme="default"
+        theme="primary"
         disabled={!isEnableEntitiesComparing}
         to={this.getCompareEntitiesLink()}
         dataTest="compare-entities-button"

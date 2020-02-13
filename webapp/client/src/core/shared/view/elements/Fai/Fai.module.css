@@ -27,13 +27,23 @@
   background-color: var(--bg-color1);
 }
 
-.theme_blue {
-  color: var(--bg-color2);
+.theme_primary {
+  color: var(--button-secondary-color);
   border-color: var(--bg-color2);
+  border-color: var(--button-secondary-border);
 }
-.theme_blue:hover {
+.theme_primary:hover {
   color: #ffffff;
-  background: var(--bg-color2);
+  background: var(--button-primary-hover-bg);
+}
+
+.theme_tertiary {
+  border-color: #9a9a9a;
+  color: #888888;
+}
+.theme_tertiary:hover {
+  color: #ffffff;
+  background: #b8b7c9;
 }
 
 .theme_red {

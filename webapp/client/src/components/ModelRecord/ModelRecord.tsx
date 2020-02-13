@@ -203,7 +203,6 @@ class ModelRecordView extends React.PureComponent<AllProps> {
               <label className={styles.meta_label_container}>Delete</label>
               <div className={styles.delete_button}>
                 <DeleteFAI
-                  theme="blue"
                   confirmText="Are you sure?"
                   faiDataTest="delete-experiment-run-button"
                   onDelete={this.deleteModelRecord}

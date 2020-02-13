@@ -55,7 +55,7 @@ class AddTagModal extends React.PureComponent<ILocalProps, ILocalState> {
           </div>
           <div className={styles.actions}>
             <div className={styles.action}>
-              <Button theme="gray" onClick={onClose}>
+              <Button theme="secondary" onClick={onClose}>
                 Cancel
               </Button>
             </div>

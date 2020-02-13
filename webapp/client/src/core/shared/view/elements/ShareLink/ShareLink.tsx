@@ -36,7 +36,7 @@ class ShareLink extends React.PureComponent<ILocalProps, ILocalState> {
           )}
           {buttonType === 'fai' && (
             <Fai
-              theme={'blue'}
+              theme="primary"
               variant="outlined"
               icon={<Icon type="share" />}
               onClick={this.showLink}

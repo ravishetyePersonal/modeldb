@@ -158,7 +158,7 @@ class DatasetVersionsPage extends React.PureComponent<AllProps, ILocalState> {
                         Bulk actions:
                       </div>
                       <Fai
-                        theme={'blue'}
+                        theme="primary"
                         variant="outlined"
                         icon={<Icon type="list" />}
                         onClick={this.toggleShowingBulkDeletionMenu}

@@ -51,7 +51,7 @@ class ChartRangeFilter extends React.Component<AllProps, ILocalState> {
                 <div className={styles.share_label}>Reset:</div>
                 <div className={styles.share_link}>
                   <Fai
-                    theme={'blue'}
+                    theme="primary"
                     variant="outlined"
                     icon={<Icon type="share-change" />}
                     onClick={this.resetChartConfig}

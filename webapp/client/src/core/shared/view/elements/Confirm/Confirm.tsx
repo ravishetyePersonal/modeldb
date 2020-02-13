@@ -40,7 +40,7 @@ class Confirm extends React.PureComponent<ILocalProps> {
           <div className={styles.actions}>
             <div className={styles.action}>
               <Button
-                theme={cancelButtonTheme || 'gray'}
+                theme={cancelButtonTheme || 'secondary'}
                 onClick={onCancel}
                 dataTest="confirm-cancel-button"
               >
@@ -49,7 +49,7 @@ class Confirm extends React.PureComponent<ILocalProps> {
             </div>
             <div className={styles.action}>
               <Button
-                theme={confirmButtonTheme || 'default'}
+                theme={confirmButtonTheme || 'primary'}
                 onClick={onConfirm}
                 dataTest="confirm-ok-button"
               >

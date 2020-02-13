@@ -60,7 +60,7 @@ class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
       <div className={styles.root} ref={this.rootRefObject}>
         <div className={styles.primaryAction}>
           <Button
-            theme={theme === 'blue' ? 'default' : theme}
+            theme={theme === 'blue' ? 'primary' : theme}
             dataTest={primaryAction.dataTest}
             isLoading={isLoading}
             disabled={disabled}
@@ -72,7 +72,7 @@ class SplitButton extends React.PureComponent<ILocalProps, ILocalState> {
         </div>
         <div className={styles.toggler}>
           <Button
-            theme={theme === 'blue' ? 'default' : theme}
+            theme={theme === 'blue' ? 'primary' : theme}
             disabled={disabled || isLoading}
             dataTest={this.props.dataTest || 'split-button'}
             fullWidth={true}

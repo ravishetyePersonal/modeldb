@@ -62,7 +62,7 @@ class ShowCommentsButton<Comment extends IComment> extends React.PureComponent<
       <div className={styles.root}>
         {this.props.buttonType === 'fai' ? (
           <Fai
-            theme="blue"
+            theme="primary"
             icon={<Icon type="comment" />}
             variant="outlined"
             dataTest="show-comments-button"
