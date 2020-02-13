@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Verta'
-copyright = '2019, Verta Inc'
+copyright = '2019–2020, Verta Inc'
 author = 'Verta Inc.'
 
 # The short X.Y version
@@ -132,6 +132,8 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_favicon = '../../../webapp/client/public/favicon.svg'
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
