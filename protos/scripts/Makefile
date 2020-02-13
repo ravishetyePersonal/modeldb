@@ -10,6 +10,8 @@ code:
 	# note code paths are wrt scripts dir
 	mkdir -p ../gen/python
 	python3 -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/modeldb/*.proto
+	python3 -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/modeldb/metadata/*.proto
+	python3 -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/modeldb/versioning/*.proto
 	python3 -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/artifactstore/*.proto
 	python -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/uac/*.proto
 	python -m grpc_tools.protoc $(PYTHON_GRPC_FLAGS) $(GATEWAY_FLAGS) ../protos/public/common/*.proto
@@ -18,11 +20,15 @@ code:
 
 	touch ../gen/python/protos/public/__init__.py
 	touch ../gen/python/protos/public/modeldb/__init__.py
+	touch ../gen/python/protos/public/modeldb/metadata/__init__.py
+	touch ../gen/python/protos/public/modeldb/versioning/__init__.py
 	touch ../gen/python/protos/public/artifactstore/__init__.py
 	touch ../gen/python/protos/public/uac/__init__.py
 	touch ../gen/python/protos/public/common/__init__.py
 
 	./fix_imports.sh ../gen/python/protos/public/modeldb/
+	./fix_imports.sh ../gen/python/protos/public/modeldb/metadata/
+	./fix_imports.sh ../gen/python/protos/public/modeldb/versioning/
 	./fix_imports.sh ../gen/python/protos/public/artifactstore/
 	./fix_imports.sh ../gen/python/protos/public/uac/
 	./fix_imports.sh ../gen/python/protos/public/common/
@@ -37,6 +43,10 @@ gw:
 		--go_out=plugins=grpc:$(GO_GW_OUTPUT) \
 		--grpc-gateway_out=logtostderr=true,allow_delete_body=true:$(GO_GW_OUTPUT) \
 		../protos/public/modeldb/*.proto
+	protoc $(GATEWAY_FLAGS) \
+		--go_out=plugins=grpc:$(GO_GW_OUTPUT) \
+		--grpc-gateway_out=logtostderr=true,allow_delete_body=true:$(GO_GW_OUTPUT) \
+		../protos/public/modeldb/versioning/*.proto
 	protoc $(GATEWAY_FLAGS) \
 		--go_out=plugins=grpc:$(GO_GW_OUTPUT) \
 		--grpc-gateway_out=logtostderr=true,allow_delete_body=true:$(GO_GW_OUTPUT) \

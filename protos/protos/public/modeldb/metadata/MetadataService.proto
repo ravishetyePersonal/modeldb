@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package ai.verta.modeldb.metadata;
+
+option java_multiple_files = true;
+
+import "google/api/annotations.proto";
+
+message IDTypeEnum {
+    enum IDType {
+        UNKNOWN = 0; // Type 0 should always cause an error
+        VERSIONING_REPOSITORY = 1;
+        VERSIONING_COMMIT = 2;
+    }
+}
+
+message AddLabels {
+    IDTypeEnum.IDType id_type = 1;
+    string id = 2;
+    repeated string labels = 3;
+
+    message Response {
+        bool status = 1;
+    }
+}
+
+message DeleteLabels {
+    IDTypeEnum.IDType id_type = 1;
+    string id = 2;
+    repeated string labels = 3;
+
+    message Response {
+        bool status = 1;
+    }
+}
+
+message GetLabels {
+    IDTypeEnum.IDType id_type = 1;
+    string id = 2;
+
+    message Response {
+        repeated string labels = 1;
+    }
+}
+
+service MetadataService {
+    rpc getLabels(GetLabels) returns (GetLabels.Response) {
+        option (google.api.http) = {
+            get: "/v1/metadata/getLabels"
+        };
+    };
+
+    rpc addLabels(AddLabels) returns (AddLabels.Response) {
+        option (google.api.http) = {
+            post: "/v1/metadata/addLabels"
+            body: "*"
+        };
+    };
+
+    rpc deleteLabels(DeleteLabels) returns (DeleteLabels.Response) {
+        option (google.api.http) = {
+            post: "/v1/metadata/deleteLabels"
+            body: "*"
+        };
+    };
+}
