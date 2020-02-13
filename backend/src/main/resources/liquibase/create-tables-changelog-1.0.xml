@@ -209,12 +209,12 @@
             <column name="field_type" type="varchar(50)"/>
             <column name="filename_extension" type="varchar(50)"/>
             <column name="ar_key" type="text"/>
-            <column name="ar_path" type="text"/>
             <column name="linked_artifact_id" type="varchar(255)"/>
+            <column name="ar_path" type="text"/>
             <column name="path_only" type="boolean"/>
-            <column name="project_id" type="varchar(255)"/>
             <column name="experiment_id" type="varchar(255)"/>
             <column name="experiment_run_id" type="varchar(255)"/>
+            <column name="project_id" type="varchar(255)"/>
         </createTable>
 
         <createTable catalogName="modeldb"
@@ -259,18 +259,18 @@
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="code_version" type="varchar(255)"/>
             <column name="date_created" type="int8"/>
             <column name="date_updated" type="int8"/>
-            <column name="start_time" type="int8"/>
-            <column name="end_time" type="int8"/>
-            <column name="name" type="varchar(255)"/>
-            <column name="owner" type="varchar(255)"/>
             <column name="description" type="text"/>
+            <column name="end_time" type="int8"/>
             <column name="experiment_id" type="varchar(255)"/>
             <column name="job_id" type="varchar(255)"/>
+            <column name="name" type="varchar(255)"/>
+            <column name="owner" type="varchar(255)"/>
             <column name="parent_id" type="varchar(255)"/>
             <column name="project_id" type="varchar(255)"/>
-            <column name="code_version" type="varchar(255)"/>
+            <column name="start_time" type="int8"/>
             <column name="code_version_snapshot_id" type="int8">
                 <constraints foreignKeyName="experimentrun_fk_code_version_snapshot_id"
                              referencedTableName="codeversion" referencedColumnNames="id"/>
@@ -285,9 +285,9 @@
             </column>
             <column name="entity_name" type="varchar(50)"/>
             <column name="feature" type="text"/>
-            <column name="project_id" type="varchar(255)"/>
             <column name="experiment_id" type="varchar(255)"/>
             <column name="experiment_run_id" type="varchar(255)"/>
+            <column name="project_id" type="varchar(255)"/>
             <column name="raw_dataset_version_info_id" type="int8"/>
         </createTable>
 
@@ -302,12 +302,12 @@
             <column name="kv_key" type="text"/>
             <column name="kv_value" type="text"/>
             <column name="value_type" type="int4"/>
-            <column name="project_id" type="varchar(255)"/>
-            <column name="experiment_id" type="varchar(255)"/>
-            <column name="experiment_run_id" type="varchar(255)"/>
             <column name="dataset_id" type="varchar(255)"/>
             <column name="dataset_version_id" type="varchar(255)"/>
+            <column name="experiment_id" type="varchar(255)"/>
+            <column name="experiment_run_id" type="varchar(255)"/>
             <column name="job_id" type="varchar(255)"/>
+            <column name="project_id" type="varchar(255)"/>
         </createTable>
 
         <createTable catalogName="modeldb"
@@ -321,11 +321,11 @@
             <column name="timestamp" type="int8">
                 <constraints nullable="false"/>
             </column>
-            <column name="project_id" type="varchar(255)"/>
+            <column name="artifact_id" type="int8"/>
             <column name="experiment_id" type="varchar(255)"/>
             <column name="experiment_run_id" type="varchar(255)"/>
-            <column name="artifact_id" type="int8"/>
             <column name="keyvaluemapping_id" type="int8"/>
+            <column name="project_id" type="varchar(255)"/>
         </createTable>
 
         <createTable catalogName="modeldb"
@@ -356,17 +356,6 @@
             </column>
             <column name="entity_name" type="varchar(50)"/>
             <column name="tags" type="text"/>
-            <column name="project_id" type="varchar(255)">
-                <constraints foreignKeyName="fk_project_id" referencedTableName="project" referencedColumnNames="id"/>
-            </column>
-            <column name="experiment_id" type="varchar(255)">
-                <constraints foreignKeyName="tagmapping_fk_experiment_id" referencedTableName="experiment"
-                             referencedColumnNames="id"/>
-            </column>
-            <column name="experiment_run_id" type="varchar(255)">
-                <constraints foreignKeyName="tagmapping_fk_experiment_run_id" referencedTableName="experimentrun"
-                             referencedColumnNames="id"/>
-            </column>
             <column name="dataset_id" type="varchar(255)">
                 <constraints foreignKeyName="tagmapping_fk_dataset_id" referencedTableName="dataset"
                              referencedColumnNames="id"/>
@@ -374,6 +363,17 @@
             <column name="dataset_version_id" type="varchar(255)">
                 <constraints foreignKeyName="tagmapping_fk_dataset_version_id" referencedTableName="datasetversion"
                              referencedColumnNames="id"/>
+            </column>
+            <column name="experiment_id" type="varchar(255)">
+                <constraints foreignKeyName="tagmapping_fk_experiment_id" referencedTableName="experiment"
+                referencedColumnNames="id"/>
+            </column>
+            <column name="experiment_run_id" type="varchar(255)">
+                <constraints foreignKeyName="tagmapping_fk_experiment_run_id" referencedTableName="experimentrun"
+                referencedColumnNames="id"/>
+            </column>
+            <column name="project_id" type="varchar(255)">
+                <constraints foreignKeyName="fk_project_id" referencedTableName="project" referencedColumnNames="id"/>
             </column>
         </createTable>
 
@@ -388,12 +388,12 @@
             <column name="kv_key" type="text"/>
             <column name="kv_value" type="text"/>
             <column name="value_type" type="int4"/>
-            <column name="project_id" type="varchar(255)"/>
-            <column name="experiment_id" type="varchar(255)"/>
-            <column name="experiment_run_id" type="varchar(255)"/>
             <column name="dataset_id" type="varchar(255)"/>
             <column name="dataset_version_id" type="varchar(255)"/>
+            <column name="experiment_id" type="varchar(255)"/>
+            <column name="experiment_run_id" type="varchar(255)"/>
             <column name="job_id" type="varchar(255)"/>
+            <column name="project_id" type="varchar(255)"/>
         </createTable>
 
         <createTable catalogName="modeldb"
