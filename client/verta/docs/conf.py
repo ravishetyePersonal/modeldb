@@ -16,12 +16,13 @@
 
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'verta'
+project = 'Verta'
 copyright = '2019, Verta Inc'
 author = 'Verta Inc.'
 
@@ -44,6 +45,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
+    'sphinx_copybutton',
 ]
 
 autodoc_member_order = 'bysource'
@@ -57,6 +59,7 @@ autodoc_mock_imports = [
     'torch',
     'verta._protos',
     'xgboost',
+    'yaml',
 ]
 
 napoleon_use_rtype = False
@@ -128,7 +131,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static/']
+html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -139,6 +142,8 @@ html_static_path = ['_static/']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
+
+html_style = 'custom.css'
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
@@ -217,3 +222,6 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+def setup(app):
+    app.add_javascript('custom.js')
+    app.add_stylesheet('custom.css')

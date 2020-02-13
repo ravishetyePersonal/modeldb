@@ -33,8 +33,6 @@ Functionality
 Miscellaneous
 -------------
 
-.. attribute:: ExperimentRun.id
-.. attribute:: ExperimentRun.name
 .. automethod:: ExperimentRun.clone
 
 Basic Metadata

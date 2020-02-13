@@ -35,7 +35,8 @@ public class LineageDAORdbImpl implements LineageDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
       validate(addLineage.getInputList(), addLineage.getOutputList());
-      validateExistence(addLineage.getInputList(), addLineage.getOutputList(), isExistsPredicate, session);
+      validateExistence(
+          addLineage.getInputList(), addLineage.getOutputList(), isExistsPredicate, session);
       for (LineageEntry input : addLineage.getInputList()) {
         for (LineageEntry output : addLineage.getOutputList()) {
           addLineage(session, input, output);
@@ -67,9 +68,7 @@ public class LineageDAORdbImpl implements LineageDAO {
     validate(outputList);
   }
 
-  private void validate(
-      List<LineageEntry> list)
-      throws ModelDBException {
+  private void validate(List<LineageEntry> list) throws ModelDBException {
     Set<String> ids = new HashSet<>();
     for (LineageEntry input : list) {
       ids.add(input.getExternalId());

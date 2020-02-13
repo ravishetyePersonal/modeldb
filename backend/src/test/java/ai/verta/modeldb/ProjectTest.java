@@ -1756,8 +1756,6 @@ public class ProjectTest {
     UserInfo secondUserInfo = uaServiceStub.getUser(getUserRequest);
 
     getUserRequest = GetUser.newBuilder().setEmail(authClientInterceptor.getClient1Email()).build();
-    // Get the user info by vertaId form the AuthService
-    UserInfo firstUserInfo = uaServiceStub.getUser(getUserRequest);
 
     // Create project
     CreateProject createProjectRequest = getCreateProjectRequest("project_f_apt");
@@ -1813,25 +1811,6 @@ public class ProjectTest {
         "Project name not match",
         getProjectByNameResponse.getProjectByUser() == null
             || getProjectByNameResponse.getProjectByUser().getId().isEmpty());
-    for (Project sharedProject : getProjectByNameResponse.getSharedProjectsList()) {
-      assertEquals("Shared project name not match", project.getName(), sharedProject.getName());
-    }
-
-    getProject =
-        GetProjectByName.newBuilder()
-            .setName(selfProject.getName())
-            .setWorkspaceName(firstUserInfo.getVertaInfo().getUsername())
-            .build();
-    getProjectByNameResponse = projectServiceStub.getProjectByName(getProject);
-    LOGGER.info(
-        "Response ProjectByUser of Project : " + getProjectByNameResponse.getProjectByUser());
-    LOGGER.info(
-        "Response SharedProjectsList of Projects : "
-            + getProjectByNameResponse.getSharedProjectsList());
-    assertTrue(
-        "Project name not match",
-        getProjectByNameResponse.getProjectByUser() != null
-            && getProjectByNameResponse.getProjectByUser().equals(selfProject));
     for (Project sharedProject : getProjectByNameResponse.getSharedProjectsList()) {
       assertEquals("Shared project name not match", project.getName(), sharedProject.getName());
     }
@@ -2958,8 +2937,7 @@ public class ProjectTest {
         GetCollaborator getCollaboratorRequest =
             GetCollaborator.newBuilder().setEntityId(project.getId()).build();
         try {
-          GetCollaborator.Response getCollaboratorResponse =
-              collaboratorServiceStub.getProjectCollaborators(getCollaboratorRequest);
+          collaboratorServiceStub.getProjectCollaborators(getCollaboratorRequest);
           fail();
         } catch (StatusRuntimeException e) {
           checkEqualsAssert(e);

@@ -672,8 +672,18 @@ public class RdbmsUtils {
     switch (value.getKindCase()) {
       case NUMBER_VALUE:
         LOGGER.debug("Called switch case : number_value");
+        //        return getOperatorPredicate(
+        //            builder,
+        //            builder.function("CAST", BigDecimal.class, valueExpression,
+        //            		builder.function("DECIMAL", BigDecimal.class,
+        // builder.literal(10),builder.literal(10))),
+        //            operator, value.getNumberValue());
         return getOperatorPredicate(
-            builder, valueExpression.as(Double.class), operator, value.getNumberValue());
+            builder,
+            builder.toBigDecimal(valueExpression),
+            // valueExpression.as(Float.class),
+            operator,
+            value.getNumberValue());
       case STRING_VALUE:
         LOGGER.debug("Called switch case : string_value");
         if (!value.getStringValue().isEmpty()) {

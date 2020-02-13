@@ -19,6 +19,7 @@ import tarfile
 import tempfile
 import time
 import warnings
+import yaml
 import zipfile
 
 import requests
@@ -59,17 +60,17 @@ class Client(object):
     Object for interfacing with the ModelDB backend.
 
     .. deprecated:: 0.12.0
-       The `port` parameter will removed in v0.14.0; please combine `port` with the first parameter,
+       The `port` parameter will removed in v0.15.0; please combine `port` with the first parameter,
        e.g. `Client("localhost:8080")`.
     .. deprecated:: 0.13.3
-       The `expt_runs` attribute will removed in v0.14.0; consider using `proj.expt_runs` and
+       The `expt_runs` attribute will removed in v0.15.0; consider using `proj.expt_runs` and
        `expt.expt_runs` instead.
 
     This class provides functionality for starting/resuming Projects, Experiments, and Experiment Runs.
 
     Parameters
     ----------
-    host : str
+    host : str, optional
         Hostname of the Verta Web App.
     email : str, optional
         Authentication credentials for managed service. If this does not sound familiar, then there
@@ -104,14 +105,18 @@ class Client(object):
         Currently active Experiment.
 
     """
-    def __init__(self, host, port=None, email=None, dev_key=None,
+    def __init__(self, host=None, port=None, email=None, dev_key=None,
                  max_retries=5, ignore_conn_err=False, use_git=True, debug=False):
+        self._load_config()
         if email is None and 'VERTA_EMAIL' in os.environ:
             email = os.environ['VERTA_EMAIL']
             print("set email from environment")
+        email = self._set_from_config_if_none(email, "email")
         if dev_key is None and 'VERTA_DEV_KEY' in os.environ:
             dev_key = os.environ['VERTA_DEV_KEY']
             print("set developer key from environment")
+        dev_key = self._set_from_config_if_none(dev_key, "dev_key")
+        host = self._set_from_config_if_none(host, "host")
 
         scheme = auth = None
         if email is None and dev_key is None:
@@ -223,6 +228,34 @@ class Client(object):
                             if expt_run.experiment_id == self.expt.id]
             return ExperimentRuns(self._conn, self._conf, expt_run_ids)
 
+    def _load_config(self):
+        config_file = self._find_config_in_all_dirs()
+        if config_file is not None:
+            stream = open(config_file, 'r')
+            self._config = yaml.load(stream, Loader=yaml.FullLoader)
+        else:
+            self._config = None
+        if self._config is None:
+            self._config = {}
+
+    def _find_config_in_all_dirs(self):
+        res = self._find_config('./', True)
+        if res is None:
+            return self._find_config("{}/.verta/".format(os.path.expanduser("~")))
+        return res
+
+    def _find_config(self, prefix, recursive = False):
+        f = ('verta_config.yaml', 'verta_config.json')
+        for ff in f:
+            if os.path.isfile(prefix + ff):
+                return prefix + ff
+        if recursive:
+            for dir in [os.path.join(prefix, o) for o in os.listdir(prefix) if os.path.isdir(os.path.join(prefix, o))]:
+                config_file = self._find_config(dir + "/", True)
+                if config_file is not None:
+                    return config_file
+        return None
+
     def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, id=None):
         """
         Attaches a Project to this Client.
@@ -264,6 +297,8 @@ class Client(object):
         if self.proj is not None:
             self.expt = None
 
+        name = self._set_from_config_if_none(name, "project")
+        workspace = self._set_from_config_if_none(workspace, "workspace")
         self.proj = Project(self._conn, self._conf,
                             name,
                             desc, tags, attrs,
@@ -307,6 +342,7 @@ class Client(object):
             If a Project is not yet in progress.
 
         """
+        name = self._set_from_config_if_none(name, "experiment")
         if name is not None and id is not None:
             raise ValueError("cannot specify both `name` and `id`")
         elif id is not None:
@@ -457,10 +493,18 @@ class Client(object):
         else:
             raise ValueError("`type` must be one of {'local', 's3', 'big query', 'atlas hive', 'postgres'}")
 
+        name = self._set_from_config_if_none(name, "dataset")
+        workspace = self._set_from_config_if_none(workspace, "workspace")
         return DatasetSubclass(self._conn, self._conf,
                                name=name, desc=desc, tags=tags, attrs=attrs,
                                workspace=workspace,
                                _dataset_id=id)
+
+    def _set_from_config_if_none(self, var, resource_name):
+        if var is None and resource_name in self._config:
+            print("set {} from config".format(resource_name))
+            return self._config[resource_name]
+        return var
 
     def get_dataset(self, name=None, id=None):
         """
@@ -1258,8 +1302,8 @@ class ExperimentRuns(object):
     There should not be a need to instantiate this class directly; please use other classes'
     attributes to access Experiment Runs.
 
-    Warnings
-    --------
+    Notes
+    -----
     After an :class:`ExperimentRuns` instance is assigned to a variable, it will be detached from
     the method that created it, and *will never automatically update itself*.
 
@@ -1306,8 +1350,9 @@ class ExperimentRuns(object):
     # keys that yield predictable, sensible results
     _VALID_QUERY_KEYS = {
         'id', 'project_id', 'experiment_id',
-        'date_created', 'date_updated', 'start_time', 'end_time',
-        'tags', 'attributes', 'hyperparameters', 'metrics',
+        'name',
+        'date_created',
+        'attributes', 'hyperparameters', 'metrics',
     }
 
     def __init__(self, conn, conf, expt_run_ids=None):
@@ -1344,7 +1389,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection that match predicates `where`.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A predicate in `where` is a string containing a simple boolean expression consisting of:
 
@@ -1405,21 +1450,24 @@ class ExperimentRuns(object):
             # cast operator into protobuf enum variant
             operator = self._OP_MAP[operator]
 
-            # parse value
             try:
-                expr_node = ast.parse(value, mode='eval')
-            except SyntaxError:
-                six.raise_from(ValueError("value `{}` must be a number or string literal".format(value)),
-                               None)
-            value_node = expr_node.body
-            if type(value_node) is ast.Num:
-                value = value_node.n
-            elif type(value_node) is ast.Str:
-                value = value_node.s
-            elif type(value_node) is ast.Compare:
-                raise ValueError("predicate `{}` must be a two-operand comparison".format(predicate))
-            else:
-                raise ValueError("value `{}` must be a number or string literal".format(value))
+                value = float(value)
+            except ValueError:  # not a number
+                # parse value
+                try:
+                    expr_node = ast.parse(value, mode='eval')
+                except SyntaxError:
+                    e = ValueError("value `{}` must be a number or string literal".format(value))
+                    six.raise_from(e, None)
+                value_node = expr_node.body
+                if type(value_node) is ast.Str:
+                    value = value_node.s
+                elif type(value_node) is ast.Compare:
+                    e = ValueError("predicate `{}` must be a two-operand comparison".format(predicate))
+                    six.raise_from(e, None)
+                else:
+                    e = ValueError("value `{}` must be a number or string literal".format(value))
+                    six.raise_from(e, None)
 
             predicates.append(_CommonService.KeyValueQuery(key=key, value=_utils.python_to_val_proto(value),
                                                            operator=operator))
@@ -1443,7 +1491,7 @@ class ExperimentRuns(object):
         Sorts the Experiment Runs from this collection by `key`.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as
         ``metrics.accuracy``.
@@ -1501,7 +1549,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection with the `k` highest `key`\ s.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as
         ``metrics.accuracy``.
@@ -1565,7 +1613,7 @@ class ExperimentRuns(object):
         Gets the Experiment Runs from this collection with the `k` lowest `key`\ s.
 
         .. deprecated:: 0.13.3
-           The `ret_all_info` parameter will removed in v0.14.0.
+           The `ret_all_info` parameter will removed in v0.15.0.
 
         A `key` is a string containing a dot-delimited Experiment Run property such as ``metrics.accuracy``.
 
@@ -2588,7 +2636,7 @@ class ExperimentRun(_ModelDBEntity):
         Logs the filesystem path of an dataset to this Experiment Run.
 
         .. deprecated:: 0.13.0
-           The `log_dataset_path()` method will removed in v0.14.0; consider using
+           The `log_dataset_path()` method will removed in v0.15.0; consider using
            `client.set_dataset(…, type="local")` and `run.log_dataset_version()` instead.
 
         This function makes no attempt to open a file at `dataset_path`. Only the path string itself
@@ -3244,7 +3292,7 @@ class ExperimentRun(_ModelDBEntity):
            The behavior of this function has been merged into :meth:`log_model` as its
            ``custom_modules`` parameter; consider using that instead.
         .. deprecated:: 0.12.4
-           The `search_path` parameter is no longer necessary and will removed in v0.14.0; consider
+           The `search_path` parameter is no longer necessary and will removed in v0.15.0; consider
            removing it from the function call.
 
         Parameters
