@@ -170,7 +170,7 @@ message GetRepositoryLog {
     }
 }
 
-message MergeRepository {
+message MergeRepositoryCommits {
     string repository_id = 1;
     string commit_a = 2;
     string commit_b = 3;
@@ -276,9 +276,9 @@ service VersioningService {
         };
     };
 
-    rpc mergeRepository(MergeRepository) returns (MergeRepository.Response) {
+    rpc mergeRepositoryCommits(MergeRepositoryCommits) returns (MergeRepositoryCommits.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/mergeRepository"
+            post: "/v1/versioning/mergeRepositoryCommits"
             body: "*"
         };
     };
