@@ -140,6 +140,7 @@ message CommitRepositoryBlobs {
 message GetRepositoryBlobs {
     string repository_id = 1;
     string commit_id = 2;
+    string glob_path_prefix = 3;
 
     message Response {
         repeated BlobExpanded blobs = 1;
@@ -150,6 +151,7 @@ message GetRepositoryDiff {
     string repository_id = 1;
     string commit_a = 2;
     string commit_b = 3;
+    string glob_path_prefix = 4;
 
     message Response {
         repeated BlobDiff diffs = 1;
@@ -160,6 +162,7 @@ message GetRepositoryLog {
     string repository_id = 1;
     string commit_base = 2; // If empty, consider commits from the beginning
     string commit_head = 3; // If empty, consider commits from the base to the latest
+    string glob_path_prefix = 6;
 
     //For pagination
     int32 page_number = 4;
