@@ -244,7 +244,7 @@ class Client(object):
             return self._find_config("{}/.verta/".format(os.path.expanduser("~")))
         return res
 
-    def _find_config(self, prefix, recursive = False):
+    def _find_config(self, prefix, recursive=False):
         f = ('verta_config.yaml', 'verta_config.json')
         for ff in f:
             if os.path.isfile(prefix + ff):
@@ -255,6 +255,12 @@ class Client(object):
                 if config_file is not None:
                     return config_file
         return None
+
+    def _set_from_config_if_none(self, var, resource_name):
+        if var is None and resource_name in self._config:
+            print("setting {} from config file".format(resource_name))
+            return self._config[resource_name]
+        return var
 
     def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, id=None):
         """
@@ -297,8 +303,10 @@ class Client(object):
         if self.proj is not None:
             self.expt = None
 
-        name = self._set_from_config_if_none(name, "project")
+        if name is None and id is None:
+            name = self._set_from_config_if_none(name, "project")
         workspace = self._set_from_config_if_none(workspace, "workspace")
+
         self.proj = Project(self._conn, self._conf,
                             name,
                             desc, tags, attrs,
@@ -342,7 +350,9 @@ class Client(object):
             If a Project is not yet in progress.
 
         """
-        name = self._set_from_config_if_none(name, "experiment")
+        if name is None and id is None:
+            name = self._set_from_config_if_none(name, "experiment")
+
         if name is not None and id is not None:
             raise ValueError("cannot specify both `name` and `id`")
         elif id is not None:
@@ -362,7 +372,13 @@ class Client(object):
         else:
             # set Experiment by name under current Project
             if self.proj is None:
-                raise AttributeError("a Project must first be in progress")
+                # automatically set Project if in config
+                proj_name = self._set_from_config_if_none(None, "project")
+                if proj_name is not None:
+                    self.set_project(proj_name)
+                else:
+                    raise AttributeError("a Project must first be in progress")
+
             self.expt = Experiment(self._conn, self._conf,
                                    self.proj.id, name,
                                    desc, tags, attrs)
@@ -429,7 +445,13 @@ class Client(object):
         else:
             # set ExperimentRun by name under current Experiment
             if self.expt is None:
-                raise AttributeError("an Experiment must first be in progress")
+                # automatically set Experiment if in config
+                expt_name = self._set_from_config_if_none(None, "experiment")
+                if expt_name is not None:
+                    self.set_experiment(expt_name)
+                else:
+                    raise AttributeError("an Experiment must first be in progress")
+
             expt_run = ExperimentRun(self._conn, self._conf,
                                      self.proj.id, self.expt.id, name,
                                      desc, tags, attrs, date_created=date_created)
@@ -499,12 +521,6 @@ class Client(object):
                                name=name, desc=desc, tags=tags, attrs=attrs,
                                workspace=workspace,
                                _dataset_id=id)
-
-    def _set_from_config_if_none(self, var, resource_name):
-        if var is None and resource_name in self._config:
-            print("set {} from config".format(resource_name))
-            return self._config[resource_name]
-        return var
 
     def get_dataset(self, name=None, id=None):
         """

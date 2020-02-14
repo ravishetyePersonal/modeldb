@@ -61,38 +61,57 @@ class TestClient:
 
     @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_config_file(self):
-        SOCKET = "sandbox.app.verta.ai"
-        EMAIL_KEY = "VERTA_EMAIL"
-        DEV_KEY_KEY = "VERTA_DEV_KEY"
-        email = os.environ[EMAIL_KEY]
-        dev_key = os.environ[DEV_KEY_KEY]
-        del os.environ[EMAIL_KEY]
-        del os.environ[DEV_KEY_KEY]
         PROJECT_NAME = "test_project"
         DATASET_NAME = "test_dataset"
         EXPERIMENT_NAME = "test_experiment"
         CONFIG_FILENAME = "verta_config.json"
-        open(CONFIG_FILENAME, 'w').write(json.dumps({"email": email, "dev_key": dev_key,
-                                                         "host": SOCKET,
-                                                         "project": PROJECT_NAME,
-                                                         "dataset": DATASET_NAME,
-                                                         "experiment": EXPERIMENT_NAME}))
-        client = verta.Client()
-        conn = client._conn
-        assert conn.socket == SOCKET
-        assert conn.auth['Grpc-Metadata-email'] == email
-        assert conn.auth['Grpc-Metadata-developer_key'] == dev_key
-        proj = client.set_project()
-        assert proj.name == PROJECT_NAME
-        expt = client.set_experiment()
-        assert expt.name == EXPERIMENT_NAME
-        dataset = client.set_dataset()
-        assert dataset.name == DATASET_NAME
-        utils.delete_project(proj.id, conn)
-        utils.delete_datasets([dataset.id], conn)
-        os.environ[EMAIL_KEY] = email
-        os.environ[DEV_KEY_KEY] = dev_key
-        os.remove(CONFIG_FILENAME)
+
+        HOST = "sandbox.app.verta.ai"
+        EMAIL_KEY, DEV_KEY_KEY = "VERTA_EMAIL", "VERTA_DEV_KEY"
+
+        EMAIL, DEV_KEY = os.environ[EMAIL_KEY], os.environ[DEV_KEY_KEY]
+        try:
+            del os.environ[EMAIL_KEY], os.environ[DEV_KEY_KEY]
+
+            try:
+                with open(CONFIG_FILENAME, 'w') as f:
+                    json.dump(
+                        {
+                            'host': HOST,
+                            'email': EMAIL, 'dev_key': DEV_KEY,
+                            'project': PROJECT_NAME,
+                            'experiment': EXPERIMENT_NAME,
+                            'dataset': DATASET_NAME,
+                        },
+                        f,
+                    )
+
+                client = verta.Client()
+                conn = client._conn
+
+                assert conn.socket == HOST
+                assert conn.auth['Grpc-Metadata-email'] == EMAIL
+                assert conn.auth['Grpc-Metadata-developer_key'] == DEV_KEY
+
+                try:
+                    assert client.set_experiment_run()
+                    assert client.proj.name == PROJECT_NAME
+                    assert client.expt.name == EXPERIMENT_NAME
+                finally:
+                    if client.proj is not None:
+                        utils.delete_project(client.proj.id, conn)
+
+                dataset = client.set_dataset()
+                try:
+                    assert dataset.name == DATASET_NAME
+                finally:
+                    utils.delete_datasets([dataset.id], conn)
+
+            finally:
+                if os.path.exists(CONFIG_FILENAME):
+                    os.remove(CONFIG_FILENAME)
+        finally:
+            os.environ[EMAIL_KEY], os.environ[DEV_KEY_KEY] = EMAIL, DEV_KEY
 
     def test_else_http(self):
         # test hosts must not redirect http to https
@@ -222,9 +241,13 @@ class TestExperiment:
         assert expt.id == client.set_experiment(id=expt.id).id
         assert proj.id == client.proj.id
 
-    def test_get_nonexistent_id(self, client):
+    def test_get_nonexistent_id_error(self, client):
         with pytest.raises(ValueError):
             client.set_experiment(id="nonexistent_id")
+
+    def test_no_project_error(self, client):
+        with pytest.raises(AttributeError):
+            client.set_experiment()
 
 
 class TestExperimentRun:
@@ -264,9 +287,13 @@ class TestExperimentRun:
         assert proj.id == client.proj.id
         assert expt.id == client.expt.id
 
-    def test_get_nonexistent_id(self, client):
+    def test_get_nonexistent_id_error(self, client):
         with pytest.raises(ValueError):
             client.set_experiment_run(id="nonexistent_id")
+
+    def test_no_experiment_error(self, client):
+        with pytest.raises(AttributeError):
+            client.set_experimennt_run()
 
     def test_clone(self, experiment_run):
         expt_run = experiment_run
