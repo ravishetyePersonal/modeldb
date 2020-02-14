@@ -369,7 +369,7 @@ class Client(object):
 
         return self.expt
 
-    def set_experiment_run(self, name=None, desc=None, tags=None, attrs=None, id=None):
+    def set_experiment_run(self, name=None, desc=None, tags=None, attrs=None, id=None, date_created=None):
         """
         Attaches an Experiment Run under the currently active Experiment to this Client.
 
@@ -432,7 +432,7 @@ class Client(object):
                 raise AttributeError("an Experiment must first be in progress")
             expt_run = ExperimentRun(self._conn, self._conf,
                                      self.proj.id, self.expt.id, name,
-                                     desc, tags, attrs)
+                                     desc, tags, attrs, date_created=date_created)
 
         return expt_run
 
@@ -1692,6 +1692,7 @@ class ExperimentRun(_ModelDBEntity):
     def __init__(self, conn, conf,
                  proj_id=None, expt_id=None, expt_run_name=None,
                  desc=None, tags=None, attrs=None,
+                 date_created=None,
                  _expt_run_id=None):
         if expt_run_name is not None and _expt_run_id is not None:
             raise ValueError("cannot specify both `expt_run_name` and `_expt_run_id`")
@@ -1706,7 +1707,7 @@ class ExperimentRun(_ModelDBEntity):
             if expt_run_name is None:
                 expt_run_name = ExperimentRun._generate_default_name()
             try:
-                expt_run = ExperimentRun._create(conn, proj_id, expt_id, expt_run_name, desc, tags, attrs)
+                expt_run = ExperimentRun._create(conn, proj_id, expt_id, expt_run_name, desc, tags, attrs, date_created=date_created)
             except requests.HTTPError as e:
                 if e.response.status_code == 409:  # already exists
                     if any(param is not None for param in (desc, tags, attrs)):
@@ -1842,14 +1843,15 @@ class ExperimentRun(_ModelDBEntity):
                 _utils.raise_for_http_error(response)
 
     @staticmethod
-    def _create(conn, proj_id, expt_id, expt_run_name, desc=None, tags=None, attrs=None):
+    def _create(conn, proj_id, expt_id, expt_run_name, desc=None, tags=None, attrs=None, date_created=None):
         if attrs is not None:
             attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _ExperimentRunService.CreateExperimentRun
         msg = Message(project_id=proj_id, experiment_id=expt_id, name=expt_run_name,
-                      description=desc, tags=tags, attributes=attrs)
+                      description=desc, tags=tags, attributes=attrs,
+                      date_created=date_created, date_updated=date_created)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
                                        "{}://{}/api/v1/modeldb/experiment-run/createExperimentRun".format(conn.scheme, conn.socket),
