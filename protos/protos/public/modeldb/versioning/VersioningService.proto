@@ -170,6 +170,25 @@ message GetRepositoryLog {
     }
 }
 
+message MergeRepository {
+    string repository_id = 1;
+    string commit_a = 2;
+    string commit_b = 3;
+
+    CommitContent content = 4;
+    repeated BlobExpanded conflict_resolution_blobs = 5; // Set of blobs that must resolve any conflict encountered
+    bool force_manual_conflict_resolution = 6;
+
+    message Response {
+        Commit commit = 1;
+
+        // In case of a conflict, stop at the first such conflict and return it
+        Commit common_base = 2; // Common base shared between the two commits
+        repeated BlobDiff diffs_a = 3; // Diff between the common base and commit A
+        repeated BlobDiff diffs_b = 4; // Diff between the common base and commit B
+    }
+}
+
 // Tags, like in git, are unique
 message SetTag {
     string repository_id = 1;
@@ -254,6 +273,13 @@ service VersioningService {
     rpc getRepositoryLog(GetRepositoryLog) returns (GetRepositoryLog.Response) {
         option (google.api.http) = {
             get: "/v1/versioning/getRepositoryLog"
+        };
+    };
+
+    rpc mergeRepository(MergeRepository) returns (MergeRepository.Response) {
+        option (google.api.http) = {
+            post: "/v1/versioning/mergeRepository"
+            body: "*"
         };
     };
 
