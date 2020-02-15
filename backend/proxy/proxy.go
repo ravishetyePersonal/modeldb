@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	gw "github.com/VertaAI/modeldb-oss/protos/gen/go/protos/public/modeldb"
+	gw "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

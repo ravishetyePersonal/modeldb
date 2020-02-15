@@ -99,5 +99,5 @@ Each module in the architecture diagram has a designated folder in this reposito
 
 Other supporting material for deployment and documentation is at:
 
-1. **chart** has the helm chart to deploy ModelDB onto your Kubernetes cluster. More details [here](chart/modeldb-oss/README.md).  
+1. **chart** has the helm chart to deploy ModelDB onto your Kubernetes cluster. More details [here](chart/modeldb/README.md).
 1. **doc-resources** has images for documentation.
