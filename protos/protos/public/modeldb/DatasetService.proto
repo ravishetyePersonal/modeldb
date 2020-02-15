@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package ai.verta.modeldb;
+option go_package = "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb";
 
 option java_multiple_files = true;
 
@@ -15,7 +16,7 @@ message Dataset {
     string name = 2;
     string owner = 3;
     string description = 4;
-    repeated string tags = 5; 
+    repeated string tags = 5;
     DatasetVisibilityEnum.DatasetVisibility dataset_visibility = 6;
     DatasetTypeEnum.DatasetType dataset_type = 7;
     repeated common.KeyValue attributes = 8;

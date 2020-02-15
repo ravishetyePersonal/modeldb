@@ -1,0 +1,228 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "protos/public/modeldb/metadata/MetadataService.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/metadata/addLabels": {
+      "post": {
+        "operationId": "addLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/metadataAddLabelsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataAddLabels"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataService"
+        ]
+      }
+    },
+    "/v1/metadata/deleteLabels": {
+      "post": {
+        "operationId": "deleteLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/metadataDeleteLabelsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataDeleteLabels"
+            }
+          }
+        ],
+        "tags": [
+          "MetadataService"
+        ]
+      }
+    },
+    "/v1/metadata/getLabels": {
+      "get": {
+        "operationId": "getLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/metadataGetLabelsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id_type",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "VERSIONING_REPOSITORY",
+              "VERSIONING_COMMIT"
+            ],
+            "default": "UNKNOWN"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "MetadataService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "IDTypeEnumIDType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "VERSIONING_REPOSITORY",
+        "VERSIONING_COMMIT"
+      ],
+      "default": "UNKNOWN"
+    },
+    "metadataAddLabels": {
+      "type": "object",
+      "properties": {
+        "id_type": {
+          "$ref": "#/definitions/IDTypeEnumIDType"
+        },
+        "id": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataAddLabelsResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "metadataDeleteLabels": {
+      "type": "object",
+      "properties": {
+        "id_type": {
+          "$ref": "#/definitions/IDTypeEnumIDType"
+        },
+        "id": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataDeleteLabelsResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "metadataGetLabelsResponse": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

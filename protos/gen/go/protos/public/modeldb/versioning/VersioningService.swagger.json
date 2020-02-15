@@ -1,0 +1,925 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "protos/public/modeldb/versioning/VersioningService.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/versioning/addEntity": {
+      "post": {
+        "operationId": "addEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningAddEntityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningAddEntity"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/batchGetEntity": {
+      "get": {
+        "operationId": "batchGetEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningBatchGetEntityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "shas",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "repository_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/commitRepositoryBlobs": {
+      "post": {
+        "operationId": "commitRepositoryBlobs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningCommitRepositoryBlobsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningCommitRepositoryBlobs"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/deleteEntity": {
+      "post": {
+        "operationId": "deleteEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteEntityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteEntity"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/deleteRepository": {
+      "post": {
+        "operationId": "deleteRepository",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteRepositoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteRepository"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/getRepository": {
+      "get": {
+        "operationId": "getRepository",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningGetRepositoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "workspace_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/getRepositoryBlobs": {
+      "get": {
+        "operationId": "getRepositoryBlobs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningGetRepositoryBlobsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commit_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "glob_path_prefix",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/getRepositoryDiff": {
+      "get": {
+        "operationId": "getRepositoryDiff",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningGetRepositoryDiffResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commit_a",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commit_b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "glob_path_prefix",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/getRepositoryLog": {
+      "get": {
+        "operationId": "getRepositoryLog",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningGetRepositoryLogResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commit_base",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "commit_head",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "glob_path_prefix",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page_number",
+            "description": "For pagination.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/getTag": {
+      "get": {
+        "operationId": "getTag",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningGetTagResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/setRepository": {
+      "post": {
+        "summary": "If ID is missing, consider a new entry",
+        "operationId": "setRepository",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningSetRepositoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningSetRepository"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/setTag": {
+      "post": {
+        "operationId": "setTag",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningSetTagResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/versioningSetTag"
+            }
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "WorkspaceTypeEnumWorkspaceType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "ORGANIZATION",
+        "USER"
+      ],
+      "default": "UNKNOWN"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "versioningAddEntity": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "$ref": "#/definitions/versioningEntity",
+          "title": "If SHA is not empty, verify before adding the corresponding entry to avoid corruption\nIf empty, compute it"
+        }
+      }
+    },
+    "versioningAddEntityResponse": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "$ref": "#/definitions/versioningEntity"
+        }
+      }
+    },
+    "versioningBatchGetEntityResponse": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningEntity"
+          }
+        }
+      }
+    },
+    "versioningBlob": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "$ref": "#/definitions/versioningDatasetBlob"
+        }
+      }
+    },
+    "versioningBlobDiff": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "dataset": {
+          "$ref": "#/definitions/versioningDatasetDiff"
+        }
+      }
+    },
+    "versioningBlobExpanded": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "blob": {
+          "$ref": "#/definitions/versioningBlob"
+        }
+      }
+    },
+    "versioningCommit": {
+      "type": "object",
+      "properties": {
+        "parent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "content": {
+          "$ref": "#/definitions/versioningCommitContent"
+        },
+        "tree_id": {
+          "type": "string"
+        }
+      },
+      "title": "Base commit for the versioning system"
+    },
+    "versioningCommitContent": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "versioningCommitRepositoryBlobs": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "string"
+        },
+        "parent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "content": {
+          "$ref": "#/definitions/versioningCommitContent"
+        },
+        "blobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningBlobExpanded"
+          }
+        }
+      }
+    },
+    "versioningCommitRepositoryBlobsResponse": {
+      "type": "object",
+      "properties": {
+        "commit": {
+          "$ref": "#/definitions/versioningCommit"
+        }
+      }
+    },
+    "versioningDatasetBlob": {
+      "type": "object",
+      "properties": {
+        "s3": {
+          "$ref": "#/definitions/versioningS3DatasetBlob"
+        },
+        "path": {
+          "$ref": "#/definitions/versioningPathDatasetBlob"
+        }
+      }
+    },
+    "versioningDatasetDiff": {
+      "type": "object",
+      "properties": {
+        "s3": {
+          "$ref": "#/definitions/versioningS3DatasetDiff"
+        },
+        "path": {
+          "$ref": "#/definitions/versioningPathDatasetDiff"
+        }
+      }
+    },
+    "versioningDeleteEntity": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string"
+        },
+        "repository_id": {
+          "type": "string"
+        }
+      }
+    },
+    "versioningDeleteEntityResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "versioningDeleteRepository": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "string"
+        }
+      }
+    },
+    "versioningDeleteRepositoryResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "versioningEntity": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "title": "ID of the entity. Computed as the hash of all fields, excluding this field.\nNOTE: be careful: maps must be hashed in the same order every time"
+        },
+        "repository_id": {
+          "type": "string"
+        },
+        "commit": {
+          "$ref": "#/definitions/versioningCommit"
+        },
+        "tree": {
+          "$ref": "#/definitions/versioningTree"
+        },
+        "blob": {
+          "$ref": "#/definitions/versioningBlob"
+        }
+      }
+    },
+    "versioningGetRepositoryBlobsResponse": {
+      "type": "object",
+      "properties": {
+        "blobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningBlobExpanded"
+          }
+        }
+      }
+    },
+    "versioningGetRepositoryDiffResponse": {
+      "type": "object",
+      "properties": {
+        "diffs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningBlobDiff"
+          }
+        }
+      }
+    },
+    "versioningGetRepositoryLogResponse": {
+      "type": "object",
+      "properties": {
+        "commits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningCommit"
+          }
+        }
+      }
+    },
+    "versioningGetRepositoryResponse": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "$ref": "#/definitions/versioningRepository"
+        }
+      }
+    },
+    "versioningGetTagResponse": {
+      "type": "object",
+      "properties": {
+        "commit": {
+          "$ref": "#/definitions/versioningCommit"
+        }
+      }
+    },
+    "versioningPathDatasetBlob": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "last_modified_at_source": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "md5": {
+          "type": "string"
+        }
+      }
+    },
+    "versioningPathDatasetDiff": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "added": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "A": {
+          "$ref": "#/definitions/versioningPathDatasetBlob",
+          "description": "things are modified when they have same path but different metadata."
+        },
+        "B": {
+          "$ref": "#/definitions/versioningPathDatasetBlob"
+        }
+      }
+    },
+    "versioningRepository": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "date_created": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "date_updated": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "workspace_id": {
+          "type": "string"
+        },
+        "workspace_type": {
+          "$ref": "#/definitions/WorkspaceTypeEnumWorkspaceType"
+        }
+      }
+    },
+    "versioningS3DatasetBlob": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/versioningPathDatasetBlob"
+        }
+      }
+    },
+    "versioningS3DatasetDiff": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/versioningPathDatasetDiff"
+        }
+      }
+    },
+    "versioningSetRepository": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "$ref": "#/definitions/versioningRepository"
+        },
+        "workspace_name": {
+          "type": "string"
+        }
+      }
+    },
+    "versioningSetRepositoryResponse": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "$ref": "#/definitions/versioningRepository"
+        }
+      }
+    },
+    "versioningSetTag": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "commit_id": {
+          "type": "string"
+        }
+      },
+      "title": "Tags, like in git, are unique"
+    },
+    "versioningSetTagResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "versioningTree": {
+      "type": "object",
+      "properties": {
+        "blobs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningTreeElement"
+          }
+        },
+        "subtrees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningTreeElement"
+          }
+        }
+      }
+    },
+    "versioningTreeElement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package ai.verta.uac;
+option go_package = "github.com/VertaAI/modeldb/protos/gen/go/protos/public/uac";
 
 option java_multiple_files = true;
 
@@ -112,4 +113,4 @@ service CollaboratorService {
             get: "/v1/collaborator/getDatasetCollaborators"
         };
     };
-} 
+}
