@@ -19,6 +19,7 @@ message Commit {
 message CommitContent {
     string message = 1; // Message associated with the commit
     uint64 date_created = 2;
+    string author = 3;
 }
 
 message TreeElement {
