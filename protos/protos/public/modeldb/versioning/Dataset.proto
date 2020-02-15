@@ -12,7 +12,7 @@ message DatasetBlob {
     }
 }
 
-message PathDatasetBlob {
+message PathDatasetComponentBlob {
     string path = 1; // Full path to the file
     uint64 size = 2;
     uint64 last_modified_at_source = 3;
@@ -21,8 +21,16 @@ message PathDatasetBlob {
     string md5 = 5;
 }
 
+message PathDatasetBlob {
+    repeated PathDatasetComponentBlob components = 1;
+}
+
+message S3DatasetComponentBlob {
+    PathDatasetComponentBlob path = 1;
+}
+
 message S3DatasetBlob {
-    PathDatasetBlob path = 1;
+    repeated S3DatasetComponentBlob components = 1;
 }
 
 message DatasetDiff {
