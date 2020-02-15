@@ -53,18 +53,17 @@ message BlobDiff {
 message Entity {
     // ID of the entity. Computed as the hash of all fields, excluding this field.
     // NOTE: be careful: maps must be hashed in the same order every time
-    string sha256 = 1;
+    string sha = 1;
 
-    string repository_id = 2;
     oneof content {
-        Commit commit = 3;
-        Tree tree = 4;
-        Blob blob = 5;
+        Commit commit = 2;
+        Tree tree = 3;
+        Blob blob = 4;
     }
 }
 
 message Repository {
-    string id = 1;
+    uint64 id = 1;
     string name = 2; // Name that can be used in URL, like in GitHub
     uint64 date_created = 3;
     uint64 date_updated = 4;
@@ -73,10 +72,36 @@ message Repository {
     WorkspaceTypeEnum.WorkspaceType workspace_type = 6;
 }
 
-message GetRepository {
-    string id = 1;
-    string name = 2;
-    string workspace_name = 3;
+// For pagination
+message Pagination {
+    int32 page_number = 2;
+    int32 page_limit = 3;
+}
+
+// CRUD for repositories
+message RepositoryNamedIdentification {
+    string name = 1;
+    string workspace_name = 2;
+}
+
+message RepositoryIdentification {
+    oneof id {
+        RepositoryNamedIdentification named = 1;
+        uint64 code = 2;
+    }
+}
+
+message ListRepositoriesRequest {
+    string workspace_name = 1;
+    Pagination pagination = 2;
+
+    message Response {
+        repeated Repository repository = 1;
+    }
+}
+
+message GetRepositoryRequest {
+    RepositoryIdentification id = 1;
 
     message Response {
         Repository repository = 1;
@@ -84,52 +109,77 @@ message GetRepository {
 }
 
 message SetRepository {
-    Repository repository = 1;
-    string workspace_name = 2; // Only used during creation
+    RepositoryIdentification id = 1;
+    Repository repository = 2;
 
     message Response {
         Repository repository = 1;
     }
 }
 
-message DeleteRepository {
-    string repository_id = 1;
+message DeleteRepositoryRequest {
+    RepositoryIdentification id = 1;
 
     message Response {
-        bool status = 1;
     }
 }
 
+// CRUD for entities
 message BatchGetEntity {
     repeated string shas = 1;
-    string repository_id = 2;
+    RepositoryIdentification repository_id = 2;
 
     message Response {
         repeated Entity entities = 1;
     }
 }
 
-message AddEntity {
+message AddEntityRequest {
     // If SHA is not empty, verify before adding the corresponding entry to avoid corruption
     // If empty, compute it
     Entity entity = 1;
+    RepositoryIdentification repository_id = 2;
 
     message Response {
-        Entity entity = 1;
+        string sha = 1;
     }
 }
 
-message DeleteEntity {
-    string sha256 = 1;
-    string repository_id = 2;
+message DeleteEntityRequest {
+    string sha = 1;
+    RepositoryIdentification repository_id = 2;
 
     message Response {
-        bool status = 1;
     }
 }
 
-message CommitRepositoryBlobs {
-    string repository_id = 1;
+// Commit operations
+message ListCommitsRequest {
+    RepositoryIdentification repository_id = 1;
+    Pagination pagination = 2;
+
+    string commit_base = 3; // If empty, consider commits from the beginning
+    string commit_head = 4; // If empty, consider commits from the base to the latest
+    string glob_path_prefix = 5;
+
+    message Response {
+        repeated Commit commits = 1;
+    }
+}
+
+message ListCommitBlobsRequest {
+    RepositoryIdentification repository_id = 1;
+    Pagination pagination = 2;
+    string commit_sha = 3;
+    string glob_path_prefix = 4;
+
+    message Response {
+        repeated BlobExpanded blobs = 1;
+    }
+}
+
+message CreateCommitRequest {
+    RepositoryIdentification repository_id = 1;
     repeated string parent_ids = 2;
     CommitContent content = 3;
     repeated BlobExpanded blobs = 4;
@@ -139,18 +189,9 @@ message CommitRepositoryBlobs {
     }
 }
 
-message GetRepositoryBlobs {
-    string repository_id = 1;
-    string commit_id = 2;
-    string glob_path_prefix = 3;
-
-    message Response {
-        repeated BlobExpanded blobs = 1;
-    }
-}
-
-message GetRepositoryDiff {
-    string repository_id = 1;
+// Git-like operations
+message ComputeRepositoryDiffRequest {
+    RepositoryIdentification repository_id = 1;
     string commit_a = 2;
     string commit_b = 3;
     string glob_path_prefix = 4;
@@ -160,34 +201,18 @@ message GetRepositoryDiff {
     }
 }
 
-message GetRepositoryLog {
-    string repository_id = 1;
-    string commit_base = 2; // If empty, consider commits from the beginning
-    string commit_head = 3; // If empty, consider commits from the base to the latest
-    string glob_path_prefix = 6;
-
-    //For pagination
-    int32 page_number = 4;
-    int32 page_limit = 5;
-
-    message Response {
-        repeated Commit commits = 1;
-    }
-}
-
+// CRUD for tags
 // Tags, like in git, are unique
-message SetTag {
-    string repository_id = 1;
-    string tag = 2;
-    string commit_id = 3;
+message ListTagsRequest {
+    RepositoryIdentification repository_id = 1;
 
     message Response {
-        bool status = 1;
+        repeated string tags = 1;
     }
 }
 
-message GetTag {
-    string repository_id = 1;
+message GetTagRequest {
+    RepositoryIdentification repository_id = 1;
     string tag = 2;
 
     message Response {
@@ -195,83 +220,187 @@ message GetTag {
     }
 }
 
+message SetTagRequest {
+    RepositoryIdentification repository_id = 1;
+    string tag = 2;
+    string commit_sha = 3;
+
+    message Response{
+    }
+}
+
+message DeleteTagRequest {
+    RepositoryIdentification repository_id = 1;
+    string tag = 2;
+
+    message Response{
+    }
+}
+
 service VersioningService {
-    rpc getRepository(GetRepository) returns (GetRepository.Response) {
+    // CRUD for repositories
+    rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/getRepository"
+            get: "/v1/versioning/workspaces/{workspace_name}/repositories"
+            additional_bindings {
+                get: "/v1/versioning/repositories"
+            }
         };
     };
 
-    // If ID is missing, consider a new entry
-    rpc setRepository(SetRepository) returns (SetRepository.Response) {
+    rpc GetRepository(GetRepositoryRequest) returns (GetRepositoryRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/setRepository"
+            get: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{id.code}"
+            }
+        };
+    };
+
+    rpc CreateRepository(SetRepository) returns (SetRepository.Response) {
+        option (google.api.http) = {
+            post: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories"
+            body: "repository"
+        };
+    }
+
+    rpc UpdateRepository(SetRepository) returns (SetRepository.Response) {
+        option (google.api.http) = {
+            put: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            body: "repository"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{id.code}"
+                body: "repository"
+            }
+        };
+    }
+
+    rpc DeleteRepository(DeleteRepositoryRequest) returns (DeleteRepositoryRequest.Response) {
+        option (google.api.http) = {
+            delete: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            additional_bindings {
+                delete: "/v1/versioning/repositories/{id.code}"
+            }
+        };
+    }
+
+    // CRUD for entities
+    rpc GetEntities(BatchGetEntity) returns (BatchGetEntity.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/entities"
+            }
+        };
+    }
+
+    rpc CreateEntity(AddEntityRequest) returns (AddEntityRequest.Response) {
+        option (google.api.http) = {
+            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities"
+            body: "entity"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.code}/entities"
+                body: "entity"
+            }
+        };
+    }
+
+    rpc SetEntity(AddEntityRequest) returns (AddEntityRequest.Response) {
+        option (google.api.http) = {
+            put: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities/{entity.sha}"
+            body: "entity"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.code}/entities/{entity.sha}"
+                body: "entity"
+            }
+        };
+    }
+
+    rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityRequest.Response) {
+        option (google.api.http) = {
+            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities/{sha}"
+            additional_bindings {
+                delete: "/v1/versioning/repositories/{repository_id.code}/entities/{sha}"
+            }
+        };
+    }
+
+    // Commit operations
+    rpc ListCommits(ListCommitsRequest) returns (ListCommitsRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/commits"
+            }
+        };
+    }
+
+    rpc ListCommitBlobs(ListCommitBlobsRequest) returns (ListCommitBlobsRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs"
+            }
+        };
+    }
+
+    rpc CreateCommit(CreateCommitRequest) returns (CreateCommitRequest.Response) {
+        option (google.api.http) = {
+            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
             body: "*"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.code}/commits"
+                body: "*"
+            }
+        };
+    }
+
+    // Git-like operations
+    rpc ComputeRepositoryDiff(ComputeRepositoryDiffRequest) returns (ComputeRepositoryDiffRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/diff"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/diff"
+            }
+        };
+    }
+
+    // CRUD for tags
+    rpc ListTags(ListTagsRequest) returns (ListTagsRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/tags"
+            }
         };
     };
 
-    rpc deleteRepository(DeleteRepository) returns (DeleteRepository.Response) {
+    rpc GetTag(GetTagRequest) returns (GetTagRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/deleteRepository"
-            body: "*"
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+            }
         };
     };
 
-    rpc commitRepositoryBlobs(CommitRepositoryBlobs) returns (CommitRepositoryBlobs.Response) {
+    rpc SetTag(SetTagRequest) returns (SetTagRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/commitRepositoryBlobs"
-            body: "*"
+            put: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            body: "commit_sha"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+                body: "commit_sha"
+            }
         };
-    };
+    }
 
-    rpc getRepositoryBlobs(GetRepositoryBlobs) returns (GetRepositoryBlobs.Response) {
+    rpc DeleteTag(DeleteTagRequest) returns (DeleteTagRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/getRepositoryBlobs"
+            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            additional_bindings {
+                delete: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+            }
         };
-    };
-
-    rpc batchGetEntity(BatchGetEntity) returns (BatchGetEntity.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/batchGetEntity"
-        };
-    };
-
-    rpc addEntity(AddEntity) returns (AddEntity.Response) {
-        option (google.api.http) = {
-            post: "/v1/versioning/addEntity"
-            body: "*"
-        };
-    };
-
-    rpc deleteEntity(DeleteEntity) returns (DeleteEntity.Response) {
-        option (google.api.http) = {
-            post: "/v1/versioning/deleteEntity"
-            body: "*"
-        };
-    };
-
-    rpc getRepositoryDiff(GetRepositoryDiff) returns (GetRepositoryDiff.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/getRepositoryDiff"
-        };
-    };
-
-    rpc getRepositoryLog(GetRepositoryLog) returns (GetRepositoryLog.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/getRepositoryLog"
-        };
-    };
-
-    rpc setTag(SetTag) returns (SetTag.Response) {
-        option (google.api.http) = {
-            post: "/v1/versioning/setTag"
-            body: "*"
-        };
-    };
-
-    rpc getTag(GetTag) returns (GetTag.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/getTag"
-        };
-    };
+    }
 }
