@@ -1665,7 +1665,7 @@ func local_request_VersioningService_ListCommitBlobs_1(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_GetCommitBlob_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4, "path": 5}, Base: []int{1, 3, 1, 1, 5, 4, 5, 0, 3, 0, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 1, 4, 5, 9, 6, 7}}
+	filter_VersioningService_GetCommitBlob_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetCommitBlob_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1710,17 +1710,6 @@ func request_VersioningService_GetCommitBlob_0(ctx context.Context, marshaler ru
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
-	}
-
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -1779,17 +1768,6 @@ func local_request_VersioningService_GetCommitBlob_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
 	}
 
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
-	}
-
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetCommitBlob_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -1800,7 +1778,7 @@ func local_request_VersioningService_GetCommitBlob_0(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_GetCommitBlob_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2, "path": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 2, 1, 1, 3, 4, 5}}
+	filter_VersioningService_GetCommitBlob_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetCommitBlob_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1834,17 +1812,6 @@ func request_VersioningService_GetCommitBlob_1(ctx context.Context, marshaler ru
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
-	}
-
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -1892,17 +1859,6 @@ func local_request_VersioningService_GetCommitBlob_1(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
 	}
 
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
-	}
-
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetCommitBlob_1); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -1913,7 +1869,7 @@ func local_request_VersioningService_GetCommitBlob_1(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_GetCommitFolder_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4, "path": 5}, Base: []int{1, 3, 1, 1, 5, 4, 5, 0, 3, 0, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 1, 4, 5, 9, 6, 7}}
+	filter_VersioningService_GetCommitFolder_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetCommitFolder_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1958,17 +1914,6 @@ func request_VersioningService_GetCommitFolder_0(ctx context.Context, marshaler 
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
-	}
-
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2027,17 +1972,6 @@ func local_request_VersioningService_GetCommitFolder_0(ctx context.Context, mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
 	}
 
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
-	}
-
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetCommitFolder_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -2048,7 +1982,7 @@ func local_request_VersioningService_GetCommitFolder_0(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_GetCommitFolder_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2, "path": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 2, 1, 1, 3, 4, 5}}
+	filter_VersioningService_GetCommitFolder_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetCommitFolder_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2082,17 +2016,6 @@ func request_VersioningService_GetCommitFolder_1(ctx context.Context, marshaler 
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
-	}
-
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2138,17 +2061,6 @@ func local_request_VersioningService_GetCommitFolder_1(ctx context.Context, mars
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "commit_sha", err)
-	}
-
-	val, ok = pathParams["path"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path")
-	}
-
-	protoReq.Path, err = runtime.String(val)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetCommitFolder_1); err != nil {
@@ -4532,13 +4444,13 @@ var (
 
 	pattern_VersioningService_ListCommitBlobs_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "blobs"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitBlob_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 3, 0, 4, 1, 5, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitBlob_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitBlob_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 3, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitBlob_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitFolder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 3, 0, 4, 1, 5, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitFolder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitFolder_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 3, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitFolder_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_VersioningService_ComputeRepositoryDiff_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "diff"}, "", runtime.AssumeColonVerbOpt(true)))
 

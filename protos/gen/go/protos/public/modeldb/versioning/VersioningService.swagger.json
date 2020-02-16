@@ -456,7 +456,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/{path}": {
+    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/path": {
       "get": {
         "operationId": "GetCommitBlob2",
         "responses": {
@@ -488,12 +488,6 @@
             "type": "string"
           },
           {
-            "name": "path",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "repository_id.named.name",
             "in": "query",
             "required": false,
@@ -504,6 +498,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -511,7 +511,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/{path}": {
+    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/path": {
       "get": {
         "operationId": "GetCommitFolder2",
         "responses": {
@@ -543,12 +543,6 @@
             "type": "string"
           },
           {
-            "name": "path",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "repository_id.named.name",
             "in": "query",
             "required": false,
@@ -556,6 +550,12 @@
           },
           {
             "name": "repository_id.named.workspace_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "path",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1259,7 +1259,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/{path}": {
+    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/path": {
       "get": {
         "operationId": "GetCommitBlob",
         "responses": {
@@ -1296,17 +1296,17 @@
             "type": "string"
           },
           {
-            "name": "path",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "repository_id.code",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "uint64"
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1314,7 +1314,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/{path}": {
+    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/path": {
       "get": {
         "operationId": "GetCommitFolder",
         "responses": {
@@ -1351,17 +1351,17 @@
             "type": "string"
           },
           {
-            "name": "path",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
             "name": "repository_id.code",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "uint64"
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
