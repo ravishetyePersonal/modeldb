@@ -11,14 +11,14 @@
     "application/json"
   ],
   "paths": {
-    "/v1/metadata/addLabels": {
-      "post": {
-        "operationId": "addLabels",
+    "/v1/metadata/delete": {
+      "delete": {
+        "operationId": "DeleteLabels",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/metadataAddLabelsResponse"
+              "$ref": "#/definitions/metadataDeleteLabelsRequestResponse"
             }
           },
           "default": {
@@ -34,7 +34,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/metadataAddLabels"
+              "$ref": "#/definitions/metadataDeleteLabelsRequest"
             }
           }
         ],
@@ -43,46 +43,14 @@
         ]
       }
     },
-    "/v1/metadata/deleteLabels": {
-      "post": {
-        "operationId": "deleteLabels",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/metadataDeleteLabelsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/metadataDeleteLabels"
-            }
-          }
-        ],
-        "tags": [
-          "MetadataService"
-        ]
-      }
-    },
-    "/v1/metadata/getLabels": {
+    "/v1/metadata/labels": {
       "get": {
-        "operationId": "getLabels",
+        "operationId": "GetLabels",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/metadataGetLabelsResponse"
+              "$ref": "#/definitions/metadataGetLabelsRequestResponse"
             }
           },
           "default": {
@@ -94,7 +62,7 @@
         },
         "parameters": [
           {
-            "name": "id_type",
+            "name": "id.id_type",
             "in": "query",
             "required": false,
             "type": "string",
@@ -106,10 +74,47 @@
             "default": "UNKNOWN"
           },
           {
-            "name": "id",
+            "name": "id.code",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "id.uuid",
             "in": "query",
             "required": false,
             "type": "string"
+          }
+        ],
+        "tags": [
+          "MetadataService"
+        ]
+      },
+      "put": {
+        "operationId": "AddLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/metadataAddLabelsRequestResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/metadataAddLabelsRequest"
+            }
           }
         ],
         "tags": [
@@ -128,66 +133,63 @@
       ],
       "default": "UNKNOWN"
     },
-    "metadataAddLabels": {
+    "metadataAddLabelsRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/metadataIdentificationType"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataAddLabelsRequestResponse": {
+      "type": "object"
+    },
+    "metadataDeleteLabelsRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/metadataIdentificationType"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataDeleteLabelsRequestResponse": {
+      "type": "object"
+    },
+    "metadataGetLabelsRequestResponse": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadataIdentificationType": {
       "type": "object",
       "properties": {
         "id_type": {
           "$ref": "#/definitions/IDTypeEnumIDType"
         },
-        "id": {
+        "code": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "uuid": {
           "type": "string"
-        },
-        "labels": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "metadataAddLabelsResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      }
-    },
-    "metadataDeleteLabels": {
-      "type": "object",
-      "properties": {
-        "id_type": {
-          "$ref": "#/definitions/IDTypeEnumIDType"
-        },
-        "id": {
-          "type": "string"
-        },
-        "labels": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "metadataDeleteLabelsResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      }
-    },
-    "metadataGetLabelsResponse": {
-      "type": "object",
-      "properties": {
-        "labels": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },

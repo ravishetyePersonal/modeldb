@@ -84,289 +84,339 @@ func (m *IDTypeEnum) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_IDTypeEnum proto.InternalMessageInfo
 
-type AddLabels struct {
-	IdType               IDTypeEnum_IDType `protobuf:"varint,1,opt,name=id_type,json=idType,proto3,enum=ai.verta.modeldb.metadata.IDTypeEnum_IDType" json:"id_type,omitempty"`
-	Id                   string            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Labels               []string          `protobuf:"bytes,3,rep,name=labels,proto3" json:"labels,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `json:"-"`
-	XXX_sizecache        int32             `json:"-"`
+type IdentificationType struct {
+	IdType IDTypeEnum_IDType `protobuf:"varint,1,opt,name=id_type,json=idType,proto3,enum=ai.verta.modeldb.metadata.IDTypeEnum_IDType" json:"id_type,omitempty"`
+	// Types that are valid to be assigned to Id:
+	//	*IdentificationType_Code
+	//	*IdentificationType_Uuid
+	Id                   isIdentificationType_Id `protobuf_oneof:"id"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
 }
 
-func (m *AddLabels) Reset()         { *m = AddLabels{} }
-func (m *AddLabels) String() string { return proto.CompactTextString(m) }
-func (*AddLabels) ProtoMessage()    {}
-func (*AddLabels) Descriptor() ([]byte, []int) {
+func (m *IdentificationType) Reset()         { *m = IdentificationType{} }
+func (m *IdentificationType) String() string { return proto.CompactTextString(m) }
+func (*IdentificationType) ProtoMessage()    {}
+func (*IdentificationType) Descriptor() ([]byte, []int) {
 	return fileDescriptor_146adf422da79009, []int{1}
 }
 
-func (m *AddLabels) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddLabels.Unmarshal(m, b)
+func (m *IdentificationType) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_IdentificationType.Unmarshal(m, b)
 }
-func (m *AddLabels) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddLabels.Marshal(b, m, deterministic)
+func (m *IdentificationType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_IdentificationType.Marshal(b, m, deterministic)
 }
-func (m *AddLabels) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddLabels.Merge(m, src)
+func (m *IdentificationType) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_IdentificationType.Merge(m, src)
 }
-func (m *AddLabels) XXX_Size() int {
-	return xxx_messageInfo_AddLabels.Size(m)
+func (m *IdentificationType) XXX_Size() int {
+	return xxx_messageInfo_IdentificationType.Size(m)
 }
-func (m *AddLabels) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddLabels.DiscardUnknown(m)
+func (m *IdentificationType) XXX_DiscardUnknown() {
+	xxx_messageInfo_IdentificationType.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AddLabels proto.InternalMessageInfo
+var xxx_messageInfo_IdentificationType proto.InternalMessageInfo
 
-func (m *AddLabels) GetIdType() IDTypeEnum_IDType {
+func (m *IdentificationType) GetIdType() IDTypeEnum_IDType {
 	if m != nil {
 		return m.IdType
 	}
 	return IDTypeEnum_UNKNOWN
 }
 
-func (m *AddLabels) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
+type isIdentificationType_Id interface {
+	isIdentificationType_Id()
 }
 
-func (m *AddLabels) GetLabels() []string {
+type IdentificationType_Code struct {
+	Code uint64 `protobuf:"varint,2,opt,name=code,proto3,oneof"`
+}
+
+type IdentificationType_Uuid struct {
+	Uuid string `protobuf:"bytes,3,opt,name=uuid,proto3,oneof"`
+}
+
+func (*IdentificationType_Code) isIdentificationType_Id() {}
+
+func (*IdentificationType_Uuid) isIdentificationType_Id() {}
+
+func (m *IdentificationType) GetId() isIdentificationType_Id {
 	if m != nil {
-		return m.Labels
+		return m.Id
 	}
 	return nil
 }
 
-type AddLabels_Response struct {
-	Status               bool     `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddLabels_Response) Reset()         { *m = AddLabels_Response{} }
-func (m *AddLabels_Response) String() string { return proto.CompactTextString(m) }
-func (*AddLabels_Response) ProtoMessage()    {}
-func (*AddLabels_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_146adf422da79009, []int{1, 0}
-}
-
-func (m *AddLabels_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddLabels_Response.Unmarshal(m, b)
-}
-func (m *AddLabels_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddLabels_Response.Marshal(b, m, deterministic)
-}
-func (m *AddLabels_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddLabels_Response.Merge(m, src)
-}
-func (m *AddLabels_Response) XXX_Size() int {
-	return xxx_messageInfo_AddLabels_Response.Size(m)
-}
-func (m *AddLabels_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddLabels_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddLabels_Response proto.InternalMessageInfo
-
-func (m *AddLabels_Response) GetStatus() bool {
-	if m != nil {
-		return m.Status
+func (m *IdentificationType) GetCode() uint64 {
+	if x, ok := m.GetId().(*IdentificationType_Code); ok {
+		return x.Code
 	}
-	return false
+	return 0
 }
 
-type DeleteLabels struct {
-	IdType               IDTypeEnum_IDType `protobuf:"varint,1,opt,name=id_type,json=idType,proto3,enum=ai.verta.modeldb.metadata.IDTypeEnum_IDType" json:"id_type,omitempty"`
-	Id                   string            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Labels               []string          `protobuf:"bytes,3,rep,name=labels,proto3" json:"labels,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `json:"-"`
-	XXX_sizecache        int32             `json:"-"`
+func (m *IdentificationType) GetUuid() string {
+	if x, ok := m.GetId().(*IdentificationType_Uuid); ok {
+		return x.Uuid
+	}
+	return ""
 }
 
-func (m *DeleteLabels) Reset()         { *m = DeleteLabels{} }
-func (m *DeleteLabels) String() string { return proto.CompactTextString(m) }
-func (*DeleteLabels) ProtoMessage()    {}
-func (*DeleteLabels) Descriptor() ([]byte, []int) {
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*IdentificationType) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*IdentificationType_Code)(nil),
+		(*IdentificationType_Uuid)(nil),
+	}
+}
+
+type GetLabelsRequest struct {
+	// If only id_type is provided, gather from all of such sources
+	Id                   *IdentificationType `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *GetLabelsRequest) Reset()         { *m = GetLabelsRequest{} }
+func (m *GetLabelsRequest) String() string { return proto.CompactTextString(m) }
+func (*GetLabelsRequest) ProtoMessage()    {}
+func (*GetLabelsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_146adf422da79009, []int{2}
 }
 
-func (m *DeleteLabels) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteLabels.Unmarshal(m, b)
+func (m *GetLabelsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetLabelsRequest.Unmarshal(m, b)
 }
-func (m *DeleteLabels) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteLabels.Marshal(b, m, deterministic)
+func (m *GetLabelsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetLabelsRequest.Marshal(b, m, deterministic)
 }
-func (m *DeleteLabels) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteLabels.Merge(m, src)
+func (m *GetLabelsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetLabelsRequest.Merge(m, src)
 }
-func (m *DeleteLabels) XXX_Size() int {
-	return xxx_messageInfo_DeleteLabels.Size(m)
+func (m *GetLabelsRequest) XXX_Size() int {
+	return xxx_messageInfo_GetLabelsRequest.Size(m)
 }
-func (m *DeleteLabels) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteLabels.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteLabels proto.InternalMessageInfo
-
-func (m *DeleteLabels) GetIdType() IDTypeEnum_IDType {
-	if m != nil {
-		return m.IdType
-	}
-	return IDTypeEnum_UNKNOWN
+func (m *GetLabelsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetLabelsRequest.DiscardUnknown(m)
 }
 
-func (m *DeleteLabels) GetId() string {
+var xxx_messageInfo_GetLabelsRequest proto.InternalMessageInfo
+
+func (m *GetLabelsRequest) GetId() *IdentificationType {
 	if m != nil {
 		return m.Id
-	}
-	return ""
-}
-
-func (m *DeleteLabels) GetLabels() []string {
-	if m != nil {
-		return m.Labels
 	}
 	return nil
 }
 
-type DeleteLabels_Response struct {
-	Status               bool     `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DeleteLabels_Response) Reset()         { *m = DeleteLabels_Response{} }
-func (m *DeleteLabels_Response) String() string { return proto.CompactTextString(m) }
-func (*DeleteLabels_Response) ProtoMessage()    {}
-func (*DeleteLabels_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_146adf422da79009, []int{2, 0}
-}
-
-func (m *DeleteLabels_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteLabels_Response.Unmarshal(m, b)
-}
-func (m *DeleteLabels_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteLabels_Response.Marshal(b, m, deterministic)
-}
-func (m *DeleteLabels_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteLabels_Response.Merge(m, src)
-}
-func (m *DeleteLabels_Response) XXX_Size() int {
-	return xxx_messageInfo_DeleteLabels_Response.Size(m)
-}
-func (m *DeleteLabels_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteLabels_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteLabels_Response proto.InternalMessageInfo
-
-func (m *DeleteLabels_Response) GetStatus() bool {
-	if m != nil {
-		return m.Status
-	}
-	return false
-}
-
-type GetLabels struct {
-	IdType               IDTypeEnum_IDType `protobuf:"varint,1,opt,name=id_type,json=idType,proto3,enum=ai.verta.modeldb.metadata.IDTypeEnum_IDType" json:"id_type,omitempty"`
-	Id                   string            `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
-	XXX_unrecognized     []byte            `json:"-"`
-	XXX_sizecache        int32             `json:"-"`
-}
-
-func (m *GetLabels) Reset()         { *m = GetLabels{} }
-func (m *GetLabels) String() string { return proto.CompactTextString(m) }
-func (*GetLabels) ProtoMessage()    {}
-func (*GetLabels) Descriptor() ([]byte, []int) {
-	return fileDescriptor_146adf422da79009, []int{3}
-}
-
-func (m *GetLabels) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetLabels.Unmarshal(m, b)
-}
-func (m *GetLabels) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetLabels.Marshal(b, m, deterministic)
-}
-func (m *GetLabels) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetLabels.Merge(m, src)
-}
-func (m *GetLabels) XXX_Size() int {
-	return xxx_messageInfo_GetLabels.Size(m)
-}
-func (m *GetLabels) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetLabels.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetLabels proto.InternalMessageInfo
-
-func (m *GetLabels) GetIdType() IDTypeEnum_IDType {
-	if m != nil {
-		return m.IdType
-	}
-	return IDTypeEnum_UNKNOWN
-}
-
-func (m *GetLabels) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-type GetLabels_Response struct {
+type GetLabelsRequest_Response struct {
 	Labels               []string `protobuf:"bytes,1,rep,name=labels,proto3" json:"labels,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetLabels_Response) Reset()         { *m = GetLabels_Response{} }
-func (m *GetLabels_Response) String() string { return proto.CompactTextString(m) }
-func (*GetLabels_Response) ProtoMessage()    {}
-func (*GetLabels_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_146adf422da79009, []int{3, 0}
+func (m *GetLabelsRequest_Response) Reset()         { *m = GetLabelsRequest_Response{} }
+func (m *GetLabelsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetLabelsRequest_Response) ProtoMessage()    {}
+func (*GetLabelsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_146adf422da79009, []int{2, 0}
 }
 
-func (m *GetLabels_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetLabels_Response.Unmarshal(m, b)
+func (m *GetLabelsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetLabelsRequest_Response.Unmarshal(m, b)
 }
-func (m *GetLabels_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetLabels_Response.Marshal(b, m, deterministic)
+func (m *GetLabelsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetLabelsRequest_Response.Marshal(b, m, deterministic)
 }
-func (m *GetLabels_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetLabels_Response.Merge(m, src)
+func (m *GetLabelsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetLabelsRequest_Response.Merge(m, src)
 }
-func (m *GetLabels_Response) XXX_Size() int {
-	return xxx_messageInfo_GetLabels_Response.Size(m)
+func (m *GetLabelsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetLabelsRequest_Response.Size(m)
 }
-func (m *GetLabels_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetLabels_Response.DiscardUnknown(m)
+func (m *GetLabelsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetLabelsRequest_Response.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetLabels_Response proto.InternalMessageInfo
+var xxx_messageInfo_GetLabelsRequest_Response proto.InternalMessageInfo
 
-func (m *GetLabels_Response) GetLabels() []string {
+func (m *GetLabelsRequest_Response) GetLabels() []string {
 	if m != nil {
 		return m.Labels
 	}
 	return nil
 }
 
+type AddLabelsRequest struct {
+	Id                   *IdentificationType `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Labels               []string            `protobuf:"bytes,2,rep,name=labels,proto3" json:"labels,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *AddLabelsRequest) Reset()         { *m = AddLabelsRequest{} }
+func (m *AddLabelsRequest) String() string { return proto.CompactTextString(m) }
+func (*AddLabelsRequest) ProtoMessage()    {}
+func (*AddLabelsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_146adf422da79009, []int{3}
+}
+
+func (m *AddLabelsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddLabelsRequest.Unmarshal(m, b)
+}
+func (m *AddLabelsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddLabelsRequest.Marshal(b, m, deterministic)
+}
+func (m *AddLabelsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddLabelsRequest.Merge(m, src)
+}
+func (m *AddLabelsRequest) XXX_Size() int {
+	return xxx_messageInfo_AddLabelsRequest.Size(m)
+}
+func (m *AddLabelsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddLabelsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddLabelsRequest proto.InternalMessageInfo
+
+func (m *AddLabelsRequest) GetId() *IdentificationType {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *AddLabelsRequest) GetLabels() []string {
+	if m != nil {
+		return m.Labels
+	}
+	return nil
+}
+
+type AddLabelsRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddLabelsRequest_Response) Reset()         { *m = AddLabelsRequest_Response{} }
+func (m *AddLabelsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*AddLabelsRequest_Response) ProtoMessage()    {}
+func (*AddLabelsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_146adf422da79009, []int{3, 0}
+}
+
+func (m *AddLabelsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AddLabelsRequest_Response.Unmarshal(m, b)
+}
+func (m *AddLabelsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AddLabelsRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *AddLabelsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddLabelsRequest_Response.Merge(m, src)
+}
+func (m *AddLabelsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_AddLabelsRequest_Response.Size(m)
+}
+func (m *AddLabelsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddLabelsRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddLabelsRequest_Response proto.InternalMessageInfo
+
+type DeleteLabelsRequest struct {
+	Id                   *IdentificationType `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Labels               []string            `protobuf:"bytes,2,rep,name=labels,proto3" json:"labels,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
+}
+
+func (m *DeleteLabelsRequest) Reset()         { *m = DeleteLabelsRequest{} }
+func (m *DeleteLabelsRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteLabelsRequest) ProtoMessage()    {}
+func (*DeleteLabelsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_146adf422da79009, []int{4}
+}
+
+func (m *DeleteLabelsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteLabelsRequest.Unmarshal(m, b)
+}
+func (m *DeleteLabelsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteLabelsRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteLabelsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteLabelsRequest.Merge(m, src)
+}
+func (m *DeleteLabelsRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteLabelsRequest.Size(m)
+}
+func (m *DeleteLabelsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteLabelsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteLabelsRequest proto.InternalMessageInfo
+
+func (m *DeleteLabelsRequest) GetId() *IdentificationType {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *DeleteLabelsRequest) GetLabels() []string {
+	if m != nil {
+		return m.Labels
+	}
+	return nil
+}
+
+type DeleteLabelsRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteLabelsRequest_Response) Reset()         { *m = DeleteLabelsRequest_Response{} }
+func (m *DeleteLabelsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*DeleteLabelsRequest_Response) ProtoMessage()    {}
+func (*DeleteLabelsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_146adf422da79009, []int{4, 0}
+}
+
+func (m *DeleteLabelsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteLabelsRequest_Response.Unmarshal(m, b)
+}
+func (m *DeleteLabelsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteLabelsRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *DeleteLabelsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteLabelsRequest_Response.Merge(m, src)
+}
+func (m *DeleteLabelsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_DeleteLabelsRequest_Response.Size(m)
+}
+func (m *DeleteLabelsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteLabelsRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteLabelsRequest_Response proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterEnum("ai.verta.modeldb.metadata.IDTypeEnum_IDType", IDTypeEnum_IDType_name, IDTypeEnum_IDType_value)
 	proto.RegisterType((*IDTypeEnum)(nil), "ai.verta.modeldb.metadata.IDTypeEnum")
-	proto.RegisterType((*AddLabels)(nil), "ai.verta.modeldb.metadata.AddLabels")
-	proto.RegisterType((*AddLabels_Response)(nil), "ai.verta.modeldb.metadata.AddLabels.Response")
-	proto.RegisterType((*DeleteLabels)(nil), "ai.verta.modeldb.metadata.DeleteLabels")
-	proto.RegisterType((*DeleteLabels_Response)(nil), "ai.verta.modeldb.metadata.DeleteLabels.Response")
-	proto.RegisterType((*GetLabels)(nil), "ai.verta.modeldb.metadata.GetLabels")
-	proto.RegisterType((*GetLabels_Response)(nil), "ai.verta.modeldb.metadata.GetLabels.Response")
+	proto.RegisterType((*IdentificationType)(nil), "ai.verta.modeldb.metadata.IdentificationType")
+	proto.RegisterType((*GetLabelsRequest)(nil), "ai.verta.modeldb.metadata.GetLabelsRequest")
+	proto.RegisterType((*GetLabelsRequest_Response)(nil), "ai.verta.modeldb.metadata.GetLabelsRequest.Response")
+	proto.RegisterType((*AddLabelsRequest)(nil), "ai.verta.modeldb.metadata.AddLabelsRequest")
+	proto.RegisterType((*AddLabelsRequest_Response)(nil), "ai.verta.modeldb.metadata.AddLabelsRequest.Response")
+	proto.RegisterType((*DeleteLabelsRequest)(nil), "ai.verta.modeldb.metadata.DeleteLabelsRequest")
+	proto.RegisterType((*DeleteLabelsRequest_Response)(nil), "ai.verta.modeldb.metadata.DeleteLabelsRequest.Response")
 }
 
 func init() {
@@ -374,37 +424,39 @@ func init() {
 }
 
 var fileDescriptor_146adf422da79009 = []byte{
-	// 467 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0xd4, 0x41, 0x6b, 0xd4, 0x40,
-	0x14, 0x07, 0x70, 0x27, 0x0b, 0xdb, 0xe6, 0x59, 0xea, 0x3a, 0xd0, 0xb2, 0xbb, 0x4a, 0x59, 0x43,
-	0xc1, 0xa5, 0x68, 0x46, 0xab, 0xa7, 0xde, 0xaa, 0x5d, 0x96, 0x50, 0x37, 0x29, 0xd9, 0x6d, 0x45,
-	0x2f, 0x65, 0xb2, 0xf3, 0x88, 0x03, 0xd9, 0x4c, 0xd8, 0xcc, 0x2e, 0xf4, 0x26, 0x0a, 0x5e, 0x3d,
-	0x78, 0x17, 0xbc, 0xfb, 0x6d, 0xfc, 0x0a, 0x7e, 0x10, 0x69, 0x9a, 0x26, 0x69, 0xc1, 0xb0, 0x17,
-	0xc1, 0xdb, 0x0c, 0xf3, 0x1e, 0xff, 0x5f, 0xe0, 0xe5, 0xc1, 0xcb, 0x64, 0xae, 0xb4, 0x4a, 0x59,
-	0xb2, 0x08, 0x22, 0x39, 0x65, 0x33, 0x25, 0x30, 0x12, 0x01, 0x9b, 0xa1, 0xe6, 0x82, 0x6b, 0xce,
-	0x46, 0xf9, 0x61, 0x8c, 0xf3, 0xa5, 0x9c, 0xa2, 0x9d, 0x95, 0xd3, 0x0e, 0x97, 0xf6, 0x12, 0xe7,
-	0x9a, 0xdb, 0x79, 0x83, 0x7d, 0xdd, 0xd0, 0x7d, 0x18, 0x2a, 0x15, 0x46, 0xc8, 0x78, 0x22, 0x19,
-	0x8f, 0x63, 0xa5, 0xb9, 0x96, 0x2a, 0x4e, 0xaf, 0x1a, 0xad, 0x53, 0x00, 0xe7, 0x68, 0x72, 0x91,
-	0xe0, 0x20, 0x5e, 0xcc, 0xac, 0x21, 0x34, 0xaf, 0x6e, 0xf4, 0x2e, 0xac, 0x9d, 0xba, 0xc7, 0xae,
-	0xf7, 0xd6, 0x6d, 0xdd, 0xa1, 0x1d, 0xd8, 0x3a, 0x1b, 0xf8, 0x63, 0xc7, 0x73, 0x1d, 0x77, 0x78,
-	0xee, 0x0f, 0x4e, 0xbc, 0xb1, 0x33, 0xf1, 0xfc, 0x77, 0x2d, 0x42, 0xb7, 0xe0, 0x7e, 0xe5, 0xe9,
-	0xb5, 0x37, 0x1a, 0x39, 0x93, 0x96, 0x61, 0x7d, 0x27, 0x60, 0x1e, 0x0a, 0xf1, 0x86, 0x07, 0x18,
-	0xa5, 0x74, 0x00, 0x6b, 0x52, 0x9c, 0xeb, 0x8b, 0x04, 0xdb, 0xa4, 0x47, 0xfa, 0x9b, 0xfb, 0x4f,
-	0xec, 0xbf, 0x7a, 0xed, 0x92, 0x93, 0x1f, 0xfd, 0xa6, 0x14, 0x99, 0x69, 0x13, 0x0c, 0x29, 0xda,
-	0x46, 0x8f, 0xf4, 0x4d, 0xdf, 0x90, 0x82, 0x6e, 0x43, 0x33, 0xca, 0x02, 0xda, 0x8d, 0x5e, 0xa3,
-	0x6f, 0xfa, 0xf9, 0xad, 0x6b, 0xc1, 0xba, 0x8f, 0x69, 0xa2, 0xe2, 0x14, 0x2f, 0x6b, 0x52, 0xcd,
-	0xf5, 0x22, 0xcd, 0x92, 0xd7, 0xfd, 0xfc, 0x66, 0xfd, 0x20, 0xb0, 0x71, 0x84, 0x11, 0x6a, 0xfc,
-	0x7f, 0x8d, 0x5f, 0x08, 0x98, 0x43, 0xd4, 0xff, 0x14, 0x78, 0x1b, 0x92, 0x63, 0x49, 0x15, 0xbb,
-	0xff, 0xb3, 0x01, 0xf7, 0x6e, 0xcd, 0x1d, 0xfd, 0x48, 0xc0, 0x0c, 0x0b, 0xdc, 0x6e, 0x8d, 0xa5,
-	0xf8, 0x84, 0xee, 0xd3, 0x55, 0xaa, 0xec, 0x6b, 0x8e, 0xb5, 0xf3, 0xe9, 0xd7, 0xef, 0x6f, 0x46,
-	0x9b, 0x6e, 0xb3, 0xe5, 0xf3, 0xf2, 0x07, 0x28, 0x43, 0x3f, 0x13, 0x30, 0x79, 0x31, 0x64, 0x75,
-	0x84, 0x62, 0x14, 0x6b, 0x09, 0x45, 0x55, 0x49, 0x78, 0x94, 0x11, 0x1e, 0x58, 0x37, 0x09, 0x45,
-	0xe8, 0x01, 0xd9, 0xa3, 0x5f, 0x09, 0x6c, 0x88, 0xea, 0x24, 0x3d, 0xae, 0x89, 0xa8, 0x8e, 0x5c,
-	0xf7, 0xd9, 0x8a, 0x85, 0x25, 0x67, 0x37, 0xe3, 0xec, 0x58, 0x9d, 0x1b, 0x9c, 0x6a, 0xfa, 0x01,
-	0xd9, 0x7b, 0x75, 0x7c, 0x42, 0xde, 0x0f, 0x43, 0xa9, 0x3f, 0x2c, 0x02, 0x7b, 0xaa, 0x66, 0xec,
-	0xec, 0x32, 0xe2, 0xd0, 0x29, 0x76, 0x49, 0xbe, 0x61, 0x42, 0x8c, 0x59, 0xa8, 0x58, 0xfd, 0xbe,
-	0x09, 0x9a, 0xd9, 0xfb, 0x8b, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x96, 0x98, 0x98, 0xd1, 0x98,
-	0x04, 0x00, 0x00,
+	// 505 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0xcf, 0x6f, 0x12, 0x41,
+	0x14, 0xc7, 0x3b, 0x0b, 0xa1, 0xf2, 0x6a, 0x14, 0xa7, 0x62, 0xe8, 0x6a, 0x0c, 0xd9, 0x13, 0x41,
+	0xdd, 0x89, 0xd8, 0xc4, 0xa4, 0x89, 0x87, 0xd6, 0x12, 0xdc, 0x54, 0xa0, 0x59, 0x68, 0x8d, 0x5e,
+	0x9a, 0x85, 0x79, 0xae, 0x93, 0x2c, 0x3b, 0x2b, 0x3b, 0x4b, 0xec, 0xd5, 0xab, 0xd1, 0x8b, 0x07,
+	0xff, 0x27, 0xaf, 0xfe, 0x0b, 0xfe, 0x21, 0x66, 0x87, 0x15, 0x90, 0xd6, 0x4d, 0x9a, 0x18, 0x6f,
+	0xf3, 0xe6, 0xfd, 0xf8, 0x7e, 0x86, 0x2f, 0xfb, 0x60, 0x37, 0x9a, 0x4a, 0x25, 0x63, 0x16, 0x25,
+	0xa3, 0x40, 0x8c, 0xd9, 0x44, 0x72, 0x0c, 0xf8, 0x88, 0x4d, 0x50, 0x79, 0xdc, 0x53, 0x1e, 0xeb,
+	0x66, 0x87, 0x01, 0x4e, 0x67, 0x62, 0x8c, 0xb6, 0x2e, 0xa7, 0x3b, 0x9e, 0xb0, 0x67, 0x38, 0x55,
+	0x9e, 0x9d, 0x35, 0xd8, 0xbf, 0x1b, 0xcc, 0x7b, 0xbe, 0x94, 0x7e, 0x80, 0xcc, 0x8b, 0x04, 0xf3,
+	0xc2, 0x50, 0x2a, 0x4f, 0x09, 0x19, 0xc6, 0xf3, 0x46, 0xeb, 0x04, 0xc0, 0x39, 0x1c, 0x9e, 0x47,
+	0xd8, 0x0e, 0x93, 0x89, 0xd5, 0x81, 0xd2, 0x3c, 0xa2, 0x5b, 0xb0, 0x79, 0xd2, 0x3b, 0xea, 0xf5,
+	0x5f, 0xf5, 0x2a, 0x1b, 0x74, 0x07, 0xaa, 0xa7, 0x6d, 0x77, 0xe0, 0xf4, 0x7b, 0x4e, 0xaf, 0x73,
+	0xe6, 0xb6, 0x8f, 0xfb, 0x03, 0x67, 0xd8, 0x77, 0x5f, 0x57, 0x08, 0xad, 0xc2, 0xad, 0x95, 0xd4,
+	0xf3, 0x7e, 0xb7, 0xeb, 0x0c, 0x2b, 0x86, 0xf5, 0x99, 0x00, 0x75, 0x38, 0x86, 0x4a, 0xbc, 0x15,
+	0x63, 0x2d, 0xa8, 0xa7, 0xb6, 0x61, 0x53, 0xf0, 0x33, 0x75, 0x1e, 0x61, 0x8d, 0xd4, 0x49, 0xe3,
+	0x46, 0xeb, 0xa1, 0xfd, 0x57, 0x70, 0x7b, 0xc9, 0x95, 0x1d, 0xdd, 0x92, 0xe0, 0x7a, 0xcc, 0x6d,
+	0x28, 0x8e, 0x25, 0xc7, 0x9a, 0x51, 0x27, 0x8d, 0xe2, 0x8b, 0x0d, 0x57, 0x47, 0xe9, 0x6d, 0x92,
+	0x08, 0x5e, 0x2b, 0xd4, 0x49, 0xa3, 0x9c, 0xde, 0xa6, 0xd1, 0x41, 0x11, 0x0c, 0xc1, 0xad, 0x04,
+	0x2a, 0x1d, 0x54, 0x2f, 0xbd, 0x11, 0x06, 0xb1, 0x8b, 0xef, 0x13, 0x8c, 0x15, 0x7d, 0x96, 0x66,
+	0x34, 0xc7, 0x56, 0xeb, 0x51, 0x1e, 0xc7, 0x85, 0x77, 0xb8, 0x86, 0xe0, 0xa6, 0x05, 0xd7, 0x5c,
+	0x8c, 0x23, 0x19, 0xc6, 0x48, 0xef, 0x40, 0x29, 0xd0, 0xb3, 0x6b, 0xa4, 0x5e, 0x68, 0x94, 0xdd,
+	0x2c, 0x4a, 0x65, 0xf7, 0x39, 0xff, 0x97, 0xb2, 0x2b, 0x52, 0xc6, 0xaa, 0x94, 0x09, 0x4b, 0x1c,
+	0xeb, 0x03, 0x6c, 0x1f, 0x62, 0x80, 0x0a, 0xff, 0xb7, 0x72, 0xeb, 0x7b, 0x01, 0x6e, 0xae, 0xfd,
+	0x43, 0xe9, 0x27, 0x02, 0xe5, 0xc5, 0x8f, 0x4f, 0x1f, 0xe4, 0x08, 0xaf, 0x5b, 0x64, 0xee, 0x5e,
+	0xa1, 0xd8, 0x5e, 0x3c, 0xff, 0xee, 0xc7, 0x1f, 0x3f, 0xbf, 0x1a, 0x55, 0xba, 0xcd, 0x66, 0x8f,
+	0x97, 0x1f, 0xce, 0x9c, 0x96, 0x7e, 0x21, 0x50, 0x5e, 0x78, 0x92, 0x4b, 0xb3, 0xee, 0x5c, 0x2e,
+	0xcd, 0x7a, 0xf1, 0x92, 0xe6, 0xbe, 0xa6, 0xa9, 0x99, 0x97, 0xd1, 0xec, 0x91, 0x26, 0xfd, 0x46,
+	0xe0, 0xfa, 0xaa, 0x5b, 0xd4, 0xce, 0x91, 0xb9, 0xc4, 0x56, 0xf3, 0xe9, 0xd5, 0xea, 0x2f, 0x90,
+	0x35, 0xff, 0x24, 0xe3, 0xba, 0x65, 0x8f, 0x34, 0x0f, 0x8e, 0x8e, 0xc9, 0x9b, 0x8e, 0x2f, 0xd4,
+	0xbb, 0x64, 0x64, 0x8f, 0xe5, 0x84, 0x9d, 0xa6, 0x1a, 0xfb, 0xce, 0x62, 0x27, 0x65, 0x9b, 0xca,
+	0xc7, 0x90, 0xf9, 0x92, 0xe5, 0xef, 0xad, 0x51, 0x49, 0xe7, 0x9f, 0xfc, 0x0a, 0x00, 0x00, 0xff,
+	0xff, 0x60, 0xfd, 0x7b, 0xb5, 0xe0, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -419,9 +471,9 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MetadataServiceClient interface {
-	GetLabels(ctx context.Context, in *GetLabels, opts ...grpc.CallOption) (*GetLabels_Response, error)
-	AddLabels(ctx context.Context, in *AddLabels, opts ...grpc.CallOption) (*AddLabels_Response, error)
-	DeleteLabels(ctx context.Context, in *DeleteLabels, opts ...grpc.CallOption) (*DeleteLabels_Response, error)
+	GetLabels(ctx context.Context, in *GetLabelsRequest, opts ...grpc.CallOption) (*GetLabelsRequest_Response, error)
+	AddLabels(ctx context.Context, in *AddLabelsRequest, opts ...grpc.CallOption) (*AddLabelsRequest_Response, error)
+	DeleteLabels(ctx context.Context, in *DeleteLabelsRequest, opts ...grpc.CallOption) (*DeleteLabelsRequest_Response, error)
 }
 
 type metadataServiceClient struct {
@@ -432,27 +484,27 @@ func NewMetadataServiceClient(cc grpc.ClientConnInterface) MetadataServiceClient
 	return &metadataServiceClient{cc}
 }
 
-func (c *metadataServiceClient) GetLabels(ctx context.Context, in *GetLabels, opts ...grpc.CallOption) (*GetLabels_Response, error) {
-	out := new(GetLabels_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/getLabels", in, out, opts...)
+func (c *metadataServiceClient) GetLabels(ctx context.Context, in *GetLabelsRequest, opts ...grpc.CallOption) (*GetLabelsRequest_Response, error) {
+	out := new(GetLabelsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/GetLabels", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *metadataServiceClient) AddLabels(ctx context.Context, in *AddLabels, opts ...grpc.CallOption) (*AddLabels_Response, error) {
-	out := new(AddLabels_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/addLabels", in, out, opts...)
+func (c *metadataServiceClient) AddLabels(ctx context.Context, in *AddLabelsRequest, opts ...grpc.CallOption) (*AddLabelsRequest_Response, error) {
+	out := new(AddLabelsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/AddLabels", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *metadataServiceClient) DeleteLabels(ctx context.Context, in *DeleteLabels, opts ...grpc.CallOption) (*DeleteLabels_Response, error) {
-	out := new(DeleteLabels_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/deleteLabels", in, out, opts...)
+func (c *metadataServiceClient) DeleteLabels(ctx context.Context, in *DeleteLabelsRequest, opts ...grpc.CallOption) (*DeleteLabelsRequest_Response, error) {
+	out := new(DeleteLabelsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.metadata.MetadataService/DeleteLabels", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -461,22 +513,22 @@ func (c *metadataServiceClient) DeleteLabels(ctx context.Context, in *DeleteLabe
 
 // MetadataServiceServer is the server API for MetadataService service.
 type MetadataServiceServer interface {
-	GetLabels(context.Context, *GetLabels) (*GetLabels_Response, error)
-	AddLabels(context.Context, *AddLabels) (*AddLabels_Response, error)
-	DeleteLabels(context.Context, *DeleteLabels) (*DeleteLabels_Response, error)
+	GetLabels(context.Context, *GetLabelsRequest) (*GetLabelsRequest_Response, error)
+	AddLabels(context.Context, *AddLabelsRequest) (*AddLabelsRequest_Response, error)
+	DeleteLabels(context.Context, *DeleteLabelsRequest) (*DeleteLabelsRequest_Response, error)
 }
 
 // UnimplementedMetadataServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedMetadataServiceServer struct {
 }
 
-func (*UnimplementedMetadataServiceServer) GetLabels(ctx context.Context, req *GetLabels) (*GetLabels_Response, error) {
+func (*UnimplementedMetadataServiceServer) GetLabels(ctx context.Context, req *GetLabelsRequest) (*GetLabelsRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLabels not implemented")
 }
-func (*UnimplementedMetadataServiceServer) AddLabels(ctx context.Context, req *AddLabels) (*AddLabels_Response, error) {
+func (*UnimplementedMetadataServiceServer) AddLabels(ctx context.Context, req *AddLabelsRequest) (*AddLabelsRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddLabels not implemented")
 }
-func (*UnimplementedMetadataServiceServer) DeleteLabels(ctx context.Context, req *DeleteLabels) (*DeleteLabels_Response, error) {
+func (*UnimplementedMetadataServiceServer) DeleteLabels(ctx context.Context, req *DeleteLabelsRequest) (*DeleteLabelsRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteLabels not implemented")
 }
 
@@ -485,7 +537,7 @@ func RegisterMetadataServiceServer(s *grpc.Server, srv MetadataServiceServer) {
 }
 
 func _MetadataService_GetLabels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLabels)
+	in := new(GetLabelsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -497,13 +549,13 @@ func _MetadataService_GetLabels_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/ai.verta.modeldb.metadata.MetadataService/GetLabels",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MetadataServiceServer).GetLabels(ctx, req.(*GetLabels))
+		return srv.(MetadataServiceServer).GetLabels(ctx, req.(*GetLabelsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _MetadataService_AddLabels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddLabels)
+	in := new(AddLabelsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -515,13 +567,13 @@ func _MetadataService_AddLabels_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/ai.verta.modeldb.metadata.MetadataService/AddLabels",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MetadataServiceServer).AddLabels(ctx, req.(*AddLabels))
+		return srv.(MetadataServiceServer).AddLabels(ctx, req.(*AddLabelsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _MetadataService_DeleteLabels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteLabels)
+	in := new(DeleteLabelsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -533,7 +585,7 @@ func _MetadataService_DeleteLabels_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/ai.verta.modeldb.metadata.MetadataService/DeleteLabels",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MetadataServiceServer).DeleteLabels(ctx, req.(*DeleteLabels))
+		return srv.(MetadataServiceServer).DeleteLabels(ctx, req.(*DeleteLabelsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -543,15 +595,15 @@ var _MetadataService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MetadataServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getLabels",
+			MethodName: "GetLabels",
 			Handler:    _MetadataService_GetLabels_Handler,
 		},
 		{
-			MethodName: "addLabels",
+			MethodName: "AddLabels",
 			Handler:    _MetadataService_AddLabels_Handler,
 		},
 		{
-			MethodName: "deleteLabels",
+			MethodName: "DeleteLabels",
 			Handler:    _MetadataService_DeleteLabels_Handler,
 		},
 	},

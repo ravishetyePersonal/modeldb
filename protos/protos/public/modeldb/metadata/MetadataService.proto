@@ -15,52 +15,56 @@ message IDTypeEnum {
     }
 }
 
-message AddLabels {
+message IdentificationType {
     IDTypeEnum.IDType id_type = 1;
-    string id = 2;
-    repeated string labels = 3;
-
-    message Response {
-        bool status = 1;
+    oneof id {
+        uint64 code = 2;
+        string uuid = 3;
     }
 }
 
-message DeleteLabels {
-    IDTypeEnum.IDType id_type = 1;
-    string id = 2;
-    repeated string labels = 3;
-
-    message Response {
-        bool status = 1;
-    }
-}
-
-message GetLabels {
-    IDTypeEnum.IDType id_type = 1;
-    string id = 2;
+message GetLabelsRequest {
+    // If only id_type is provided, gather from all of such sources
+    IdentificationType id = 1;
 
     message Response {
         repeated string labels = 1;
     }
 }
 
+message AddLabelsRequest {
+    IdentificationType id = 1;
+    repeated string labels = 2;
+
+    message Response {
+    }
+}
+
+message DeleteLabelsRequest {
+    IdentificationType id = 1;
+    repeated string labels = 2;
+
+    message Response {
+    }
+}
+
 service MetadataService {
-    rpc getLabels(GetLabels) returns (GetLabels.Response) {
+    rpc GetLabels(GetLabelsRequest) returns (GetLabelsRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/metadata/getLabels"
+            get: "/v1/metadata/labels"
         };
     };
 
-    rpc addLabels(AddLabels) returns (AddLabels.Response) {
+    rpc AddLabels(AddLabelsRequest) returns (AddLabelsRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/metadata/addLabels"
+            put: "/v1/metadata/labels"
             body: "*"
         };
     };
 
-    rpc deleteLabels(DeleteLabels) returns (DeleteLabels.Response) {
+    rpc DeleteLabels(DeleteLabelsRequest) returns (DeleteLabelsRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/metadata/deleteLabels"
+            delete: "/v1/metadata/delete"
             body: "*"
         };
     };
