@@ -26,21 +26,100 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+// Data structure used to compute the SHA of a commit
+type InternalCommit struct {
+	ParentShas           []string `protobuf:"bytes,1,rep,name=parent_shas,json=parentShas,proto3" json:"parent_shas,omitempty"`
+	Message              string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	DateCreated          uint64   `protobuf:"varint,3,opt,name=date_created,json=dateCreated,proto3" json:"date_created,omitempty"`
+	Author               string   `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`
+	FolderSha            string   `protobuf:"bytes,1000,opt,name=folder_sha,json=folderSha,proto3" json:"folder_sha,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InternalCommit) Reset()         { *m = InternalCommit{} }
+func (m *InternalCommit) String() string { return proto.CompactTextString(m) }
+func (*InternalCommit) ProtoMessage()    {}
+func (*InternalCommit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{0}
+}
+
+func (m *InternalCommit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InternalCommit.Unmarshal(m, b)
+}
+func (m *InternalCommit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InternalCommit.Marshal(b, m, deterministic)
+}
+func (m *InternalCommit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InternalCommit.Merge(m, src)
+}
+func (m *InternalCommit) XXX_Size() int {
+	return xxx_messageInfo_InternalCommit.Size(m)
+}
+func (m *InternalCommit) XXX_DiscardUnknown() {
+	xxx_messageInfo_InternalCommit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InternalCommit proto.InternalMessageInfo
+
+func (m *InternalCommit) GetParentShas() []string {
+	if m != nil {
+		return m.ParentShas
+	}
+	return nil
+}
+
+func (m *InternalCommit) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *InternalCommit) GetDateCreated() uint64 {
+	if m != nil {
+		return m.DateCreated
+	}
+	return 0
+}
+
+func (m *InternalCommit) GetAuthor() string {
+	if m != nil {
+		return m.Author
+	}
+	return ""
+}
+
+func (m *InternalCommit) GetFolderSha() string {
+	if m != nil {
+		return m.FolderSha
+	}
+	return ""
+}
+
 // Base commit for the versioning system
+// DO NOT USE TO COMPUTE SHA
 type Commit struct {
-	ParentIds            []string       `protobuf:"bytes,1,rep,name=parent_ids,json=parentIds,proto3" json:"parent_ids,omitempty"`
-	Content              *CommitContent `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	TreeId               string         `protobuf:"bytes,3,opt,name=tree_id,json=treeId,proto3" json:"tree_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	// ID of the parent commits.
+	ParentShas []string `protobuf:"bytes,1,rep,name=parent_shas,json=parentShas,proto3" json:"parent_shas,omitempty"`
+	// Message associated with the commit.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// Date associated with the commit.
+	// It will be computed by the backend by default, but a feature flag should enable setting by the client.
+	DateCreated uint64 `protobuf:"varint,3,opt,name=date_created,json=dateCreated,proto3" json:"date_created,omitempty"`
+	// ID of the user who created the commit.
+	Author               string   `protobuf:"bytes,4,opt,name=author,proto3" json:"author,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Commit) Reset()         { *m = Commit{} }
 func (m *Commit) String() string { return proto.CompactTextString(m) }
 func (*Commit) ProtoMessage()    {}
 func (*Commit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{0}
+	return fileDescriptor_8cadc242402e79bc, []int{1}
 }
 
 func (m *Commit) XXX_Unmarshal(b []byte) error {
@@ -61,164 +140,225 @@ func (m *Commit) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Commit proto.InternalMessageInfo
 
-func (m *Commit) GetParentIds() []string {
+func (m *Commit) GetParentShas() []string {
 	if m != nil {
-		return m.ParentIds
+		return m.ParentShas
 	}
 	return nil
 }
 
-func (m *Commit) GetContent() *CommitContent {
-	if m != nil {
-		return m.Content
-	}
-	return nil
-}
-
-func (m *Commit) GetTreeId() string {
-	if m != nil {
-		return m.TreeId
-	}
-	return ""
-}
-
-type CommitContent struct {
-	Message              string   `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	DateCreated          uint64   `protobuf:"varint,2,opt,name=date_created,json=dateCreated,proto3" json:"date_created,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CommitContent) Reset()         { *m = CommitContent{} }
-func (m *CommitContent) String() string { return proto.CompactTextString(m) }
-func (*CommitContent) ProtoMessage()    {}
-func (*CommitContent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{1}
-}
-
-func (m *CommitContent) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CommitContent.Unmarshal(m, b)
-}
-func (m *CommitContent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CommitContent.Marshal(b, m, deterministic)
-}
-func (m *CommitContent) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CommitContent.Merge(m, src)
-}
-func (m *CommitContent) XXX_Size() int {
-	return xxx_messageInfo_CommitContent.Size(m)
-}
-func (m *CommitContent) XXX_DiscardUnknown() {
-	xxx_messageInfo_CommitContent.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CommitContent proto.InternalMessageInfo
-
-func (m *CommitContent) GetMessage() string {
+func (m *Commit) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-func (m *CommitContent) GetDateCreated() uint64 {
+func (m *Commit) GetDateCreated() uint64 {
 	if m != nil {
 		return m.DateCreated
 	}
 	return 0
 }
 
-type TreeElement struct {
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+func (m *Commit) GetAuthor() string {
+	if m != nil {
+		return m.Author
+	}
+	return ""
+}
+
+// Data structure used to compute the SHA of a folder
+type InternalFolderElement struct {
+	ElementSha           string   `protobuf:"bytes,1,opt,name=element_sha,json=elementSha,proto3" json:"element_sha,omitempty"`
+	ElementName          string   `protobuf:"bytes,2,opt,name=element_name,json=elementName,proto3" json:"element_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *TreeElement) Reset()         { *m = TreeElement{} }
-func (m *TreeElement) String() string { return proto.CompactTextString(m) }
-func (*TreeElement) ProtoMessage()    {}
-func (*TreeElement) Descriptor() ([]byte, []int) {
+func (m *InternalFolderElement) Reset()         { *m = InternalFolderElement{} }
+func (m *InternalFolderElement) String() string { return proto.CompactTextString(m) }
+func (*InternalFolderElement) ProtoMessage()    {}
+func (*InternalFolderElement) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8cadc242402e79bc, []int{2}
 }
 
-func (m *TreeElement) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_TreeElement.Unmarshal(m, b)
+func (m *InternalFolderElement) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InternalFolderElement.Unmarshal(m, b)
 }
-func (m *TreeElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_TreeElement.Marshal(b, m, deterministic)
+func (m *InternalFolderElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InternalFolderElement.Marshal(b, m, deterministic)
 }
-func (m *TreeElement) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TreeElement.Merge(m, src)
+func (m *InternalFolderElement) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InternalFolderElement.Merge(m, src)
 }
-func (m *TreeElement) XXX_Size() int {
-	return xxx_messageInfo_TreeElement.Size(m)
+func (m *InternalFolderElement) XXX_Size() int {
+	return xxx_messageInfo_InternalFolderElement.Size(m)
 }
-func (m *TreeElement) XXX_DiscardUnknown() {
-	xxx_messageInfo_TreeElement.DiscardUnknown(m)
+func (m *InternalFolderElement) XXX_DiscardUnknown() {
+	xxx_messageInfo_InternalFolderElement.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TreeElement proto.InternalMessageInfo
+var xxx_messageInfo_InternalFolderElement proto.InternalMessageInfo
 
-func (m *TreeElement) GetId() string {
+func (m *InternalFolderElement) GetElementSha() string {
 	if m != nil {
-		return m.Id
+		return m.ElementSha
 	}
 	return ""
 }
 
-func (m *TreeElement) GetName() string {
+func (m *InternalFolderElement) GetElementName() string {
 	if m != nil {
-		return m.Name
+		return m.ElementName
 	}
 	return ""
 }
 
-type Tree struct {
-	Blobs                []*TreeElement `protobuf:"bytes,1,rep,name=blobs,proto3" json:"blobs,omitempty"`
-	Subtrees             []*TreeElement `protobuf:"bytes,2,rep,name=subtrees,proto3" json:"subtrees,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+type InternalFolder struct {
+	Blobs                []*InternalFolderElement `protobuf:"bytes,1,rep,name=blobs,proto3" json:"blobs,omitempty"`
+	Subfolders           []*InternalFolderElement `protobuf:"bytes,2,rep,name=subfolders,proto3" json:"subfolders,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
 }
 
-func (m *Tree) Reset()         { *m = Tree{} }
-func (m *Tree) String() string { return proto.CompactTextString(m) }
-func (*Tree) ProtoMessage()    {}
-func (*Tree) Descriptor() ([]byte, []int) {
+func (m *InternalFolder) Reset()         { *m = InternalFolder{} }
+func (m *InternalFolder) String() string { return proto.CompactTextString(m) }
+func (*InternalFolder) ProtoMessage()    {}
+func (*InternalFolder) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8cadc242402e79bc, []int{3}
 }
 
-func (m *Tree) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Tree.Unmarshal(m, b)
+func (m *InternalFolder) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InternalFolder.Unmarshal(m, b)
 }
-func (m *Tree) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Tree.Marshal(b, m, deterministic)
+func (m *InternalFolder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InternalFolder.Marshal(b, m, deterministic)
 }
-func (m *Tree) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Tree.Merge(m, src)
+func (m *InternalFolder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InternalFolder.Merge(m, src)
 }
-func (m *Tree) XXX_Size() int {
-	return xxx_messageInfo_Tree.Size(m)
+func (m *InternalFolder) XXX_Size() int {
+	return xxx_messageInfo_InternalFolder.Size(m)
 }
-func (m *Tree) XXX_DiscardUnknown() {
-	xxx_messageInfo_Tree.DiscardUnknown(m)
+func (m *InternalFolder) XXX_DiscardUnknown() {
+	xxx_messageInfo_InternalFolder.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Tree proto.InternalMessageInfo
+var xxx_messageInfo_InternalFolder proto.InternalMessageInfo
 
-func (m *Tree) GetBlobs() []*TreeElement {
+func (m *InternalFolder) GetBlobs() []*InternalFolderElement {
 	if m != nil {
 		return m.Blobs
 	}
 	return nil
 }
 
-func (m *Tree) GetSubtrees() []*TreeElement {
+func (m *InternalFolder) GetSubfolders() []*InternalFolderElement {
 	if m != nil {
-		return m.Subtrees
+		return m.Subfolders
+	}
+	return nil
+}
+
+// DO NOT USE TO COMPUTE SHA
+type FolderElement struct {
+	// Name of the element inside the folder.
+	ElementName string `protobuf:"bytes,2,opt,name=element_name,json=elementName,proto3" json:"element_name,omitempty"`
+	// SHA of the commit which created this element.
+	CreatedByCommit      string   `protobuf:"bytes,3,opt,name=created_by_commit,json=createdByCommit,proto3" json:"created_by_commit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *FolderElement) Reset()         { *m = FolderElement{} }
+func (m *FolderElement) String() string { return proto.CompactTextString(m) }
+func (*FolderElement) ProtoMessage()    {}
+func (*FolderElement) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{4}
+}
+
+func (m *FolderElement) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_FolderElement.Unmarshal(m, b)
+}
+func (m *FolderElement) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_FolderElement.Marshal(b, m, deterministic)
+}
+func (m *FolderElement) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FolderElement.Merge(m, src)
+}
+func (m *FolderElement) XXX_Size() int {
+	return xxx_messageInfo_FolderElement.Size(m)
+}
+func (m *FolderElement) XXX_DiscardUnknown() {
+	xxx_messageInfo_FolderElement.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_FolderElement proto.InternalMessageInfo
+
+func (m *FolderElement) GetElementName() string {
+	if m != nil {
+		return m.ElementName
+	}
+	return ""
+}
+
+func (m *FolderElement) GetCreatedByCommit() string {
+	if m != nil {
+		return m.CreatedByCommit
+	}
+	return ""
+}
+
+// DO NOT USE TO COMPUTE SHA
+type Folder struct {
+	// Blobs, which correspond to direct entries/files
+	Blobs []*FolderElement `protobuf:"bytes,1,rep,name=blobs,proto3" json:"blobs,omitempty"`
+	// Subfolders
+	Subfolders           []*FolderElement `protobuf:"bytes,2,rep,name=subfolders,proto3" json:"subfolders,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *Folder) Reset()         { *m = Folder{} }
+func (m *Folder) String() string { return proto.CompactTextString(m) }
+func (*Folder) ProtoMessage()    {}
+func (*Folder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{5}
+}
+
+func (m *Folder) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Folder.Unmarshal(m, b)
+}
+func (m *Folder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Folder.Marshal(b, m, deterministic)
+}
+func (m *Folder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Folder.Merge(m, src)
+}
+func (m *Folder) XXX_Size() int {
+	return xxx_messageInfo_Folder.Size(m)
+}
+func (m *Folder) XXX_DiscardUnknown() {
+	xxx_messageInfo_Folder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Folder proto.InternalMessageInfo
+
+func (m *Folder) GetBlobs() []*FolderElement {
+	if m != nil {
+		return m.Blobs
+	}
+	return nil
+}
+
+func (m *Folder) GetSubfolders() []*FolderElement {
+	if m != nil {
+		return m.Subfolders
 	}
 	return nil
 }
@@ -236,7 +376,7 @@ func (m *Blob) Reset()         { *m = Blob{} }
 func (m *Blob) String() string { return proto.CompactTextString(m) }
 func (*Blob) ProtoMessage()    {}
 func (*Blob) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{4}
+	return fileDescriptor_8cadc242402e79bc, []int{6}
 }
 
 func (m *Blob) XXX_Unmarshal(b []byte) error {
@@ -262,7 +402,7 @@ type isBlob_Content interface {
 }
 
 type Blob_Dataset struct {
-	Dataset *DatasetBlob `protobuf:"bytes,1,opt,name=dataset,proto3,oneof"`
+	Dataset *DatasetBlob `protobuf:"bytes,2,opt,name=dataset,proto3,oneof"`
 }
 
 func (*Blob_Dataset) isBlob_Content() {}
@@ -289,6 +429,7 @@ func (*Blob) XXX_OneofWrappers() []interface{} {
 }
 
 type BlobExpanded struct {
+	// Expand with the path seen so far through the folders to get to this blob
 	Path                 string   `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
 	Blob                 *Blob    `protobuf:"bytes,2,opt,name=blob,proto3" json:"blob,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -300,7 +441,7 @@ func (m *BlobExpanded) Reset()         { *m = BlobExpanded{} }
 func (m *BlobExpanded) String() string { return proto.CompactTextString(m) }
 func (*BlobExpanded) ProtoMessage()    {}
 func (*BlobExpanded) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{5}
+	return fileDescriptor_8cadc242402e79bc, []int{7}
 }
 
 func (m *BlobExpanded) XXX_Unmarshal(b []byte) error {
@@ -336,6 +477,7 @@ func (m *BlobExpanded) GetBlob() *Blob {
 }
 
 type BlobDiff struct {
+	// Expand with the path seen so far through the folders to get to this blob
 	Path string `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
 	// Types that are valid to be assigned to Content:
 	//	*BlobDiff_Dataset
@@ -349,7 +491,7 @@ func (m *BlobDiff) Reset()         { *m = BlobDiff{} }
 func (m *BlobDiff) String() string { return proto.CompactTextString(m) }
 func (*BlobDiff) ProtoMessage()    {}
 func (*BlobDiff) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{6}
+	return fileDescriptor_8cadc242402e79bc, []int{8}
 }
 
 func (m *BlobDiff) XXX_Unmarshal(b []byte) error {
@@ -408,121 +550,8 @@ func (*BlobDiff) XXX_OneofWrappers() []interface{} {
 	}
 }
 
-type Entity struct {
-	// ID of the entity. Computed as the hash of all fields, excluding this field.
-	// NOTE: be careful: maps must be hashed in the same order every time
-	Sha256       string `protobuf:"bytes,1,opt,name=sha256,proto3" json:"sha256,omitempty"`
-	RepositoryId string `protobuf:"bytes,2,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	// Types that are valid to be assigned to Content:
-	//	*Entity_Commit
-	//	*Entity_Tree
-	//	*Entity_Blob
-	Content              isEntity_Content `protobuf_oneof:"content"`
-	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
-	XXX_unrecognized     []byte           `json:"-"`
-	XXX_sizecache        int32            `json:"-"`
-}
-
-func (m *Entity) Reset()         { *m = Entity{} }
-func (m *Entity) String() string { return proto.CompactTextString(m) }
-func (*Entity) ProtoMessage()    {}
-func (*Entity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{7}
-}
-
-func (m *Entity) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Entity.Unmarshal(m, b)
-}
-func (m *Entity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Entity.Marshal(b, m, deterministic)
-}
-func (m *Entity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Entity.Merge(m, src)
-}
-func (m *Entity) XXX_Size() int {
-	return xxx_messageInfo_Entity.Size(m)
-}
-func (m *Entity) XXX_DiscardUnknown() {
-	xxx_messageInfo_Entity.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Entity proto.InternalMessageInfo
-
-func (m *Entity) GetSha256() string {
-	if m != nil {
-		return m.Sha256
-	}
-	return ""
-}
-
-func (m *Entity) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-type isEntity_Content interface {
-	isEntity_Content()
-}
-
-type Entity_Commit struct {
-	Commit *Commit `protobuf:"bytes,3,opt,name=commit,proto3,oneof"`
-}
-
-type Entity_Tree struct {
-	Tree *Tree `protobuf:"bytes,4,opt,name=tree,proto3,oneof"`
-}
-
-type Entity_Blob struct {
-	Blob *Blob `protobuf:"bytes,5,opt,name=blob,proto3,oneof"`
-}
-
-func (*Entity_Commit) isEntity_Content() {}
-
-func (*Entity_Tree) isEntity_Content() {}
-
-func (*Entity_Blob) isEntity_Content() {}
-
-func (m *Entity) GetContent() isEntity_Content {
-	if m != nil {
-		return m.Content
-	}
-	return nil
-}
-
-func (m *Entity) GetCommit() *Commit {
-	if x, ok := m.GetContent().(*Entity_Commit); ok {
-		return x.Commit
-	}
-	return nil
-}
-
-func (m *Entity) GetTree() *Tree {
-	if x, ok := m.GetContent().(*Entity_Tree); ok {
-		return x.Tree
-	}
-	return nil
-}
-
-func (m *Entity) GetBlob() *Blob {
-	if x, ok := m.GetContent().(*Entity_Blob); ok {
-		return x.Blob
-	}
-	return nil
-}
-
-// XXX_OneofWrappers is for the internal use of the proto package.
-func (*Entity) XXX_OneofWrappers() []interface{} {
-	return []interface{}{
-		(*Entity_Commit)(nil),
-		(*Entity_Tree)(nil),
-		(*Entity_Blob)(nil),
-	}
-}
-
 type Repository struct {
-	Id                   string                                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id                   uint64                                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string                                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	DateCreated          uint64                                  `protobuf:"varint,3,opt,name=date_created,json=dateCreated,proto3" json:"date_created,omitempty"`
 	DateUpdated          uint64                                  `protobuf:"varint,4,opt,name=date_updated,json=dateUpdated,proto3" json:"date_updated,omitempty"`
@@ -537,7 +566,7 @@ func (m *Repository) Reset()         { *m = Repository{} }
 func (m *Repository) String() string { return proto.CompactTextString(m) }
 func (*Repository) ProtoMessage()    {}
 func (*Repository) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{8}
+	return fileDescriptor_8cadc242402e79bc, []int{9}
 }
 
 func (m *Repository) XXX_Unmarshal(b []byte) error {
@@ -558,11 +587,11 @@ func (m *Repository) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Repository proto.InternalMessageInfo
 
-func (m *Repository) GetId() string {
+func (m *Repository) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
-	return ""
+	return 0
 }
 
 func (m *Repository) GetName() string {
@@ -600,94 +629,340 @@ func (m *Repository) GetWorkspaceType() modeldb.WorkspaceTypeEnum_WorkspaceType 
 	return modeldb.WorkspaceTypeEnum_UNKNOWN
 }
 
-type GetRepository struct {
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	WorkspaceName        string   `protobuf:"bytes,3,opt,name=workspace_name,json=workspaceName,proto3" json:"workspace_name,omitempty"`
+// For pagination
+type Pagination struct {
+	PageNumber           int32    `protobuf:"varint,2,opt,name=page_number,json=pageNumber,proto3" json:"page_number,omitempty"`
+	PageLimit            int32    `protobuf:"varint,3,opt,name=page_limit,json=pageLimit,proto3" json:"page_limit,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetRepository) Reset()         { *m = GetRepository{} }
-func (m *GetRepository) String() string { return proto.CompactTextString(m) }
-func (*GetRepository) ProtoMessage()    {}
-func (*GetRepository) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{9}
+func (m *Pagination) Reset()         { *m = Pagination{} }
+func (m *Pagination) String() string { return proto.CompactTextString(m) }
+func (*Pagination) ProtoMessage()    {}
+func (*Pagination) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{10}
 }
 
-func (m *GetRepository) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepository.Unmarshal(m, b)
+func (m *Pagination) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Pagination.Unmarshal(m, b)
 }
-func (m *GetRepository) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepository.Marshal(b, m, deterministic)
+func (m *Pagination) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Pagination.Marshal(b, m, deterministic)
 }
-func (m *GetRepository) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepository.Merge(m, src)
+func (m *Pagination) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Pagination.Merge(m, src)
 }
-func (m *GetRepository) XXX_Size() int {
-	return xxx_messageInfo_GetRepository.Size(m)
+func (m *Pagination) XXX_Size() int {
+	return xxx_messageInfo_Pagination.Size(m)
 }
-func (m *GetRepository) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepository.DiscardUnknown(m)
+func (m *Pagination) XXX_DiscardUnknown() {
+	xxx_messageInfo_Pagination.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRepository proto.InternalMessageInfo
+var xxx_messageInfo_Pagination proto.InternalMessageInfo
 
-func (m *GetRepository) GetId() string {
+func (m *Pagination) GetPageNumber() int32 {
 	if m != nil {
-		return m.Id
+		return m.PageNumber
 	}
-	return ""
+	return 0
 }
 
-func (m *GetRepository) GetName() string {
+func (m *Pagination) GetPageLimit() int32 {
+	if m != nil {
+		return m.PageLimit
+	}
+	return 0
+}
+
+// CRUD for repositories
+type RepositoryNamedIdentification struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	WorkspaceName        string   `protobuf:"bytes,2,opt,name=workspace_name,json=workspaceName,proto3" json:"workspace_name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RepositoryNamedIdentification) Reset()         { *m = RepositoryNamedIdentification{} }
+func (m *RepositoryNamedIdentification) String() string { return proto.CompactTextString(m) }
+func (*RepositoryNamedIdentification) ProtoMessage()    {}
+func (*RepositoryNamedIdentification) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{11}
+}
+
+func (m *RepositoryNamedIdentification) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RepositoryNamedIdentification.Unmarshal(m, b)
+}
+func (m *RepositoryNamedIdentification) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RepositoryNamedIdentification.Marshal(b, m, deterministic)
+}
+func (m *RepositoryNamedIdentification) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RepositoryNamedIdentification.Merge(m, src)
+}
+func (m *RepositoryNamedIdentification) XXX_Size() int {
+	return xxx_messageInfo_RepositoryNamedIdentification.Size(m)
+}
+func (m *RepositoryNamedIdentification) XXX_DiscardUnknown() {
+	xxx_messageInfo_RepositoryNamedIdentification.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RepositoryNamedIdentification proto.InternalMessageInfo
+
+func (m *RepositoryNamedIdentification) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *GetRepository) GetWorkspaceName() string {
+func (m *RepositoryNamedIdentification) GetWorkspaceName() string {
 	if m != nil {
 		return m.WorkspaceName
 	}
 	return ""
 }
 
-type GetRepository_Response struct {
+type RepositoryIdentification struct {
+	// Types that are valid to be assigned to Id:
+	//	*RepositoryIdentification_Named
+	//	*RepositoryIdentification_Code
+	Id                   isRepositoryIdentification_Id `protobuf_oneof:"id"`
+	XXX_NoUnkeyedLiteral struct{}                      `json:"-"`
+	XXX_unrecognized     []byte                        `json:"-"`
+	XXX_sizecache        int32                         `json:"-"`
+}
+
+func (m *RepositoryIdentification) Reset()         { *m = RepositoryIdentification{} }
+func (m *RepositoryIdentification) String() string { return proto.CompactTextString(m) }
+func (*RepositoryIdentification) ProtoMessage()    {}
+func (*RepositoryIdentification) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{12}
+}
+
+func (m *RepositoryIdentification) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RepositoryIdentification.Unmarshal(m, b)
+}
+func (m *RepositoryIdentification) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RepositoryIdentification.Marshal(b, m, deterministic)
+}
+func (m *RepositoryIdentification) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RepositoryIdentification.Merge(m, src)
+}
+func (m *RepositoryIdentification) XXX_Size() int {
+	return xxx_messageInfo_RepositoryIdentification.Size(m)
+}
+func (m *RepositoryIdentification) XXX_DiscardUnknown() {
+	xxx_messageInfo_RepositoryIdentification.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RepositoryIdentification proto.InternalMessageInfo
+
+type isRepositoryIdentification_Id interface {
+	isRepositoryIdentification_Id()
+}
+
+type RepositoryIdentification_Named struct {
+	Named *RepositoryNamedIdentification `protobuf:"bytes,1,opt,name=named,proto3,oneof"`
+}
+
+type RepositoryIdentification_Code struct {
+	Code uint64 `protobuf:"varint,2,opt,name=code,proto3,oneof"`
+}
+
+func (*RepositoryIdentification_Named) isRepositoryIdentification_Id() {}
+
+func (*RepositoryIdentification_Code) isRepositoryIdentification_Id() {}
+
+func (m *RepositoryIdentification) GetId() isRepositoryIdentification_Id {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *RepositoryIdentification) GetNamed() *RepositoryNamedIdentification {
+	if x, ok := m.GetId().(*RepositoryIdentification_Named); ok {
+		return x.Named
+	}
+	return nil
+}
+
+func (m *RepositoryIdentification) GetCode() uint64 {
+	if x, ok := m.GetId().(*RepositoryIdentification_Code); ok {
+		return x.Code
+	}
+	return 0
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*RepositoryIdentification) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*RepositoryIdentification_Named)(nil),
+		(*RepositoryIdentification_Code)(nil),
+	}
+}
+
+type ListRepositoriesRequest struct {
+	WorkspaceName        string      `protobuf:"bytes,1,opt,name=workspace_name,json=workspaceName,proto3" json:"workspace_name,omitempty"`
+	Pagination           *Pagination `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *ListRepositoriesRequest) Reset()         { *m = ListRepositoriesRequest{} }
+func (m *ListRepositoriesRequest) String() string { return proto.CompactTextString(m) }
+func (*ListRepositoriesRequest) ProtoMessage()    {}
+func (*ListRepositoriesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{13}
+}
+
+func (m *ListRepositoriesRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListRepositoriesRequest.Unmarshal(m, b)
+}
+func (m *ListRepositoriesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListRepositoriesRequest.Marshal(b, m, deterministic)
+}
+func (m *ListRepositoriesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListRepositoriesRequest.Merge(m, src)
+}
+func (m *ListRepositoriesRequest) XXX_Size() int {
+	return xxx_messageInfo_ListRepositoriesRequest.Size(m)
+}
+func (m *ListRepositoriesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListRepositoriesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListRepositoriesRequest proto.InternalMessageInfo
+
+func (m *ListRepositoriesRequest) GetWorkspaceName() string {
+	if m != nil {
+		return m.WorkspaceName
+	}
+	return ""
+}
+
+func (m *ListRepositoriesRequest) GetPagination() *Pagination {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type ListRepositoriesRequest_Response struct {
+	Repository           []*Repository `protobuf:"bytes,1,rep,name=repository,proto3" json:"repository,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *ListRepositoriesRequest_Response) Reset()         { *m = ListRepositoriesRequest_Response{} }
+func (m *ListRepositoriesRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*ListRepositoriesRequest_Response) ProtoMessage()    {}
+func (*ListRepositoriesRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{13, 0}
+}
+
+func (m *ListRepositoriesRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListRepositoriesRequest_Response.Unmarshal(m, b)
+}
+func (m *ListRepositoriesRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListRepositoriesRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *ListRepositoriesRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListRepositoriesRequest_Response.Merge(m, src)
+}
+func (m *ListRepositoriesRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_ListRepositoriesRequest_Response.Size(m)
+}
+func (m *ListRepositoriesRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListRepositoriesRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListRepositoriesRequest_Response proto.InternalMessageInfo
+
+func (m *ListRepositoriesRequest_Response) GetRepository() []*Repository {
+	if m != nil {
+		return m.Repository
+	}
+	return nil
+}
+
+type GetRepositoryRequest struct {
+	Id                   *RepositoryIdentification `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *GetRepositoryRequest) Reset()         { *m = GetRepositoryRequest{} }
+func (m *GetRepositoryRequest) String() string { return proto.CompactTextString(m) }
+func (*GetRepositoryRequest) ProtoMessage()    {}
+func (*GetRepositoryRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{14}
+}
+
+func (m *GetRepositoryRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetRepositoryRequest.Unmarshal(m, b)
+}
+func (m *GetRepositoryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetRepositoryRequest.Marshal(b, m, deterministic)
+}
+func (m *GetRepositoryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetRepositoryRequest.Merge(m, src)
+}
+func (m *GetRepositoryRequest) XXX_Size() int {
+	return xxx_messageInfo_GetRepositoryRequest.Size(m)
+}
+func (m *GetRepositoryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetRepositoryRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetRepositoryRequest proto.InternalMessageInfo
+
+func (m *GetRepositoryRequest) GetId() *RepositoryIdentification {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+type GetRepositoryRequest_Response struct {
 	Repository           *Repository `protobuf:"bytes,1,opt,name=repository,proto3" json:"repository,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *GetRepository_Response) Reset()         { *m = GetRepository_Response{} }
-func (m *GetRepository_Response) String() string { return proto.CompactTextString(m) }
-func (*GetRepository_Response) ProtoMessage()    {}
-func (*GetRepository_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{9, 0}
+func (m *GetRepositoryRequest_Response) Reset()         { *m = GetRepositoryRequest_Response{} }
+func (m *GetRepositoryRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetRepositoryRequest_Response) ProtoMessage()    {}
+func (*GetRepositoryRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{14, 0}
 }
 
-func (m *GetRepository_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepository_Response.Unmarshal(m, b)
+func (m *GetRepositoryRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetRepositoryRequest_Response.Unmarshal(m, b)
 }
-func (m *GetRepository_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepository_Response.Marshal(b, m, deterministic)
+func (m *GetRepositoryRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetRepositoryRequest_Response.Marshal(b, m, deterministic)
 }
-func (m *GetRepository_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepository_Response.Merge(m, src)
+func (m *GetRepositoryRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetRepositoryRequest_Response.Merge(m, src)
 }
-func (m *GetRepository_Response) XXX_Size() int {
-	return xxx_messageInfo_GetRepository_Response.Size(m)
+func (m *GetRepositoryRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetRepositoryRequest_Response.Size(m)
 }
-func (m *GetRepository_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepository_Response.DiscardUnknown(m)
+func (m *GetRepositoryRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetRepositoryRequest_Response.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRepository_Response proto.InternalMessageInfo
+var xxx_messageInfo_GetRepositoryRequest_Response proto.InternalMessageInfo
 
-func (m *GetRepository_Response) GetRepository() *Repository {
+func (m *GetRepositoryRequest_Response) GetRepository() *Repository {
 	if m != nil {
 		return m.Repository
 	}
@@ -695,18 +970,18 @@ func (m *GetRepository_Response) GetRepository() *Repository {
 }
 
 type SetRepository struct {
-	Repository           *Repository `protobuf:"bytes,1,opt,name=repository,proto3" json:"repository,omitempty"`
-	WorkspaceName        string      `protobuf:"bytes,2,opt,name=workspace_name,json=workspaceName,proto3" json:"workspace_name,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	Id                   *RepositoryIdentification `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Repository           *Repository               `protobuf:"bytes,2,opt,name=repository,proto3" json:"repository,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
 func (m *SetRepository) Reset()         { *m = SetRepository{} }
 func (m *SetRepository) String() string { return proto.CompactTextString(m) }
 func (*SetRepository) ProtoMessage()    {}
 func (*SetRepository) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{10}
+	return fileDescriptor_8cadc242402e79bc, []int{15}
 }
 
 func (m *SetRepository) XXX_Unmarshal(b []byte) error {
@@ -727,18 +1002,18 @@ func (m *SetRepository) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SetRepository proto.InternalMessageInfo
 
+func (m *SetRepository) GetId() *RepositoryIdentification {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
 func (m *SetRepository) GetRepository() *Repository {
 	if m != nil {
 		return m.Repository
 	}
 	return nil
-}
-
-func (m *SetRepository) GetWorkspaceName() string {
-	if m != nil {
-		return m.WorkspaceName
-	}
-	return ""
 }
 
 type SetRepository_Response struct {
@@ -752,7 +1027,7 @@ func (m *SetRepository_Response) Reset()         { *m = SetRepository_Response{}
 func (m *SetRepository_Response) String() string { return proto.CompactTextString(m) }
 func (*SetRepository_Response) ProtoMessage()    {}
 func (*SetRepository_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{10, 0}
+	return fileDescriptor_8cadc242402e79bc, []int{15, 0}
 }
 
 func (m *SetRepository_Response) XXX_Unmarshal(b []byte) error {
@@ -780,968 +1055,1215 @@ func (m *SetRepository_Response) GetRepository() *Repository {
 	return nil
 }
 
-type DeleteRepository struct {
-	RepositoryId         string   `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type DeleteRepositoryRequest struct {
+	Id                   *RepositoryIdentification `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
-func (m *DeleteRepository) Reset()         { *m = DeleteRepository{} }
-func (m *DeleteRepository) String() string { return proto.CompactTextString(m) }
-func (*DeleteRepository) ProtoMessage()    {}
-func (*DeleteRepository) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{11}
-}
-
-func (m *DeleteRepository) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteRepository.Unmarshal(m, b)
-}
-func (m *DeleteRepository) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteRepository.Marshal(b, m, deterministic)
-}
-func (m *DeleteRepository) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteRepository.Merge(m, src)
-}
-func (m *DeleteRepository) XXX_Size() int {
-	return xxx_messageInfo_DeleteRepository.Size(m)
-}
-func (m *DeleteRepository) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteRepository.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteRepository proto.InternalMessageInfo
-
-func (m *DeleteRepository) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-type DeleteRepository_Response struct {
-	Status               bool     `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DeleteRepository_Response) Reset()         { *m = DeleteRepository_Response{} }
-func (m *DeleteRepository_Response) String() string { return proto.CompactTextString(m) }
-func (*DeleteRepository_Response) ProtoMessage()    {}
-func (*DeleteRepository_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{11, 0}
-}
-
-func (m *DeleteRepository_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteRepository_Response.Unmarshal(m, b)
-}
-func (m *DeleteRepository_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteRepository_Response.Marshal(b, m, deterministic)
-}
-func (m *DeleteRepository_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteRepository_Response.Merge(m, src)
-}
-func (m *DeleteRepository_Response) XXX_Size() int {
-	return xxx_messageInfo_DeleteRepository_Response.Size(m)
-}
-func (m *DeleteRepository_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteRepository_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteRepository_Response proto.InternalMessageInfo
-
-func (m *DeleteRepository_Response) GetStatus() bool {
-	if m != nil {
-		return m.Status
-	}
-	return false
-}
-
-type BatchGetEntity struct {
-	Shas                 []string `protobuf:"bytes,1,rep,name=shas,proto3" json:"shas,omitempty"`
-	RepositoryId         string   `protobuf:"bytes,2,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *BatchGetEntity) Reset()         { *m = BatchGetEntity{} }
-func (m *BatchGetEntity) String() string { return proto.CompactTextString(m) }
-func (*BatchGetEntity) ProtoMessage()    {}
-func (*BatchGetEntity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{12}
-}
-
-func (m *BatchGetEntity) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_BatchGetEntity.Unmarshal(m, b)
-}
-func (m *BatchGetEntity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_BatchGetEntity.Marshal(b, m, deterministic)
-}
-func (m *BatchGetEntity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BatchGetEntity.Merge(m, src)
-}
-func (m *BatchGetEntity) XXX_Size() int {
-	return xxx_messageInfo_BatchGetEntity.Size(m)
-}
-func (m *BatchGetEntity) XXX_DiscardUnknown() {
-	xxx_messageInfo_BatchGetEntity.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BatchGetEntity proto.InternalMessageInfo
-
-func (m *BatchGetEntity) GetShas() []string {
-	if m != nil {
-		return m.Shas
-	}
-	return nil
-}
-
-func (m *BatchGetEntity) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-type BatchGetEntity_Response struct {
-	Entities             []*Entity `protobuf:"bytes,1,rep,name=entities,proto3" json:"entities,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *BatchGetEntity_Response) Reset()         { *m = BatchGetEntity_Response{} }
-func (m *BatchGetEntity_Response) String() string { return proto.CompactTextString(m) }
-func (*BatchGetEntity_Response) ProtoMessage()    {}
-func (*BatchGetEntity_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{12, 0}
-}
-
-func (m *BatchGetEntity_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_BatchGetEntity_Response.Unmarshal(m, b)
-}
-func (m *BatchGetEntity_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_BatchGetEntity_Response.Marshal(b, m, deterministic)
-}
-func (m *BatchGetEntity_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BatchGetEntity_Response.Merge(m, src)
-}
-func (m *BatchGetEntity_Response) XXX_Size() int {
-	return xxx_messageInfo_BatchGetEntity_Response.Size(m)
-}
-func (m *BatchGetEntity_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_BatchGetEntity_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_BatchGetEntity_Response proto.InternalMessageInfo
-
-func (m *BatchGetEntity_Response) GetEntities() []*Entity {
-	if m != nil {
-		return m.Entities
-	}
-	return nil
-}
-
-type AddEntity struct {
-	// If SHA is not empty, verify before adding the corresponding entry to avoid corruption
-	// If empty, compute it
-	Entity               *Entity  `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddEntity) Reset()         { *m = AddEntity{} }
-func (m *AddEntity) String() string { return proto.CompactTextString(m) }
-func (*AddEntity) ProtoMessage()    {}
-func (*AddEntity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{13}
-}
-
-func (m *AddEntity) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddEntity.Unmarshal(m, b)
-}
-func (m *AddEntity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddEntity.Marshal(b, m, deterministic)
-}
-func (m *AddEntity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddEntity.Merge(m, src)
-}
-func (m *AddEntity) XXX_Size() int {
-	return xxx_messageInfo_AddEntity.Size(m)
-}
-func (m *AddEntity) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddEntity.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddEntity proto.InternalMessageInfo
-
-func (m *AddEntity) GetEntity() *Entity {
-	if m != nil {
-		return m.Entity
-	}
-	return nil
-}
-
-type AddEntity_Response struct {
-	Entity               *Entity  `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AddEntity_Response) Reset()         { *m = AddEntity_Response{} }
-func (m *AddEntity_Response) String() string { return proto.CompactTextString(m) }
-func (*AddEntity_Response) ProtoMessage()    {}
-func (*AddEntity_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{13, 0}
-}
-
-func (m *AddEntity_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AddEntity_Response.Unmarshal(m, b)
-}
-func (m *AddEntity_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AddEntity_Response.Marshal(b, m, deterministic)
-}
-func (m *AddEntity_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddEntity_Response.Merge(m, src)
-}
-func (m *AddEntity_Response) XXX_Size() int {
-	return xxx_messageInfo_AddEntity_Response.Size(m)
-}
-func (m *AddEntity_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddEntity_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddEntity_Response proto.InternalMessageInfo
-
-func (m *AddEntity_Response) GetEntity() *Entity {
-	if m != nil {
-		return m.Entity
-	}
-	return nil
-}
-
-type DeleteEntity struct {
-	Sha256               string   `protobuf:"bytes,1,opt,name=sha256,proto3" json:"sha256,omitempty"`
-	RepositoryId         string   `protobuf:"bytes,2,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DeleteEntity) Reset()         { *m = DeleteEntity{} }
-func (m *DeleteEntity) String() string { return proto.CompactTextString(m) }
-func (*DeleteEntity) ProtoMessage()    {}
-func (*DeleteEntity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{14}
-}
-
-func (m *DeleteEntity) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteEntity.Unmarshal(m, b)
-}
-func (m *DeleteEntity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteEntity.Marshal(b, m, deterministic)
-}
-func (m *DeleteEntity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteEntity.Merge(m, src)
-}
-func (m *DeleteEntity) XXX_Size() int {
-	return xxx_messageInfo_DeleteEntity.Size(m)
-}
-func (m *DeleteEntity) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteEntity.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteEntity proto.InternalMessageInfo
-
-func (m *DeleteEntity) GetSha256() string {
-	if m != nil {
-		return m.Sha256
-	}
-	return ""
-}
-
-func (m *DeleteEntity) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-type DeleteEntity_Response struct {
-	Status               bool     `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *DeleteEntity_Response) Reset()         { *m = DeleteEntity_Response{} }
-func (m *DeleteEntity_Response) String() string { return proto.CompactTextString(m) }
-func (*DeleteEntity_Response) ProtoMessage()    {}
-func (*DeleteEntity_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{14, 0}
-}
-
-func (m *DeleteEntity_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_DeleteEntity_Response.Unmarshal(m, b)
-}
-func (m *DeleteEntity_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_DeleteEntity_Response.Marshal(b, m, deterministic)
-}
-func (m *DeleteEntity_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeleteEntity_Response.Merge(m, src)
-}
-func (m *DeleteEntity_Response) XXX_Size() int {
-	return xxx_messageInfo_DeleteEntity_Response.Size(m)
-}
-func (m *DeleteEntity_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeleteEntity_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeleteEntity_Response proto.InternalMessageInfo
-
-func (m *DeleteEntity_Response) GetStatus() bool {
-	if m != nil {
-		return m.Status
-	}
-	return false
-}
-
-type CommitRepositoryBlobs struct {
-	RepositoryId         string          `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	ParentIds            []string        `protobuf:"bytes,2,rep,name=parent_ids,json=parentIds,proto3" json:"parent_ids,omitempty"`
-	Content              *CommitContent  `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
-	Blobs                []*BlobExpanded `protobuf:"bytes,4,rep,name=blobs,proto3" json:"blobs,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `json:"-"`
-	XXX_sizecache        int32           `json:"-"`
-}
-
-func (m *CommitRepositoryBlobs) Reset()         { *m = CommitRepositoryBlobs{} }
-func (m *CommitRepositoryBlobs) String() string { return proto.CompactTextString(m) }
-func (*CommitRepositoryBlobs) ProtoMessage()    {}
-func (*CommitRepositoryBlobs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{15}
-}
-
-func (m *CommitRepositoryBlobs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CommitRepositoryBlobs.Unmarshal(m, b)
-}
-func (m *CommitRepositoryBlobs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CommitRepositoryBlobs.Marshal(b, m, deterministic)
-}
-func (m *CommitRepositoryBlobs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CommitRepositoryBlobs.Merge(m, src)
-}
-func (m *CommitRepositoryBlobs) XXX_Size() int {
-	return xxx_messageInfo_CommitRepositoryBlobs.Size(m)
-}
-func (m *CommitRepositoryBlobs) XXX_DiscardUnknown() {
-	xxx_messageInfo_CommitRepositoryBlobs.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CommitRepositoryBlobs proto.InternalMessageInfo
-
-func (m *CommitRepositoryBlobs) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-func (m *CommitRepositoryBlobs) GetParentIds() []string {
-	if m != nil {
-		return m.ParentIds
-	}
-	return nil
-}
-
-func (m *CommitRepositoryBlobs) GetContent() *CommitContent {
-	if m != nil {
-		return m.Content
-	}
-	return nil
-}
-
-func (m *CommitRepositoryBlobs) GetBlobs() []*BlobExpanded {
-	if m != nil {
-		return m.Blobs
-	}
-	return nil
-}
-
-type CommitRepositoryBlobs_Response struct {
-	Commit               *Commit  `protobuf:"bytes,1,opt,name=commit,proto3" json:"commit,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *CommitRepositoryBlobs_Response) Reset()         { *m = CommitRepositoryBlobs_Response{} }
-func (m *CommitRepositoryBlobs_Response) String() string { return proto.CompactTextString(m) }
-func (*CommitRepositoryBlobs_Response) ProtoMessage()    {}
-func (*CommitRepositoryBlobs_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{15, 0}
-}
-
-func (m *CommitRepositoryBlobs_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CommitRepositoryBlobs_Response.Unmarshal(m, b)
-}
-func (m *CommitRepositoryBlobs_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CommitRepositoryBlobs_Response.Marshal(b, m, deterministic)
-}
-func (m *CommitRepositoryBlobs_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CommitRepositoryBlobs_Response.Merge(m, src)
-}
-func (m *CommitRepositoryBlobs_Response) XXX_Size() int {
-	return xxx_messageInfo_CommitRepositoryBlobs_Response.Size(m)
-}
-func (m *CommitRepositoryBlobs_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_CommitRepositoryBlobs_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CommitRepositoryBlobs_Response proto.InternalMessageInfo
-
-func (m *CommitRepositoryBlobs_Response) GetCommit() *Commit {
-	if m != nil {
-		return m.Commit
-	}
-	return nil
-}
-
-type GetRepositoryBlobs struct {
-	RepositoryId         string   `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	CommitId             string   `protobuf:"bytes,2,opt,name=commit_id,json=commitId,proto3" json:"commit_id,omitempty"`
-	GlobPathPrefix       string   `protobuf:"bytes,3,opt,name=glob_path_prefix,json=globPathPrefix,proto3" json:"glob_path_prefix,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetRepositoryBlobs) Reset()         { *m = GetRepositoryBlobs{} }
-func (m *GetRepositoryBlobs) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryBlobs) ProtoMessage()    {}
-func (*GetRepositoryBlobs) Descriptor() ([]byte, []int) {
+func (m *DeleteRepositoryRequest) Reset()         { *m = DeleteRepositoryRequest{} }
+func (m *DeleteRepositoryRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteRepositoryRequest) ProtoMessage()    {}
+func (*DeleteRepositoryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8cadc242402e79bc, []int{16}
 }
 
-func (m *GetRepositoryBlobs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryBlobs.Unmarshal(m, b)
+func (m *DeleteRepositoryRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteRepositoryRequest.Unmarshal(m, b)
 }
-func (m *GetRepositoryBlobs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryBlobs.Marshal(b, m, deterministic)
+func (m *DeleteRepositoryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteRepositoryRequest.Marshal(b, m, deterministic)
 }
-func (m *GetRepositoryBlobs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryBlobs.Merge(m, src)
+func (m *DeleteRepositoryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteRepositoryRequest.Merge(m, src)
 }
-func (m *GetRepositoryBlobs) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryBlobs.Size(m)
+func (m *DeleteRepositoryRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteRepositoryRequest.Size(m)
 }
-func (m *GetRepositoryBlobs) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryBlobs.DiscardUnknown(m)
+func (m *DeleteRepositoryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteRepositoryRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRepositoryBlobs proto.InternalMessageInfo
+var xxx_messageInfo_DeleteRepositoryRequest proto.InternalMessageInfo
 
-func (m *GetRepositoryBlobs) GetRepositoryId() string {
+func (m *DeleteRepositoryRequest) GetId() *RepositoryIdentification {
 	if m != nil {
-		return m.RepositoryId
+		return m.Id
 	}
-	return ""
+	return nil
 }
 
-func (m *GetRepositoryBlobs) GetCommitId() string {
-	if m != nil {
-		return m.CommitId
-	}
-	return ""
+type DeleteRepositoryRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetRepositoryBlobs) GetGlobPathPrefix() string {
-	if m != nil {
-		return m.GlobPathPrefix
-	}
-	return ""
-}
-
-type GetRepositoryBlobs_Response struct {
-	Blobs                []*BlobExpanded `protobuf:"bytes,1,rep,name=blobs,proto3" json:"blobs,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
-	XXX_unrecognized     []byte          `json:"-"`
-	XXX_sizecache        int32           `json:"-"`
-}
-
-func (m *GetRepositoryBlobs_Response) Reset()         { *m = GetRepositoryBlobs_Response{} }
-func (m *GetRepositoryBlobs_Response) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryBlobs_Response) ProtoMessage()    {}
-func (*GetRepositoryBlobs_Response) Descriptor() ([]byte, []int) {
+func (m *DeleteRepositoryRequest_Response) Reset()         { *m = DeleteRepositoryRequest_Response{} }
+func (m *DeleteRepositoryRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*DeleteRepositoryRequest_Response) ProtoMessage()    {}
+func (*DeleteRepositoryRequest_Response) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8cadc242402e79bc, []int{16, 0}
 }
 
-func (m *GetRepositoryBlobs_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryBlobs_Response.Unmarshal(m, b)
+func (m *DeleteRepositoryRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteRepositoryRequest_Response.Unmarshal(m, b)
 }
-func (m *GetRepositoryBlobs_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryBlobs_Response.Marshal(b, m, deterministic)
+func (m *DeleteRepositoryRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteRepositoryRequest_Response.Marshal(b, m, deterministic)
 }
-func (m *GetRepositoryBlobs_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryBlobs_Response.Merge(m, src)
+func (m *DeleteRepositoryRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteRepositoryRequest_Response.Merge(m, src)
 }
-func (m *GetRepositoryBlobs_Response) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryBlobs_Response.Size(m)
+func (m *DeleteRepositoryRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_DeleteRepositoryRequest_Response.Size(m)
 }
-func (m *GetRepositoryBlobs_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryBlobs_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRepositoryBlobs_Response proto.InternalMessageInfo
-
-func (m *GetRepositoryBlobs_Response) GetBlobs() []*BlobExpanded {
-	if m != nil {
-		return m.Blobs
-	}
-	return nil
+func (m *DeleteRepositoryRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteRepositoryRequest_Response.DiscardUnknown(m)
 }
 
-type GetRepositoryDiff struct {
-	RepositoryId         string   `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	CommitA              string   `protobuf:"bytes,2,opt,name=commit_a,json=commitA,proto3" json:"commit_a,omitempty"`
-	CommitB              string   `protobuf:"bytes,3,opt,name=commit_b,json=commitB,proto3" json:"commit_b,omitempty"`
-	GlobPathPrefix       string   `protobuf:"bytes,4,opt,name=glob_path_prefix,json=globPathPrefix,proto3" json:"glob_path_prefix,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+var xxx_messageInfo_DeleteRepositoryRequest_Response proto.InternalMessageInfo
+
+// CRUD for commits
+type ListCommitsRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Pagination           *Pagination               `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	CommitBase           string                    `protobuf:"bytes,3,opt,name=commit_base,json=commitBase,proto3" json:"commit_base,omitempty"`
+	CommitHead           string                    `protobuf:"bytes,4,opt,name=commit_head,json=commitHead,proto3" json:"commit_head,omitempty"`
+	PathPrefix           string                    `protobuf:"bytes,5,opt,name=path_prefix,json=pathPrefix,proto3" json:"path_prefix,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
-func (m *GetRepositoryDiff) Reset()         { *m = GetRepositoryDiff{} }
-func (m *GetRepositoryDiff) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryDiff) ProtoMessage()    {}
-func (*GetRepositoryDiff) Descriptor() ([]byte, []int) {
+func (m *ListCommitsRequest) Reset()         { *m = ListCommitsRequest{} }
+func (m *ListCommitsRequest) String() string { return proto.CompactTextString(m) }
+func (*ListCommitsRequest) ProtoMessage()    {}
+func (*ListCommitsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8cadc242402e79bc, []int{17}
 }
 
-func (m *GetRepositoryDiff) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryDiff.Unmarshal(m, b)
+func (m *ListCommitsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListCommitsRequest.Unmarshal(m, b)
 }
-func (m *GetRepositoryDiff) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryDiff.Marshal(b, m, deterministic)
+func (m *ListCommitsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListCommitsRequest.Marshal(b, m, deterministic)
 }
-func (m *GetRepositoryDiff) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryDiff.Merge(m, src)
+func (m *ListCommitsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListCommitsRequest.Merge(m, src)
 }
-func (m *GetRepositoryDiff) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryDiff.Size(m)
+func (m *ListCommitsRequest) XXX_Size() int {
+	return xxx_messageInfo_ListCommitsRequest.Size(m)
 }
-func (m *GetRepositoryDiff) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryDiff.DiscardUnknown(m)
+func (m *ListCommitsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListCommitsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRepositoryDiff proto.InternalMessageInfo
+var xxx_messageInfo_ListCommitsRequest proto.InternalMessageInfo
 
-func (m *GetRepositoryDiff) GetRepositoryId() string {
+func (m *ListCommitsRequest) GetRepositoryId() *RepositoryIdentification {
 	if m != nil {
 		return m.RepositoryId
-	}
-	return ""
-}
-
-func (m *GetRepositoryDiff) GetCommitA() string {
-	if m != nil {
-		return m.CommitA
-	}
-	return ""
-}
-
-func (m *GetRepositoryDiff) GetCommitB() string {
-	if m != nil {
-		return m.CommitB
-	}
-	return ""
-}
-
-func (m *GetRepositoryDiff) GetGlobPathPrefix() string {
-	if m != nil {
-		return m.GlobPathPrefix
-	}
-	return ""
-}
-
-type GetRepositoryDiff_Response struct {
-	Diffs                []*BlobDiff `protobuf:"bytes,1,rep,name=diffs,proto3" json:"diffs,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
-}
-
-func (m *GetRepositoryDiff_Response) Reset()         { *m = GetRepositoryDiff_Response{} }
-func (m *GetRepositoryDiff_Response) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryDiff_Response) ProtoMessage()    {}
-func (*GetRepositoryDiff_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{17, 0}
-}
-
-func (m *GetRepositoryDiff_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryDiff_Response.Unmarshal(m, b)
-}
-func (m *GetRepositoryDiff_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryDiff_Response.Marshal(b, m, deterministic)
-}
-func (m *GetRepositoryDiff_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryDiff_Response.Merge(m, src)
-}
-func (m *GetRepositoryDiff_Response) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryDiff_Response.Size(m)
-}
-func (m *GetRepositoryDiff_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryDiff_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRepositoryDiff_Response proto.InternalMessageInfo
-
-func (m *GetRepositoryDiff_Response) GetDiffs() []*BlobDiff {
-	if m != nil {
-		return m.Diffs
 	}
 	return nil
 }
 
-type GetRepositoryLog struct {
-	RepositoryId   string `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	CommitBase     string `protobuf:"bytes,2,opt,name=commit_base,json=commitBase,proto3" json:"commit_base,omitempty"`
-	CommitHead     string `protobuf:"bytes,3,opt,name=commit_head,json=commitHead,proto3" json:"commit_head,omitempty"`
-	GlobPathPrefix string `protobuf:"bytes,6,opt,name=glob_path_prefix,json=globPathPrefix,proto3" json:"glob_path_prefix,omitempty"`
-	//For pagination
-	PageNumber           int32    `protobuf:"varint,4,opt,name=page_number,json=pageNumber,proto3" json:"page_number,omitempty"`
-	PageLimit            int32    `protobuf:"varint,5,opt,name=page_limit,json=pageLimit,proto3" json:"page_limit,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetRepositoryLog) Reset()         { *m = GetRepositoryLog{} }
-func (m *GetRepositoryLog) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryLog) ProtoMessage()    {}
-func (*GetRepositoryLog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{18}
-}
-
-func (m *GetRepositoryLog) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryLog.Unmarshal(m, b)
-}
-func (m *GetRepositoryLog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryLog.Marshal(b, m, deterministic)
-}
-func (m *GetRepositoryLog) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryLog.Merge(m, src)
-}
-func (m *GetRepositoryLog) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryLog.Size(m)
-}
-func (m *GetRepositoryLog) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryLog.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetRepositoryLog proto.InternalMessageInfo
-
-func (m *GetRepositoryLog) GetRepositoryId() string {
+func (m *ListCommitsRequest) GetPagination() *Pagination {
 	if m != nil {
-		return m.RepositoryId
+		return m.Pagination
 	}
-	return ""
+	return nil
 }
 
-func (m *GetRepositoryLog) GetCommitBase() string {
+func (m *ListCommitsRequest) GetCommitBase() string {
 	if m != nil {
 		return m.CommitBase
 	}
 	return ""
 }
 
-func (m *GetRepositoryLog) GetCommitHead() string {
+func (m *ListCommitsRequest) GetCommitHead() string {
 	if m != nil {
 		return m.CommitHead
 	}
 	return ""
 }
 
-func (m *GetRepositoryLog) GetGlobPathPrefix() string {
+func (m *ListCommitsRequest) GetPathPrefix() string {
 	if m != nil {
-		return m.GlobPathPrefix
+		return m.PathPrefix
 	}
 	return ""
 }
 
-func (m *GetRepositoryLog) GetPageNumber() int32 {
-	if m != nil {
-		return m.PageNumber
-	}
-	return 0
-}
-
-func (m *GetRepositoryLog) GetPageLimit() int32 {
-	if m != nil {
-		return m.PageLimit
-	}
-	return 0
-}
-
-type GetRepositoryLog_Response struct {
+type ListCommitsRequest_Response struct {
 	Commits              []*Commit `protobuf:"bytes,1,rep,name=commits,proto3" json:"commits,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *GetRepositoryLog_Response) Reset()         { *m = GetRepositoryLog_Response{} }
-func (m *GetRepositoryLog_Response) String() string { return proto.CompactTextString(m) }
-func (*GetRepositoryLog_Response) ProtoMessage()    {}
-func (*GetRepositoryLog_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{18, 0}
+func (m *ListCommitsRequest_Response) Reset()         { *m = ListCommitsRequest_Response{} }
+func (m *ListCommitsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*ListCommitsRequest_Response) ProtoMessage()    {}
+func (*ListCommitsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{17, 0}
 }
 
-func (m *GetRepositoryLog_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetRepositoryLog_Response.Unmarshal(m, b)
+func (m *ListCommitsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListCommitsRequest_Response.Unmarshal(m, b)
 }
-func (m *GetRepositoryLog_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetRepositoryLog_Response.Marshal(b, m, deterministic)
+func (m *ListCommitsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListCommitsRequest_Response.Marshal(b, m, deterministic)
 }
-func (m *GetRepositoryLog_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetRepositoryLog_Response.Merge(m, src)
+func (m *ListCommitsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListCommitsRequest_Response.Merge(m, src)
 }
-func (m *GetRepositoryLog_Response) XXX_Size() int {
-	return xxx_messageInfo_GetRepositoryLog_Response.Size(m)
+func (m *ListCommitsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_ListCommitsRequest_Response.Size(m)
 }
-func (m *GetRepositoryLog_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetRepositoryLog_Response.DiscardUnknown(m)
+func (m *ListCommitsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListCommitsRequest_Response.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetRepositoryLog_Response proto.InternalMessageInfo
+var xxx_messageInfo_ListCommitsRequest_Response proto.InternalMessageInfo
 
-func (m *GetRepositoryLog_Response) GetCommits() []*Commit {
+func (m *ListCommitsRequest_Response) GetCommits() []*Commit {
 	if m != nil {
 		return m.Commits
 	}
 	return nil
 }
 
-// Tags, like in git, are unique
-type SetTag struct {
-	RepositoryId         string   `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	Tag                  string   `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
-	CommitId             string   `protobuf:"bytes,3,opt,name=commit_id,json=commitId,proto3" json:"commit_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+type GetCommitRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,2,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
-func (m *SetTag) Reset()         { *m = SetTag{} }
-func (m *SetTag) String() string { return proto.CompactTextString(m) }
-func (*SetTag) ProtoMessage()    {}
-func (*SetTag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{19}
+func (m *GetCommitRequest) Reset()         { *m = GetCommitRequest{} }
+func (m *GetCommitRequest) String() string { return proto.CompactTextString(m) }
+func (*GetCommitRequest) ProtoMessage()    {}
+func (*GetCommitRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{18}
 }
 
-func (m *SetTag) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SetTag.Unmarshal(m, b)
+func (m *GetCommitRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitRequest.Unmarshal(m, b)
 }
-func (m *SetTag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SetTag.Marshal(b, m, deterministic)
+func (m *GetCommitRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitRequest.Marshal(b, m, deterministic)
 }
-func (m *SetTag) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetTag.Merge(m, src)
+func (m *GetCommitRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitRequest.Merge(m, src)
 }
-func (m *SetTag) XXX_Size() int {
-	return xxx_messageInfo_SetTag.Size(m)
+func (m *GetCommitRequest) XXX_Size() int {
+	return xxx_messageInfo_GetCommitRequest.Size(m)
 }
-func (m *SetTag) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetTag.DiscardUnknown(m)
+func (m *GetCommitRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SetTag proto.InternalMessageInfo
+var xxx_messageInfo_GetCommitRequest proto.InternalMessageInfo
 
-func (m *SetTag) GetRepositoryId() string {
+func (m *GetCommitRequest) GetRepositoryId() *RepositoryIdentification {
 	if m != nil {
 		return m.RepositoryId
 	}
-	return ""
+	return nil
 }
 
-func (m *SetTag) GetTag() string {
+func (m *GetCommitRequest) GetCommitSha() string {
 	if m != nil {
-		return m.Tag
+		return m.CommitSha
 	}
 	return ""
 }
 
-func (m *SetTag) GetCommitId() string {
-	if m != nil {
-		return m.CommitId
-	}
-	return ""
-}
-
-type SetTag_Response struct {
-	Status               bool     `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *SetTag_Response) Reset()         { *m = SetTag_Response{} }
-func (m *SetTag_Response) String() string { return proto.CompactTextString(m) }
-func (*SetTag_Response) ProtoMessage()    {}
-func (*SetTag_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{19, 0}
-}
-
-func (m *SetTag_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_SetTag_Response.Unmarshal(m, b)
-}
-func (m *SetTag_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_SetTag_Response.Marshal(b, m, deterministic)
-}
-func (m *SetTag_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SetTag_Response.Merge(m, src)
-}
-func (m *SetTag_Response) XXX_Size() int {
-	return xxx_messageInfo_SetTag_Response.Size(m)
-}
-func (m *SetTag_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_SetTag_Response.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SetTag_Response proto.InternalMessageInfo
-
-func (m *SetTag_Response) GetStatus() bool {
-	if m != nil {
-		return m.Status
-	}
-	return false
-}
-
-type GetTag struct {
-	RepositoryId         string   `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
-	Tag                  string   `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *GetTag) Reset()         { *m = GetTag{} }
-func (m *GetTag) String() string { return proto.CompactTextString(m) }
-func (*GetTag) ProtoMessage()    {}
-func (*GetTag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{20}
-}
-
-func (m *GetTag) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetTag.Unmarshal(m, b)
-}
-func (m *GetTag) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetTag.Marshal(b, m, deterministic)
-}
-func (m *GetTag) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetTag.Merge(m, src)
-}
-func (m *GetTag) XXX_Size() int {
-	return xxx_messageInfo_GetTag.Size(m)
-}
-func (m *GetTag) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetTag.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetTag proto.InternalMessageInfo
-
-func (m *GetTag) GetRepositoryId() string {
-	if m != nil {
-		return m.RepositoryId
-	}
-	return ""
-}
-
-func (m *GetTag) GetTag() string {
-	if m != nil {
-		return m.Tag
-	}
-	return ""
-}
-
-type GetTag_Response struct {
+type GetCommitRequest_Response struct {
 	Commit               *Commit  `protobuf:"bytes,1,opt,name=commit,proto3" json:"commit,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *GetTag_Response) Reset()         { *m = GetTag_Response{} }
-func (m *GetTag_Response) String() string { return proto.CompactTextString(m) }
-func (*GetTag_Response) ProtoMessage()    {}
-func (*GetTag_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8cadc242402e79bc, []int{20, 0}
+func (m *GetCommitRequest_Response) Reset()         { *m = GetCommitRequest_Response{} }
+func (m *GetCommitRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetCommitRequest_Response) ProtoMessage()    {}
+func (*GetCommitRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{18, 0}
 }
 
-func (m *GetTag_Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_GetTag_Response.Unmarshal(m, b)
+func (m *GetCommitRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitRequest_Response.Unmarshal(m, b)
 }
-func (m *GetTag_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_GetTag_Response.Marshal(b, m, deterministic)
+func (m *GetCommitRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitRequest_Response.Marshal(b, m, deterministic)
 }
-func (m *GetTag_Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetTag_Response.Merge(m, src)
+func (m *GetCommitRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitRequest_Response.Merge(m, src)
 }
-func (m *GetTag_Response) XXX_Size() int {
-	return xxx_messageInfo_GetTag_Response.Size(m)
+func (m *GetCommitRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetCommitRequest_Response.Size(m)
 }
-func (m *GetTag_Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetTag_Response.DiscardUnknown(m)
+func (m *GetCommitRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitRequest_Response.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetTag_Response proto.InternalMessageInfo
+var xxx_messageInfo_GetCommitRequest_Response proto.InternalMessageInfo
 
-func (m *GetTag_Response) GetCommit() *Commit {
+func (m *GetCommitRequest_Response) GetCommit() *Commit {
 	if m != nil {
 		return m.Commit
 	}
 	return nil
 }
 
+type CreateCommitRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Commit               *Commit                   `protobuf:"bytes,2,opt,name=commit,proto3" json:"commit,omitempty"`
+	Blobs                []*BlobExpanded           `protobuf:"bytes,3,rep,name=blobs,proto3" json:"blobs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *CreateCommitRequest) Reset()         { *m = CreateCommitRequest{} }
+func (m *CreateCommitRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateCommitRequest) ProtoMessage()    {}
+func (*CreateCommitRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{19}
+}
+
+func (m *CreateCommitRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateCommitRequest.Unmarshal(m, b)
+}
+func (m *CreateCommitRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateCommitRequest.Marshal(b, m, deterministic)
+}
+func (m *CreateCommitRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateCommitRequest.Merge(m, src)
+}
+func (m *CreateCommitRequest) XXX_Size() int {
+	return xxx_messageInfo_CreateCommitRequest.Size(m)
+}
+func (m *CreateCommitRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateCommitRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateCommitRequest proto.InternalMessageInfo
+
+func (m *CreateCommitRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *CreateCommitRequest) GetCommit() *Commit {
+	if m != nil {
+		return m.Commit
+	}
+	return nil
+}
+
+func (m *CreateCommitRequest) GetBlobs() []*BlobExpanded {
+	if m != nil {
+		return m.Blobs
+	}
+	return nil
+}
+
+type CreateCommitRequest_Response struct {
+	Commit               *Commit  `protobuf:"bytes,1,opt,name=commit,proto3" json:"commit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *CreateCommitRequest_Response) Reset()         { *m = CreateCommitRequest_Response{} }
+func (m *CreateCommitRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*CreateCommitRequest_Response) ProtoMessage()    {}
+func (*CreateCommitRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{19, 0}
+}
+
+func (m *CreateCommitRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_CreateCommitRequest_Response.Unmarshal(m, b)
+}
+func (m *CreateCommitRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_CreateCommitRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *CreateCommitRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateCommitRequest_Response.Merge(m, src)
+}
+func (m *CreateCommitRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_CreateCommitRequest_Response.Size(m)
+}
+func (m *CreateCommitRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateCommitRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateCommitRequest_Response proto.InternalMessageInfo
+
+func (m *CreateCommitRequest_Response) GetCommit() *Commit {
+	if m != nil {
+		return m.Commit
+	}
+	return nil
+}
+
+type DeleteCommitRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,2,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *DeleteCommitRequest) Reset()         { *m = DeleteCommitRequest{} }
+func (m *DeleteCommitRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteCommitRequest) ProtoMessage()    {}
+func (*DeleteCommitRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{20}
+}
+
+func (m *DeleteCommitRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteCommitRequest.Unmarshal(m, b)
+}
+func (m *DeleteCommitRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteCommitRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteCommitRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteCommitRequest.Merge(m, src)
+}
+func (m *DeleteCommitRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteCommitRequest.Size(m)
+}
+func (m *DeleteCommitRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteCommitRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteCommitRequest proto.InternalMessageInfo
+
+func (m *DeleteCommitRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *DeleteCommitRequest) GetCommitSha() string {
+	if m != nil {
+		return m.CommitSha
+	}
+	return ""
+}
+
+type DeleteCommitRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteCommitRequest_Response) Reset()         { *m = DeleteCommitRequest_Response{} }
+func (m *DeleteCommitRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*DeleteCommitRequest_Response) ProtoMessage()    {}
+func (*DeleteCommitRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{20, 0}
+}
+
+func (m *DeleteCommitRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteCommitRequest_Response.Unmarshal(m, b)
+}
+func (m *DeleteCommitRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteCommitRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *DeleteCommitRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteCommitRequest_Response.Merge(m, src)
+}
+func (m *DeleteCommitRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_DeleteCommitRequest_Response.Size(m)
+}
+func (m *DeleteCommitRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteCommitRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteCommitRequest_Response proto.InternalMessageInfo
+
+// Getting blobs and folders in a commit
+type ListCommitBlobsRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Pagination           *Pagination               `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,3,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	PathPrefix           string                    `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3" json:"path_prefix,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *ListCommitBlobsRequest) Reset()         { *m = ListCommitBlobsRequest{} }
+func (m *ListCommitBlobsRequest) String() string { return proto.CompactTextString(m) }
+func (*ListCommitBlobsRequest) ProtoMessage()    {}
+func (*ListCommitBlobsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{21}
+}
+
+func (m *ListCommitBlobsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListCommitBlobsRequest.Unmarshal(m, b)
+}
+func (m *ListCommitBlobsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListCommitBlobsRequest.Marshal(b, m, deterministic)
+}
+func (m *ListCommitBlobsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListCommitBlobsRequest.Merge(m, src)
+}
+func (m *ListCommitBlobsRequest) XXX_Size() int {
+	return xxx_messageInfo_ListCommitBlobsRequest.Size(m)
+}
+func (m *ListCommitBlobsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListCommitBlobsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListCommitBlobsRequest proto.InternalMessageInfo
+
+func (m *ListCommitBlobsRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *ListCommitBlobsRequest) GetPagination() *Pagination {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+func (m *ListCommitBlobsRequest) GetCommitSha() string {
+	if m != nil {
+		return m.CommitSha
+	}
+	return ""
+}
+
+func (m *ListCommitBlobsRequest) GetPathPrefix() string {
+	if m != nil {
+		return m.PathPrefix
+	}
+	return ""
+}
+
+type ListCommitBlobsRequest_Response struct {
+	Blobs                []*BlobExpanded `protobuf:"bytes,1,rep,name=blobs,proto3" json:"blobs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *ListCommitBlobsRequest_Response) Reset()         { *m = ListCommitBlobsRequest_Response{} }
+func (m *ListCommitBlobsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*ListCommitBlobsRequest_Response) ProtoMessage()    {}
+func (*ListCommitBlobsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{21, 0}
+}
+
+func (m *ListCommitBlobsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListCommitBlobsRequest_Response.Unmarshal(m, b)
+}
+func (m *ListCommitBlobsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListCommitBlobsRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *ListCommitBlobsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListCommitBlobsRequest_Response.Merge(m, src)
+}
+func (m *ListCommitBlobsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_ListCommitBlobsRequest_Response.Size(m)
+}
+func (m *ListCommitBlobsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListCommitBlobsRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListCommitBlobsRequest_Response proto.InternalMessageInfo
+
+func (m *ListCommitBlobsRequest_Response) GetBlobs() []*BlobExpanded {
+	if m != nil {
+		return m.Blobs
+	}
+	return nil
+}
+
+type GetCommitBlobRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,2,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	Path                 string                    `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *GetCommitBlobRequest) Reset()         { *m = GetCommitBlobRequest{} }
+func (m *GetCommitBlobRequest) String() string { return proto.CompactTextString(m) }
+func (*GetCommitBlobRequest) ProtoMessage()    {}
+func (*GetCommitBlobRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{22}
+}
+
+func (m *GetCommitBlobRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitBlobRequest.Unmarshal(m, b)
+}
+func (m *GetCommitBlobRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitBlobRequest.Marshal(b, m, deterministic)
+}
+func (m *GetCommitBlobRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitBlobRequest.Merge(m, src)
+}
+func (m *GetCommitBlobRequest) XXX_Size() int {
+	return xxx_messageInfo_GetCommitBlobRequest.Size(m)
+}
+func (m *GetCommitBlobRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitBlobRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetCommitBlobRequest proto.InternalMessageInfo
+
+func (m *GetCommitBlobRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *GetCommitBlobRequest) GetCommitSha() string {
+	if m != nil {
+		return m.CommitSha
+	}
+	return ""
+}
+
+func (m *GetCommitBlobRequest) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+type GetCommitBlobRequest_Response struct {
+	Blob                 *Blob    `protobuf:"bytes,1,opt,name=blob,proto3" json:"blob,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetCommitBlobRequest_Response) Reset()         { *m = GetCommitBlobRequest_Response{} }
+func (m *GetCommitBlobRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetCommitBlobRequest_Response) ProtoMessage()    {}
+func (*GetCommitBlobRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{22, 0}
+}
+
+func (m *GetCommitBlobRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitBlobRequest_Response.Unmarshal(m, b)
+}
+func (m *GetCommitBlobRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitBlobRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *GetCommitBlobRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitBlobRequest_Response.Merge(m, src)
+}
+func (m *GetCommitBlobRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetCommitBlobRequest_Response.Size(m)
+}
+func (m *GetCommitBlobRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitBlobRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetCommitBlobRequest_Response proto.InternalMessageInfo
+
+func (m *GetCommitBlobRequest_Response) GetBlob() *Blob {
+	if m != nil {
+		return m.Blob
+	}
+	return nil
+}
+
+type GetCommitFolderRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,2,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	Path                 string                    `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *GetCommitFolderRequest) Reset()         { *m = GetCommitFolderRequest{} }
+func (m *GetCommitFolderRequest) String() string { return proto.CompactTextString(m) }
+func (*GetCommitFolderRequest) ProtoMessage()    {}
+func (*GetCommitFolderRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{23}
+}
+
+func (m *GetCommitFolderRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitFolderRequest.Unmarshal(m, b)
+}
+func (m *GetCommitFolderRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitFolderRequest.Marshal(b, m, deterministic)
+}
+func (m *GetCommitFolderRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitFolderRequest.Merge(m, src)
+}
+func (m *GetCommitFolderRequest) XXX_Size() int {
+	return xxx_messageInfo_GetCommitFolderRequest.Size(m)
+}
+func (m *GetCommitFolderRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitFolderRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetCommitFolderRequest proto.InternalMessageInfo
+
+func (m *GetCommitFolderRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *GetCommitFolderRequest) GetCommitSha() string {
+	if m != nil {
+		return m.CommitSha
+	}
+	return ""
+}
+
+func (m *GetCommitFolderRequest) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+type GetCommitFolderRequest_Response struct {
+	Folder               *Folder  `protobuf:"bytes,1,opt,name=folder,proto3" json:"folder,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetCommitFolderRequest_Response) Reset()         { *m = GetCommitFolderRequest_Response{} }
+func (m *GetCommitFolderRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetCommitFolderRequest_Response) ProtoMessage()    {}
+func (*GetCommitFolderRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{23, 0}
+}
+
+func (m *GetCommitFolderRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetCommitFolderRequest_Response.Unmarshal(m, b)
+}
+func (m *GetCommitFolderRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetCommitFolderRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *GetCommitFolderRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCommitFolderRequest_Response.Merge(m, src)
+}
+func (m *GetCommitFolderRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetCommitFolderRequest_Response.Size(m)
+}
+func (m *GetCommitFolderRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCommitFolderRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetCommitFolderRequest_Response proto.InternalMessageInfo
+
+func (m *GetCommitFolderRequest_Response) GetFolder() *Folder {
+	if m != nil {
+		return m.Folder
+	}
+	return nil
+}
+
+// Git-like operations
+type ComputeRepositoryDiffRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	CommitA              string                    `protobuf:"bytes,2,opt,name=commit_a,json=commitA,proto3" json:"commit_a,omitempty"`
+	CommitB              string                    `protobuf:"bytes,3,opt,name=commit_b,json=commitB,proto3" json:"commit_b,omitempty"`
+	PathPrefix           string                    `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3" json:"path_prefix,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *ComputeRepositoryDiffRequest) Reset()         { *m = ComputeRepositoryDiffRequest{} }
+func (m *ComputeRepositoryDiffRequest) String() string { return proto.CompactTextString(m) }
+func (*ComputeRepositoryDiffRequest) ProtoMessage()    {}
+func (*ComputeRepositoryDiffRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{24}
+}
+
+func (m *ComputeRepositoryDiffRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest.Unmarshal(m, b)
+}
+func (m *ComputeRepositoryDiffRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest.Marshal(b, m, deterministic)
+}
+func (m *ComputeRepositoryDiffRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ComputeRepositoryDiffRequest.Merge(m, src)
+}
+func (m *ComputeRepositoryDiffRequest) XXX_Size() int {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest.Size(m)
+}
+func (m *ComputeRepositoryDiffRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ComputeRepositoryDiffRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ComputeRepositoryDiffRequest proto.InternalMessageInfo
+
+func (m *ComputeRepositoryDiffRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *ComputeRepositoryDiffRequest) GetCommitA() string {
+	if m != nil {
+		return m.CommitA
+	}
+	return ""
+}
+
+func (m *ComputeRepositoryDiffRequest) GetCommitB() string {
+	if m != nil {
+		return m.CommitB
+	}
+	return ""
+}
+
+func (m *ComputeRepositoryDiffRequest) GetPathPrefix() string {
+	if m != nil {
+		return m.PathPrefix
+	}
+	return ""
+}
+
+type ComputeRepositoryDiffRequest_Response struct {
+	Diffs                []*BlobDiff `protobuf:"bytes,1,rep,name=diffs,proto3" json:"diffs,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *ComputeRepositoryDiffRequest_Response) Reset()         { *m = ComputeRepositoryDiffRequest_Response{} }
+func (m *ComputeRepositoryDiffRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*ComputeRepositoryDiffRequest_Response) ProtoMessage()    {}
+func (*ComputeRepositoryDiffRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{24, 0}
+}
+
+func (m *ComputeRepositoryDiffRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest_Response.Unmarshal(m, b)
+}
+func (m *ComputeRepositoryDiffRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *ComputeRepositoryDiffRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ComputeRepositoryDiffRequest_Response.Merge(m, src)
+}
+func (m *ComputeRepositoryDiffRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_ComputeRepositoryDiffRequest_Response.Size(m)
+}
+func (m *ComputeRepositoryDiffRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_ComputeRepositoryDiffRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ComputeRepositoryDiffRequest_Response proto.InternalMessageInfo
+
+func (m *ComputeRepositoryDiffRequest_Response) GetDiffs() []*BlobDiff {
+	if m != nil {
+		return m.Diffs
+	}
+	return nil
+}
+
+// CRUD for tags
+// Tags, like in git, are unique
+type ListTagsRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *ListTagsRequest) Reset()         { *m = ListTagsRequest{} }
+func (m *ListTagsRequest) String() string { return proto.CompactTextString(m) }
+func (*ListTagsRequest) ProtoMessage()    {}
+func (*ListTagsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{25}
+}
+
+func (m *ListTagsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListTagsRequest.Unmarshal(m, b)
+}
+func (m *ListTagsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListTagsRequest.Marshal(b, m, deterministic)
+}
+func (m *ListTagsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListTagsRequest.Merge(m, src)
+}
+func (m *ListTagsRequest) XXX_Size() int {
+	return xxx_messageInfo_ListTagsRequest.Size(m)
+}
+func (m *ListTagsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListTagsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListTagsRequest proto.InternalMessageInfo
+
+func (m *ListTagsRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+type ListTagsRequest_Response struct {
+	Tags                 []string `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListTagsRequest_Response) Reset()         { *m = ListTagsRequest_Response{} }
+func (m *ListTagsRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*ListTagsRequest_Response) ProtoMessage()    {}
+func (*ListTagsRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{25, 0}
+}
+
+func (m *ListTagsRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListTagsRequest_Response.Unmarshal(m, b)
+}
+func (m *ListTagsRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListTagsRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *ListTagsRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListTagsRequest_Response.Merge(m, src)
+}
+func (m *ListTagsRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_ListTagsRequest_Response.Size(m)
+}
+func (m *ListTagsRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListTagsRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListTagsRequest_Response proto.InternalMessageInfo
+
+func (m *ListTagsRequest_Response) GetTags() []string {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+type GetTagRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Tag                  string                    `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *GetTagRequest) Reset()         { *m = GetTagRequest{} }
+func (m *GetTagRequest) String() string { return proto.CompactTextString(m) }
+func (*GetTagRequest) ProtoMessage()    {}
+func (*GetTagRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{26}
+}
+
+func (m *GetTagRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTagRequest.Unmarshal(m, b)
+}
+func (m *GetTagRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTagRequest.Marshal(b, m, deterministic)
+}
+func (m *GetTagRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTagRequest.Merge(m, src)
+}
+func (m *GetTagRequest) XXX_Size() int {
+	return xxx_messageInfo_GetTagRequest.Size(m)
+}
+func (m *GetTagRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTagRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTagRequest proto.InternalMessageInfo
+
+func (m *GetTagRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *GetTagRequest) GetTag() string {
+	if m != nil {
+		return m.Tag
+	}
+	return ""
+}
+
+type GetTagRequest_Response struct {
+	Commit               *Commit  `protobuf:"bytes,1,opt,name=commit,proto3" json:"commit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetTagRequest_Response) Reset()         { *m = GetTagRequest_Response{} }
+func (m *GetTagRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*GetTagRequest_Response) ProtoMessage()    {}
+func (*GetTagRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{26, 0}
+}
+
+func (m *GetTagRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetTagRequest_Response.Unmarshal(m, b)
+}
+func (m *GetTagRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetTagRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *GetTagRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetTagRequest_Response.Merge(m, src)
+}
+func (m *GetTagRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_GetTagRequest_Response.Size(m)
+}
+func (m *GetTagRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetTagRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetTagRequest_Response proto.InternalMessageInfo
+
+func (m *GetTagRequest_Response) GetCommit() *Commit {
+	if m != nil {
+		return m.Commit
+	}
+	return nil
+}
+
+type SetTagRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Tag                  string                    `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
+	CommitSha            string                    `protobuf:"bytes,3,opt,name=commit_sha,json=commitSha,proto3" json:"commit_sha,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *SetTagRequest) Reset()         { *m = SetTagRequest{} }
+func (m *SetTagRequest) String() string { return proto.CompactTextString(m) }
+func (*SetTagRequest) ProtoMessage()    {}
+func (*SetTagRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{27}
+}
+
+func (m *SetTagRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetTagRequest.Unmarshal(m, b)
+}
+func (m *SetTagRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetTagRequest.Marshal(b, m, deterministic)
+}
+func (m *SetTagRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetTagRequest.Merge(m, src)
+}
+func (m *SetTagRequest) XXX_Size() int {
+	return xxx_messageInfo_SetTagRequest.Size(m)
+}
+func (m *SetTagRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetTagRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetTagRequest proto.InternalMessageInfo
+
+func (m *SetTagRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *SetTagRequest) GetTag() string {
+	if m != nil {
+		return m.Tag
+	}
+	return ""
+}
+
+func (m *SetTagRequest) GetCommitSha() string {
+	if m != nil {
+		return m.CommitSha
+	}
+	return ""
+}
+
+type SetTagRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SetTagRequest_Response) Reset()         { *m = SetTagRequest_Response{} }
+func (m *SetTagRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*SetTagRequest_Response) ProtoMessage()    {}
+func (*SetTagRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{27, 0}
+}
+
+func (m *SetTagRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SetTagRequest_Response.Unmarshal(m, b)
+}
+func (m *SetTagRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SetTagRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *SetTagRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetTagRequest_Response.Merge(m, src)
+}
+func (m *SetTagRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_SetTagRequest_Response.Size(m)
+}
+func (m *SetTagRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetTagRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetTagRequest_Response proto.InternalMessageInfo
+
+type DeleteTagRequest struct {
+	RepositoryId         *RepositoryIdentification `protobuf:"bytes,1,opt,name=repository_id,json=repositoryId,proto3" json:"repository_id,omitempty"`
+	Tag                  string                    `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
+}
+
+func (m *DeleteTagRequest) Reset()         { *m = DeleteTagRequest{} }
+func (m *DeleteTagRequest) String() string { return proto.CompactTextString(m) }
+func (*DeleteTagRequest) ProtoMessage()    {}
+func (*DeleteTagRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{28}
+}
+
+func (m *DeleteTagRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteTagRequest.Unmarshal(m, b)
+}
+func (m *DeleteTagRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteTagRequest.Marshal(b, m, deterministic)
+}
+func (m *DeleteTagRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteTagRequest.Merge(m, src)
+}
+func (m *DeleteTagRequest) XXX_Size() int {
+	return xxx_messageInfo_DeleteTagRequest.Size(m)
+}
+func (m *DeleteTagRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteTagRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteTagRequest proto.InternalMessageInfo
+
+func (m *DeleteTagRequest) GetRepositoryId() *RepositoryIdentification {
+	if m != nil {
+		return m.RepositoryId
+	}
+	return nil
+}
+
+func (m *DeleteTagRequest) GetTag() string {
+	if m != nil {
+		return m.Tag
+	}
+	return ""
+}
+
+type DeleteTagRequest_Response struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeleteTagRequest_Response) Reset()         { *m = DeleteTagRequest_Response{} }
+func (m *DeleteTagRequest_Response) String() string { return proto.CompactTextString(m) }
+func (*DeleteTagRequest_Response) ProtoMessage()    {}
+func (*DeleteTagRequest_Response) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8cadc242402e79bc, []int{28, 0}
+}
+
+func (m *DeleteTagRequest_Response) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DeleteTagRequest_Response.Unmarshal(m, b)
+}
+func (m *DeleteTagRequest_Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DeleteTagRequest_Response.Marshal(b, m, deterministic)
+}
+func (m *DeleteTagRequest_Response) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeleteTagRequest_Response.Merge(m, src)
+}
+func (m *DeleteTagRequest_Response) XXX_Size() int {
+	return xxx_messageInfo_DeleteTagRequest_Response.Size(m)
+}
+func (m *DeleteTagRequest_Response) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeleteTagRequest_Response.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeleteTagRequest_Response proto.InternalMessageInfo
+
 func init() {
+	proto.RegisterType((*InternalCommit)(nil), "ai.verta.modeldb.versioning.InternalCommit")
 	proto.RegisterType((*Commit)(nil), "ai.verta.modeldb.versioning.Commit")
-	proto.RegisterType((*CommitContent)(nil), "ai.verta.modeldb.versioning.CommitContent")
-	proto.RegisterType((*TreeElement)(nil), "ai.verta.modeldb.versioning.TreeElement")
-	proto.RegisterType((*Tree)(nil), "ai.verta.modeldb.versioning.Tree")
+	proto.RegisterType((*InternalFolderElement)(nil), "ai.verta.modeldb.versioning.InternalFolderElement")
+	proto.RegisterType((*InternalFolder)(nil), "ai.verta.modeldb.versioning.InternalFolder")
+	proto.RegisterType((*FolderElement)(nil), "ai.verta.modeldb.versioning.FolderElement")
+	proto.RegisterType((*Folder)(nil), "ai.verta.modeldb.versioning.Folder")
 	proto.RegisterType((*Blob)(nil), "ai.verta.modeldb.versioning.Blob")
 	proto.RegisterType((*BlobExpanded)(nil), "ai.verta.modeldb.versioning.BlobExpanded")
 	proto.RegisterType((*BlobDiff)(nil), "ai.verta.modeldb.versioning.BlobDiff")
-	proto.RegisterType((*Entity)(nil), "ai.verta.modeldb.versioning.Entity")
 	proto.RegisterType((*Repository)(nil), "ai.verta.modeldb.versioning.Repository")
-	proto.RegisterType((*GetRepository)(nil), "ai.verta.modeldb.versioning.GetRepository")
-	proto.RegisterType((*GetRepository_Response)(nil), "ai.verta.modeldb.versioning.GetRepository.Response")
+	proto.RegisterType((*Pagination)(nil), "ai.verta.modeldb.versioning.Pagination")
+	proto.RegisterType((*RepositoryNamedIdentification)(nil), "ai.verta.modeldb.versioning.RepositoryNamedIdentification")
+	proto.RegisterType((*RepositoryIdentification)(nil), "ai.verta.modeldb.versioning.RepositoryIdentification")
+	proto.RegisterType((*ListRepositoriesRequest)(nil), "ai.verta.modeldb.versioning.ListRepositoriesRequest")
+	proto.RegisterType((*ListRepositoriesRequest_Response)(nil), "ai.verta.modeldb.versioning.ListRepositoriesRequest.Response")
+	proto.RegisterType((*GetRepositoryRequest)(nil), "ai.verta.modeldb.versioning.GetRepositoryRequest")
+	proto.RegisterType((*GetRepositoryRequest_Response)(nil), "ai.verta.modeldb.versioning.GetRepositoryRequest.Response")
 	proto.RegisterType((*SetRepository)(nil), "ai.verta.modeldb.versioning.SetRepository")
 	proto.RegisterType((*SetRepository_Response)(nil), "ai.verta.modeldb.versioning.SetRepository.Response")
-	proto.RegisterType((*DeleteRepository)(nil), "ai.verta.modeldb.versioning.DeleteRepository")
-	proto.RegisterType((*DeleteRepository_Response)(nil), "ai.verta.modeldb.versioning.DeleteRepository.Response")
-	proto.RegisterType((*BatchGetEntity)(nil), "ai.verta.modeldb.versioning.BatchGetEntity")
-	proto.RegisterType((*BatchGetEntity_Response)(nil), "ai.verta.modeldb.versioning.BatchGetEntity.Response")
-	proto.RegisterType((*AddEntity)(nil), "ai.verta.modeldb.versioning.AddEntity")
-	proto.RegisterType((*AddEntity_Response)(nil), "ai.verta.modeldb.versioning.AddEntity.Response")
-	proto.RegisterType((*DeleteEntity)(nil), "ai.verta.modeldb.versioning.DeleteEntity")
-	proto.RegisterType((*DeleteEntity_Response)(nil), "ai.verta.modeldb.versioning.DeleteEntity.Response")
-	proto.RegisterType((*CommitRepositoryBlobs)(nil), "ai.verta.modeldb.versioning.CommitRepositoryBlobs")
-	proto.RegisterType((*CommitRepositoryBlobs_Response)(nil), "ai.verta.modeldb.versioning.CommitRepositoryBlobs.Response")
-	proto.RegisterType((*GetRepositoryBlobs)(nil), "ai.verta.modeldb.versioning.GetRepositoryBlobs")
-	proto.RegisterType((*GetRepositoryBlobs_Response)(nil), "ai.verta.modeldb.versioning.GetRepositoryBlobs.Response")
-	proto.RegisterType((*GetRepositoryDiff)(nil), "ai.verta.modeldb.versioning.GetRepositoryDiff")
-	proto.RegisterType((*GetRepositoryDiff_Response)(nil), "ai.verta.modeldb.versioning.GetRepositoryDiff.Response")
-	proto.RegisterType((*GetRepositoryLog)(nil), "ai.verta.modeldb.versioning.GetRepositoryLog")
-	proto.RegisterType((*GetRepositoryLog_Response)(nil), "ai.verta.modeldb.versioning.GetRepositoryLog.Response")
-	proto.RegisterType((*SetTag)(nil), "ai.verta.modeldb.versioning.SetTag")
-	proto.RegisterType((*SetTag_Response)(nil), "ai.verta.modeldb.versioning.SetTag.Response")
-	proto.RegisterType((*GetTag)(nil), "ai.verta.modeldb.versioning.GetTag")
-	proto.RegisterType((*GetTag_Response)(nil), "ai.verta.modeldb.versioning.GetTag.Response")
+	proto.RegisterType((*DeleteRepositoryRequest)(nil), "ai.verta.modeldb.versioning.DeleteRepositoryRequest")
+	proto.RegisterType((*DeleteRepositoryRequest_Response)(nil), "ai.verta.modeldb.versioning.DeleteRepositoryRequest.Response")
+	proto.RegisterType((*ListCommitsRequest)(nil), "ai.verta.modeldb.versioning.ListCommitsRequest")
+	proto.RegisterType((*ListCommitsRequest_Response)(nil), "ai.verta.modeldb.versioning.ListCommitsRequest.Response")
+	proto.RegisterType((*GetCommitRequest)(nil), "ai.verta.modeldb.versioning.GetCommitRequest")
+	proto.RegisterType((*GetCommitRequest_Response)(nil), "ai.verta.modeldb.versioning.GetCommitRequest.Response")
+	proto.RegisterType((*CreateCommitRequest)(nil), "ai.verta.modeldb.versioning.CreateCommitRequest")
+	proto.RegisterType((*CreateCommitRequest_Response)(nil), "ai.verta.modeldb.versioning.CreateCommitRequest.Response")
+	proto.RegisterType((*DeleteCommitRequest)(nil), "ai.verta.modeldb.versioning.DeleteCommitRequest")
+	proto.RegisterType((*DeleteCommitRequest_Response)(nil), "ai.verta.modeldb.versioning.DeleteCommitRequest.Response")
+	proto.RegisterType((*ListCommitBlobsRequest)(nil), "ai.verta.modeldb.versioning.ListCommitBlobsRequest")
+	proto.RegisterType((*ListCommitBlobsRequest_Response)(nil), "ai.verta.modeldb.versioning.ListCommitBlobsRequest.Response")
+	proto.RegisterType((*GetCommitBlobRequest)(nil), "ai.verta.modeldb.versioning.GetCommitBlobRequest")
+	proto.RegisterType((*GetCommitBlobRequest_Response)(nil), "ai.verta.modeldb.versioning.GetCommitBlobRequest.Response")
+	proto.RegisterType((*GetCommitFolderRequest)(nil), "ai.verta.modeldb.versioning.GetCommitFolderRequest")
+	proto.RegisterType((*GetCommitFolderRequest_Response)(nil), "ai.verta.modeldb.versioning.GetCommitFolderRequest.Response")
+	proto.RegisterType((*ComputeRepositoryDiffRequest)(nil), "ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest")
+	proto.RegisterType((*ComputeRepositoryDiffRequest_Response)(nil), "ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.Response")
+	proto.RegisterType((*ListTagsRequest)(nil), "ai.verta.modeldb.versioning.ListTagsRequest")
+	proto.RegisterType((*ListTagsRequest_Response)(nil), "ai.verta.modeldb.versioning.ListTagsRequest.Response")
+	proto.RegisterType((*GetTagRequest)(nil), "ai.verta.modeldb.versioning.GetTagRequest")
+	proto.RegisterType((*GetTagRequest_Response)(nil), "ai.verta.modeldb.versioning.GetTagRequest.Response")
+	proto.RegisterType((*SetTagRequest)(nil), "ai.verta.modeldb.versioning.SetTagRequest")
+	proto.RegisterType((*SetTagRequest_Response)(nil), "ai.verta.modeldb.versioning.SetTagRequest.Response")
+	proto.RegisterType((*DeleteTagRequest)(nil), "ai.verta.modeldb.versioning.DeleteTagRequest")
+	proto.RegisterType((*DeleteTagRequest_Response)(nil), "ai.verta.modeldb.versioning.DeleteTagRequest.Response")
 }
 
 func init() {
@@ -1749,100 +2271,131 @@ func init() {
 }
 
 var fileDescriptor_8cadc242402e79bc = []byte{
-	// 1474 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x58, 0xdb, 0x6e, 0x1b, 0xc5,
-	0x1b, 0xef, 0x38, 0x8e, 0x13, 0x7f, 0x8e, 0xad, 0x74, 0xa4, 0xfc, 0xeb, 0xff, 0xb6, 0x21, 0xce,
-	0xa6, 0x07, 0xa7, 0x50, 0x5b, 0x75, 0xe9, 0x41, 0x54, 0xa5, 0x6a, 0x9a, 0xc8, 0xb1, 0x08, 0x55,
-	0xb5, 0x09, 0x2d, 0x87, 0x0b, 0x6b, 0xec, 0x9d, 0xac, 0x57, 0xd8, 0xbb, 0x2b, 0xef, 0x38, 0x6d,
-	0x90, 0x90, 0x80, 0x0b, 0x04, 0x12, 0x37, 0x08, 0x51, 0x09, 0x2e, 0x91, 0xe0, 0x02, 0x24, 0xb8,
-	0xe6, 0x21, 0xb8, 0x82, 0x17, 0x40, 0xf0, 0x06, 0xbc, 0x00, 0x9a, 0xd9, 0x59, 0xef, 0xc1, 0xc6,
-	0x5e, 0xd3, 0x88, 0xbb, 0xdd, 0x6f, 0xbf, 0xc3, 0xef, 0xf7, 0x9d, 0x66, 0x6c, 0xb8, 0xe5, 0xf4,
-	0x6d, 0x66, 0xbb, 0x55, 0x67, 0xd0, 0xea, 0x9a, 0xed, 0x6a, 0xcf, 0xd6, 0x69, 0x57, 0x6f, 0x55,
-	0x8f, 0x68, 0xdf, 0x35, 0x6d, 0xcb, 0xb4, 0x8c, 0xea, 0xa3, 0xe1, 0xe3, 0x3e, 0xed, 0x1f, 0x99,
-	0x6d, 0x5a, 0x11, 0x26, 0xf8, 0x2c, 0x31, 0x2b, 0x47, 0xb4, 0xcf, 0x48, 0x45, 0x1a, 0x55, 0x02,
-	0x23, 0xe5, 0x9c, 0x61, 0xdb, 0x46, 0x97, 0x56, 0x89, 0x63, 0x56, 0x89, 0x65, 0xd9, 0x8c, 0x30,
-	0xd3, 0xb6, 0x5c, 0xcf, 0x54, 0xd9, 0x1c, 0x1f, 0xf4, 0xbe, 0xdd, 0xeb, 0xd9, 0x56, 0x24, 0x8a,
-	0x52, 0x99, 0x8a, 0x6f, 0x9b, 0x30, 0xe2, 0x52, 0xe6, 0x29, 0xaa, 0x1f, 0x23, 0xc8, 0x70, 0x3f,
-	0x26, 0xc3, 0xab, 0x00, 0x0e, 0xe9, 0x53, 0x8b, 0x35, 0x4d, 0xdd, 0x2d, 0xa2, 0xd2, 0x5c, 0x39,
-	0xab, 0x65, 0x3d, 0x49, 0x43, 0x77, 0xf1, 0x36, 0x2c, 0xb4, 0x6d, 0x8b, 0x51, 0x8b, 0x15, 0x53,
-	0x25, 0x54, 0xce, 0xd5, 0x2e, 0x57, 0x26, 0x30, 0xaa, 0x78, 0x4e, 0xef, 0x7b, 0x16, 0x9a, 0x6f,
-	0x8a, 0xcf, 0xc0, 0x02, 0xeb, 0x53, 0xda, 0x34, 0xf5, 0xe2, 0x5c, 0x09, 0x95, 0xb3, 0x5a, 0x86,
-	0xbf, 0x36, 0x74, 0x75, 0x0f, 0xf2, 0x11, 0x13, 0x5c, 0x84, 0x85, 0x1e, 0x75, 0x5d, 0x62, 0xd0,
-	0x22, 0x12, 0x9a, 0xfe, 0x2b, 0x5e, 0x87, 0x25, 0x9d, 0x30, 0xda, 0x6c, 0xf7, 0x29, 0x61, 0x54,
-	0x17, 0x70, 0xd2, 0x5a, 0x8e, 0xcb, 0xee, 0x7b, 0x22, 0xf5, 0x2a, 0xe4, 0x0e, 0xfa, 0x94, 0xee,
-	0x74, 0x69, 0x8f, 0xfb, 0x2a, 0x40, 0xca, 0xd4, 0xa5, 0x9b, 0x94, 0xa9, 0x63, 0x0c, 0x69, 0x8b,
-	0xf4, 0xa8, 0xb0, 0xcc, 0x6a, 0xe2, 0x59, 0xfd, 0x0c, 0x41, 0x9a, 0xdb, 0xe0, 0x57, 0x61, 0xbe,
-	0xd5, 0xb5, 0x5b, 0x5e, 0x0a, 0x72, 0xb5, 0xf2, 0x44, 0x9a, 0xa1, 0x28, 0x9a, 0x67, 0x86, 0xb7,
-	0x61, 0xd1, 0x1d, 0xb4, 0x38, 0x2d, 0xb7, 0x98, 0x9a, 0xd1, 0xc5, 0xd0, 0x52, 0x7d, 0x0c, 0xe9,
-	0xad, 0xae, 0xdd, 0xe2, 0x69, 0xd7, 0xbd, 0x8a, 0x09, 0xfc, 0xd3, 0x9c, 0xc9, 0xea, 0x72, 0xd3,
-	0xdd, 0x53, 0x9a, 0x6f, 0xba, 0x95, 0x1d, 0x16, 0x4f, 0x7d, 0x0b, 0x96, 0xf8, 0xd7, 0x9d, 0xa7,
-	0x0e, 0xb1, 0x74, 0x2a, 0x72, 0xe1, 0x10, 0xd6, 0x91, 0xd9, 0x11, 0xcf, 0xf8, 0x3a, 0xa4, 0x39,
-	0x17, 0x59, 0xe8, 0xf5, 0x89, 0x11, 0xb9, 0x33, 0x4d, 0xa8, 0xab, 0x36, 0x2c, 0xf2, 0xb7, 0x6d,
-	0xf3, 0xf0, 0x70, 0xac, 0xdb, 0x10, 0x97, 0x54, 0x72, 0x2e, 0xdc, 0xdd, 0x3f, 0x70, 0xf9, 0x30,
-	0x05, 0x99, 0x1d, 0x8b, 0x99, 0xec, 0x18, 0xff, 0x0f, 0x32, 0x6e, 0x87, 0xd4, 0xae, 0xdf, 0x90,
-	0x11, 0xe5, 0x1b, 0xde, 0x80, 0x7c, 0x9f, 0x3a, 0xb6, 0x6b, 0x32, 0xbb, 0x7f, 0xcc, 0xdb, 0xce,
-	0xab, 0xf9, 0x52, 0x20, 0x6c, 0xe8, 0xf8, 0x0e, 0x64, 0xda, 0xa2, 0xf9, 0x44, 0x53, 0xe6, 0x6a,
-	0x1b, 0x09, 0x5a, 0x7b, 0xf7, 0x94, 0x26, 0x8d, 0xf0, 0x4d, 0x48, 0xf3, 0xa2, 0x15, 0xd3, 0x09,
-	0xd2, 0xc5, 0xab, 0xbd, 0x7b, 0x4a, 0x13, 0x06, 0xdc, 0x50, 0xe4, 0x79, 0x3e, 0x61, 0x9e, 0xb9,
-	0x21, 0x37, 0x08, 0xe7, 0xe0, 0x2f, 0x04, 0xa0, 0x0d, 0xc9, 0x24, 0x69, 0xf5, 0x91, 0x01, 0x9a,
-	0x1b, 0x19, 0xa0, 0xa1, 0xca, 0xc0, 0xd1, 0x85, 0x4a, 0x3a, 0x50, 0x79, 0xc3, 0x13, 0x71, 0x95,
-	0x27, 0x76, 0xff, 0x5d, 0xd7, 0x21, 0x6d, 0x31, 0xcf, 0xf3, 0x22, 0x42, 0x6e, 0x28, 0x6b, 0xe8,
-	0xf8, 0x4d, 0x28, 0x04, 0x2a, 0xec, 0xd8, 0xa1, 0xc5, 0x4c, 0x09, 0x95, 0x0b, 0xb5, 0xab, 0xa3,
-	0x4c, 0x1f, 0xfb, 0x7a, 0x07, 0xc7, 0x0e, 0xdd, 0xb1, 0x06, 0xbd, 0xa8, 0x44, 0xcb, 0x3f, 0x09,
-	0xbf, 0xaa, 0x3f, 0x21, 0xc8, 0xd7, 0x29, 0x9b, 0x91, 0xf8, 0x85, 0x30, 0x1e, 0xf1, 0xd5, 0x5b,
-	0x42, 0x81, 0xf3, 0x07, 0xa4, 0x47, 0x95, 0x7d, 0x58, 0xd4, 0xa8, 0xeb, 0xd8, 0x96, 0x4b, 0x71,
-	0x1d, 0x20, 0x68, 0x15, 0x39, 0x82, 0x97, 0x26, 0x16, 0x2a, 0xc0, 0xa4, 0x85, 0x4c, 0xd5, 0xdf,
-	0x10, 0xe4, 0xf7, 0x23, 0x88, 0x4f, 0xca, 0xf5, 0x18, 0x5a, 0xa9, 0xff, 0x8c, 0xd6, 0x3b, 0xb0,
-	0xbc, 0x4d, 0xbb, 0x94, 0xd1, 0x10, 0xb1, 0x91, 0x99, 0x43, 0xa3, 0x33, 0xa7, 0xa8, 0x21, 0x34,
-	0x7c, 0x78, 0x19, 0x61, 0x03, 0x57, 0x68, 0x2e, 0x6a, 0xf2, 0x4d, 0x7d, 0x86, 0xa0, 0xb0, 0x45,
-	0x58, 0xbb, 0x53, 0xa7, 0x4c, 0xce, 0x39, 0x86, 0xb4, 0xdb, 0x21, 0xfe, 0xf9, 0x24, 0x9e, 0x13,
-	0xcd, 0xb8, 0xf2, 0x5a, 0x28, 0xde, 0x5d, 0x58, 0xa4, 0xdc, 0x9d, 0x49, 0xfd, 0x2d, 0x3f, 0x79,
-	0xe2, 0xbd, 0xd8, 0xda, 0xd0, 0x48, 0xfd, 0x1c, 0x41, 0xf6, 0x9e, 0xae, 0x4b, 0x4c, 0xb7, 0x21,
-	0x23, 0xbe, 0xf8, 0x89, 0x4c, 0xe4, 0x4c, 0x9a, 0x28, 0xf5, 0x10, 0xae, 0xe7, 0x71, 0xa4, 0xda,
-	0xb0, 0xe4, 0x55, 0xe2, 0x04, 0x36, 0x62, 0xa2, 0xea, 0xfc, 0x90, 0x82, 0x15, 0x6f, 0x17, 0x06,
-	0xb5, 0xdf, 0x12, 0x47, 0x60, 0x92, 0x06, 0x88, 0xdd, 0x37, 0x52, 0x13, 0xee, 0x1b, 0x73, 0xff,
-	0xfe, 0xbe, 0x71, 0xd7, 0x3f, 0xcc, 0xd3, 0xa2, 0xcc, 0x9b, 0x53, 0x57, 0xac, 0x7f, 0x2e, 0xca,
-	0xd3, 0x3c, 0x5e, 0x1e, 0x79, 0x4c, 0xa0, 0xc4, 0xc7, 0x84, 0x7f, 0x48, 0xa8, 0xbf, 0x20, 0xc0,
-	0x91, 0x8d, 0x35, 0x43, 0xaa, 0xce, 0x42, 0xd6, 0xf3, 0x12, 0x94, 0x6b, 0xd1, 0x13, 0x34, 0x74,
-	0x5c, 0x86, 0x65, 0xa3, 0x6b, 0xb7, 0x9a, 0xfc, 0x88, 0x6d, 0x3a, 0x7d, 0x7a, 0x68, 0x3e, 0x95,
-	0x6b, 0xad, 0xc0, 0xe5, 0x0f, 0x09, 0xeb, 0x3c, 0x14, 0xd2, 0xd8, 0x08, 0x44, 0x6e, 0x39, 0x33,
-	0x27, 0x46, 0xfd, 0x1d, 0xc1, 0xe9, 0x08, 0x1f, 0x71, 0xec, 0x27, 0xa2, 0xf3, 0x7f, 0x90, 0xe8,
-	0x9b, 0x44, 0xb2, 0x59, 0xf0, 0xde, 0xef, 0x85, 0x3e, 0xb5, 0x24, 0x09, 0xf9, 0x69, 0x6b, 0x2c,
-	0xcf, 0xf4, 0x58, 0x9e, 0xd1, 0x9a, 0xcd, 0xeb, 0xe6, 0xe1, 0xa1, 0xcf, 0xf3, 0xc2, 0x54, 0x9e,
-	0x9c, 0x86, 0xe6, 0xd9, 0xa8, 0x3f, 0xa6, 0x60, 0x39, 0xc2, 0x71, 0xcf, 0x36, 0x92, 0x51, 0x5c,
-	0x83, 0x9c, 0xcf, 0x83, 0xb8, 0xfe, 0x3e, 0x06, 0x49, 0x85, 0xb8, 0x34, 0xa4, 0xd0, 0xa1, 0xc4,
-	0xbf, 0x0c, 0x4b, 0x85, 0x5d, 0x4a, 0xc6, 0x97, 0x35, 0x33, 0x8e, 0x2e, 0x77, 0xe5, 0x10, 0x83,
-	0x36, 0xad, 0x41, 0xaf, 0x45, 0xfb, 0x22, 0x27, 0xf3, 0x1a, 0x70, 0xd1, 0x03, 0x21, 0xf1, 0x26,
-	0xcd, 0xa0, 0xcd, 0xae, 0xc9, 0x7b, 0x77, 0x5e, 0x7c, 0xcf, 0x72, 0xc9, 0x1e, 0x17, 0x28, 0x8d,
-	0x50, 0xba, 0xee, 0x80, 0xcc, 0x77, 0xb2, 0xc5, 0x28, 0x7b, 0xdc, 0xb7, 0x51, 0x3f, 0x40, 0x90,
-	0xd9, 0xa7, 0xec, 0x80, 0x24, 0x4c, 0xd3, 0x32, 0xcc, 0x31, 0x62, 0xc8, 0xf4, 0xf0, 0xc7, 0x68,
-	0xab, 0xcf, 0x45, 0x5b, 0x3d, 0xd1, 0x56, 0xfa, 0x04, 0x41, 0xa6, 0xfe, 0x3c, 0x10, 0x4e, 0x6c,
-	0xe4, 0x6b, 0x7f, 0x14, 0xe0, 0xf4, 0xc8, 0xcf, 0x41, 0xfc, 0x0c, 0x41, 0xde, 0x88, 0x5c, 0x04,
-	0x26, 0x6f, 0xb6, 0x48, 0x03, 0x2a, 0xd7, 0x92, 0xeb, 0x56, 0x7c, 0x16, 0xea, 0xf9, 0x8f, 0x7e,
-	0xfd, 0xf3, 0x8b, 0xd4, 0x0b, 0xf8, 0x5c, 0xf5, 0xe8, 0x6a, 0xf8, 0xb7, 0x60, 0x14, 0xc6, 0x57,
-	0x08, 0xf2, 0xee, 0x0c, 0xc0, 0xf6, 0x67, 0x00, 0xb6, 0x3f, 0x1e, 0xd8, 0x25, 0x01, 0x6c, 0x5d,
-	0x8d, 0x03, 0x8b, 0xc0, 0x78, 0x05, 0x5d, 0xc6, 0xdf, 0x22, 0x58, 0xd6, 0xe3, 0xf7, 0x8c, 0x2b,
-	0x93, 0x7f, 0x3e, 0xc4, 0xd4, 0x95, 0x1b, 0x33, 0xa9, 0x07, 0x20, 0x2f, 0x0b, 0x90, 0xe7, 0xd5,
-	0xb5, 0x18, 0xc8, 0x38, 0x1e, 0x8e, 0xf3, 0x67, 0x04, 0x2b, 0xed, 0xb1, 0x67, 0x62, 0x2d, 0x49,
-	0xe7, 0x44, 0x6d, 0x94, 0xdb, 0xb3, 0xdb, 0x04, 0xb0, 0xab, 0x02, 0xf6, 0xa6, 0x7a, 0x3e, 0x06,
-	0x7b, 0x2c, 0x3c, 0x8e, 0xfd, 0x7b, 0x04, 0xd8, 0x18, 0x3d, 0xa1, 0xaa, 0xc9, 0x3b, 0xce, 0x43,
-	0x7d, 0x6b, 0x46, 0x83, 0x00, 0xf2, 0xa6, 0x80, 0xbc, 0x81, 0xd7, 0x27, 0xf5, 0xa9, 0x87, 0xea,
-	0x6b, 0x04, 0x85, 0x56, 0xf4, 0x6a, 0xf8, 0xe2, 0xe4, 0xdd, 0x1e, 0x51, 0x56, 0x5e, 0x9e, 0x41,
-	0x39, 0x00, 0x78, 0x41, 0x00, 0x5c, 0xc3, 0xab, 0x31, 0x80, 0x31, 0x24, 0x9f, 0x22, 0xc8, 0x92,
-	0xe1, 0xf5, 0xf0, 0xe2, 0xc4, 0x50, 0xc3, 0x6b, 0xa4, 0x52, 0x4d, 0xa6, 0x17, 0xa0, 0xd9, 0x10,
-	0x68, 0x56, 0xd5, 0x62, 0x0c, 0xcd, 0x30, 0x34, 0xaf, 0xea, 0x97, 0x08, 0x96, 0xf4, 0xf0, 0xbd,
-	0x70, 0x33, 0xc1, 0x18, 0x48, 0x44, 0xb5, 0xc4, 0xaa, 0x01, 0xa8, 0x8b, 0x02, 0x54, 0x49, 0x3d,
-	0x3b, 0x76, 0x5a, 0x02, 0x5c, 0xdf, 0x21, 0x38, 0x6d, 0x8c, 0xdc, 0x1f, 0x2a, 0xc9, 0x7b, 0x87,
-	0xeb, 0x2b, 0x37, 0x67, 0xd3, 0x0f, 0x60, 0x96, 0x05, 0x4c, 0x15, 0x97, 0x26, 0xb5, 0x9a, 0x80,
-	0xf4, 0x0d, 0x82, 0x65, 0x23, 0x7e, 0x09, 0xb8, 0x92, 0x3c, 0xee, 0x9e, 0x6d, 0x4c, 0x59, 0x3d,
-	0x71, 0xf5, 0x91, 0xfd, 0x88, 0xd7, 0x26, 0xa1, 0xe4, 0x78, 0xde, 0x87, 0x8c, 0x2b, 0x0f, 0xbd,
-	0x69, 0x7b, 0xf8, 0x80, 0x18, 0xca, 0x4b, 0x09, 0x94, 0x02, 0x14, 0x25, 0x81, 0x42, 0x51, 0x57,
-	0x46, 0xb7, 0xf4, 0x01, 0x31, 0x78, 0x31, 0xdf, 0x83, 0x8c, 0x91, 0x24, 0x7c, 0x3d, 0x49, 0xf8,
-	0x7a, 0x2c, 0xfc, 0xaa, 0x08, 0x7f, 0x06, 0xaf, 0x8c, 0x26, 0xe1, 0x80, 0x18, 0x5b, 0xaf, 0x3f,
-	0x44, 0x6f, 0x37, 0x0c, 0x93, 0x75, 0x06, 0xad, 0x4a, 0xdb, 0xee, 0x55, 0x1f, 0x71, 0xbf, 0xf7,
-	0x1a, 0xc3, 0xff, 0x3e, 0xe5, 0x3f, 0xa2, 0x06, 0xb5, 0xaa, 0x86, 0x5d, 0x9d, 0xf6, 0xff, 0x68,
-	0x2b, 0x23, 0x34, 0xae, 0xfd, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x19, 0xc1, 0x78, 0xfe, 0xea, 0x15,
-	0x00, 0x00,
+	// 1984 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x5a, 0x4f, 0x8c, 0x1b, 0x57,
+	0x19, 0xcf, 0x9b, 0xf5, 0x6e, 0xe2, 0x6f, 0x77, 0x93, 0xed, 0x6b, 0x9b, 0x9a, 0x69, 0x53, 0xd2,
+	0x41, 0x51, 0xb6, 0x16, 0x78, 0xc8, 0x2e, 0xa1, 0xe9, 0x96, 0x55, 0x9b, 0x4d, 0x96, 0xdd, 0xa5,
+	0x69, 0x14, 0x8d, 0xd3, 0xa6, 0x35, 0x52, 0xad, 0xb1, 0xe7, 0xd9, 0x1e, 0xd5, 0x9e, 0x71, 0x3d,
+	0xe3, 0xb4, 0xab, 0xd5, 0x22, 0xb5, 0x47, 0x4a, 0x25, 0xa4, 0x4a, 0x1c, 0x2a, 0x24, 0x4e, 0x54,
+	0x1c, 0xa0, 0x87, 0x72, 0x00, 0x0e, 0x5c, 0x40, 0x8a, 0x44, 0x11, 0x07, 0x54, 0x89, 0x03, 0x07,
+	0x24, 0x24, 0xa4, 0x54, 0x42, 0x02, 0x04, 0x5c, 0xb8, 0xa1, 0xf7, 0x67, 0x3c, 0x6f, 0xec, 0xd9,
+	0x19, 0xdb, 0x71, 0xec, 0xf6, 0x36, 0xf3, 0xe6, 0xfb, 0xbe, 0xf7, 0xfd, 0x7e, 0xef, 0x7b, 0xdf,
+	0x7b, 0xdf, 0x67, 0xc3, 0xa5, 0x76, 0xc7, 0xf5, 0x5d, 0x4f, 0x6f, 0x77, 0x2b, 0x4d, 0xbb, 0xaa,
+	0xb7, 0x5c, 0x8b, 0x34, 0xad, 0x8a, 0x7e, 0x9b, 0x74, 0x3c, 0xdb, 0x75, 0x6c, 0xa7, 0xae, 0xbf,
+	0xd4, 0x7b, 0x2c, 0x92, 0xce, 0x6d, 0xbb, 0x4a, 0x0a, 0x4c, 0x05, 0x3f, 0x6a, 0xda, 0x85, 0xdb,
+	0xa4, 0xe3, 0x9b, 0x05, 0xa1, 0x54, 0x08, 0x95, 0xd4, 0xc7, 0xea, 0xae, 0x5b, 0x6f, 0x12, 0xdd,
+	0x6c, 0xdb, 0xba, 0xe9, 0x38, 0xae, 0x6f, 0xfa, 0xb6, 0xeb, 0x78, 0x5c, 0x55, 0x7d, 0x32, 0x7e,
+	0xd2, 0x2b, 0x6e, 0xab, 0xe5, 0x3a, 0x91, 0x59, 0xd4, 0x42, 0xaa, 0x7f, 0x57, 0x4d, 0xdf, 0xf4,
+	0x88, 0xcf, 0x05, 0xb5, 0x0f, 0x10, 0x9c, 0xdc, 0x73, 0x7c, 0xd2, 0x71, 0xcc, 0x26, 0xb5, 0x67,
+	0xfb, 0xf8, 0x8b, 0xb0, 0xd8, 0x36, 0x3b, 0xc4, 0xf1, 0xcb, 0x5e, 0xc3, 0xf4, 0x72, 0xe8, 0xec,
+	0xdc, 0x6a, 0xd6, 0x00, 0x3e, 0x54, 0x6c, 0x98, 0x1e, 0xce, 0xc1, 0xf1, 0x16, 0xf1, 0x3c, 0xb3,
+	0x4e, 0x72, 0xca, 0x59, 0xb4, 0x9a, 0x35, 0x82, 0x57, 0xfc, 0x04, 0x2c, 0x59, 0xa6, 0x4f, 0xca,
+	0xd5, 0x0e, 0x31, 0x7d, 0x62, 0xe5, 0xe6, 0xce, 0xa2, 0xd5, 0x8c, 0xb1, 0x48, 0xc7, 0xae, 0xf0,
+	0x21, 0x7c, 0x1a, 0x16, 0xcc, 0xae, 0xdf, 0x70, 0x3b, 0xb9, 0x0c, 0xd3, 0x15, 0x6f, 0xf8, 0x71,
+	0x80, 0x9a, 0xdb, 0xb4, 0x48, 0x87, 0xce, 0x9a, 0xfb, 0xf4, 0x38, 0xfb, 0x98, 0xe5, 0x43, 0xc5,
+	0x86, 0xa9, 0x7d, 0x07, 0x16, 0x66, 0xe9, 0x9f, 0xf6, 0x6d, 0x78, 0x38, 0xe0, 0xe9, 0x9b, 0xcc,
+	0xa9, 0xed, 0x26, 0x69, 0x11, 0x87, 0xb9, 0x43, 0xf8, 0x23, 0xf3, 0x1c, 0x31, 0x2d, 0x10, 0x43,
+	0xc5, 0x86, 0x49, 0x27, 0x0d, 0x04, 0x1c, 0xb3, 0x15, 0xf8, 0x14, 0x28, 0x5d, 0x37, 0x5b, 0x44,
+	0xfb, 0x50, 0x5a, 0x05, 0x6e, 0x1d, 0xef, 0xc2, 0x7c, 0xa5, 0xe9, 0x56, 0x38, 0xbe, 0xc5, 0xb5,
+	0xb5, 0x42, 0x42, 0xf8, 0x14, 0x62, 0x3d, 0x33, 0xb8, 0x01, 0x6c, 0x00, 0x78, 0xdd, 0x0a, 0x67,
+	0xd2, 0xcb, 0x29, 0x63, 0x9b, 0x93, 0xac, 0x68, 0xaf, 0xc2, 0x72, 0x94, 0x85, 0x74, 0x90, 0x38,
+	0x0f, 0x0f, 0x08, 0xde, 0xcb, 0x95, 0xfd, 0x72, 0x95, 0x2d, 0x26, 0x5b, 0x81, 0xac, 0x71, 0x4a,
+	0x7c, 0xd8, 0xda, 0xe7, 0x6b, 0xac, 0xfd, 0x00, 0xc1, 0x82, 0x20, 0xe2, 0xb9, 0x28, 0x11, 0xf9,
+	0x44, 0xcf, 0x63, 0x09, 0xf8, 0x56, 0x0c, 0x01, 0xa3, 0x98, 0x91, 0x81, 0xdf, 0x82, 0xcc, 0x56,
+	0xd3, 0xad, 0xe0, 0xab, 0x70, 0xdc, 0xe2, 0x1b, 0x89, 0x41, 0x5d, 0x5c, 0x5b, 0x4d, 0x34, 0x28,
+	0x36, 0x1d, 0x55, 0xdd, 0x3d, 0x66, 0x04, 0xaa, 0x5b, 0x59, 0x38, 0x5e, 0x75, 0x1d, 0x9f, 0x38,
+	0xbe, 0xf6, 0x0a, 0x2c, 0xd1, 0xaf, 0xdb, 0x6f, 0xb6, 0x4d, 0xc7, 0x22, 0x16, 0xc6, 0x90, 0x69,
+	0x9b, 0x7e, 0x43, 0xc4, 0x13, 0x7b, 0xc6, 0x17, 0x21, 0x43, 0x11, 0x89, 0x19, 0x9f, 0x48, 0x9c,
+	0x91, 0x1a, 0x33, 0x98, 0xb8, 0xe6, 0xc2, 0x09, 0xfa, 0x76, 0xd5, 0xae, 0xd5, 0x62, 0xcd, 0x8e,
+	0x87, 0x85, 0x9a, 0x3b, 0x02, 0xcb, 0x7f, 0x10, 0x80, 0x41, 0xda, 0xae, 0x67, 0xfb, 0x6e, 0x67,
+	0x1f, 0x9f, 0x04, 0xc5, 0xb6, 0xd8, 0x8c, 0x19, 0x43, 0xb1, 0x19, 0x34, 0x29, 0x46, 0xd8, 0xf3,
+	0x30, 0x3b, 0x33, 0x10, 0xe9, 0xb6, 0x2d, 0x26, 0x92, 0x09, 0x45, 0x5e, 0xe4, 0x43, 0x54, 0xe4,
+	0x0d, 0xb7, 0xf3, 0x9a, 0xd7, 0x36, 0xab, 0xa4, 0x6c, 0x5b, 0xb9, 0x79, 0x1e, 0x85, 0xbd, 0xb1,
+	0x3d, 0x0b, 0xbf, 0x0c, 0x27, 0x43, 0x11, 0x7f, 0xbf, 0x4d, 0x72, 0x0b, 0x67, 0xd1, 0xea, 0xc9,
+	0xb5, 0x0b, 0x83, 0x98, 0x6f, 0x05, 0x72, 0x37, 0xf7, 0xdb, 0x64, 0xdb, 0xe9, 0xb6, 0xa2, 0x23,
+	0xc6, 0xf2, 0x1b, 0xf2, 0xab, 0x76, 0x0d, 0xe0, 0x86, 0x59, 0xb7, 0x1d, 0x96, 0xba, 0x79, 0x96,
+	0xaa, 0x93, 0xb2, 0xd3, 0x6d, 0x55, 0x48, 0x87, 0x61, 0x9d, 0xa7, 0x59, 0xaa, 0x4e, 0xae, 0xb3,
+	0x11, 0x7c, 0x06, 0xd8, 0x5b, 0xb9, 0x69, 0x07, 0xfb, 0x60, 0xde, 0xc8, 0xd2, 0x91, 0x6b, 0x74,
+	0x40, 0x2b, 0xc1, 0x99, 0x90, 0x42, 0xba, 0x7f, 0xac, 0x3d, 0x8b, 0x38, 0xbe, 0x5d, 0xb3, 0xab,
+	0x7c, 0x82, 0x80, 0x45, 0x24, 0xb1, 0x78, 0x4e, 0x06, 0x27, 0x71, 0x1c, 0x7a, 0xca, 0xd2, 0xcd,
+	0x77, 0x11, 0xe4, 0x42, 0xe3, 0x7d, 0x76, 0x0d, 0x98, 0xa7, 0x9a, 0x7c, 0xc1, 0x16, 0xd7, 0x36,
+	0x12, 0x63, 0x21, 0xd1, 0xc5, 0xdd, 0x63, 0x06, 0x37, 0x85, 0x1f, 0x82, 0x4c, 0xd5, 0xb5, 0xb8,
+	0x37, 0x99, 0xdd, 0x63, 0x06, 0x7b, 0xdb, 0xca, 0xd0, 0xb8, 0xd0, 0xfe, 0x82, 0xe0, 0x91, 0x6b,
+	0xb6, 0xe7, 0xf7, 0x4c, 0xd9, 0xc4, 0x33, 0xc8, 0xeb, 0x5d, 0xe2, 0xf9, 0x31, 0x78, 0x50, 0x0c,
+	0x1e, 0xbc, 0xc3, 0xa8, 0x14, 0xcc, 0x8b, 0x18, 0x3e, 0x9f, 0xe8, 0x77, 0xb8, 0x50, 0x86, 0xa4,
+	0xaa, 0x16, 0xe1, 0x84, 0x41, 0xbc, 0xb6, 0xeb, 0x78, 0xcc, 0x68, 0xa7, 0x87, 0x4e, 0x24, 0x9f,
+	0xf3, 0x43, 0x92, 0x61, 0x48, 0xaa, 0xda, 0x47, 0x08, 0x1e, 0xda, 0x21, 0xbe, 0xf4, 0x55, 0xa0,
+	0xdb, 0xee, 0xed, 0x8b, 0xc5, 0xb5, 0x8b, 0x43, 0x5a, 0x8e, 0x32, 0x4c, 0xb7, 0x53, 0xa2, 0xd3,
+	0x68, 0x5c, 0xa7, 0xff, 0x8b, 0x60, 0xb9, 0x28, 0x3b, 0x3d, 0x21, 0x6f, 0xfb, 0x3c, 0x54, 0xc6,
+	0xf6, 0xf0, 0xfe, 0xc0, 0x6e, 0xc2, 0x23, 0x57, 0x49, 0x93, 0xf8, 0xe4, 0xbe, 0xad, 0x16, 0x84,
+	0x6e, 0x6b, 0x77, 0x15, 0xc0, 0x34, 0xf4, 0xf9, 0xa1, 0xd7, 0x8b, 0xfa, 0x12, 0x2c, 0x87, 0x2e,
+	0x95, 0xef, 0x75, 0xd2, 0xa5, 0x8e, 0xf4, 0x65, 0x62, 0x5b, 0x85, 0xe6, 0x37, 0x7e, 0x84, 0x97,
+	0x2b, 0xa6, 0x47, 0xc4, 0x39, 0x0e, 0x7c, 0x68, 0xcb, 0xf4, 0x88, 0x24, 0xd0, 0x20, 0xa6, 0x25,
+	0x6e, 0x53, 0x42, 0x60, 0x97, 0x98, 0x16, 0xcf, 0x90, 0x7e, 0xa3, 0xdc, 0xee, 0x90, 0x9a, 0xfd,
+	0xa6, 0xc8, 0xd5, 0x40, 0x87, 0x6e, 0xb0, 0x11, 0x75, 0x4f, 0x5a, 0xe1, 0x4d, 0x7a, 0xba, 0x30,
+	0x96, 0xc4, 0x56, 0xfc, 0x52, 0xa2, 0xd3, 0x9c, 0x51, 0x23, 0xd0, 0xd1, 0xfe, 0x84, 0x60, 0x65,
+	0x87, 0x08, 0xa2, 0xa7, 0xc1, 0xf3, 0x19, 0x10, 0x50, 0xd9, 0xa5, 0x90, 0x67, 0xe1, 0x2c, 0x1f,
+	0x29, 0x36, 0x4c, 0x75, 0x47, 0x82, 0xf6, 0x0c, 0x2c, 0x88, 0xcb, 0x10, 0x9f, 0x7f, 0x28, 0x64,
+	0x42, 0x45, 0xfb, 0xa5, 0x02, 0x0f, 0xf2, 0x03, 0x72, 0x7a, 0xd8, 0x42, 0x87, 0x95, 0x91, 0x1d,
+	0xc6, 0xcf, 0x06, 0xd7, 0xb9, 0x39, 0xb6, 0x8c, 0x4f, 0xa6, 0x5e, 0x62, 0x82, 0x1b, 0x91, 0xb8,
+	0xcd, 0x4d, 0x8e, 0xba, 0x1f, 0x22, 0x78, 0x90, 0x6f, 0xf6, 0xcf, 0x4c, 0x58, 0xc8, 0xc9, 0xe1,
+	0x63, 0x05, 0x4e, 0x87, 0xc9, 0x81, 0x32, 0xf1, 0xf9, 0x4a, 0x10, 0x51, 0xa8, 0x73, 0x7d, 0x50,
+	0xfb, 0x77, 0x7f, 0x66, 0x60, 0xf7, 0x3f, 0x2f, 0xad, 0xf3, 0xb3, 0xd1, 0x1a, 0x60, 0xe4, 0xa0,
+	0xd1, 0x3e, 0xe5, 0x67, 0x70, 0xc8, 0xe5, 0xec, 0x17, 0xbb, 0x77, 0x15, 0x9f, 0x0b, 0xaf, 0xe2,
+	0xea, 0x65, 0x09, 0x74, 0x70, 0xdb, 0x47, 0xa3, 0xdd, 0xf6, 0xff, 0x85, 0xe0, 0x74, 0x0f, 0x2a,
+	0x2f, 0x64, 0x3e, 0xa3, 0x60, 0xfb, 0x76, 0x32, 0x2f, 0xb1, 0x86, 0xda, 0xc9, 0x02, 0x96, 0x50,
+	0xd1, 0xde, 0x57, 0xe0, 0xb1, 0x2b, 0x6e, 0xab, 0xdd, 0x95, 0xcf, 0x6d, 0x5a, 0x9f, 0x4c, 0x03,
+	0xf8, 0x17, 0xe0, 0x84, 0x00, 0x1e, 0xc0, 0x16, 0xa7, 0xce, 0x65, 0xe9, 0x53, 0x45, 0x00, 0x17,
+	0x9f, 0xb6, 0xd2, 0xc3, 0x3f, 0x4a, 0xce, 0xbc, 0x65, 0xd7, 0x6a, 0x41, 0xf8, 0x9f, 0x4b, 0x0d,
+	0x05, 0x86, 0x9d, 0xeb, 0x68, 0xef, 0x22, 0x38, 0x45, 0xf3, 0xc8, 0x4d, 0xb3, 0x3e, 0x8d, 0x04,
+	0xa2, 0x3e, 0x2e, 0x39, 0x8e, 0x21, 0xe3, 0x9b, 0xf5, 0xa0, 0x47, 0xc3, 0x9e, 0xb5, 0x3b, 0x08,
+	0x96, 0x77, 0x08, 0x75, 0x67, 0x1a, 0xab, 0xb3, 0x02, 0x73, 0xbe, 0x59, 0x17, 0x0b, 0x43, 0x1f,
+	0x27, 0x77, 0x7e, 0xfc, 0x84, 0x5f, 0x91, 0x67, 0x05, 0x24, 0x25, 0xc1, 0x46, 0xce, 0x92, 0xef,
+	0x21, 0x58, 0xe1, 0x47, 0xdd, 0xcc, 0x68, 0x97, 0xdc, 0x59, 0xfb, 0xed, 0x2a, 0x3c, 0x30, 0xd0,
+	0x26, 0xc5, 0x77, 0x11, 0xac, 0xf4, 0x17, 0x82, 0xf8, 0x6b, 0x89, 0xde, 0x1c, 0x51, 0x37, 0xaa,
+	0x9b, 0xe3, 0x68, 0x15, 0x7a, 0x74, 0xbd, 0xfa, 0xf6, 0x27, 0x7f, 0x7b, 0x4f, 0x79, 0x19, 0x3f,
+	0xa5, 0xdf, 0xbe, 0x20, 0xb7, 0x4e, 0x7b, 0x55, 0xa7, 0xa7, 0x1f, 0x44, 0xeb, 0xd2, 0x43, 0xbd,
+	0x23, 0x19, 0x2c, 0x9d, 0xc1, 0x8f, 0xf6, 0xa9, 0xca, 0x9f, 0xf1, 0xdb, 0x0a, 0xdb, 0x02, 0x52,
+	0x71, 0x75, 0x21, 0xd1, 0xe1, 0xb8, 0xea, 0x51, 0xdd, 0x18, 0x59, 0x25, 0x04, 0xf8, 0x16, 0x62,
+	0x08, 0x0f, 0xf0, 0x8d, 0x04, 0x84, 0xb6, 0x55, 0x60, 0xd5, 0x7b, 0x21, 0x09, 0xaa, 0x24, 0xc6,
+	0x3e, 0x96, 0xce, 0xe3, 0x73, 0x09, 0xd0, 0x99, 0x38, 0x2d, 0xfe, 0x0f, 0xf1, 0xef, 0x10, 0xac,
+	0xf0, 0x9b, 0xab, 0xc4, 0x43, 0x72, 0x5b, 0x2e, 0x52, 0x90, 0xaa, 0xeb, 0xc3, 0xcb, 0x86, 0xc8,
+	0x6f, 0x32, 0xe0, 0xd7, 0xb5, 0xe7, 0xee, 0x15, 0xf8, 0x86, 0x54, 0x36, 0xe2, 0xef, 0x2b, 0xb0,
+	0xc2, 0x7b, 0x50, 0xd3, 0xc4, 0xf2, 0x3e, 0x5f, 0xc5, 0xf7, 0x90, 0x3a, 0xf1, 0x65, 0x94, 0xd1,
+	0x95, 0xd6, 0xd5, 0xe1, 0x96, 0x34, 0x42, 0xc9, 0x3b, 0x4a, 0x90, 0x72, 0x24, 0x4a, 0x92, 0x77,
+	0xf3, 0x11, 0x95, 0x77, 0xca, 0x6e, 0x3e, 0x42, 0x6b, 0x30, 0xd8, 0xf3, 0xf7, 0x21, 0xd8, 0xf3,
+	0x43, 0x06, 0xfb, 0x87, 0x0a, 0x2c, 0x4a, 0x95, 0x3e, 0xd6, 0x53, 0x13, 0x54, 0xb4, 0x27, 0xa0,
+	0x5e, 0x1a, 0x51, 0x21, 0x84, 0xff, 0x73, 0x0e, 0xff, 0xa7, 0x08, 0x3b, 0x09, 0xf8, 0x23, 0x27,
+	0xc1, 0x50, 0x54, 0xc4, 0x69, 0x70, 0x39, 0x51, 0x74, 0x97, 0x36, 0xf0, 0xa5, 0x44, 0x76, 0xa2,
+	0x16, 0x18, 0x51, 0x81, 0x2e, 0xfe, 0x8d, 0x02, 0xd9, 0xde, 0x2d, 0x16, 0x7f, 0x25, 0x2d, 0xd7,
+	0x45, 0x2a, 0x38, 0xf5, 0xeb, 0x23, 0x89, 0x87, 0x54, 0xfd, 0x81, 0x53, 0x75, 0x07, 0xe1, 0x83,
+	0xe9, 0x52, 0xa5, 0x1f, 0x84, 0x27, 0xf9, 0x61, 0x69, 0x07, 0x6f, 0x8f, 0xcb, 0x5b, 0xc4, 0x10,
+	0xfe, 0x85, 0x02, 0x4b, 0x72, 0x73, 0x00, 0x7f, 0x35, 0xf9, 0x7e, 0x33, 0xd8, 0x47, 0x50, 0x9f,
+	0x1e, 0x55, 0x23, 0x64, 0xf3, 0x57, 0x9c, 0xcd, 0x8f, 0x90, 0x36, 0xe5, 0xc0, 0xdb, 0x40, 0xf9,
+	0xd2, 0xa6, 0x3a, 0x76, 0xec, 0x6d, 0xa0, 0x3c, 0xfe, 0xbd, 0x02, 0x4b, 0x72, 0x6f, 0x20, 0x85,
+	0xb9, 0x98, 0x36, 0x42, 0x0a, 0x73, 0x31, 0x1a, 0x31, 0x71, 0x98, 0x9f, 0x6d, 0x1c, 0xe6, 0x27,
+	0x14, 0x87, 0x7f, 0x55, 0x78, 0x09, 0x22, 0xb5, 0x32, 0xf0, 0xfa, 0x90, 0x09, 0x4d, 0x6e, 0x7c,
+	0xa8, 0xdf, 0x18, 0x43, 0x29, 0xa4, 0xf5, 0xcf, 0x9c, 0xd6, 0x4f, 0x10, 0x7e, 0x0b, 0xcd, 0x90,
+	0x57, 0x9d, 0xb5, 0x24, 0x4a, 0x2f, 0xe0, 0xe7, 0x27, 0xc2, 0x2e, 0x37, 0x87, 0xff, 0xc9, 0xef,
+	0x94, 0x21, 0xfe, 0xf4, 0x3b, 0xe5, 0x40, 0x37, 0x24, 0xfd, 0x4e, 0x39, 0xa0, 0x12, 0xb2, 0xfb,
+	0x0f, 0xce, 0xee, 0x5d, 0x84, 0xdf, 0x99, 0x3d, 0xbb, 0xfa, 0x01, 0x2d, 0xa5, 0x37, 0xf3, 0xf9,
+	0xc3, 0xd2, 0x2d, 0xfc, 0xe2, 0x04, 0x79, 0x0e, 0x0d, 0xe3, 0xff, 0x29, 0x70, 0xaa, 0xaf, 0xd1,
+	0x92, 0x12, 0xd5, 0xf1, 0x6d, 0x99, 0x94, 0xa8, 0x8e, 0x57, 0x0a, 0x79, 0xff, 0x37, 0xe7, 0xfd,
+	0xef, 0x08, 0xbf, 0x3b, 0x53, 0xde, 0xc5, 0x2f, 0xe4, 0x12, 0xf3, 0xaf, 0xe0, 0x5b, 0x93, 0x61,
+	0x7e, 0xc0, 0x34, 0xbe, 0xa3, 0xc0, 0xc3, 0xb1, 0x1d, 0x1f, 0xfc, 0x74, 0x5a, 0x09, 0x7f, 0x64,
+	0x97, 0x48, 0xdd, 0x1a, 0x5b, 0x35, 0x5c, 0x8d, 0x9f, 0xf1, 0xd5, 0xf8, 0x00, 0xe1, 0xd7, 0xa6,
+	0xb4, 0x18, 0x96, 0x5d, 0xab, 0x95, 0x9e, 0xc2, 0x17, 0x47, 0xa6, 0x9a, 0x2a, 0xe2, 0x1f, 0x29,
+	0x70, 0x22, 0xe8, 0x0e, 0xe1, 0x2f, 0xa7, 0xa6, 0x57, 0xa9, 0x89, 0xa4, 0x5e, 0x1c, 0x45, 0x7a,
+	0x96, 0x0c, 0xf9, 0x66, 0xdd, 0x1b, 0x8b, 0x21, 0xaa, 0x88, 0x7f, 0xac, 0xc0, 0x02, 0xef, 0x57,
+	0xa5, 0x54, 0x74, 0x91, 0xa6, 0x96, 0xba, 0x3e, 0xbc, 0x6c, 0xcc, 0x95, 0x09, 0xbf, 0x3e, 0x45,
+	0x6e, 0xf4, 0x03, 0xdf, 0xac, 0x1f, 0x96, 0x36, 0xf1, 0x33, 0x63, 0x31, 0xc4, 0xd5, 0xf1, 0xaf,
+	0x15, 0x58, 0x28, 0x0e, 0xc3, 0x53, 0x71, 0x04, 0x9e, 0x8a, 0xf1, 0x3c, 0xfd, 0x91, 0xf3, 0xf4,
+	0x31, 0x52, 0xa7, 0xcf, 0xd3, 0x86, 0xd4, 0x75, 0x2b, 0xed, 0xa9, 0xf7, 0xc2, 0x99, 0x6c, 0x8a,
+	0x96, 0x88, 0xd9, 0x5e, 0x8f, 0x2e, 0xa5, 0xe2, 0xe9, 0xef, 0xe5, 0xa5, 0x54, 0x3c, 0xfd, 0xe2,
+	0x31, 0x01, 0x97, 0x9f, 0x45, 0xc0, 0xe5, 0xef, 0x85, 0xbc, 0xad, 0x17, 0x6e, 0xa0, 0xd2, 0x5e,
+	0xdd, 0xf6, 0x1b, 0xdd, 0x4a, 0xa1, 0xea, 0xb6, 0xf4, 0x97, 0x28, 0xfc, 0xcb, 0x7b, 0xbd, 0xff,
+	0x3c, 0x8a, 0x7f, 0x42, 0xd6, 0x89, 0xa3, 0xd7, 0x5d, 0x3d, 0xed, 0x7f, 0x91, 0x95, 0x05, 0x26,
+	0xb1, 0xfe, 0xff, 0x00, 0x00, 0x00, 0xff, 0xff, 0x09, 0x0d, 0xdb, 0x4c, 0xe2, 0x29, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1857,19 +2410,28 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VersioningServiceClient interface {
-	GetRepository(ctx context.Context, in *GetRepository, opts ...grpc.CallOption) (*GetRepository_Response, error)
-	// If ID is missing, consider a new entry
-	SetRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error)
-	DeleteRepository(ctx context.Context, in *DeleteRepository, opts ...grpc.CallOption) (*DeleteRepository_Response, error)
-	CommitRepositoryBlobs(ctx context.Context, in *CommitRepositoryBlobs, opts ...grpc.CallOption) (*CommitRepositoryBlobs_Response, error)
-	GetRepositoryBlobs(ctx context.Context, in *GetRepositoryBlobs, opts ...grpc.CallOption) (*GetRepositoryBlobs_Response, error)
-	BatchGetEntity(ctx context.Context, in *BatchGetEntity, opts ...grpc.CallOption) (*BatchGetEntity_Response, error)
-	AddEntity(ctx context.Context, in *AddEntity, opts ...grpc.CallOption) (*AddEntity_Response, error)
-	DeleteEntity(ctx context.Context, in *DeleteEntity, opts ...grpc.CallOption) (*DeleteEntity_Response, error)
-	GetRepositoryDiff(ctx context.Context, in *GetRepositoryDiff, opts ...grpc.CallOption) (*GetRepositoryDiff_Response, error)
-	GetRepositoryLog(ctx context.Context, in *GetRepositoryLog, opts ...grpc.CallOption) (*GetRepositoryLog_Response, error)
-	SetTag(ctx context.Context, in *SetTag, opts ...grpc.CallOption) (*SetTag_Response, error)
-	GetTag(ctx context.Context, in *GetTag, opts ...grpc.CallOption) (*GetTag_Response, error)
+	// CRUD for repositories
+	ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesRequest_Response, error)
+	GetRepository(ctx context.Context, in *GetRepositoryRequest, opts ...grpc.CallOption) (*GetRepositoryRequest_Response, error)
+	CreateRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error)
+	UpdateRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error)
+	DeleteRepository(ctx context.Context, in *DeleteRepositoryRequest, opts ...grpc.CallOption) (*DeleteRepositoryRequest_Response, error)
+	// CRUD for commits
+	ListCommits(ctx context.Context, in *ListCommitsRequest, opts ...grpc.CallOption) (*ListCommitsRequest_Response, error)
+	GetCommit(ctx context.Context, in *GetCommitRequest, opts ...grpc.CallOption) (*GetCommitRequest_Response, error)
+	CreateCommit(ctx context.Context, in *CreateCommitRequest, opts ...grpc.CallOption) (*CreateCommitRequest_Response, error)
+	DeleteCommit(ctx context.Context, in *DeleteCommitRequest, opts ...grpc.CallOption) (*DeleteCommitRequest_Response, error)
+	// Getting blobs and folders in a commit
+	ListCommitBlobs(ctx context.Context, in *ListCommitBlobsRequest, opts ...grpc.CallOption) (*ListCommitBlobsRequest_Response, error)
+	GetCommitBlob(ctx context.Context, in *GetCommitBlobRequest, opts ...grpc.CallOption) (*GetCommitBlobRequest_Response, error)
+	GetCommitFolder(ctx context.Context, in *GetCommitFolderRequest, opts ...grpc.CallOption) (*GetCommitFolderRequest_Response, error)
+	// Git-like operations
+	ComputeRepositoryDiff(ctx context.Context, in *ComputeRepositoryDiffRequest, opts ...grpc.CallOption) (*ComputeRepositoryDiffRequest_Response, error)
+	// CRUD for tags
+	ListTags(ctx context.Context, in *ListTagsRequest, opts ...grpc.CallOption) (*ListTagsRequest_Response, error)
+	GetTag(ctx context.Context, in *GetTagRequest, opts ...grpc.CallOption) (*GetTagRequest_Response, error)
+	SetTag(ctx context.Context, in *SetTagRequest, opts ...grpc.CallOption) (*SetTagRequest_Response, error)
+	DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*DeleteTagRequest_Response, error)
 }
 
 type versioningServiceClient struct {
@@ -1880,108 +2442,153 @@ func NewVersioningServiceClient(cc grpc.ClientConnInterface) VersioningServiceCl
 	return &versioningServiceClient{cc}
 }
 
-func (c *versioningServiceClient) GetRepository(ctx context.Context, in *GetRepository, opts ...grpc.CallOption) (*GetRepository_Response, error) {
-	out := new(GetRepository_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/getRepository", in, out, opts...)
+func (c *versioningServiceClient) ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesRequest_Response, error) {
+	out := new(ListRepositoriesRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/ListRepositories", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) SetRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error) {
+func (c *versioningServiceClient) GetRepository(ctx context.Context, in *GetRepositoryRequest, opts ...grpc.CallOption) (*GetRepositoryRequest_Response, error) {
+	out := new(GetRepositoryRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/GetRepository", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *versioningServiceClient) CreateRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error) {
 	out := new(SetRepository_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/setRepository", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/CreateRepository", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) DeleteRepository(ctx context.Context, in *DeleteRepository, opts ...grpc.CallOption) (*DeleteRepository_Response, error) {
-	out := new(DeleteRepository_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/deleteRepository", in, out, opts...)
+func (c *versioningServiceClient) UpdateRepository(ctx context.Context, in *SetRepository, opts ...grpc.CallOption) (*SetRepository_Response, error) {
+	out := new(SetRepository_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/UpdateRepository", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) CommitRepositoryBlobs(ctx context.Context, in *CommitRepositoryBlobs, opts ...grpc.CallOption) (*CommitRepositoryBlobs_Response, error) {
-	out := new(CommitRepositoryBlobs_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/commitRepositoryBlobs", in, out, opts...)
+func (c *versioningServiceClient) DeleteRepository(ctx context.Context, in *DeleteRepositoryRequest, opts ...grpc.CallOption) (*DeleteRepositoryRequest_Response, error) {
+	out := new(DeleteRepositoryRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/DeleteRepository", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) GetRepositoryBlobs(ctx context.Context, in *GetRepositoryBlobs, opts ...grpc.CallOption) (*GetRepositoryBlobs_Response, error) {
-	out := new(GetRepositoryBlobs_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/getRepositoryBlobs", in, out, opts...)
+func (c *versioningServiceClient) ListCommits(ctx context.Context, in *ListCommitsRequest, opts ...grpc.CallOption) (*ListCommitsRequest_Response, error) {
+	out := new(ListCommitsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/ListCommits", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) BatchGetEntity(ctx context.Context, in *BatchGetEntity, opts ...grpc.CallOption) (*BatchGetEntity_Response, error) {
-	out := new(BatchGetEntity_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/batchGetEntity", in, out, opts...)
+func (c *versioningServiceClient) GetCommit(ctx context.Context, in *GetCommitRequest, opts ...grpc.CallOption) (*GetCommitRequest_Response, error) {
+	out := new(GetCommitRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/GetCommit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) AddEntity(ctx context.Context, in *AddEntity, opts ...grpc.CallOption) (*AddEntity_Response, error) {
-	out := new(AddEntity_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/addEntity", in, out, opts...)
+func (c *versioningServiceClient) CreateCommit(ctx context.Context, in *CreateCommitRequest, opts ...grpc.CallOption) (*CreateCommitRequest_Response, error) {
+	out := new(CreateCommitRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/CreateCommit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) DeleteEntity(ctx context.Context, in *DeleteEntity, opts ...grpc.CallOption) (*DeleteEntity_Response, error) {
-	out := new(DeleteEntity_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/deleteEntity", in, out, opts...)
+func (c *versioningServiceClient) DeleteCommit(ctx context.Context, in *DeleteCommitRequest, opts ...grpc.CallOption) (*DeleteCommitRequest_Response, error) {
+	out := new(DeleteCommitRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/DeleteCommit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) GetRepositoryDiff(ctx context.Context, in *GetRepositoryDiff, opts ...grpc.CallOption) (*GetRepositoryDiff_Response, error) {
-	out := new(GetRepositoryDiff_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/getRepositoryDiff", in, out, opts...)
+func (c *versioningServiceClient) ListCommitBlobs(ctx context.Context, in *ListCommitBlobsRequest, opts ...grpc.CallOption) (*ListCommitBlobsRequest_Response, error) {
+	out := new(ListCommitBlobsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/ListCommitBlobs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) GetRepositoryLog(ctx context.Context, in *GetRepositoryLog, opts ...grpc.CallOption) (*GetRepositoryLog_Response, error) {
-	out := new(GetRepositoryLog_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/getRepositoryLog", in, out, opts...)
+func (c *versioningServiceClient) GetCommitBlob(ctx context.Context, in *GetCommitBlobRequest, opts ...grpc.CallOption) (*GetCommitBlobRequest_Response, error) {
+	out := new(GetCommitBlobRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/GetCommitBlob", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) SetTag(ctx context.Context, in *SetTag, opts ...grpc.CallOption) (*SetTag_Response, error) {
-	out := new(SetTag_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/setTag", in, out, opts...)
+func (c *versioningServiceClient) GetCommitFolder(ctx context.Context, in *GetCommitFolderRequest, opts ...grpc.CallOption) (*GetCommitFolderRequest_Response, error) {
+	out := new(GetCommitFolderRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/GetCommitFolder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *versioningServiceClient) GetTag(ctx context.Context, in *GetTag, opts ...grpc.CallOption) (*GetTag_Response, error) {
-	out := new(GetTag_Response)
-	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/getTag", in, out, opts...)
+func (c *versioningServiceClient) ComputeRepositoryDiff(ctx context.Context, in *ComputeRepositoryDiffRequest, opts ...grpc.CallOption) (*ComputeRepositoryDiffRequest_Response, error) {
+	out := new(ComputeRepositoryDiffRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/ComputeRepositoryDiff", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *versioningServiceClient) ListTags(ctx context.Context, in *ListTagsRequest, opts ...grpc.CallOption) (*ListTagsRequest_Response, error) {
+	out := new(ListTagsRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/ListTags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *versioningServiceClient) GetTag(ctx context.Context, in *GetTagRequest, opts ...grpc.CallOption) (*GetTagRequest_Response, error) {
+	out := new(GetTagRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/GetTag", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *versioningServiceClient) SetTag(ctx context.Context, in *SetTagRequest, opts ...grpc.CallOption) (*SetTagRequest_Response, error) {
+	out := new(SetTagRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/SetTag", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *versioningServiceClient) DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*DeleteTagRequest_Response, error) {
+	out := new(DeleteTagRequest_Response)
+	err := c.cc.Invoke(ctx, "/ai.verta.modeldb.versioning.VersioningService/DeleteTag", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1990,68 +2597,110 @@ func (c *versioningServiceClient) GetTag(ctx context.Context, in *GetTag, opts .
 
 // VersioningServiceServer is the server API for VersioningService service.
 type VersioningServiceServer interface {
-	GetRepository(context.Context, *GetRepository) (*GetRepository_Response, error)
-	// If ID is missing, consider a new entry
-	SetRepository(context.Context, *SetRepository) (*SetRepository_Response, error)
-	DeleteRepository(context.Context, *DeleteRepository) (*DeleteRepository_Response, error)
-	CommitRepositoryBlobs(context.Context, *CommitRepositoryBlobs) (*CommitRepositoryBlobs_Response, error)
-	GetRepositoryBlobs(context.Context, *GetRepositoryBlobs) (*GetRepositoryBlobs_Response, error)
-	BatchGetEntity(context.Context, *BatchGetEntity) (*BatchGetEntity_Response, error)
-	AddEntity(context.Context, *AddEntity) (*AddEntity_Response, error)
-	DeleteEntity(context.Context, *DeleteEntity) (*DeleteEntity_Response, error)
-	GetRepositoryDiff(context.Context, *GetRepositoryDiff) (*GetRepositoryDiff_Response, error)
-	GetRepositoryLog(context.Context, *GetRepositoryLog) (*GetRepositoryLog_Response, error)
-	SetTag(context.Context, *SetTag) (*SetTag_Response, error)
-	GetTag(context.Context, *GetTag) (*GetTag_Response, error)
+	// CRUD for repositories
+	ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesRequest_Response, error)
+	GetRepository(context.Context, *GetRepositoryRequest) (*GetRepositoryRequest_Response, error)
+	CreateRepository(context.Context, *SetRepository) (*SetRepository_Response, error)
+	UpdateRepository(context.Context, *SetRepository) (*SetRepository_Response, error)
+	DeleteRepository(context.Context, *DeleteRepositoryRequest) (*DeleteRepositoryRequest_Response, error)
+	// CRUD for commits
+	ListCommits(context.Context, *ListCommitsRequest) (*ListCommitsRequest_Response, error)
+	GetCommit(context.Context, *GetCommitRequest) (*GetCommitRequest_Response, error)
+	CreateCommit(context.Context, *CreateCommitRequest) (*CreateCommitRequest_Response, error)
+	DeleteCommit(context.Context, *DeleteCommitRequest) (*DeleteCommitRequest_Response, error)
+	// Getting blobs and folders in a commit
+	ListCommitBlobs(context.Context, *ListCommitBlobsRequest) (*ListCommitBlobsRequest_Response, error)
+	GetCommitBlob(context.Context, *GetCommitBlobRequest) (*GetCommitBlobRequest_Response, error)
+	GetCommitFolder(context.Context, *GetCommitFolderRequest) (*GetCommitFolderRequest_Response, error)
+	// Git-like operations
+	ComputeRepositoryDiff(context.Context, *ComputeRepositoryDiffRequest) (*ComputeRepositoryDiffRequest_Response, error)
+	// CRUD for tags
+	ListTags(context.Context, *ListTagsRequest) (*ListTagsRequest_Response, error)
+	GetTag(context.Context, *GetTagRequest) (*GetTagRequest_Response, error)
+	SetTag(context.Context, *SetTagRequest) (*SetTagRequest_Response, error)
+	DeleteTag(context.Context, *DeleteTagRequest) (*DeleteTagRequest_Response, error)
 }
 
 // UnimplementedVersioningServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedVersioningServiceServer struct {
 }
 
-func (*UnimplementedVersioningServiceServer) GetRepository(ctx context.Context, req *GetRepository) (*GetRepository_Response, error) {
+func (*UnimplementedVersioningServiceServer) ListRepositories(ctx context.Context, req *ListRepositoriesRequest) (*ListRepositoriesRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRepositories not implemented")
+}
+func (*UnimplementedVersioningServiceServer) GetRepository(ctx context.Context, req *GetRepositoryRequest) (*GetRepositoryRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepository not implemented")
 }
-func (*UnimplementedVersioningServiceServer) SetRepository(ctx context.Context, req *SetRepository) (*SetRepository_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetRepository not implemented")
+func (*UnimplementedVersioningServiceServer) CreateRepository(ctx context.Context, req *SetRepository) (*SetRepository_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRepository not implemented")
 }
-func (*UnimplementedVersioningServiceServer) DeleteRepository(ctx context.Context, req *DeleteRepository) (*DeleteRepository_Response, error) {
+func (*UnimplementedVersioningServiceServer) UpdateRepository(ctx context.Context, req *SetRepository) (*SetRepository_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRepository not implemented")
+}
+func (*UnimplementedVersioningServiceServer) DeleteRepository(ctx context.Context, req *DeleteRepositoryRequest) (*DeleteRepositoryRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRepository not implemented")
 }
-func (*UnimplementedVersioningServiceServer) CommitRepositoryBlobs(ctx context.Context, req *CommitRepositoryBlobs) (*CommitRepositoryBlobs_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommitRepositoryBlobs not implemented")
+func (*UnimplementedVersioningServiceServer) ListCommits(ctx context.Context, req *ListCommitsRequest) (*ListCommitsRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCommits not implemented")
 }
-func (*UnimplementedVersioningServiceServer) GetRepositoryBlobs(ctx context.Context, req *GetRepositoryBlobs) (*GetRepositoryBlobs_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRepositoryBlobs not implemented")
+func (*UnimplementedVersioningServiceServer) GetCommit(ctx context.Context, req *GetCommitRequest) (*GetCommitRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommit not implemented")
 }
-func (*UnimplementedVersioningServiceServer) BatchGetEntity(ctx context.Context, req *BatchGetEntity) (*BatchGetEntity_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchGetEntity not implemented")
+func (*UnimplementedVersioningServiceServer) CreateCommit(ctx context.Context, req *CreateCommitRequest) (*CreateCommitRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCommit not implemented")
 }
-func (*UnimplementedVersioningServiceServer) AddEntity(ctx context.Context, req *AddEntity) (*AddEntity_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddEntity not implemented")
+func (*UnimplementedVersioningServiceServer) DeleteCommit(ctx context.Context, req *DeleteCommitRequest) (*DeleteCommitRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCommit not implemented")
 }
-func (*UnimplementedVersioningServiceServer) DeleteEntity(ctx context.Context, req *DeleteEntity) (*DeleteEntity_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteEntity not implemented")
+func (*UnimplementedVersioningServiceServer) ListCommitBlobs(ctx context.Context, req *ListCommitBlobsRequest) (*ListCommitBlobsRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCommitBlobs not implemented")
 }
-func (*UnimplementedVersioningServiceServer) GetRepositoryDiff(ctx context.Context, req *GetRepositoryDiff) (*GetRepositoryDiff_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRepositoryDiff not implemented")
+func (*UnimplementedVersioningServiceServer) GetCommitBlob(ctx context.Context, req *GetCommitBlobRequest) (*GetCommitBlobRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommitBlob not implemented")
 }
-func (*UnimplementedVersioningServiceServer) GetRepositoryLog(ctx context.Context, req *GetRepositoryLog) (*GetRepositoryLog_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRepositoryLog not implemented")
+func (*UnimplementedVersioningServiceServer) GetCommitFolder(ctx context.Context, req *GetCommitFolderRequest) (*GetCommitFolderRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommitFolder not implemented")
 }
-func (*UnimplementedVersioningServiceServer) SetTag(ctx context.Context, req *SetTag) (*SetTag_Response, error) {
+func (*UnimplementedVersioningServiceServer) ComputeRepositoryDiff(ctx context.Context, req *ComputeRepositoryDiffRequest) (*ComputeRepositoryDiffRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ComputeRepositoryDiff not implemented")
+}
+func (*UnimplementedVersioningServiceServer) ListTags(ctx context.Context, req *ListTagsRequest) (*ListTagsRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTags not implemented")
+}
+func (*UnimplementedVersioningServiceServer) GetTag(ctx context.Context, req *GetTagRequest) (*GetTagRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTag not implemented")
+}
+func (*UnimplementedVersioningServiceServer) SetTag(ctx context.Context, req *SetTagRequest) (*SetTagRequest_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetTag not implemented")
 }
-func (*UnimplementedVersioningServiceServer) GetTag(ctx context.Context, req *GetTag) (*GetTag_Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTag not implemented")
+func (*UnimplementedVersioningServiceServer) DeleteTag(ctx context.Context, req *DeleteTagRequest) (*DeleteTagRequest_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTag not implemented")
 }
 
 func RegisterVersioningServiceServer(s *grpc.Server, srv VersioningServiceServer) {
 	s.RegisterService(&_VersioningService_serviceDesc, srv)
 }
 
+func _VersioningService_ListRepositories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRepositoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VersioningServiceServer).ListRepositories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/ListRepositories",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VersioningServiceServer).ListRepositories(ctx, req.(*ListRepositoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VersioningService_GetRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRepository)
+	in := new(GetRepositoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2063,31 +2712,49 @@ func _VersioningService_GetRepository_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetRepository",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).GetRepository(ctx, req.(*GetRepository))
+		return srv.(VersioningServiceServer).GetRepository(ctx, req.(*GetRepositoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_SetRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _VersioningService_CreateRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SetRepository)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).SetRepository(ctx, in)
+		return srv.(VersioningServiceServer).CreateRepository(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/SetRepository",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/CreateRepository",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).SetRepository(ctx, req.(*SetRepository))
+		return srv.(VersioningServiceServer).CreateRepository(ctx, req.(*SetRepository))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VersioningService_UpdateRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetRepository)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VersioningServiceServer).UpdateRepository(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/UpdateRepository",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VersioningServiceServer).UpdateRepository(ctx, req.(*SetRepository))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersioningService_DeleteRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRepository)
+	in := new(DeleteRepositoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2099,157 +2766,175 @@ func _VersioningService_DeleteRepository_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/DeleteRepository",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).DeleteRepository(ctx, req.(*DeleteRepository))
+		return srv.(VersioningServiceServer).DeleteRepository(ctx, req.(*DeleteRepositoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_CommitRepositoryBlobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommitRepositoryBlobs)
+func _VersioningService_ListCommits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCommitsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).CommitRepositoryBlobs(ctx, in)
+		return srv.(VersioningServiceServer).ListCommits(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/CommitRepositoryBlobs",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/ListCommits",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).CommitRepositoryBlobs(ctx, req.(*CommitRepositoryBlobs))
+		return srv.(VersioningServiceServer).ListCommits(ctx, req.(*ListCommitsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_GetRepositoryBlobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRepositoryBlobs)
+func _VersioningService_GetCommit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).GetRepositoryBlobs(ctx, in)
+		return srv.(VersioningServiceServer).GetCommit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetRepositoryBlobs",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetCommit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).GetRepositoryBlobs(ctx, req.(*GetRepositoryBlobs))
+		return srv.(VersioningServiceServer).GetCommit(ctx, req.(*GetCommitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_BatchGetEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchGetEntity)
+func _VersioningService_CreateCommit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCommitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).BatchGetEntity(ctx, in)
+		return srv.(VersioningServiceServer).CreateCommit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/BatchGetEntity",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/CreateCommit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).BatchGetEntity(ctx, req.(*BatchGetEntity))
+		return srv.(VersioningServiceServer).CreateCommit(ctx, req.(*CreateCommitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_AddEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddEntity)
+func _VersioningService_DeleteCommit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCommitRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).AddEntity(ctx, in)
+		return srv.(VersioningServiceServer).DeleteCommit(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/AddEntity",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/DeleteCommit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).AddEntity(ctx, req.(*AddEntity))
+		return srv.(VersioningServiceServer).DeleteCommit(ctx, req.(*DeleteCommitRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_DeleteEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteEntity)
+func _VersioningService_ListCommitBlobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCommitBlobsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).DeleteEntity(ctx, in)
+		return srv.(VersioningServiceServer).ListCommitBlobs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/DeleteEntity",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/ListCommitBlobs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).DeleteEntity(ctx, req.(*DeleteEntity))
+		return srv.(VersioningServiceServer).ListCommitBlobs(ctx, req.(*ListCommitBlobsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_GetRepositoryDiff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRepositoryDiff)
+func _VersioningService_GetCommitBlob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommitBlobRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).GetRepositoryDiff(ctx, in)
+		return srv.(VersioningServiceServer).GetCommitBlob(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetRepositoryDiff",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetCommitBlob",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).GetRepositoryDiff(ctx, req.(*GetRepositoryDiff))
+		return srv.(VersioningServiceServer).GetCommitBlob(ctx, req.(*GetCommitBlobRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_GetRepositoryLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRepositoryLog)
+func _VersioningService_GetCommitFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommitFolderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).GetRepositoryLog(ctx, in)
+		return srv.(VersioningServiceServer).GetCommitFolder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetRepositoryLog",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetCommitFolder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).GetRepositoryLog(ctx, req.(*GetRepositoryLog))
+		return srv.(VersioningServiceServer).GetCommitFolder(ctx, req.(*GetCommitFolderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VersioningService_SetTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetTag)
+func _VersioningService_ComputeRepositoryDiff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ComputeRepositoryDiffRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VersioningServiceServer).SetTag(ctx, in)
+		return srv.(VersioningServiceServer).ComputeRepositoryDiff(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/SetTag",
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/ComputeRepositoryDiff",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).SetTag(ctx, req.(*SetTag))
+		return srv.(VersioningServiceServer).ComputeRepositoryDiff(ctx, req.(*ComputeRepositoryDiffRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VersioningService_ListTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTagsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VersioningServiceServer).ListTags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/ListTags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VersioningServiceServer).ListTags(ctx, req.(*ListTagsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _VersioningService_GetTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTag)
+	in := new(GetTagRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2261,7 +2946,43 @@ func _VersioningService_GetTag_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/GetTag",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VersioningServiceServer).GetTag(ctx, req.(*GetTag))
+		return srv.(VersioningServiceServer).GetTag(ctx, req.(*GetTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VersioningService_SetTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VersioningServiceServer).SetTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/SetTag",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VersioningServiceServer).SetTag(ctx, req.(*SetTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VersioningService_DeleteTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VersioningServiceServer).DeleteTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ai.verta.modeldb.versioning.VersioningService/DeleteTag",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VersioningServiceServer).DeleteTag(ctx, req.(*DeleteTagRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2271,52 +2992,72 @@ var _VersioningService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*VersioningServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getRepository",
+			MethodName: "ListRepositories",
+			Handler:    _VersioningService_ListRepositories_Handler,
+		},
+		{
+			MethodName: "GetRepository",
 			Handler:    _VersioningService_GetRepository_Handler,
 		},
 		{
-			MethodName: "setRepository",
-			Handler:    _VersioningService_SetRepository_Handler,
+			MethodName: "CreateRepository",
+			Handler:    _VersioningService_CreateRepository_Handler,
 		},
 		{
-			MethodName: "deleteRepository",
+			MethodName: "UpdateRepository",
+			Handler:    _VersioningService_UpdateRepository_Handler,
+		},
+		{
+			MethodName: "DeleteRepository",
 			Handler:    _VersioningService_DeleteRepository_Handler,
 		},
 		{
-			MethodName: "commitRepositoryBlobs",
-			Handler:    _VersioningService_CommitRepositoryBlobs_Handler,
+			MethodName: "ListCommits",
+			Handler:    _VersioningService_ListCommits_Handler,
 		},
 		{
-			MethodName: "getRepositoryBlobs",
-			Handler:    _VersioningService_GetRepositoryBlobs_Handler,
+			MethodName: "GetCommit",
+			Handler:    _VersioningService_GetCommit_Handler,
 		},
 		{
-			MethodName: "batchGetEntity",
-			Handler:    _VersioningService_BatchGetEntity_Handler,
+			MethodName: "CreateCommit",
+			Handler:    _VersioningService_CreateCommit_Handler,
 		},
 		{
-			MethodName: "addEntity",
-			Handler:    _VersioningService_AddEntity_Handler,
+			MethodName: "DeleteCommit",
+			Handler:    _VersioningService_DeleteCommit_Handler,
 		},
 		{
-			MethodName: "deleteEntity",
-			Handler:    _VersioningService_DeleteEntity_Handler,
+			MethodName: "ListCommitBlobs",
+			Handler:    _VersioningService_ListCommitBlobs_Handler,
 		},
 		{
-			MethodName: "getRepositoryDiff",
-			Handler:    _VersioningService_GetRepositoryDiff_Handler,
+			MethodName: "GetCommitBlob",
+			Handler:    _VersioningService_GetCommitBlob_Handler,
 		},
 		{
-			MethodName: "getRepositoryLog",
-			Handler:    _VersioningService_GetRepositoryLog_Handler,
+			MethodName: "GetCommitFolder",
+			Handler:    _VersioningService_GetCommitFolder_Handler,
 		},
 		{
-			MethodName: "setTag",
+			MethodName: "ComputeRepositoryDiff",
+			Handler:    _VersioningService_ComputeRepositoryDiff_Handler,
+		},
+		{
+			MethodName: "ListTags",
+			Handler:    _VersioningService_ListTags_Handler,
+		},
+		{
+			MethodName: "GetTag",
+			Handler:    _VersioningService_GetTag_Handler,
+		},
+		{
+			MethodName: "SetTag",
 			Handler:    _VersioningService_SetTag_Handler,
 		},
 		{
-			MethodName: "getTag",
-			Handler:    _VersioningService_GetTag_Handler,
+			MethodName: "DeleteTag",
+			Handler:    _VersioningService_DeleteTag_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

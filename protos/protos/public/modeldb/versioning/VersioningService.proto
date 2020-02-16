@@ -9,56 +9,77 @@ import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
 
+// Data structure used to compute the SHA of a commit
+message InternalCommit {
+    repeated string parent_shas = 1;
+
+    string message = 2;
+    uint64 date_created = 3;
+    string author = 4;
+
+    string folder_sha = 1000;
+}
+
 // Base commit for the versioning system
+// DO NOT USE TO COMPUTE SHA
 message Commit {
-    repeated string parent_ids = 1; // ID of the parent commits
-    CommitContent content = 2;      // Content of the commit
-    string tree_id = 3;             // ID of the root tree for the commit
+    // ID of the parent commits.
+    repeated string parent_shas = 1;
+
+    // Message associated with the commit.
+    string message = 2;
+    // Date associated with the commit.
+    // It will be computed by the backend by default, but a feature flag should enable setting by the client.
+    uint64 date_created = 3;
+    // ID of the user who created the commit.
+    string author = 4;
 }
 
-message CommitContent {
-    string message = 1; // Message associated with the commit
-    uint64 date_created = 2;
-    string author = 3;
+// Data structure used to compute the SHA of a folder
+message InternalFolderElement {
+    string element_sha = 1;
+    string element_name = 2;
 }
 
-message TreeElement {
-    string id = 1;
-    string name = 2;
+message InternalFolder {
+    repeated InternalFolderElement blobs = 1;
+    repeated InternalFolderElement subfolders = 2;
 }
 
-message Tree {
-    repeated TreeElement blobs = 1;    // Blobs, which correspond to direct entries/files
-    repeated TreeElement subtrees = 2; // Subtrees, which correspond to subfolders
+// DO NOT USE TO COMPUTE SHA
+message FolderElement {
+    // Name of the element inside the folder.
+    string element_name = 2;
+
+    // SHA of the commit which created this element.
+    string created_by_commit = 3;
+}
+
+// DO NOT USE TO COMPUTE SHA
+message Folder {
+    // Blobs, which correspond to direct entries/files
+    repeated FolderElement blobs = 1;
+    // Subfolders
+    repeated FolderElement subfolders = 2;
 }
 
 message Blob {
     oneof content {
-        DatasetBlob dataset = 1; // Blob of the type dataset
+        DatasetBlob dataset = 2;
     }
 }
 
 message BlobExpanded {
-    string path = 1; // Expand with the path seen so far through the tree to get to this blob
+    // Expand with the path seen so far through the folders to get to this blob
+    string path = 1;
     Blob blob = 2;
 }
 
 message BlobDiff {
-    string path = 1; // Expand with the path seen so far through the tree to get to this blob
+    // Expand with the path seen so far through the folders to get to this blob
+    string path = 1;
     oneof content {
-        DatasetDiff dataset = 2; // Blob of the type dataset
-    }
-}
-
-message Entity {
-    // ID of the entity. Computed as the hash of all fields, excluding this field.
-    // NOTE: be careful: maps must be hashed in the same order every time
-    string sha = 1;
-
-    oneof content {
-        Commit commit = 2;
-        Tree tree = 3;
-        Blob blob = 4;
+        DatasetDiff dataset = 2;
     }
 }
 
@@ -124,68 +145,76 @@ message DeleteRepositoryRequest {
     }
 }
 
-// CRUD for entities
-message BatchGetEntity {
-    repeated string shas = 1;
-    RepositoryIdentification repository_id = 2;
-
-    message Response {
-        repeated Entity entities = 1;
-    }
-}
-
-message AddEntityRequest {
-    // If SHA is not empty, verify before adding the corresponding entry to avoid corruption
-    // If empty, compute it
-    Entity entity = 1;
-    RepositoryIdentification repository_id = 2;
-
-    message Response {
-        string sha = 1;
-    }
-}
-
-message DeleteEntityRequest {
-    string sha = 1;
-    RepositoryIdentification repository_id = 2;
-
-    message Response {
-    }
-}
-
-// Commit operations
+// CRUD for commits
 message ListCommitsRequest {
     RepositoryIdentification repository_id = 1;
     Pagination pagination = 2;
 
     string commit_base = 3; // If empty, consider commits from the beginning
     string commit_head = 4; // If empty, consider commits from the base to the latest
-    string glob_path_prefix = 5;
+    string path_prefix = 5;
 
     message Response {
         repeated Commit commits = 1;
     }
 }
 
+message GetCommitRequest {
+    RepositoryIdentification repository_id = 1;
+    string commit_sha = 2;
+
+    message Response{
+        Commit commit = 1;
+    }
+}
+
+message CreateCommitRequest {
+    RepositoryIdentification repository_id = 1;
+    Commit commit = 2;
+    repeated BlobExpanded blobs = 3;
+
+    message Response {
+        Commit commit = 1;
+    }
+}
+
+message DeleteCommitRequest {
+    RepositoryIdentification repository_id = 1;
+    string commit_sha = 2;
+
+    message Response{
+    }
+}
+
+// Getting blobs and folders in a commit
 message ListCommitBlobsRequest {
     RepositoryIdentification repository_id = 1;
     Pagination pagination = 2;
     string commit_sha = 3;
-    string glob_path_prefix = 4;
+    string path_prefix = 4;
 
     message Response {
         repeated BlobExpanded blobs = 1;
     }
 }
 
-message CreateCommitRequest {
+message GetCommitBlobRequest {
     RepositoryIdentification repository_id = 1;
-    repeated string parent_ids = 2;
-    CommitContent content = 3;
-    repeated BlobExpanded blobs = 4;
+    string commit_sha = 2;
+    string path = 3;
 
     message Response {
-        Commit commit = 1;
+        Blob blob = 1;
+    }
+}
+
+message GetCommitFolderRequest {
+    RepositoryIdentification repository_id = 1;
+    string commit_sha = 2;
+    string path = 3;
+
+    message Response {
+        Folder folder = 1;
     }
 }
 
@@ -194,7 +223,7 @@ message ComputeRepositoryDiffRequest {
     RepositoryIdentification repository_id = 1;
     string commit_a = 2;
     string commit_b = 3;
-    string glob_path_prefix = 4;
+    string path_prefix = 4;
 
     message Response {
         repeated BlobDiff diffs = 1;
@@ -284,48 +313,7 @@ service VersioningService {
         };
     }
 
-    // CRUD for entities
-    rpc GetEntities(BatchGetEntity) returns (BatchGetEntity.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities"
-            additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/entities"
-            }
-        };
-    }
-
-    rpc CreateEntity(AddEntityRequest) returns (AddEntityRequest.Response) {
-        option (google.api.http) = {
-            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities"
-            body: "entity"
-            additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.code}/entities"
-                body: "entity"
-            }
-        };
-    }
-
-    rpc SetEntity(AddEntityRequest) returns (AddEntityRequest.Response) {
-        option (google.api.http) = {
-            put: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities/{entity.sha}"
-            body: "entity"
-            additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.code}/entities/{entity.sha}"
-                body: "entity"
-            }
-        };
-    }
-
-    rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityRequest.Response) {
-        option (google.api.http) = {
-            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/entities/{sha}"
-            additional_bindings {
-                delete: "/v1/versioning/repositories/{repository_id.code}/entities/{sha}"
-            }
-        };
-    }
-
-    // Commit operations
+    // CRUD for commits
     rpc ListCommits(ListCommitsRequest) returns (ListCommitsRequest.Response) {
         option (google.api.http) = {
             get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
@@ -335,6 +323,36 @@ service VersioningService {
         };
     }
 
+    rpc GetCommit(GetCommitRequest) returns (GetCommitRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}"
+            }
+        };
+    };
+
+    rpc CreateCommit(CreateCommitRequest) returns (CreateCommitRequest.Response) {
+        option (google.api.http) = {
+            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
+            body: "*"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.code}/commits"
+                body: "*"
+            }
+        };
+    }
+
+    rpc DeleteCommit(DeleteCommitRequest) returns(DeleteCommitRequest.Response) {
+        option (google.api.http) = {
+            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}"
+            additional_bindings {
+                delete: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}"
+            }
+        };
+    }
+
+    // Getting blobs and folders in a commit
     rpc ListCommitBlobs(ListCommitBlobsRequest) returns (ListCommitBlobsRequest.Response) {
         option (google.api.http) = {
             get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs"
@@ -344,13 +362,20 @@ service VersioningService {
         };
     }
 
-    rpc CreateCommit(CreateCommitRequest) returns (CreateCommitRequest.Response) {
+    rpc GetCommitBlob(GetCommitBlobRequest) returns (GetCommitBlobRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
-            body: "*"
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/{path=**}"
             additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.code}/commits"
-                body: "*"
+                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/{path=**}"
+            }
+        };
+    }
+
+    rpc GetCommitFolder(GetCommitFolderRequest) returns (GetCommitFolderRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/{path=**}"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/{path=**}"
             }
         };
     }

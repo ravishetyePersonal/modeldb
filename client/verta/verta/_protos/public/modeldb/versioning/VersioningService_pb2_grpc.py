@@ -14,65 +14,90 @@ class VersioningServiceStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.getRepository = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/getRepository',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepository.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepository.Response.FromString,
+    self.ListRepositories = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListRepositories',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListRepositoriesRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListRepositoriesRequest.Response.FromString,
         )
-    self.setRepository = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/setRepository',
+    self.GetRepository = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetRepository',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryRequest.Response.FromString,
+        )
+    self.CreateRepository = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/CreateRepository',
         request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.SerializeToString,
         response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.Response.FromString,
         )
-    self.deleteRepository = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/deleteRepository',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepository.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepository.Response.FromString,
+    self.UpdateRepository = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/UpdateRepository',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.Response.FromString,
         )
-    self.commitRepositoryBlobs = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/commitRepositoryBlobs',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CommitRepositoryBlobs.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CommitRepositoryBlobs.Response.FromString,
+    self.DeleteRepository = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/DeleteRepository',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepositoryRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepositoryRequest.Response.FromString,
         )
-    self.getRepositoryBlobs = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/getRepositoryBlobs',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryBlobs.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryBlobs.Response.FromString,
+    self.ListCommits = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListCommits',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitsRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitsRequest.Response.FromString,
         )
-    self.batchGetEntity = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/batchGetEntity',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.BatchGetEntity.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.BatchGetEntity.Response.FromString,
+    self.GetCommit = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetCommit',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitRequest.Response.FromString,
         )
-    self.addEntity = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/addEntity',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.AddEntity.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.AddEntity.Response.FromString,
+    self.CreateCommit = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/CreateCommit',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CreateCommitRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CreateCommitRequest.Response.FromString,
         )
-    self.deleteEntity = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/deleteEntity',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteEntity.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteEntity.Response.FromString,
+    self.DeleteCommit = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/DeleteCommit',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteCommitRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteCommitRequest.Response.FromString,
         )
-    self.getRepositoryDiff = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/getRepositoryDiff',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryDiff.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryDiff.Response.FromString,
+    self.ListCommitBlobs = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListCommitBlobs',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.Response.FromString,
         )
-    self.getRepositoryLog = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/getRepositoryLog',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryLog.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryLog.Response.FromString,
+    self.GetCommitBlob = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetCommitBlob',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.Response.FromString,
         )
-    self.setTag = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/setTag',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTag.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTag.Response.FromString,
+    self.GetCommitFolder = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetCommitFolder',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.Response.FromString,
         )
-    self.getTag = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/getTag',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTag.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTag.Response.FromString,
+    self.ComputeRepositoryDiff = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ComputeRepositoryDiff',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.Response.FromString,
+        )
+    self.ListTags = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListTags',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListTagsRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListTagsRequest.Response.FromString,
+        )
+    self.GetTag = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetTag',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTagRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTagRequest.Response.FromString,
+        )
+    self.SetTag = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/SetTag',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTagRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTagRequest.Response.FromString,
+        )
+    self.DeleteTag = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/DeleteTag',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteTagRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteTagRequest.Response.FromString,
         )
 
 
@@ -80,84 +105,119 @@ class VersioningServiceServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def getRepository(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def setRepository(self, request, context):
-    """If ID is missing, consider a new entry
+  def ListRepositories(self, request, context):
+    """CRUD for repositories
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def deleteRepository(self, request, context):
+  def GetRepository(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def commitRepositoryBlobs(self, request, context):
+  def CreateRepository(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def getRepositoryBlobs(self, request, context):
+  def UpdateRepository(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def batchGetEntity(self, request, context):
+  def DeleteRepository(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def addEntity(self, request, context):
+  def ListCommits(self, request, context):
+    """CRUD for commits
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetCommit(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def deleteEntity(self, request, context):
+  def CreateCommit(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def getRepositoryDiff(self, request, context):
+  def DeleteCommit(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def getRepositoryLog(self, request, context):
+  def ListCommitBlobs(self, request, context):
+    """Getting blobs and folders in a commit
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetCommitBlob(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def setTag(self, request, context):
+  def GetCommitFolder(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def getTag(self, request, context):
+  def ComputeRepositoryDiff(self, request, context):
+    """Git-like operations
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ListTags(self, request, context):
+    """CRUD for tags
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetTag(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SetTag(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def DeleteTag(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -167,65 +227,90 @@ class VersioningServiceServicer(object):
 
 def add_VersioningServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'getRepository': grpc.unary_unary_rpc_method_handler(
-          servicer.getRepository,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepository.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepository.Response.SerializeToString,
+      'ListRepositories': grpc.unary_unary_rpc_method_handler(
+          servicer.ListRepositories,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListRepositoriesRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListRepositoriesRequest.Response.SerializeToString,
       ),
-      'setRepository': grpc.unary_unary_rpc_method_handler(
-          servicer.setRepository,
+      'GetRepository': grpc.unary_unary_rpc_method_handler(
+          servicer.GetRepository,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryRequest.Response.SerializeToString,
+      ),
+      'CreateRepository': grpc.unary_unary_rpc_method_handler(
+          servicer.CreateRepository,
           request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.FromString,
           response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.Response.SerializeToString,
       ),
-      'deleteRepository': grpc.unary_unary_rpc_method_handler(
-          servicer.deleteRepository,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepository.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepository.Response.SerializeToString,
+      'UpdateRepository': grpc.unary_unary_rpc_method_handler(
+          servicer.UpdateRepository,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetRepository.Response.SerializeToString,
       ),
-      'commitRepositoryBlobs': grpc.unary_unary_rpc_method_handler(
-          servicer.commitRepositoryBlobs,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CommitRepositoryBlobs.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CommitRepositoryBlobs.Response.SerializeToString,
+      'DeleteRepository': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteRepository,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepositoryRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteRepositoryRequest.Response.SerializeToString,
       ),
-      'getRepositoryBlobs': grpc.unary_unary_rpc_method_handler(
-          servicer.getRepositoryBlobs,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryBlobs.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryBlobs.Response.SerializeToString,
+      'ListCommits': grpc.unary_unary_rpc_method_handler(
+          servicer.ListCommits,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitsRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitsRequest.Response.SerializeToString,
       ),
-      'batchGetEntity': grpc.unary_unary_rpc_method_handler(
-          servicer.batchGetEntity,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.BatchGetEntity.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.BatchGetEntity.Response.SerializeToString,
+      'GetCommit': grpc.unary_unary_rpc_method_handler(
+          servicer.GetCommit,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitRequest.Response.SerializeToString,
       ),
-      'addEntity': grpc.unary_unary_rpc_method_handler(
-          servicer.addEntity,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.AddEntity.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.AddEntity.Response.SerializeToString,
+      'CreateCommit': grpc.unary_unary_rpc_method_handler(
+          servicer.CreateCommit,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CreateCommitRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.CreateCommitRequest.Response.SerializeToString,
       ),
-      'deleteEntity': grpc.unary_unary_rpc_method_handler(
-          servicer.deleteEntity,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteEntity.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteEntity.Response.SerializeToString,
+      'DeleteCommit': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteCommit,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteCommitRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteCommitRequest.Response.SerializeToString,
       ),
-      'getRepositoryDiff': grpc.unary_unary_rpc_method_handler(
-          servicer.getRepositoryDiff,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryDiff.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryDiff.Response.SerializeToString,
+      'ListCommitBlobs': grpc.unary_unary_rpc_method_handler(
+          servicer.ListCommitBlobs,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.Response.SerializeToString,
       ),
-      'getRepositoryLog': grpc.unary_unary_rpc_method_handler(
-          servicer.getRepositoryLog,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryLog.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetRepositoryLog.Response.SerializeToString,
+      'GetCommitBlob': grpc.unary_unary_rpc_method_handler(
+          servicer.GetCommitBlob,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.Response.SerializeToString,
       ),
-      'setTag': grpc.unary_unary_rpc_method_handler(
-          servicer.setTag,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTag.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTag.Response.SerializeToString,
+      'GetCommitFolder': grpc.unary_unary_rpc_method_handler(
+          servicer.GetCommitFolder,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.Response.SerializeToString,
       ),
-      'getTag': grpc.unary_unary_rpc_method_handler(
-          servicer.getTag,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTag.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTag.Response.SerializeToString,
+      'ComputeRepositoryDiff': grpc.unary_unary_rpc_method_handler(
+          servicer.ComputeRepositoryDiff,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.Response.SerializeToString,
+      ),
+      'ListTags': grpc.unary_unary_rpc_method_handler(
+          servicer.ListTags,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListTagsRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListTagsRequest.Response.SerializeToString,
+      ),
+      'GetTag': grpc.unary_unary_rpc_method_handler(
+          servicer.GetTag,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTagRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetTagRequest.Response.SerializeToString,
+      ),
+      'SetTag': grpc.unary_unary_rpc_method_handler(
+          servicer.SetTag,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTagRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetTagRequest.Response.SerializeToString,
+      ),
+      'DeleteTag': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteTag,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteTagRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteTagRequest.Response.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

@@ -22,37 +22,51 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='ai.verta.modeldb.versioning',
   syntax='proto3',
   serialized_options=_b('P\001ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioning'),
-  serialized_pb=_b('\n8protos/public/modeldb/versioning/VersioningService.proto\x12\x1b\x61i.verta.modeldb.versioning\x1a\x1cgoogle/api/annotations.proto\x1a)protos/public/modeldb/CommonService.proto\x1a.protos/public/modeldb/versioning/Dataset.proto\"j\n\x06\x43ommit\x12\x12\n\nparent_ids\x18\x01 \x03(\t\x12;\n\x07\x63ontent\x18\x02 \x01(\x0b\x32*.ai.verta.modeldb.versioning.CommitContent\x12\x0f\n\x07tree_id\x18\x03 \x01(\t\"6\n\rCommitContent\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x14\n\x0c\x64\x61te_created\x18\x02 \x01(\x04\"\'\n\x0bTreeElement\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\"{\n\x04Tree\x12\x37\n\x05\x62lobs\x18\x01 \x03(\x0b\x32(.ai.verta.modeldb.versioning.TreeElement\x12:\n\x08subtrees\x18\x02 \x03(\x0b\x32(.ai.verta.modeldb.versioning.TreeElement\"N\n\x04\x42lob\x12;\n\x07\x64\x61taset\x18\x01 \x01(\x0b\x32(.ai.verta.modeldb.versioning.DatasetBlobH\x00\x42\t\n\x07\x63ontent\"M\n\x0c\x42lobExpanded\x12\x0c\n\x04path\x18\x01 \x01(\t\x12/\n\x04\x62lob\x18\x02 \x01(\x0b\x32!.ai.verta.modeldb.versioning.Blob\"`\n\x08\x42lobDiff\x12\x0c\n\x04path\x18\x01 \x01(\t\x12;\n\x07\x64\x61taset\x18\x02 \x01(\x0b\x32(.ai.verta.modeldb.versioning.DatasetDiffH\x00\x42\t\n\x07\x63ontent\"\xd7\x01\n\x06\x45ntity\x12\x0e\n\x06sha256\x18\x01 \x01(\t\x12\x15\n\rrepository_id\x18\x02 \x01(\t\x12\x35\n\x06\x63ommit\x18\x03 \x01(\x0b\x32#.ai.verta.modeldb.versioning.CommitH\x00\x12\x31\n\x04tree\x18\x04 \x01(\x0b\x32!.ai.verta.modeldb.versioning.TreeH\x00\x12\x31\n\x04\x62lob\x18\x05 \x01(\x0b\x32!.ai.verta.modeldb.versioning.BlobH\x00\x42\t\n\x07\x63ontent\"\xb3\x01\n\nRepository\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x61te_created\x18\x03 \x01(\x04\x12\x14\n\x0c\x64\x61te_updated\x18\x04 \x01(\x04\x12\x14\n\x0cworkspace_id\x18\x05 \x01(\t\x12I\n\x0eworkspace_type\x18\x06 \x01(\x0e\x32\x31.ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType\"\x8a\x01\n\rGetRepository\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x03 \x01(\t\x1aG\n\x08Response\x12;\n\nrepository\x18\x01 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\"\xad\x01\n\rSetRepository\x12;\n\nrepository\x18\x01 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x1aG\n\x08Response\x12;\n\nrepository\x18\x01 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\"E\n\x10\x44\x65leteRepository\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x1a\x1a\n\x08Response\x12\x0e\n\x06status\x18\x01 \x01(\x08\"x\n\x0e\x42\x61tchGetEntity\x12\x0c\n\x04shas\x18\x01 \x03(\t\x12\x15\n\rrepository_id\x18\x02 \x01(\t\x1a\x41\n\x08Response\x12\x35\n\x08\x65ntities\x18\x01 \x03(\x0b\x32#.ai.verta.modeldb.versioning.Entity\"\x81\x01\n\tAddEntity\x12\x33\n\x06\x65ntity\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Entity\x1a?\n\x08Response\x12\x33\n\x06\x65ntity\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Entity\"Q\n\x0c\x44\x65leteEntity\x12\x0e\n\x06sha256\x18\x01 \x01(\t\x12\x15\n\rrepository_id\x18\x02 \x01(\t\x1a\x1a\n\x08Response\x12\x0e\n\x06status\x18\x01 \x01(\x08\"\xfa\x01\n\x15\x43ommitRepositoryBlobs\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x12\n\nparent_ids\x18\x02 \x03(\t\x12;\n\x07\x63ontent\x18\x03 \x01(\x0b\x32*.ai.verta.modeldb.versioning.CommitContent\x12\x38\n\x05\x62lobs\x18\x04 \x03(\x0b\x32).ai.verta.modeldb.versioning.BlobExpanded\x1a?\n\x08Response\x12\x33\n\x06\x63ommit\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"\x9e\x01\n\x12GetRepositoryBlobs\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x11\n\tcommit_id\x18\x02 \x01(\t\x12\x18\n\x10glob_path_prefix\x18\x03 \x01(\t\x1a\x44\n\x08Response\x12\x38\n\x05\x62lobs\x18\x01 \x03(\x0b\x32).ai.verta.modeldb.versioning.BlobExpanded\"\xaa\x01\n\x11GetRepositoryDiff\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x10\n\x08\x63ommit_a\x18\x02 \x01(\t\x12\x10\n\x08\x63ommit_b\x18\x03 \x01(\t\x12\x18\n\x10glob_path_prefix\x18\x04 \x01(\t\x1a@\n\x08Response\x12\x34\n\x05\x64iffs\x18\x01 \x03(\x0b\x32%.ai.verta.modeldb.versioning.BlobDiff\"\xd8\x01\n\x10GetRepositoryLog\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x13\n\x0b\x63ommit_base\x18\x02 \x01(\t\x12\x13\n\x0b\x63ommit_head\x18\x03 \x01(\t\x12\x18\n\x10glob_path_prefix\x18\x06 \x01(\t\x12\x13\n\x0bpage_number\x18\x04 \x01(\x05\x12\x12\n\npage_limit\x18\x05 \x01(\x05\x1a@\n\x08Response\x12\x34\n\x07\x63ommits\x18\x01 \x03(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"[\n\x06SetTag\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x0b\n\x03tag\x18\x02 \x01(\t\x12\x11\n\tcommit_id\x18\x03 \x01(\t\x1a\x1a\n\x08Response\x12\x0e\n\x06status\x18\x01 \x01(\x08\"m\n\x06GetTag\x12\x15\n\rrepository_id\x18\x01 \x01(\t\x12\x0b\n\x03tag\x18\x02 \x01(\t\x1a?\n\x08Response\x12\x33\n\x06\x63ommit\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit2\xe3\x0e\n\x11VersioningService\x12\x96\x01\n\rgetRepository\x12*.ai.verta.modeldb.versioning.GetRepository\x1a\x33.ai.verta.modeldb.versioning.GetRepository.Response\"$\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/versioning/getRepository\x12\x99\x01\n\rsetRepository\x12*.ai.verta.modeldb.versioning.SetRepository\x1a\x33.ai.verta.modeldb.versioning.SetRepository.Response\"\'\x82\xd3\xe4\x93\x02!\"\x1c/v1/versioning/setRepository:\x01*\x12\xa5\x01\n\x10\x64\x65leteRepository\x12-.ai.verta.modeldb.versioning.DeleteRepository\x1a\x36.ai.verta.modeldb.versioning.DeleteRepository.Response\"*\x82\xd3\xe4\x93\x02$\"\x1f/v1/versioning/deleteRepository:\x01*\x12\xb9\x01\n\x15\x63ommitRepositoryBlobs\x12\x32.ai.verta.modeldb.versioning.CommitRepositoryBlobs\x1a;.ai.verta.modeldb.versioning.CommitRepositoryBlobs.Response\"/\x82\xd3\xe4\x93\x02)\"$/v1/versioning/commitRepositoryBlobs:\x01*\x12\xaa\x01\n\x12getRepositoryBlobs\x12/.ai.verta.modeldb.versioning.GetRepositoryBlobs\x1a\x38.ai.verta.modeldb.versioning.GetRepositoryBlobs.Response\")\x82\xd3\xe4\x93\x02#\x12!/v1/versioning/getRepositoryBlobs\x12\x9a\x01\n\x0e\x62\x61tchGetEntity\x12+.ai.verta.modeldb.versioning.BatchGetEntity\x1a\x34.ai.verta.modeldb.versioning.BatchGetEntity.Response\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/v1/versioning/batchGetEntity\x12\x89\x01\n\taddEntity\x12&.ai.verta.modeldb.versioning.AddEntity\x1a/.ai.verta.modeldb.versioning.AddEntity.Response\"#\x82\xd3\xe4\x93\x02\x1d\"\x18/v1/versioning/addEntity:\x01*\x12\x95\x01\n\x0c\x64\x65leteEntity\x12).ai.verta.modeldb.versioning.DeleteEntity\x1a\x32.ai.verta.modeldb.versioning.DeleteEntity.Response\"&\x82\xd3\xe4\x93\x02 \"\x1b/v1/versioning/deleteEntity:\x01*\x12\xa6\x01\n\x11getRepositoryDiff\x12..ai.verta.modeldb.versioning.GetRepositoryDiff\x1a\x37.ai.verta.modeldb.versioning.GetRepositoryDiff.Response\"(\x82\xd3\xe4\x93\x02\"\x12 /v1/versioning/getRepositoryDiff\x12\xa2\x01\n\x10getRepositoryLog\x12-.ai.verta.modeldb.versioning.GetRepositoryLog\x1a\x36.ai.verta.modeldb.versioning.GetRepositoryLog.Response\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/v1/versioning/getRepositoryLog\x12}\n\x06setTag\x12#.ai.verta.modeldb.versioning.SetTag\x1a,.ai.verta.modeldb.versioning.SetTag.Response\" \x82\xd3\xe4\x93\x02\x1a\"\x15/v1/versioning/setTag:\x01*\x12z\n\x06getTag\x12#.ai.verta.modeldb.versioning.GetTag\x1a,.ai.verta.modeldb.versioning.GetTag.Response\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/versioning/getTagBMP\x01ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioningb\x06proto3')
+  serialized_pb=_b('\n8protos/public/modeldb/versioning/VersioningService.proto\x12\x1b\x61i.verta.modeldb.versioning\x1a\x1cgoogle/api/annotations.proto\x1a)protos/public/modeldb/CommonService.proto\x1a.protos/public/modeldb/versioning/Dataset.proto\"q\n\x0eInternalCommit\x12\x13\n\x0bparent_shas\x18\x01 \x03(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x61te_created\x18\x03 \x01(\x04\x12\x0e\n\x06\x61uthor\x18\x04 \x01(\t\x12\x13\n\nfolder_sha\x18\xe8\x07 \x01(\t\"T\n\x06\x43ommit\x12\x13\n\x0bparent_shas\x18\x01 \x03(\t\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x61te_created\x18\x03 \x01(\x04\x12\x0e\n\x06\x61uthor\x18\x04 \x01(\t\"B\n\x15InternalFolderElement\x12\x13\n\x0b\x65lement_sha\x18\x01 \x01(\t\x12\x14\n\x0c\x65lement_name\x18\x02 \x01(\t\"\x9b\x01\n\x0eInternalFolder\x12\x41\n\x05\x62lobs\x18\x01 \x03(\x0b\x32\x32.ai.verta.modeldb.versioning.InternalFolderElement\x12\x46\n\nsubfolders\x18\x02 \x03(\x0b\x32\x32.ai.verta.modeldb.versioning.InternalFolderElement\"@\n\rFolderElement\x12\x14\n\x0c\x65lement_name\x18\x02 \x01(\t\x12\x19\n\x11\x63reated_by_commit\x18\x03 \x01(\t\"\x83\x01\n\x06\x46older\x12\x39\n\x05\x62lobs\x18\x01 \x03(\x0b\x32*.ai.verta.modeldb.versioning.FolderElement\x12>\n\nsubfolders\x18\x02 \x03(\x0b\x32*.ai.verta.modeldb.versioning.FolderElement\"N\n\x04\x42lob\x12;\n\x07\x64\x61taset\x18\x02 \x01(\x0b\x32(.ai.verta.modeldb.versioning.DatasetBlobH\x00\x42\t\n\x07\x63ontent\"M\n\x0c\x42lobExpanded\x12\x0c\n\x04path\x18\x01 \x01(\t\x12/\n\x04\x62lob\x18\x02 \x01(\x0b\x32!.ai.verta.modeldb.versioning.Blob\"`\n\x08\x42lobDiff\x12\x0c\n\x04path\x18\x01 \x01(\t\x12;\n\x07\x64\x61taset\x18\x02 \x01(\x0b\x32(.ai.verta.modeldb.versioning.DatasetDiffH\x00\x42\t\n\x07\x63ontent\"\xb3\x01\n\nRepository\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x14\n\x0c\x64\x61te_created\x18\x03 \x01(\x04\x12\x14\n\x0c\x64\x61te_updated\x18\x04 \x01(\x04\x12\x14\n\x0cworkspace_id\x18\x05 \x01(\t\x12I\n\x0eworkspace_type\x18\x06 \x01(\x0e\x32\x31.ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType\"5\n\nPagination\x12\x13\n\x0bpage_number\x18\x02 \x01(\x05\x12\x12\n\npage_limit\x18\x03 \x01(\x05\"E\n\x1dRepositoryNamedIdentification\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\"}\n\x18RepositoryIdentification\x12K\n\x05named\x18\x01 \x01(\x0b\x32:.ai.verta.modeldb.versioning.RepositoryNamedIdentificationH\x00\x12\x0e\n\x04\x63ode\x18\x02 \x01(\x04H\x00\x42\x04\n\x02id\"\xb7\x01\n\x17ListRepositoriesRequest\x12\x16\n\x0eworkspace_name\x18\x01 \x01(\t\x12;\n\npagination\x18\x02 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Pagination\x1aG\n\x08Response\x12;\n\nrepository\x18\x01 \x03(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\"\xa2\x01\n\x14GetRepositoryRequest\x12\x41\n\x02id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x1aG\n\x08Response\x12;\n\nrepository\x18\x01 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\"\xd8\x01\n\rSetRepository\x12\x41\n\x02id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12;\n\nrepository\x18\x02 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\x1aG\n\x08Response\x12;\n\nrepository\x18\x01 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Repository\"h\n\x17\x44\x65leteRepositoryRequest\x12\x41\n\x02id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x1a\n\n\x08Response\"\xa0\x02\n\x12ListCommitsRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12;\n\npagination\x18\x02 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Pagination\x12\x13\n\x0b\x63ommit_base\x18\x03 \x01(\t\x12\x13\n\x0b\x63ommit_head\x18\x04 \x01(\t\x12\x13\n\x0bpath_prefix\x18\x05 \x01(\t\x1a@\n\x08Response\x12\x34\n\x07\x63ommits\x18\x01 \x03(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"\xb5\x01\n\x10GetCommitRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x12\n\ncommit_sha\x18\x02 \x01(\t\x1a?\n\x08Response\x12\x33\n\x06\x63ommit\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"\x93\x02\n\x13\x43reateCommitRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x33\n\x06\x63ommit\x18\x02 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit\x12\x38\n\x05\x62lobs\x18\x03 \x03(\x0b\x32).ai.verta.modeldb.versioning.BlobExpanded\x1a?\n\x08Response\x12\x33\n\x06\x63ommit\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"\x83\x01\n\x13\x44\x65leteCommitRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x12\n\ncommit_sha\x18\x02 \x01(\t\x1a\n\n\x08Response\"\x92\x02\n\x16ListCommitBlobsRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12;\n\npagination\x18\x02 \x01(\x0b\x32\'.ai.verta.modeldb.versioning.Pagination\x12\x12\n\ncommit_sha\x18\x03 \x01(\t\x12\x13\n\x0bpath_prefix\x18\x04 \x01(\t\x1a\x44\n\x08Response\x12\x38\n\x05\x62lobs\x18\x01 \x03(\x0b\x32).ai.verta.modeldb.versioning.BlobExpanded\"\xc3\x01\n\x14GetCommitBlobRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x12\n\ncommit_sha\x18\x02 \x01(\t\x12\x0c\n\x04path\x18\x03 \x01(\t\x1a;\n\x08Response\x12/\n\x04\x62lob\x18\x01 \x01(\x0b\x32!.ai.verta.modeldb.versioning.Blob\"\xc9\x01\n\x16GetCommitFolderRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x12\n\ncommit_sha\x18\x02 \x01(\t\x12\x0c\n\x04path\x18\x03 \x01(\t\x1a?\n\x08Response\x12\x33\n\x06\x66older\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Folder\"\xe7\x01\n\x1c\x43omputeRepositoryDiffRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x10\n\x08\x63ommit_a\x18\x02 \x01(\t\x12\x10\n\x08\x63ommit_b\x18\x03 \x01(\t\x12\x13\n\x0bpath_prefix\x18\x04 \x01(\t\x1a@\n\x08Response\x12\x34\n\x05\x64iffs\x18\x01 \x03(\x0b\x32%.ai.verta.modeldb.versioning.BlobDiff\"y\n\x0fListTagsRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x1a\x18\n\x08Response\x12\x0c\n\x04tags\x18\x01 \x03(\t\"\xab\x01\n\rGetTagRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x0b\n\x03tag\x18\x02 \x01(\t\x1a?\n\x08Response\x12\x33\n\x06\x63ommit\x18\x01 \x01(\x0b\x32#.ai.verta.modeldb.versioning.Commit\"\x8a\x01\n\rSetTagRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x0b\n\x03tag\x18\x02 \x01(\t\x12\x12\n\ncommit_sha\x18\x03 \x01(\t\x1a\n\n\x08Response\"y\n\x10\x44\x65leteTagRequest\x12L\n\rrepository_id\x18\x01 \x01(\x0b\x32\x35.ai.verta.modeldb.versioning.RepositoryIdentification\x12\x0b\n\x03tag\x18\x02 \x01(\t\x1a\n\n\x08Response2\xc3(\n\x11VersioningService\x12\xe7\x01\n\x10ListRepositories\x12\x34.ai.verta.modeldb.versioning.ListRepositoriesRequest\x1a=.ai.verta.modeldb.versioning.ListRepositoriesRequest.Response\"^\x82\xd3\xe4\x93\x02X\x12\x37/v1/versioning/workspaces/{workspace_name}/repositoriesZ\x1d\x12\x1b/v1/versioning/repositories\x12\x82\x02\n\rGetRepository\x12\x31.ai.verta.modeldb.versioning.GetRepositoryRequest\x1a:.ai.verta.modeldb.versioning.GetRepositoryRequest.Response\"\x81\x01\x82\xd3\xe4\x93\x02{\x12P/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}Z\'\x12%/v1/versioning/repositories/{id.code}\x12\xc9\x01\n\x10\x43reateRepository\x12*.ai.verta.modeldb.versioning.SetRepository\x1a\x33.ai.verta.modeldb.versioning.SetRepository.Response\"T\x82\xd3\xe4\x93\x02N\"@/v1/versioning/workspaces/{id.named.workspace_name}/repositories:\nrepository\x12\x90\x02\n\x10UpdateRepository\x12*.ai.verta.modeldb.versioning.SetRepository\x1a\x33.ai.verta.modeldb.versioning.SetRepository.Response\"\x9a\x01\x82\xd3\xe4\x93\x02\x93\x01\x1aP/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}:\nrepositoryZ3\x1a%/v1/versioning/repositories/{id.code}:\nrepository\x12\x8b\x02\n\x10\x44\x65leteRepository\x12\x34.ai.verta.modeldb.versioning.DeleteRepositoryRequest\x1a=.ai.verta.modeldb.versioning.DeleteRepositoryRequest.Response\"\x81\x01\x82\xd3\xe4\x93\x02{*P/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}Z\'*%/v1/versioning/repositories/{id.code}\x12\xae\x02\n\x0bListCommits\x12/.ai.verta.modeldb.versioning.ListCommitsRequest\x1a\x38.ai.verta.modeldb.versioning.ListCommitsRequest.Response\"\xb3\x01\x82\xd3\xe4\x93\x02\xac\x01\x12n/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commitsZ:\x12\x38/v1/versioning/repositories/{repository_id.code}/commits\x12\xc2\x02\n\tGetCommit\x12-.ai.verta.modeldb.versioning.GetCommitRequest\x1a\x36.ai.verta.modeldb.versioning.GetCommitRequest.Response\"\xcd\x01\x82\xd3\xe4\x93\x02\xc6\x01\x12{/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}ZG\x12\x45/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}\x12\xb7\x02\n\x0c\x43reateCommit\x12\x30.ai.verta.modeldb.versioning.CreateCommitRequest\x1a\x39.ai.verta.modeldb.versioning.CreateCommitRequest.Response\"\xb9\x01\x82\xd3\xe4\x93\x02\xb2\x01\"n/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits:\x01*Z=\x1a\x38/v1/versioning/repositories/{repository_id.code}/commits:\x01*\x12\xcb\x02\n\x0c\x44\x65leteCommit\x12\x30.ai.verta.modeldb.versioning.DeleteCommitRequest\x1a\x39.ai.verta.modeldb.versioning.DeleteCommitRequest.Response\"\xcd\x01\x82\xd3\xe4\x93\x02\xc6\x01*{/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}ZG*E/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}\x12\xe1\x02\n\x0fListCommitBlobs\x12\x33.ai.verta.modeldb.versioning.ListCommitBlobsRequest\x1a<.ai.verta.modeldb.versioning.ListCommitBlobsRequest.Response\"\xda\x01\x82\xd3\xe4\x93\x02\xd3\x01\x12\x81\x01/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobsZM\x12K/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs\x12\xef\x02\n\rGetCommitBlob\x12\x31.ai.verta.modeldb.versioning.GetCommitBlobRequest\x1a:.ai.verta.modeldb.versioning.GetCommitBlobRequest.Response\"\xee\x01\x82\xd3\xe4\x93\x02\xe7\x01\x12\x8b\x01/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/{path=**}ZW\x12U/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/{path=**}\x12\xf9\x02\n\x0fGetCommitFolder\x12\x33.ai.verta.modeldb.versioning.GetCommitFolderRequest\x1a<.ai.verta.modeldb.versioning.GetCommitFolderRequest.Response\"\xf2\x01\x82\xd3\xe4\x93\x02\xeb\x01\x12\x8d\x01/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/{path=**}ZY\x12W/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/{path=**}\x12\xc6\x02\n\x15\x43omputeRepositoryDiff\x12\x39.ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest\x1a\x42.ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.Response\"\xad\x01\x82\xd3\xe4\x93\x02\xa6\x01\x12k/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/diffZ7\x12\x35/v1/versioning/repositories/{repository_id.code}/diff\x12\x9f\x02\n\x08ListTags\x12,.ai.verta.modeldb.versioning.ListTagsRequest\x1a\x35.ai.verta.modeldb.versioning.ListTagsRequest.Response\"\xad\x01\x82\xd3\xe4\x93\x02\xa6\x01\x12k/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tagsZ7\x12\x35/v1/versioning/repositories/{repository_id.code}/tags\x12\xa5\x02\n\x06GetTag\x12*.ai.verta.modeldb.versioning.GetTagRequest\x1a\x33.ai.verta.modeldb.versioning.GetTagRequest.Response\"\xb9\x01\x82\xd3\xe4\x93\x02\xb2\x01\x12q/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}Z=\x12;/v1/versioning/repositories/{repository_id.code}/tags/{tag}\x12\xbd\x02\n\x06SetTag\x12*.ai.verta.modeldb.versioning.SetTagRequest\x1a\x33.ai.verta.modeldb.versioning.SetTagRequest.Response\"\xd1\x01\x82\xd3\xe4\x93\x02\xca\x01\x1aq/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}:\ncommit_shaZI\x1a;/v1/versioning/repositories/{repository_id.code}/tags/{tag}:\ncommit_sha\x12\xae\x02\n\tDeleteTag\x12-.ai.verta.modeldb.versioning.DeleteTagRequest\x1a\x36.ai.verta.modeldb.versioning.DeleteTagRequest.Response\"\xb9\x01\x82\xd3\xe4\x93\x02\xb2\x01*q/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}Z=*;/v1/versioning/repositories/{repository_id.code}/tags/{tag}BMP\x01ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioningb\x06proto3')
   ,
   dependencies=[google_dot_api_dot_annotations__pb2.DESCRIPTOR,protos_dot_public_dot_modeldb_dot_CommonService__pb2.DESCRIPTOR,protos_dot_public_dot_modeldb_dot_versioning_dot_Dataset__pb2.DESCRIPTOR,])
 
 
 
 
-_COMMIT = _descriptor.Descriptor(
-  name='Commit',
-  full_name='ai.verta.modeldb.versioning.Commit',
+_INTERNALCOMMIT = _descriptor.Descriptor(
+  name='InternalCommit',
+  full_name='ai.verta.modeldb.versioning.InternalCommit',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='parent_ids', full_name='ai.verta.modeldb.versioning.Commit.parent_ids', index=0,
+      name='parent_shas', full_name='ai.verta.modeldb.versioning.InternalCommit.parent_shas', index=0,
       number=1, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='content', full_name='ai.verta.modeldb.versioning.Commit.content', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='message', full_name='ai.verta.modeldb.versioning.InternalCommit.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='tree_id', full_name='ai.verta.modeldb.versioning.Commit.tree_id', index=2,
-      number=3, type=9, cpp_type=9, label=1,
+      name='date_created', full_name='ai.verta.modeldb.versioning.InternalCommit.date_created', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='author', full_name='ai.verta.modeldb.versioning.InternalCommit.author', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='folder_sha', full_name='ai.verta.modeldb.versioning.InternalCommit.folder_sha', index=4,
+      number=1000, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -70,28 +84,42 @@ _COMMIT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=210,
-  serialized_end=316,
+  serialized_end=323,
 )
 
 
-_COMMITCONTENT = _descriptor.Descriptor(
-  name='CommitContent',
-  full_name='ai.verta.modeldb.versioning.CommitContent',
+_COMMIT = _descriptor.Descriptor(
+  name='Commit',
+  full_name='ai.verta.modeldb.versioning.Commit',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='message', full_name='ai.verta.modeldb.versioning.CommitContent.message', index=0,
-      number=1, type=9, cpp_type=9, label=1,
+      name='parent_shas', full_name='ai.verta.modeldb.versioning.Commit.parent_shas', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='ai.verta.modeldb.versioning.Commit.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='date_created', full_name='ai.verta.modeldb.versioning.CommitContent.date_created', index=1,
-      number=2, type=4, cpp_type=4, label=1,
+      name='date_created', full_name='ai.verta.modeldb.versioning.Commit.date_created', index=2,
+      number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='author', full_name='ai.verta.modeldb.versioning.Commit.author', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -107,27 +135,27 @@ _COMMITCONTENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=318,
-  serialized_end=372,
+  serialized_start=325,
+  serialized_end=409,
 )
 
 
-_TREEELEMENT = _descriptor.Descriptor(
-  name='TreeElement',
-  full_name='ai.verta.modeldb.versioning.TreeElement',
+_INTERNALFOLDERELEMENT = _descriptor.Descriptor(
+  name='InternalFolderElement',
+  full_name='ai.verta.modeldb.versioning.InternalFolderElement',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='ai.verta.modeldb.versioning.TreeElement.id', index=0,
+      name='element_sha', full_name='ai.verta.modeldb.versioning.InternalFolderElement.element_sha', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='name', full_name='ai.verta.modeldb.versioning.TreeElement.name', index=1,
+      name='element_name', full_name='ai.verta.modeldb.versioning.InternalFolderElement.element_name', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -145,27 +173,27 @@ _TREEELEMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=374,
-  serialized_end=413,
+  serialized_start=411,
+  serialized_end=477,
 )
 
 
-_TREE = _descriptor.Descriptor(
-  name='Tree',
-  full_name='ai.verta.modeldb.versioning.Tree',
+_INTERNALFOLDER = _descriptor.Descriptor(
+  name='InternalFolder',
+  full_name='ai.verta.modeldb.versioning.InternalFolder',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='blobs', full_name='ai.verta.modeldb.versioning.Tree.blobs', index=0,
+      name='blobs', full_name='ai.verta.modeldb.versioning.InternalFolder.blobs', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='subtrees', full_name='ai.verta.modeldb.versioning.Tree.subtrees', index=1,
+      name='subfolders', full_name='ai.verta.modeldb.versioning.InternalFolder.subfolders', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -183,8 +211,84 @@ _TREE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=415,
-  serialized_end=538,
+  serialized_start=480,
+  serialized_end=635,
+)
+
+
+_FOLDERELEMENT = _descriptor.Descriptor(
+  name='FolderElement',
+  full_name='ai.verta.modeldb.versioning.FolderElement',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='element_name', full_name='ai.verta.modeldb.versioning.FolderElement.element_name', index=0,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='created_by_commit', full_name='ai.verta.modeldb.versioning.FolderElement.created_by_commit', index=1,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=637,
+  serialized_end=701,
+)
+
+
+_FOLDER = _descriptor.Descriptor(
+  name='Folder',
+  full_name='ai.verta.modeldb.versioning.Folder',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='blobs', full_name='ai.verta.modeldb.versioning.Folder.blobs', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='subfolders', full_name='ai.verta.modeldb.versioning.Folder.subfolders', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=704,
+  serialized_end=835,
 )
 
 
@@ -197,7 +301,7 @@ _BLOB = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='dataset', full_name='ai.verta.modeldb.versioning.Blob.dataset', index=0,
-      number=1, type=11, cpp_type=10, label=1,
+      number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -217,8 +321,8 @@ _BLOB = _descriptor.Descriptor(
       name='content', full_name='ai.verta.modeldb.versioning.Blob.content',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=540,
-  serialized_end=618,
+  serialized_start=837,
+  serialized_end=915,
 )
 
 
@@ -255,8 +359,8 @@ _BLOBEXPANDED = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=620,
-  serialized_end=697,
+  serialized_start=917,
+  serialized_end=994,
 )
 
 
@@ -296,70 +400,8 @@ _BLOBDIFF = _descriptor.Descriptor(
       name='content', full_name='ai.verta.modeldb.versioning.BlobDiff.content',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=699,
-  serialized_end=795,
-)
-
-
-_ENTITY = _descriptor.Descriptor(
-  name='Entity',
-  full_name='ai.verta.modeldb.versioning.Entity',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='sha256', full_name='ai.verta.modeldb.versioning.Entity.sha256', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.Entity.repository_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit', full_name='ai.verta.modeldb.versioning.Entity.commit', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='tree', full_name='ai.verta.modeldb.versioning.Entity.tree', index=3,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='blob', full_name='ai.verta.modeldb.versioning.Entity.blob', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-    _descriptor.OneofDescriptor(
-      name='content', full_name='ai.verta.modeldb.versioning.Entity.content',
-      index=0, containing_type=None, fields=[]),
-  ],
-  serialized_start=798,
-  serialized_end=1013,
+  serialized_start=996,
+  serialized_end=1092,
 )
 
 
@@ -372,8 +414,8 @@ _REPOSITORY = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='id', full_name='ai.verta.modeldb.versioning.Repository.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -424,20 +466,205 @@ _REPOSITORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1016,
-  serialized_end=1195,
+  serialized_start=1095,
+  serialized_end=1274,
 )
 
 
-_GETREPOSITORY_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.GetRepository.Response',
+_PAGINATION = _descriptor.Descriptor(
+  name='Pagination',
+  full_name='ai.verta.modeldb.versioning.Pagination',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='repository', full_name='ai.verta.modeldb.versioning.GetRepository.Response.repository', index=0,
+      name='page_number', full_name='ai.verta.modeldb.versioning.Pagination.page_number', index=0,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='page_limit', full_name='ai.verta.modeldb.versioning.Pagination.page_limit', index=1,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1276,
+  serialized_end=1329,
+)
+
+
+_REPOSITORYNAMEDIDENTIFICATION = _descriptor.Descriptor(
+  name='RepositoryNamedIdentification',
+  full_name='ai.verta.modeldb.versioning.RepositoryNamedIdentification',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='name', full_name='ai.verta.modeldb.versioning.RepositoryNamedIdentification.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='workspace_name', full_name='ai.verta.modeldb.versioning.RepositoryNamedIdentification.workspace_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1331,
+  serialized_end=1400,
+)
+
+
+_REPOSITORYIDENTIFICATION = _descriptor.Descriptor(
+  name='RepositoryIdentification',
+  full_name='ai.verta.modeldb.versioning.RepositoryIdentification',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='named', full_name='ai.verta.modeldb.versioning.RepositoryIdentification.named', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='code', full_name='ai.verta.modeldb.versioning.RepositoryIdentification.code', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='id', full_name='ai.verta.modeldb.versioning.RepositoryIdentification.id',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=1402,
+  serialized_end=1527,
+)
+
+
+_LISTREPOSITORIESREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.ListRepositoriesRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository', full_name='ai.verta.modeldb.versioning.ListRepositoriesRequest.Response.repository', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1642,
+  serialized_end=1713,
+)
+
+_LISTREPOSITORIESREQUEST = _descriptor.Descriptor(
+  name='ListRepositoriesRequest',
+  full_name='ai.verta.modeldb.versioning.ListRepositoriesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_name', full_name='ai.verta.modeldb.versioning.ListRepositoriesRequest.workspace_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='pagination', full_name='ai.verta.modeldb.versioning.ListRepositoriesRequest.pagination', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_LISTREPOSITORIESREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1530,
+  serialized_end=1713,
+)
+
+
+_GETREPOSITORYREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.GetRepositoryRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository', full_name='ai.verta.modeldb.versioning.GetRepositoryRequest.Response.repository', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -455,42 +682,28 @@ _GETREPOSITORY_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1265,
-  serialized_end=1336,
+  serialized_start=1807,
+  serialized_end=1878,
 )
 
-_GETREPOSITORY = _descriptor.Descriptor(
-  name='GetRepository',
-  full_name='ai.verta.modeldb.versioning.GetRepository',
+_GETREPOSITORYREQUEST = _descriptor.Descriptor(
+  name='GetRepositoryRequest',
+  full_name='ai.verta.modeldb.versioning.GetRepositoryRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='ai.verta.modeldb.versioning.GetRepository.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='ai.verta.modeldb.versioning.GetRepository.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='workspace_name', full_name='ai.verta.modeldb.versioning.GetRepository.workspace_name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='id', full_name='ai.verta.modeldb.versioning.GetRepositoryRequest.id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
-  nested_types=[_GETREPOSITORY_RESPONSE, ],
+  nested_types=[_GETREPOSITORYREQUEST_RESPONSE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -499,8 +712,8 @@ _GETREPOSITORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1198,
-  serialized_end=1336,
+  serialized_start=1716,
+  serialized_end=1878,
 )
 
 
@@ -530,8 +743,8 @@ _SETREPOSITORY_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1265,
-  serialized_end=1336,
+  serialized_start=1807,
+  serialized_end=1878,
 )
 
 _SETREPOSITORY = _descriptor.Descriptor(
@@ -542,16 +755,16 @@ _SETREPOSITORY = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='repository', full_name='ai.verta.modeldb.versioning.SetRepository.repository', index=0,
+      name='id', full_name='ai.verta.modeldb.versioning.SetRepository.id', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='workspace_name', full_name='ai.verta.modeldb.versioning.SetRepository.workspace_name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='repository', full_name='ai.verta.modeldb.versioning.SetRepository.repository', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -567,25 +780,18 @@ _SETREPOSITORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1339,
-  serialized_end=1512,
+  serialized_start=1881,
+  serialized_end=2097,
 )
 
 
-_DELETEREPOSITORY_RESPONSE = _descriptor.Descriptor(
+_DELETEREPOSITORYREQUEST_RESPONSE = _descriptor.Descriptor(
   name='Response',
-  full_name='ai.verta.modeldb.versioning.DeleteRepository.Response',
+  full_name='ai.verta.modeldb.versioning.DeleteRepositoryRequest.Response',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
-    _descriptor.FieldDescriptor(
-      name='status', full_name='ai.verta.modeldb.versioning.DeleteRepository.Response.status', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -598,28 +804,28 @@ _DELETEREPOSITORY_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1557,
-  serialized_end=1583,
+  serialized_start=1642,
+  serialized_end=1652,
 )
 
-_DELETEREPOSITORY = _descriptor.Descriptor(
-  name='DeleteRepository',
-  full_name='ai.verta.modeldb.versioning.DeleteRepository',
+_DELETEREPOSITORYREQUEST = _descriptor.Descriptor(
+  name='DeleteRepositoryRequest',
+  full_name='ai.verta.modeldb.versioning.DeleteRepositoryRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.DeleteRepository.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='id', full_name='ai.verta.modeldb.versioning.DeleteRepositoryRequest.id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
-  nested_types=[_DELETEREPOSITORY_RESPONSE, ],
+  nested_types=[_DELETEREPOSITORYREQUEST_RESPONSE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -628,20 +834,20 @@ _DELETEREPOSITORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1514,
-  serialized_end=1583,
+  serialized_start=2099,
+  serialized_end=2203,
 )
 
 
-_BATCHGETENTITY_RESPONSE = _descriptor.Descriptor(
+_LISTCOMMITSREQUEST_RESPONSE = _descriptor.Descriptor(
   name='Response',
-  full_name='ai.verta.modeldb.versioning.BatchGetEntity.Response',
+  full_name='ai.verta.modeldb.versioning.ListCommitsRequest.Response',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='entities', full_name='ai.verta.modeldb.versioning.BatchGetEntity.Response.entities', index=0,
+      name='commits', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.Response.commits', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -659,394 +865,333 @@ _BATCHGETENTITY_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1640,
-  serialized_end=1705,
+  serialized_start=2430,
+  serialized_end=2494,
 )
 
-_BATCHGETENTITY = _descriptor.Descriptor(
-  name='BatchGetEntity',
-  full_name='ai.verta.modeldb.versioning.BatchGetEntity',
+_LISTCOMMITSREQUEST = _descriptor.Descriptor(
+  name='ListCommitsRequest',
+  full_name='ai.verta.modeldb.versioning.ListCommitsRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='shas', full_name='ai.verta.modeldb.versioning.BatchGetEntity.shas', index=0,
-      number=1, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.BatchGetEntity.repository_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_BATCHGETENTITY_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1585,
-  serialized_end=1705,
-)
-
-
-_ADDENTITY_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.AddEntity.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='entity', full_name='ai.verta.modeldb.versioning.AddEntity.Response.entity', index=0,
+      name='repository_id', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.repository_id', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1774,
-  serialized_end=1837,
-)
-
-_ADDENTITY = _descriptor.Descriptor(
-  name='AddEntity',
-  full_name='ai.verta.modeldb.versioning.AddEntity',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
     _descriptor.FieldDescriptor(
-      name='entity', full_name='ai.verta.modeldb.versioning.AddEntity.entity', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_ADDENTITY_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1708,
-  serialized_end=1837,
-)
-
-
-_DELETEENTITY_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.DeleteEntity.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='status', full_name='ai.verta.modeldb.versioning.DeleteEntity.Response.status', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1557,
-  serialized_end=1583,
-)
-
-_DELETEENTITY = _descriptor.Descriptor(
-  name='DeleteEntity',
-  full_name='ai.verta.modeldb.versioning.DeleteEntity',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='sha256', full_name='ai.verta.modeldb.versioning.DeleteEntity.sha256', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.DeleteEntity.repository_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_DELETEENTITY_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1839,
-  serialized_end=1920,
-)
-
-
-_COMMITREPOSITORYBLOBS_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='commit', full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.Response.commit', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2110,
-  serialized_end=2173,
-)
-
-_COMMITREPOSITORYBLOBS = _descriptor.Descriptor(
-  name='CommitRepositoryBlobs',
-  full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='parent_ids', full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.parent_ids', index=1,
-      number=2, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.content', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='pagination', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.pagination', index=1,
+      number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='blobs', full_name='ai.verta.modeldb.versioning.CommitRepositoryBlobs.blobs', index=3,
-      number=4, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_COMMITREPOSITORYBLOBS_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1923,
-  serialized_end=2173,
-)
-
-
-_GETREPOSITORYBLOBS_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='blobs', full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs.Response.blobs', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2266,
-  serialized_end=2334,
-)
-
-_GETREPOSITORYBLOBS = _descriptor.Descriptor(
-  name='GetRepositoryBlobs',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_id', full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs.commit_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='glob_path_prefix', full_name='ai.verta.modeldb.versioning.GetRepositoryBlobs.glob_path_prefix', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETREPOSITORYBLOBS_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2176,
-  serialized_end=2334,
-)
-
-
-_GETREPOSITORYDIFF_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='diffs', full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.Response.diffs', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2443,
-  serialized_end=2507,
-)
-
-_GETREPOSITORYDIFF = _descriptor.Descriptor(
-  name='GetRepositoryDiff',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryDiff',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_a', full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.commit_a', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_b', full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.commit_b', index=2,
+      name='commit_base', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.commit_base', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='glob_path_prefix', full_name='ai.verta.modeldb.versioning.GetRepositoryDiff.glob_path_prefix', index=3,
+      name='commit_head', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.commit_head', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='path_prefix', full_name='ai.verta.modeldb.versioning.ListCommitsRequest.path_prefix', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_LISTCOMMITSREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2206,
+  serialized_end=2494,
+)
+
+
+_GETCOMMITREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.GetCommitRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='commit', full_name='ai.verta.modeldb.versioning.GetCommitRequest.Response.commit', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2615,
+  serialized_end=2678,
+)
+
+_GETCOMMITREQUEST = _descriptor.Descriptor(
+  name='GetCommitRequest',
+  full_name='ai.verta.modeldb.versioning.GetCommitRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.GetCommitRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.GetCommitRequest.commit_sha', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_GETCOMMITREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2497,
+  serialized_end=2678,
+)
+
+
+_CREATECOMMITREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.CreateCommitRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='commit', full_name='ai.verta.modeldb.versioning.CreateCommitRequest.Response.commit', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2615,
+  serialized_end=2678,
+)
+
+_CREATECOMMITREQUEST = _descriptor.Descriptor(
+  name='CreateCommitRequest',
+  full_name='ai.verta.modeldb.versioning.CreateCommitRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.CreateCommitRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit', full_name='ai.verta.modeldb.versioning.CreateCommitRequest.commit', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='blobs', full_name='ai.verta.modeldb.versioning.CreateCommitRequest.blobs', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_CREATECOMMITREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2681,
+  serialized_end=2956,
+)
+
+
+_DELETECOMMITREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.DeleteCommitRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1642,
+  serialized_end=1652,
+)
+
+_DELETECOMMITREQUEST = _descriptor.Descriptor(
+  name='DeleteCommitRequest',
+  full_name='ai.verta.modeldb.versioning.DeleteCommitRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.DeleteCommitRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.DeleteCommitRequest.commit_sha', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_DELETECOMMITREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2959,
+  serialized_end=3090,
+)
+
+
+_LISTCOMMITBLOBSREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='blobs', full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.Response.blobs', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3299,
+  serialized_end=3367,
+)
+
+_LISTCOMMITBLOBSREQUEST = _descriptor.Descriptor(
+  name='ListCommitBlobsRequest',
+  full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='pagination', full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.pagination', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.commit_sha', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='path_prefix', full_name='ai.verta.modeldb.versioning.ListCommitBlobsRequest.path_prefix', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -1055,7 +1200,7 @@ _GETREPOSITORYDIFF = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_GETREPOSITORYDIFF_RESPONSE, ],
+  nested_types=[_LISTCOMMITBLOBSREQUEST_RESPONSE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -1064,191 +1209,20 @@ _GETREPOSITORYDIFF = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2337,
-  serialized_end=2507,
+  serialized_start=3093,
+  serialized_end=3367,
 )
 
 
-_GETREPOSITORYLOG_RESPONSE = _descriptor.Descriptor(
+_GETCOMMITBLOBREQUEST_RESPONSE = _descriptor.Descriptor(
   name='Response',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryLog.Response',
+  full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest.Response',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='commits', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.Response.commits', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2662,
-  serialized_end=2726,
-)
-
-_GETREPOSITORYLOG = _descriptor.Descriptor(
-  name='GetRepositoryLog',
-  full_name='ai.verta.modeldb.versioning.GetRepositoryLog',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_base', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.commit_base', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_head', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.commit_head', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='glob_path_prefix', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.glob_path_prefix', index=3,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='page_number', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.page_number', index=4,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='page_limit', full_name='ai.verta.modeldb.versioning.GetRepositoryLog.page_limit', index=5,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETREPOSITORYLOG_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2510,
-  serialized_end=2726,
-)
-
-
-_SETTAG_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.SetTag.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='status', full_name='ai.verta.modeldb.versioning.SetTag.Response.status', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1557,
-  serialized_end=1583,
-)
-
-_SETTAG = _descriptor.Descriptor(
-  name='SetTag',
-  full_name='ai.verta.modeldb.versioning.SetTag',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.SetTag.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='tag', full_name='ai.verta.modeldb.versioning.SetTag.tag', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='commit_id', full_name='ai.verta.modeldb.versioning.SetTag.commit_id', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[_SETTAG_RESPONSE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2728,
-  serialized_end=2819,
-)
-
-
-_GETTAG_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='ai.verta.modeldb.versioning.GetTag.Response',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='commit', full_name='ai.verta.modeldb.versioning.GetTag.Response.commit', index=0,
+      name='blob', full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest.Response.blob', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -1266,27 +1240,34 @@ _GETTAG_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2110,
-  serialized_end=2173,
+  serialized_start=3506,
+  serialized_end=3565,
 )
 
-_GETTAG = _descriptor.Descriptor(
-  name='GetTag',
-  full_name='ai.verta.modeldb.versioning.GetTag',
+_GETCOMMITBLOBREQUEST = _descriptor.Descriptor(
+  name='GetCommitBlobRequest',
+  full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='repository_id', full_name='ai.verta.modeldb.versioning.GetTag.repository_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
+      name='repository_id', full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest.commit_sha', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='tag', full_name='ai.verta.modeldb.versioning.GetTag.tag', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='path', full_name='ai.verta.modeldb.versioning.GetCommitBlobRequest.path', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -1294,7 +1275,7 @@ _GETTAG = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_GETTAG_RESPONSE, ],
+  nested_types=[_GETCOMMITBLOBREQUEST_RESPONSE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -1303,13 +1284,429 @@ _GETTAG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2821,
-  serialized_end=2930,
+  serialized_start=3370,
+  serialized_end=3565,
 )
 
-_COMMIT.fields_by_name['content'].message_type = _COMMITCONTENT
-_TREE.fields_by_name['blobs'].message_type = _TREEELEMENT
-_TREE.fields_by_name['subtrees'].message_type = _TREEELEMENT
+
+_GETCOMMITFOLDERREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='folder', full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest.Response.folder', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3706,
+  serialized_end=3769,
+)
+
+_GETCOMMITFOLDERREQUEST = _descriptor.Descriptor(
+  name='GetCommitFolderRequest',
+  full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest.commit_sha', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='path', full_name='ai.verta.modeldb.versioning.GetCommitFolderRequest.path', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_GETCOMMITFOLDERREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3568,
+  serialized_end=3769,
+)
+
+
+_COMPUTEREPOSITORYDIFFREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='diffs', full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.Response.diffs', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3939,
+  serialized_end=4003,
+)
+
+_COMPUTEREPOSITORYDIFFREQUEST = _descriptor.Descriptor(
+  name='ComputeRepositoryDiffRequest',
+  full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_a', full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.commit_a', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_b', full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.commit_b', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='path_prefix', full_name='ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.path_prefix', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_COMPUTEREPOSITORYDIFFREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3772,
+  serialized_end=4003,
+)
+
+
+_LISTTAGSREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.ListTagsRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='tags', full_name='ai.verta.modeldb.versioning.ListTagsRequest.Response.tags', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4102,
+  serialized_end=4126,
+)
+
+_LISTTAGSREQUEST = _descriptor.Descriptor(
+  name='ListTagsRequest',
+  full_name='ai.verta.modeldb.versioning.ListTagsRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.ListTagsRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_LISTTAGSREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4005,
+  serialized_end=4126,
+)
+
+
+_GETTAGREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.GetTagRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='commit', full_name='ai.verta.modeldb.versioning.GetTagRequest.Response.commit', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2615,
+  serialized_end=2678,
+)
+
+_GETTAGREQUEST = _descriptor.Descriptor(
+  name='GetTagRequest',
+  full_name='ai.verta.modeldb.versioning.GetTagRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.GetTagRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='tag', full_name='ai.verta.modeldb.versioning.GetTagRequest.tag', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_GETTAGREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4129,
+  serialized_end=4300,
+)
+
+
+_SETTAGREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.SetTagRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1642,
+  serialized_end=1652,
+)
+
+_SETTAGREQUEST = _descriptor.Descriptor(
+  name='SetTagRequest',
+  full_name='ai.verta.modeldb.versioning.SetTagRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.SetTagRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='tag', full_name='ai.verta.modeldb.versioning.SetTagRequest.tag', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='commit_sha', full_name='ai.verta.modeldb.versioning.SetTagRequest.commit_sha', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_SETTAGREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4303,
+  serialized_end=4441,
+)
+
+
+_DELETETAGREQUEST_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='ai.verta.modeldb.versioning.DeleteTagRequest.Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1642,
+  serialized_end=1652,
+)
+
+_DELETETAGREQUEST = _descriptor.Descriptor(
+  name='DeleteTagRequest',
+  full_name='ai.verta.modeldb.versioning.DeleteTagRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='repository_id', full_name='ai.verta.modeldb.versioning.DeleteTagRequest.repository_id', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='tag', full_name='ai.verta.modeldb.versioning.DeleteTagRequest.tag', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[_DELETETAGREQUEST_RESPONSE, ],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=4443,
+  serialized_end=4564,
+)
+
+_INTERNALFOLDER.fields_by_name['blobs'].message_type = _INTERNALFOLDERELEMENT
+_INTERNALFOLDER.fields_by_name['subfolders'].message_type = _INTERNALFOLDERELEMENT
+_FOLDER.fields_by_name['blobs'].message_type = _FOLDERELEMENT
+_FOLDER.fields_by_name['subfolders'].message_type = _FOLDERELEMENT
 _BLOB.fields_by_name['dataset'].message_type = protos_dot_public_dot_modeldb_dot_versioning_dot_Dataset__pb2._DATASETBLOB
 _BLOB.oneofs_by_name['content'].fields.append(
   _BLOB.fields_by_name['dataset'])
@@ -1319,66 +1716,99 @@ _BLOBDIFF.fields_by_name['dataset'].message_type = protos_dot_public_dot_modeldb
 _BLOBDIFF.oneofs_by_name['content'].fields.append(
   _BLOBDIFF.fields_by_name['dataset'])
 _BLOBDIFF.fields_by_name['dataset'].containing_oneof = _BLOBDIFF.oneofs_by_name['content']
-_ENTITY.fields_by_name['commit'].message_type = _COMMIT
-_ENTITY.fields_by_name['tree'].message_type = _TREE
-_ENTITY.fields_by_name['blob'].message_type = _BLOB
-_ENTITY.oneofs_by_name['content'].fields.append(
-  _ENTITY.fields_by_name['commit'])
-_ENTITY.fields_by_name['commit'].containing_oneof = _ENTITY.oneofs_by_name['content']
-_ENTITY.oneofs_by_name['content'].fields.append(
-  _ENTITY.fields_by_name['tree'])
-_ENTITY.fields_by_name['tree'].containing_oneof = _ENTITY.oneofs_by_name['content']
-_ENTITY.oneofs_by_name['content'].fields.append(
-  _ENTITY.fields_by_name['blob'])
-_ENTITY.fields_by_name['blob'].containing_oneof = _ENTITY.oneofs_by_name['content']
 _REPOSITORY.fields_by_name['workspace_type'].enum_type = protos_dot_public_dot_modeldb_dot_CommonService__pb2._WORKSPACETYPEENUM_WORKSPACETYPE
-_GETREPOSITORY_RESPONSE.fields_by_name['repository'].message_type = _REPOSITORY
-_GETREPOSITORY_RESPONSE.containing_type = _GETREPOSITORY
+_REPOSITORYIDENTIFICATION.fields_by_name['named'].message_type = _REPOSITORYNAMEDIDENTIFICATION
+_REPOSITORYIDENTIFICATION.oneofs_by_name['id'].fields.append(
+  _REPOSITORYIDENTIFICATION.fields_by_name['named'])
+_REPOSITORYIDENTIFICATION.fields_by_name['named'].containing_oneof = _REPOSITORYIDENTIFICATION.oneofs_by_name['id']
+_REPOSITORYIDENTIFICATION.oneofs_by_name['id'].fields.append(
+  _REPOSITORYIDENTIFICATION.fields_by_name['code'])
+_REPOSITORYIDENTIFICATION.fields_by_name['code'].containing_oneof = _REPOSITORYIDENTIFICATION.oneofs_by_name['id']
+_LISTREPOSITORIESREQUEST_RESPONSE.fields_by_name['repository'].message_type = _REPOSITORY
+_LISTREPOSITORIESREQUEST_RESPONSE.containing_type = _LISTREPOSITORIESREQUEST
+_LISTREPOSITORIESREQUEST.fields_by_name['pagination'].message_type = _PAGINATION
+_GETREPOSITORYREQUEST_RESPONSE.fields_by_name['repository'].message_type = _REPOSITORY
+_GETREPOSITORYREQUEST_RESPONSE.containing_type = _GETREPOSITORYREQUEST
+_GETREPOSITORYREQUEST.fields_by_name['id'].message_type = _REPOSITORYIDENTIFICATION
 _SETREPOSITORY_RESPONSE.fields_by_name['repository'].message_type = _REPOSITORY
 _SETREPOSITORY_RESPONSE.containing_type = _SETREPOSITORY
+_SETREPOSITORY.fields_by_name['id'].message_type = _REPOSITORYIDENTIFICATION
 _SETREPOSITORY.fields_by_name['repository'].message_type = _REPOSITORY
-_DELETEREPOSITORY_RESPONSE.containing_type = _DELETEREPOSITORY
-_BATCHGETENTITY_RESPONSE.fields_by_name['entities'].message_type = _ENTITY
-_BATCHGETENTITY_RESPONSE.containing_type = _BATCHGETENTITY
-_ADDENTITY_RESPONSE.fields_by_name['entity'].message_type = _ENTITY
-_ADDENTITY_RESPONSE.containing_type = _ADDENTITY
-_ADDENTITY.fields_by_name['entity'].message_type = _ENTITY
-_DELETEENTITY_RESPONSE.containing_type = _DELETEENTITY
-_COMMITREPOSITORYBLOBS_RESPONSE.fields_by_name['commit'].message_type = _COMMIT
-_COMMITREPOSITORYBLOBS_RESPONSE.containing_type = _COMMITREPOSITORYBLOBS
-_COMMITREPOSITORYBLOBS.fields_by_name['content'].message_type = _COMMITCONTENT
-_COMMITREPOSITORYBLOBS.fields_by_name['blobs'].message_type = _BLOBEXPANDED
-_GETREPOSITORYBLOBS_RESPONSE.fields_by_name['blobs'].message_type = _BLOBEXPANDED
-_GETREPOSITORYBLOBS_RESPONSE.containing_type = _GETREPOSITORYBLOBS
-_GETREPOSITORYDIFF_RESPONSE.fields_by_name['diffs'].message_type = _BLOBDIFF
-_GETREPOSITORYDIFF_RESPONSE.containing_type = _GETREPOSITORYDIFF
-_GETREPOSITORYLOG_RESPONSE.fields_by_name['commits'].message_type = _COMMIT
-_GETREPOSITORYLOG_RESPONSE.containing_type = _GETREPOSITORYLOG
-_SETTAG_RESPONSE.containing_type = _SETTAG
-_GETTAG_RESPONSE.fields_by_name['commit'].message_type = _COMMIT
-_GETTAG_RESPONSE.containing_type = _GETTAG
+_DELETEREPOSITORYREQUEST_RESPONSE.containing_type = _DELETEREPOSITORYREQUEST
+_DELETEREPOSITORYREQUEST.fields_by_name['id'].message_type = _REPOSITORYIDENTIFICATION
+_LISTCOMMITSREQUEST_RESPONSE.fields_by_name['commits'].message_type = _COMMIT
+_LISTCOMMITSREQUEST_RESPONSE.containing_type = _LISTCOMMITSREQUEST
+_LISTCOMMITSREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_LISTCOMMITSREQUEST.fields_by_name['pagination'].message_type = _PAGINATION
+_GETCOMMITREQUEST_RESPONSE.fields_by_name['commit'].message_type = _COMMIT
+_GETCOMMITREQUEST_RESPONSE.containing_type = _GETCOMMITREQUEST
+_GETCOMMITREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_CREATECOMMITREQUEST_RESPONSE.fields_by_name['commit'].message_type = _COMMIT
+_CREATECOMMITREQUEST_RESPONSE.containing_type = _CREATECOMMITREQUEST
+_CREATECOMMITREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_CREATECOMMITREQUEST.fields_by_name['commit'].message_type = _COMMIT
+_CREATECOMMITREQUEST.fields_by_name['blobs'].message_type = _BLOBEXPANDED
+_DELETECOMMITREQUEST_RESPONSE.containing_type = _DELETECOMMITREQUEST
+_DELETECOMMITREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_LISTCOMMITBLOBSREQUEST_RESPONSE.fields_by_name['blobs'].message_type = _BLOBEXPANDED
+_LISTCOMMITBLOBSREQUEST_RESPONSE.containing_type = _LISTCOMMITBLOBSREQUEST
+_LISTCOMMITBLOBSREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_LISTCOMMITBLOBSREQUEST.fields_by_name['pagination'].message_type = _PAGINATION
+_GETCOMMITBLOBREQUEST_RESPONSE.fields_by_name['blob'].message_type = _BLOB
+_GETCOMMITBLOBREQUEST_RESPONSE.containing_type = _GETCOMMITBLOBREQUEST
+_GETCOMMITBLOBREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_GETCOMMITFOLDERREQUEST_RESPONSE.fields_by_name['folder'].message_type = _FOLDER
+_GETCOMMITFOLDERREQUEST_RESPONSE.containing_type = _GETCOMMITFOLDERREQUEST
+_GETCOMMITFOLDERREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_COMPUTEREPOSITORYDIFFREQUEST_RESPONSE.fields_by_name['diffs'].message_type = _BLOBDIFF
+_COMPUTEREPOSITORYDIFFREQUEST_RESPONSE.containing_type = _COMPUTEREPOSITORYDIFFREQUEST
+_COMPUTEREPOSITORYDIFFREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_LISTTAGSREQUEST_RESPONSE.containing_type = _LISTTAGSREQUEST
+_LISTTAGSREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_GETTAGREQUEST_RESPONSE.fields_by_name['commit'].message_type = _COMMIT
+_GETTAGREQUEST_RESPONSE.containing_type = _GETTAGREQUEST
+_GETTAGREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_SETTAGREQUEST_RESPONSE.containing_type = _SETTAGREQUEST
+_SETTAGREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+_DELETETAGREQUEST_RESPONSE.containing_type = _DELETETAGREQUEST
+_DELETETAGREQUEST.fields_by_name['repository_id'].message_type = _REPOSITORYIDENTIFICATION
+DESCRIPTOR.message_types_by_name['InternalCommit'] = _INTERNALCOMMIT
 DESCRIPTOR.message_types_by_name['Commit'] = _COMMIT
-DESCRIPTOR.message_types_by_name['CommitContent'] = _COMMITCONTENT
-DESCRIPTOR.message_types_by_name['TreeElement'] = _TREEELEMENT
-DESCRIPTOR.message_types_by_name['Tree'] = _TREE
+DESCRIPTOR.message_types_by_name['InternalFolderElement'] = _INTERNALFOLDERELEMENT
+DESCRIPTOR.message_types_by_name['InternalFolder'] = _INTERNALFOLDER
+DESCRIPTOR.message_types_by_name['FolderElement'] = _FOLDERELEMENT
+DESCRIPTOR.message_types_by_name['Folder'] = _FOLDER
 DESCRIPTOR.message_types_by_name['Blob'] = _BLOB
 DESCRIPTOR.message_types_by_name['BlobExpanded'] = _BLOBEXPANDED
 DESCRIPTOR.message_types_by_name['BlobDiff'] = _BLOBDIFF
-DESCRIPTOR.message_types_by_name['Entity'] = _ENTITY
 DESCRIPTOR.message_types_by_name['Repository'] = _REPOSITORY
-DESCRIPTOR.message_types_by_name['GetRepository'] = _GETREPOSITORY
+DESCRIPTOR.message_types_by_name['Pagination'] = _PAGINATION
+DESCRIPTOR.message_types_by_name['RepositoryNamedIdentification'] = _REPOSITORYNAMEDIDENTIFICATION
+DESCRIPTOR.message_types_by_name['RepositoryIdentification'] = _REPOSITORYIDENTIFICATION
+DESCRIPTOR.message_types_by_name['ListRepositoriesRequest'] = _LISTREPOSITORIESREQUEST
+DESCRIPTOR.message_types_by_name['GetRepositoryRequest'] = _GETREPOSITORYREQUEST
 DESCRIPTOR.message_types_by_name['SetRepository'] = _SETREPOSITORY
-DESCRIPTOR.message_types_by_name['DeleteRepository'] = _DELETEREPOSITORY
-DESCRIPTOR.message_types_by_name['BatchGetEntity'] = _BATCHGETENTITY
-DESCRIPTOR.message_types_by_name['AddEntity'] = _ADDENTITY
-DESCRIPTOR.message_types_by_name['DeleteEntity'] = _DELETEENTITY
-DESCRIPTOR.message_types_by_name['CommitRepositoryBlobs'] = _COMMITREPOSITORYBLOBS
-DESCRIPTOR.message_types_by_name['GetRepositoryBlobs'] = _GETREPOSITORYBLOBS
-DESCRIPTOR.message_types_by_name['GetRepositoryDiff'] = _GETREPOSITORYDIFF
-DESCRIPTOR.message_types_by_name['GetRepositoryLog'] = _GETREPOSITORYLOG
-DESCRIPTOR.message_types_by_name['SetTag'] = _SETTAG
-DESCRIPTOR.message_types_by_name['GetTag'] = _GETTAG
+DESCRIPTOR.message_types_by_name['DeleteRepositoryRequest'] = _DELETEREPOSITORYREQUEST
+DESCRIPTOR.message_types_by_name['ListCommitsRequest'] = _LISTCOMMITSREQUEST
+DESCRIPTOR.message_types_by_name['GetCommitRequest'] = _GETCOMMITREQUEST
+DESCRIPTOR.message_types_by_name['CreateCommitRequest'] = _CREATECOMMITREQUEST
+DESCRIPTOR.message_types_by_name['DeleteCommitRequest'] = _DELETECOMMITREQUEST
+DESCRIPTOR.message_types_by_name['ListCommitBlobsRequest'] = _LISTCOMMITBLOBSREQUEST
+DESCRIPTOR.message_types_by_name['GetCommitBlobRequest'] = _GETCOMMITBLOBREQUEST
+DESCRIPTOR.message_types_by_name['GetCommitFolderRequest'] = _GETCOMMITFOLDERREQUEST
+DESCRIPTOR.message_types_by_name['ComputeRepositoryDiffRequest'] = _COMPUTEREPOSITORYDIFFREQUEST
+DESCRIPTOR.message_types_by_name['ListTagsRequest'] = _LISTTAGSREQUEST
+DESCRIPTOR.message_types_by_name['GetTagRequest'] = _GETTAGREQUEST
+DESCRIPTOR.message_types_by_name['SetTagRequest'] = _SETTAGREQUEST
+DESCRIPTOR.message_types_by_name['DeleteTagRequest'] = _DELETETAGREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+InternalCommit = _reflection.GeneratedProtocolMessageType('InternalCommit', (_message.Message,), dict(
+  DESCRIPTOR = _INTERNALCOMMIT,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.InternalCommit)
+  ))
+_sym_db.RegisterMessage(InternalCommit)
 
 Commit = _reflection.GeneratedProtocolMessageType('Commit', (_message.Message,), dict(
   DESCRIPTOR = _COMMIT,
@@ -1387,26 +1817,33 @@ Commit = _reflection.GeneratedProtocolMessageType('Commit', (_message.Message,),
   ))
 _sym_db.RegisterMessage(Commit)
 
-CommitContent = _reflection.GeneratedProtocolMessageType('CommitContent', (_message.Message,), dict(
-  DESCRIPTOR = _COMMITCONTENT,
+InternalFolderElement = _reflection.GeneratedProtocolMessageType('InternalFolderElement', (_message.Message,), dict(
+  DESCRIPTOR = _INTERNALFOLDERELEMENT,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.CommitContent)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.InternalFolderElement)
   ))
-_sym_db.RegisterMessage(CommitContent)
+_sym_db.RegisterMessage(InternalFolderElement)
 
-TreeElement = _reflection.GeneratedProtocolMessageType('TreeElement', (_message.Message,), dict(
-  DESCRIPTOR = _TREEELEMENT,
+InternalFolder = _reflection.GeneratedProtocolMessageType('InternalFolder', (_message.Message,), dict(
+  DESCRIPTOR = _INTERNALFOLDER,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.TreeElement)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.InternalFolder)
   ))
-_sym_db.RegisterMessage(TreeElement)
+_sym_db.RegisterMessage(InternalFolder)
 
-Tree = _reflection.GeneratedProtocolMessageType('Tree', (_message.Message,), dict(
-  DESCRIPTOR = _TREE,
+FolderElement = _reflection.GeneratedProtocolMessageType('FolderElement', (_message.Message,), dict(
+  DESCRIPTOR = _FOLDERELEMENT,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.Tree)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.FolderElement)
   ))
-_sym_db.RegisterMessage(Tree)
+_sym_db.RegisterMessage(FolderElement)
+
+Folder = _reflection.GeneratedProtocolMessageType('Folder', (_message.Message,), dict(
+  DESCRIPTOR = _FOLDER,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.Folder)
+  ))
+_sym_db.RegisterMessage(Folder)
 
 Blob = _reflection.GeneratedProtocolMessageType('Blob', (_message.Message,), dict(
   DESCRIPTOR = _BLOB,
@@ -1429,13 +1866,6 @@ BlobDiff = _reflection.GeneratedProtocolMessageType('BlobDiff', (_message.Messag
   ))
 _sym_db.RegisterMessage(BlobDiff)
 
-Entity = _reflection.GeneratedProtocolMessageType('Entity', (_message.Message,), dict(
-  DESCRIPTOR = _ENTITY,
-  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.Entity)
-  ))
-_sym_db.RegisterMessage(Entity)
-
 Repository = _reflection.GeneratedProtocolMessageType('Repository', (_message.Message,), dict(
   DESCRIPTOR = _REPOSITORY,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
@@ -1443,20 +1873,56 @@ Repository = _reflection.GeneratedProtocolMessageType('Repository', (_message.Me
   ))
 _sym_db.RegisterMessage(Repository)
 
-GetRepository = _reflection.GeneratedProtocolMessageType('GetRepository', (_message.Message,), dict(
+Pagination = _reflection.GeneratedProtocolMessageType('Pagination', (_message.Message,), dict(
+  DESCRIPTOR = _PAGINATION,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.Pagination)
+  ))
+_sym_db.RegisterMessage(Pagination)
+
+RepositoryNamedIdentification = _reflection.GeneratedProtocolMessageType('RepositoryNamedIdentification', (_message.Message,), dict(
+  DESCRIPTOR = _REPOSITORYNAMEDIDENTIFICATION,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.RepositoryNamedIdentification)
+  ))
+_sym_db.RegisterMessage(RepositoryNamedIdentification)
+
+RepositoryIdentification = _reflection.GeneratedProtocolMessageType('RepositoryIdentification', (_message.Message,), dict(
+  DESCRIPTOR = _REPOSITORYIDENTIFICATION,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.RepositoryIdentification)
+  ))
+_sym_db.RegisterMessage(RepositoryIdentification)
+
+ListRepositoriesRequest = _reflection.GeneratedProtocolMessageType('ListRepositoriesRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _GETREPOSITORY_RESPONSE,
+    DESCRIPTOR = _LISTREPOSITORIESREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepository.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListRepositoriesRequest.Response)
     ))
   ,
-  DESCRIPTOR = _GETREPOSITORY,
+  DESCRIPTOR = _LISTREPOSITORIESREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepository)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListRepositoriesRequest)
   ))
-_sym_db.RegisterMessage(GetRepository)
-_sym_db.RegisterMessage(GetRepository.Response)
+_sym_db.RegisterMessage(ListRepositoriesRequest)
+_sym_db.RegisterMessage(ListRepositoriesRequest.Response)
+
+GetRepositoryRequest = _reflection.GeneratedProtocolMessageType('GetRepositoryRequest', (_message.Message,), dict(
+
+  Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
+    DESCRIPTOR = _GETREPOSITORYREQUEST_RESPONSE,
+    __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryRequest.Response)
+    ))
+  ,
+  DESCRIPTOR = _GETREPOSITORYREQUEST,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryRequest)
+  ))
+_sym_db.RegisterMessage(GetRepositoryRequest)
+_sym_db.RegisterMessage(GetRepositoryRequest.Response)
 
 SetRepository = _reflection.GeneratedProtocolMessageType('SetRepository', (_message.Message,), dict(
 
@@ -1473,155 +1939,200 @@ SetRepository = _reflection.GeneratedProtocolMessageType('SetRepository', (_mess
 _sym_db.RegisterMessage(SetRepository)
 _sym_db.RegisterMessage(SetRepository.Response)
 
-DeleteRepository = _reflection.GeneratedProtocolMessageType('DeleteRepository', (_message.Message,), dict(
+DeleteRepositoryRequest = _reflection.GeneratedProtocolMessageType('DeleteRepositoryRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _DELETEREPOSITORY_RESPONSE,
+    DESCRIPTOR = _DELETEREPOSITORYREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteRepository.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteRepositoryRequest.Response)
     ))
   ,
-  DESCRIPTOR = _DELETEREPOSITORY,
+  DESCRIPTOR = _DELETEREPOSITORYREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteRepository)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteRepositoryRequest)
   ))
-_sym_db.RegisterMessage(DeleteRepository)
-_sym_db.RegisterMessage(DeleteRepository.Response)
+_sym_db.RegisterMessage(DeleteRepositoryRequest)
+_sym_db.RegisterMessage(DeleteRepositoryRequest.Response)
 
-BatchGetEntity = _reflection.GeneratedProtocolMessageType('BatchGetEntity', (_message.Message,), dict(
+ListCommitsRequest = _reflection.GeneratedProtocolMessageType('ListCommitsRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _BATCHGETENTITY_RESPONSE,
+    DESCRIPTOR = _LISTCOMMITSREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.BatchGetEntity.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListCommitsRequest.Response)
     ))
   ,
-  DESCRIPTOR = _BATCHGETENTITY,
+  DESCRIPTOR = _LISTCOMMITSREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.BatchGetEntity)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListCommitsRequest)
   ))
-_sym_db.RegisterMessage(BatchGetEntity)
-_sym_db.RegisterMessage(BatchGetEntity.Response)
+_sym_db.RegisterMessage(ListCommitsRequest)
+_sym_db.RegisterMessage(ListCommitsRequest.Response)
 
-AddEntity = _reflection.GeneratedProtocolMessageType('AddEntity', (_message.Message,), dict(
+GetCommitRequest = _reflection.GeneratedProtocolMessageType('GetCommitRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _ADDENTITY_RESPONSE,
+    DESCRIPTOR = _GETCOMMITREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.AddEntity.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitRequest.Response)
     ))
   ,
-  DESCRIPTOR = _ADDENTITY,
+  DESCRIPTOR = _GETCOMMITREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.AddEntity)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitRequest)
   ))
-_sym_db.RegisterMessage(AddEntity)
-_sym_db.RegisterMessage(AddEntity.Response)
+_sym_db.RegisterMessage(GetCommitRequest)
+_sym_db.RegisterMessage(GetCommitRequest.Response)
 
-DeleteEntity = _reflection.GeneratedProtocolMessageType('DeleteEntity', (_message.Message,), dict(
+CreateCommitRequest = _reflection.GeneratedProtocolMessageType('CreateCommitRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _DELETEENTITY_RESPONSE,
+    DESCRIPTOR = _CREATECOMMITREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteEntity.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.CreateCommitRequest.Response)
     ))
   ,
-  DESCRIPTOR = _DELETEENTITY,
+  DESCRIPTOR = _CREATECOMMITREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteEntity)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.CreateCommitRequest)
   ))
-_sym_db.RegisterMessage(DeleteEntity)
-_sym_db.RegisterMessage(DeleteEntity.Response)
+_sym_db.RegisterMessage(CreateCommitRequest)
+_sym_db.RegisterMessage(CreateCommitRequest.Response)
 
-CommitRepositoryBlobs = _reflection.GeneratedProtocolMessageType('CommitRepositoryBlobs', (_message.Message,), dict(
+DeleteCommitRequest = _reflection.GeneratedProtocolMessageType('DeleteCommitRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _COMMITREPOSITORYBLOBS_RESPONSE,
+    DESCRIPTOR = _DELETECOMMITREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.CommitRepositoryBlobs.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteCommitRequest.Response)
     ))
   ,
-  DESCRIPTOR = _COMMITREPOSITORYBLOBS,
+  DESCRIPTOR = _DELETECOMMITREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.CommitRepositoryBlobs)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteCommitRequest)
   ))
-_sym_db.RegisterMessage(CommitRepositoryBlobs)
-_sym_db.RegisterMessage(CommitRepositoryBlobs.Response)
+_sym_db.RegisterMessage(DeleteCommitRequest)
+_sym_db.RegisterMessage(DeleteCommitRequest.Response)
 
-GetRepositoryBlobs = _reflection.GeneratedProtocolMessageType('GetRepositoryBlobs', (_message.Message,), dict(
+ListCommitBlobsRequest = _reflection.GeneratedProtocolMessageType('ListCommitBlobsRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _GETREPOSITORYBLOBS_RESPONSE,
+    DESCRIPTOR = _LISTCOMMITBLOBSREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryBlobs.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListCommitBlobsRequest.Response)
     ))
   ,
-  DESCRIPTOR = _GETREPOSITORYBLOBS,
+  DESCRIPTOR = _LISTCOMMITBLOBSREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryBlobs)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListCommitBlobsRequest)
   ))
-_sym_db.RegisterMessage(GetRepositoryBlobs)
-_sym_db.RegisterMessage(GetRepositoryBlobs.Response)
+_sym_db.RegisterMessage(ListCommitBlobsRequest)
+_sym_db.RegisterMessage(ListCommitBlobsRequest.Response)
 
-GetRepositoryDiff = _reflection.GeneratedProtocolMessageType('GetRepositoryDiff', (_message.Message,), dict(
+GetCommitBlobRequest = _reflection.GeneratedProtocolMessageType('GetCommitBlobRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _GETREPOSITORYDIFF_RESPONSE,
+    DESCRIPTOR = _GETCOMMITBLOBREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryDiff.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitBlobRequest.Response)
     ))
   ,
-  DESCRIPTOR = _GETREPOSITORYDIFF,
+  DESCRIPTOR = _GETCOMMITBLOBREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryDiff)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitBlobRequest)
   ))
-_sym_db.RegisterMessage(GetRepositoryDiff)
-_sym_db.RegisterMessage(GetRepositoryDiff.Response)
+_sym_db.RegisterMessage(GetCommitBlobRequest)
+_sym_db.RegisterMessage(GetCommitBlobRequest.Response)
 
-GetRepositoryLog = _reflection.GeneratedProtocolMessageType('GetRepositoryLog', (_message.Message,), dict(
+GetCommitFolderRequest = _reflection.GeneratedProtocolMessageType('GetCommitFolderRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _GETREPOSITORYLOG_RESPONSE,
+    DESCRIPTOR = _GETCOMMITFOLDERREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryLog.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitFolderRequest.Response)
     ))
   ,
-  DESCRIPTOR = _GETREPOSITORYLOG,
+  DESCRIPTOR = _GETCOMMITFOLDERREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetRepositoryLog)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetCommitFolderRequest)
   ))
-_sym_db.RegisterMessage(GetRepositoryLog)
-_sym_db.RegisterMessage(GetRepositoryLog.Response)
+_sym_db.RegisterMessage(GetCommitFolderRequest)
+_sym_db.RegisterMessage(GetCommitFolderRequest.Response)
 
-SetTag = _reflection.GeneratedProtocolMessageType('SetTag', (_message.Message,), dict(
+ComputeRepositoryDiffRequest = _reflection.GeneratedProtocolMessageType('ComputeRepositoryDiffRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _SETTAG_RESPONSE,
+    DESCRIPTOR = _COMPUTEREPOSITORYDIFFREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.SetTag.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest.Response)
     ))
   ,
-  DESCRIPTOR = _SETTAG,
+  DESCRIPTOR = _COMPUTEREPOSITORYDIFFREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.SetTag)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest)
   ))
-_sym_db.RegisterMessage(SetTag)
-_sym_db.RegisterMessage(SetTag.Response)
+_sym_db.RegisterMessage(ComputeRepositoryDiffRequest)
+_sym_db.RegisterMessage(ComputeRepositoryDiffRequest.Response)
 
-GetTag = _reflection.GeneratedProtocolMessageType('GetTag', (_message.Message,), dict(
+ListTagsRequest = _reflection.GeneratedProtocolMessageType('ListTagsRequest', (_message.Message,), dict(
 
   Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
-    DESCRIPTOR = _GETTAG_RESPONSE,
+    DESCRIPTOR = _LISTTAGSREQUEST_RESPONSE,
     __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetTag.Response)
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListTagsRequest.Response)
     ))
   ,
-  DESCRIPTOR = _GETTAG,
+  DESCRIPTOR = _LISTTAGSREQUEST,
   __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
-  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetTag)
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.ListTagsRequest)
   ))
-_sym_db.RegisterMessage(GetTag)
-_sym_db.RegisterMessage(GetTag.Response)
+_sym_db.RegisterMessage(ListTagsRequest)
+_sym_db.RegisterMessage(ListTagsRequest.Response)
+
+GetTagRequest = _reflection.GeneratedProtocolMessageType('GetTagRequest', (_message.Message,), dict(
+
+  Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
+    DESCRIPTOR = _GETTAGREQUEST_RESPONSE,
+    __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetTagRequest.Response)
+    ))
+  ,
+  DESCRIPTOR = _GETTAGREQUEST,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.GetTagRequest)
+  ))
+_sym_db.RegisterMessage(GetTagRequest)
+_sym_db.RegisterMessage(GetTagRequest.Response)
+
+SetTagRequest = _reflection.GeneratedProtocolMessageType('SetTagRequest', (_message.Message,), dict(
+
+  Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
+    DESCRIPTOR = _SETTAGREQUEST_RESPONSE,
+    __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.SetTagRequest.Response)
+    ))
+  ,
+  DESCRIPTOR = _SETTAGREQUEST,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.SetTagRequest)
+  ))
+_sym_db.RegisterMessage(SetTagRequest)
+_sym_db.RegisterMessage(SetTagRequest.Response)
+
+DeleteTagRequest = _reflection.GeneratedProtocolMessageType('DeleteTagRequest', (_message.Message,), dict(
+
+  Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
+    DESCRIPTOR = _DELETETAGREQUEST_RESPONSE,
+    __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+    # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteTagRequest.Response)
+    ))
+  ,
+  DESCRIPTOR = _DELETETAGREQUEST,
+  __module__ = 'protos.public.modeldb.versioning.VersioningService_pb2'
+  # @@protoc_insertion_point(class_scope:ai.verta.modeldb.versioning.DeleteTagRequest)
+  ))
+_sym_db.RegisterMessage(DeleteTagRequest)
+_sym_db.RegisterMessage(DeleteTagRequest.Response)
 
 
 DESCRIPTOR._options = None
@@ -1632,116 +2143,161 @@ _VERSIONINGSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=2933,
-  serialized_end=4824,
+  serialized_start=4567,
+  serialized_end=9754,
   methods=[
   _descriptor.MethodDescriptor(
-    name='getRepository',
-    full_name='ai.verta.modeldb.versioning.VersioningService.getRepository',
+    name='ListRepositories',
+    full_name='ai.verta.modeldb.versioning.VersioningService.ListRepositories',
     index=0,
     containing_service=None,
-    input_type=_GETREPOSITORY,
-    output_type=_GETREPOSITORY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\036\022\034/v1/versioning/getRepository'),
+    input_type=_LISTREPOSITORIESREQUEST,
+    output_type=_LISTREPOSITORIESREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002X\0227/v1/versioning/workspaces/{workspace_name}/repositoriesZ\035\022\033/v1/versioning/repositories'),
   ),
   _descriptor.MethodDescriptor(
-    name='setRepository',
-    full_name='ai.verta.modeldb.versioning.VersioningService.setRepository',
+    name='GetRepository',
+    full_name='ai.verta.modeldb.versioning.VersioningService.GetRepository',
     index=1,
+    containing_service=None,
+    input_type=_GETREPOSITORYREQUEST,
+    output_type=_GETREPOSITORYREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002{\022P/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}Z\'\022%/v1/versioning/repositories/{id.code}'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='CreateRepository',
+    full_name='ai.verta.modeldb.versioning.VersioningService.CreateRepository',
+    index=2,
     containing_service=None,
     input_type=_SETREPOSITORY,
     output_type=_SETREPOSITORY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002!\"\034/v1/versioning/setRepository:\001*'),
+    serialized_options=_b('\202\323\344\223\002N\"@/v1/versioning/workspaces/{id.named.workspace_name}/repositories:\nrepository'),
   ),
   _descriptor.MethodDescriptor(
-    name='deleteRepository',
-    full_name='ai.verta.modeldb.versioning.VersioningService.deleteRepository',
-    index=2,
-    containing_service=None,
-    input_type=_DELETEREPOSITORY,
-    output_type=_DELETEREPOSITORY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002$\"\037/v1/versioning/deleteRepository:\001*'),
-  ),
-  _descriptor.MethodDescriptor(
-    name='commitRepositoryBlobs',
-    full_name='ai.verta.modeldb.versioning.VersioningService.commitRepositoryBlobs',
+    name='UpdateRepository',
+    full_name='ai.verta.modeldb.versioning.VersioningService.UpdateRepository',
     index=3,
     containing_service=None,
-    input_type=_COMMITREPOSITORYBLOBS,
-    output_type=_COMMITREPOSITORYBLOBS_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002)\"$/v1/versioning/commitRepositoryBlobs:\001*'),
+    input_type=_SETREPOSITORY,
+    output_type=_SETREPOSITORY_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\223\001\032P/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}:\nrepositoryZ3\032%/v1/versioning/repositories/{id.code}:\nrepository'),
   ),
   _descriptor.MethodDescriptor(
-    name='getRepositoryBlobs',
-    full_name='ai.verta.modeldb.versioning.VersioningService.getRepositoryBlobs',
+    name='DeleteRepository',
+    full_name='ai.verta.modeldb.versioning.VersioningService.DeleteRepository',
     index=4,
     containing_service=None,
-    input_type=_GETREPOSITORYBLOBS,
-    output_type=_GETREPOSITORYBLOBS_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002#\022!/v1/versioning/getRepositoryBlobs'),
+    input_type=_DELETEREPOSITORYREQUEST,
+    output_type=_DELETEREPOSITORYREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002{*P/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}Z\'*%/v1/versioning/repositories/{id.code}'),
   ),
   _descriptor.MethodDescriptor(
-    name='batchGetEntity',
-    full_name='ai.verta.modeldb.versioning.VersioningService.batchGetEntity',
+    name='ListCommits',
+    full_name='ai.verta.modeldb.versioning.VersioningService.ListCommits',
     index=5,
     containing_service=None,
-    input_type=_BATCHGETENTITY,
-    output_type=_BATCHGETENTITY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\037\022\035/v1/versioning/batchGetEntity'),
+    input_type=_LISTCOMMITSREQUEST,
+    output_type=_LISTCOMMITSREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\254\001\022n/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commitsZ:\0228/v1/versioning/repositories/{repository_id.code}/commits'),
   ),
   _descriptor.MethodDescriptor(
-    name='addEntity',
-    full_name='ai.verta.modeldb.versioning.VersioningService.addEntity',
+    name='GetCommit',
+    full_name='ai.verta.modeldb.versioning.VersioningService.GetCommit',
     index=6,
     containing_service=None,
-    input_type=_ADDENTITY,
-    output_type=_ADDENTITY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\035\"\030/v1/versioning/addEntity:\001*'),
+    input_type=_GETCOMMITREQUEST,
+    output_type=_GETCOMMITREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\306\001\022{/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}ZG\022E/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}'),
   ),
   _descriptor.MethodDescriptor(
-    name='deleteEntity',
-    full_name='ai.verta.modeldb.versioning.VersioningService.deleteEntity',
+    name='CreateCommit',
+    full_name='ai.verta.modeldb.versioning.VersioningService.CreateCommit',
     index=7,
     containing_service=None,
-    input_type=_DELETEENTITY,
-    output_type=_DELETEENTITY_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002 \"\033/v1/versioning/deleteEntity:\001*'),
+    input_type=_CREATECOMMITREQUEST,
+    output_type=_CREATECOMMITREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\262\001\"n/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits:\001*Z=\0328/v1/versioning/repositories/{repository_id.code}/commits:\001*'),
   ),
   _descriptor.MethodDescriptor(
-    name='getRepositoryDiff',
-    full_name='ai.verta.modeldb.versioning.VersioningService.getRepositoryDiff',
+    name='DeleteCommit',
+    full_name='ai.verta.modeldb.versioning.VersioningService.DeleteCommit',
     index=8,
     containing_service=None,
-    input_type=_GETREPOSITORYDIFF,
-    output_type=_GETREPOSITORYDIFF_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\"\022 /v1/versioning/getRepositoryDiff'),
+    input_type=_DELETECOMMITREQUEST,
+    output_type=_DELETECOMMITREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\306\001*{/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}ZG*E/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}'),
   ),
   _descriptor.MethodDescriptor(
-    name='getRepositoryLog',
-    full_name='ai.verta.modeldb.versioning.VersioningService.getRepositoryLog',
+    name='ListCommitBlobs',
+    full_name='ai.verta.modeldb.versioning.VersioningService.ListCommitBlobs',
     index=9,
     containing_service=None,
-    input_type=_GETREPOSITORYLOG,
-    output_type=_GETREPOSITORYLOG_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002!\022\037/v1/versioning/getRepositoryLog'),
+    input_type=_LISTCOMMITBLOBSREQUEST,
+    output_type=_LISTCOMMITBLOBSREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\323\001\022\201\001/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobsZM\022K/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs'),
   ),
   _descriptor.MethodDescriptor(
-    name='setTag',
-    full_name='ai.verta.modeldb.versioning.VersioningService.setTag',
+    name='GetCommitBlob',
+    full_name='ai.verta.modeldb.versioning.VersioningService.GetCommitBlob',
     index=10,
     containing_service=None,
-    input_type=_SETTAG,
-    output_type=_SETTAG_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\032\"\025/v1/versioning/setTag:\001*'),
+    input_type=_GETCOMMITBLOBREQUEST,
+    output_type=_GETCOMMITBLOBREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\347\001\022\213\001/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/{path=**}ZW\022U/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/{path=**}'),
   ),
   _descriptor.MethodDescriptor(
-    name='getTag',
-    full_name='ai.verta.modeldb.versioning.VersioningService.getTag',
+    name='GetCommitFolder',
+    full_name='ai.verta.modeldb.versioning.VersioningService.GetCommitFolder',
     index=11,
     containing_service=None,
-    input_type=_GETTAG,
-    output_type=_GETTAG_RESPONSE,
-    serialized_options=_b('\202\323\344\223\002\027\022\025/v1/versioning/getTag'),
+    input_type=_GETCOMMITFOLDERREQUEST,
+    output_type=_GETCOMMITFOLDERREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\353\001\022\215\001/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/{path=**}ZY\022W/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/{path=**}'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='ComputeRepositoryDiff',
+    full_name='ai.verta.modeldb.versioning.VersioningService.ComputeRepositoryDiff',
+    index=12,
+    containing_service=None,
+    input_type=_COMPUTEREPOSITORYDIFFREQUEST,
+    output_type=_COMPUTEREPOSITORYDIFFREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\246\001\022k/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/diffZ7\0225/v1/versioning/repositories/{repository_id.code}/diff'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='ListTags',
+    full_name='ai.verta.modeldb.versioning.VersioningService.ListTags',
+    index=13,
+    containing_service=None,
+    input_type=_LISTTAGSREQUEST,
+    output_type=_LISTTAGSREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\246\001\022k/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tagsZ7\0225/v1/versioning/repositories/{repository_id.code}/tags'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetTag',
+    full_name='ai.verta.modeldb.versioning.VersioningService.GetTag',
+    index=14,
+    containing_service=None,
+    input_type=_GETTAGREQUEST,
+    output_type=_GETTAGREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\262\001\022q/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}Z=\022;/v1/versioning/repositories/{repository_id.code}/tags/{tag}'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='SetTag',
+    full_name='ai.verta.modeldb.versioning.VersioningService.SetTag',
+    index=15,
+    containing_service=None,
+    input_type=_SETTAGREQUEST,
+    output_type=_SETTAGREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\312\001\032q/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}:\ncommit_shaZI\032;/v1/versioning/repositories/{repository_id.code}/tags/{tag}:\ncommit_sha'),
+  ),
+  _descriptor.MethodDescriptor(
+    name='DeleteTag',
+    full_name='ai.verta.modeldb.versioning.VersioningService.DeleteTag',
+    index=16,
+    containing_service=None,
+    input_type=_DELETETAGREQUEST,
+    output_type=_DELETETAGREQUEST_RESPONSE,
+    serialized_options=_b('\202\323\344\223\002\262\001*q/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}Z=*;/v1/versioning/repositories/{repository_id.code}/tags/{tag}'),
   ),
 ])
 _sym_db.RegisterServiceDescriptor(_VERSIONINGSERVICE)
