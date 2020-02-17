@@ -18,8 +18,8 @@ message IDTypeEnum {
 message IdentificationType {
     IDTypeEnum.IDType id_type = 1;
     oneof id {
-        uint64 code = 2;
-        string uuid = 3;
+        uint64 int_id = 2;
+        string string_id = 3;
     }
 }
 

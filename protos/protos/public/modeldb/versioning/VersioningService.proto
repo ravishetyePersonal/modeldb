@@ -43,7 +43,7 @@ message InternalFolderElement {
 
 message InternalFolder {
     repeated InternalFolderElement blobs = 1;
-    repeated InternalFolderElement subfolders = 2;
+    repeated InternalFolderElement sub_folders = 2;
 }
 
 // DO NOT USE TO COMPUTE SHA
@@ -60,7 +60,7 @@ message Folder {
     // Blobs, which correspond to direct entries/files
     repeated FolderElement blobs = 1;
     // Subfolders
-    repeated FolderElement subfolders = 2;
+    repeated FolderElement sub_folders = 2;
 }
 
 message Blob {
@@ -106,9 +106,9 @@ message RepositoryNamedIdentification {
 }
 
 message RepositoryIdentification {
-    oneof id {
-        RepositoryNamedIdentification named = 1;
-        uint64 code = 2;
+    oneof repo_identifier {
+        RepositoryNamedIdentification named_id = 1;
+        uint64 repo_id = 2;
     }
 }
 
@@ -139,9 +139,10 @@ message SetRepository {
 }
 
 message DeleteRepositoryRequest {
-    RepositoryIdentification id = 1;
+    RepositoryIdentification repository_id = 1;
 
     message Response {
+        bool status = 1;
     }
 }
 
