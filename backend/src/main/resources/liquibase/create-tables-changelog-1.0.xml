@@ -6,9 +6,7 @@
         logicalFilePath="src/main/resources/liquibase/create-tables-changelog-1.0.xml">
 
     <changeSet author="anandJ" id="createTable-1">
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="artifactStore">
+        <createTable tableName="artifact_store">
             <column name="id" type="int8" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -19,9 +17,7 @@
             <column name="entity_name" type="varchar(50)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="comment">
+        <createTable tableName="comment">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -29,9 +25,7 @@
             <column name="entity_name" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="dataset">
+        <createTable tableName="dataset">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -44,9 +38,7 @@
             <column name="time_updated" type="int8"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="gitSnapshot">
+        <createTable tableName="git_snapshot">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -56,9 +48,7 @@
             <column name="repo" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="job">
+        <createTable tableName="job">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -70,9 +60,7 @@
             <column name="start_time" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="path_dataset_version_info">
+        <createTable tableName="path_dataset_version_info">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -82,9 +70,7 @@
             <column name="size" type="int8"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="query_dataset_version_info">
+        <createTable tableName="query_dataset_version_info">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -96,9 +82,7 @@
             <column name="query_template" type="text"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="raw_dataset_version_info">
+        <createTable tableName="raw_dataset_version_info">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -109,9 +93,7 @@
             <column name="size" type="int8"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="dataset_part_info">
+        <createTable tableName="dataset_part_info">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -127,9 +109,7 @@
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="datasetversion">
+        <createTable tableName="dataset_version">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -156,19 +136,15 @@
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="GitSnapshotEntity_filepaths">
-            <column name="gitsnapshotentity_id" type="int8">
-                <constraints foreignKeyName="fk_gitsnapshotentity_id" referencedTableName="gitsnapshot"
+        <createTable tableName="git_snapshot_file_paths">
+            <column name="git_snapshot_id" type="int8">
+                <constraints foreignKeyName="fk_gitsnapshotentity_id" referencedTableName="git_snapshot"
                              referencedColumnNames="id"/>
             </column>
-            <column name="filepaths" type="varchar(255)"/>
+            <column name="file_paths" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="query_parameter">
+        <createTable tableName="query_parameter">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -183,9 +159,7 @@
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="user_comment">
+        <createTable tableName="user_comment">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -198,9 +172,7 @@
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="artifact">
+        <createTable tableName="artifact">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -217,9 +189,7 @@
             <column name="project_id" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="codeversion">
+        <createTable tableName="code_version">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -230,14 +200,12 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="git_snapshot_id" type="int8">
-                <constraints foreignKeyName="fk_git_snapshot_id" referencedTableName="gitsnapshot"
+                <constraints foreignKeyName="fk_git_snapshot_id" referencedTableName="git_snapshot"
                              referencedColumnNames="id"/>
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="experiment">
+        <createTable tableName="experiment">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -248,14 +216,12 @@
             <column name="owner" type="varchar(255)"/>
             <column name="project_id" type="varchar(255)"/>
             <column name="code_version_snapshot_id" type="int8">
-                <constraints foreignKeyName="experiment_fk_code_version_snapshot_id" referencedTableName="codeversion"
+                <constraints foreignKeyName="experiment_fk_code_version_snapshot_id" referencedTableName="code_version"
                              referencedColumnNames="id"/>
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="experimentRun">
+        <createTable tableName="experiment_run">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -273,13 +239,11 @@
             <column name="start_time" type="int8"/>
             <column name="code_version_snapshot_id" type="int8">
                 <constraints foreignKeyName="experimentrun_fk_code_version_snapshot_id"
-                             referencedTableName="codeversion" referencedColumnNames="id"/>
+                             referencedTableName="code_version" referencedColumnNames="id"/>
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="Feature">
+        <createTable tableName="feature">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -291,9 +255,7 @@
             <column name="raw_dataset_version_info_id" type="int8"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="keyvalue">
+        <createTable tableName="keyvalue">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -310,9 +272,7 @@
             <column name="project_id" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="observation">
+        <createTable tableName="observation">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -328,9 +288,7 @@
             <column name="project_id" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="project">
+        <createTable tableName="project">
             <column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -343,14 +301,12 @@
             <column name="readme_text" type="text"/>
             <column name="short_name" type="varchar(255)"/>
             <column name="code_version_snapshot_id" type="int8">
-                <constraints foreignKeyName="project_fk_code_version_snapshot_id" referencedTableName="codeversion"
+                <constraints foreignKeyName="project_fk_code_version_snapshot_id" referencedTableName="code_version"
                              referencedColumnNames="id"/>
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="TagMapping">
+        <createTable tableName="tag_mapping">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -361,7 +317,7 @@
                              referencedColumnNames="id"/>
             </column>
             <column name="dataset_version_id" type="varchar(255)">
-                <constraints foreignKeyName="tagmapping_fk_dataset_version_id" referencedTableName="datasetversion"
+                <constraints foreignKeyName="tagmapping_fk_dataset_version_id" referencedTableName="dataset_version"
                              referencedColumnNames="id"/>
             </column>
             <column name="experiment_id" type="varchar(255)">
@@ -369,7 +325,7 @@
                 referencedColumnNames="id"/>
             </column>
             <column name="experiment_run_id" type="varchar(255)">
-                <constraints foreignKeyName="tagmapping_fk_experiment_run_id" referencedTableName="experimentrun"
+                <constraints foreignKeyName="tagmapping_fk_experiment_run_id" referencedTableName="experiment_run"
                 referencedColumnNames="id"/>
             </column>
             <column name="project_id" type="varchar(255)">
@@ -377,9 +333,7 @@
             </column>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="attribute">
+        <createTable tableName="attribute">
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -396,9 +350,7 @@
             <column name="project_id" type="varchar(255)"/>
         </createTable>
 
-        <createTable catalogName="modeldb"
-                     schemaName="public"
-                     tableName="lineage">
+        <createTable tableName="lineage">
             <column name="input_external_id" type="varchar(256)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -415,172 +367,100 @@
 
         <!--Artifact table foreign key constraints-->
         <addForeignKeyConstraint baseColumnNames="project_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="artifact"
-                                 baseTableSchemaName="public"
                                  constraintName="artifact_fk_project_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="project"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="project"/>
         <addForeignKeyConstraint baseColumnNames="experiment_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="artifact"
-                                 baseTableSchemaName="public"
                                  constraintName="artifact_fk_experiment_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experiment"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment"/>
         <addForeignKeyConstraint baseColumnNames="experiment_run_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="artifact"
-                                 baseTableSchemaName="public"
                                  constraintName="artifact_fk_experiment_run_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experimentrun"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment_run"/>
 
         <!--Feature table foreign key constraints-->
         <addForeignKeyConstraint baseColumnNames="project_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="feature"
-                                 baseTableSchemaName="public"
                                  constraintName="feature_fk_project_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="project"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="project"/>
         <addForeignKeyConstraint baseColumnNames="experiment_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="feature"
-                                 baseTableSchemaName="public"
                                  constraintName="feature_fk_experiment_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experiment"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment"/>
         <addForeignKeyConstraint baseColumnNames="experiment_run_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="feature"
-                                 baseTableSchemaName="public"
                                  constraintName="feature_fk_experiment_run_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experimentrun"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment_run"/>
         <addForeignKeyConstraint baseColumnNames="raw_dataset_version_info_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="feature"
-                                 baseTableSchemaName="public"
                                  constraintName="feature_fk_raw_dataset_version_info_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="raw_dataset_version_info"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="raw_dataset_version_info"/>
 
         <!--KeyValue table foreign key constraints-->
         <addForeignKeyConstraint baseColumnNames="project_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_project_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="project"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="project"/>
         <addForeignKeyConstraint baseColumnNames="experiment_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_experiment_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experiment"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment"/>
         <addForeignKeyConstraint baseColumnNames="experiment_run_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_experiment_run_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experimentrun"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment_run"/>
         <addForeignKeyConstraint baseColumnNames="dataset_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_dataset_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="dataset"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="dataset"/>
         <addForeignKeyConstraint baseColumnNames="dataset_version_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_dataset_version_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="datasetversion"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="dataset_version"/>
         <addForeignKeyConstraint baseColumnNames="job_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="keyvalue"
-                                 baseTableSchemaName="public"
                                  constraintName="keyvalue_fk_job_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="job"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="job"/>
 
         <!--Observation table foreign key constraints-->
         <addForeignKeyConstraint baseColumnNames="project_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="observation"
-                                 baseTableSchemaName="public"
                                  constraintName="observation_fk_project_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="project"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="project"/>
         <addForeignKeyConstraint baseColumnNames="experiment_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="observation"
-                                 baseTableSchemaName="public"
                                  constraintName="observation_fk_experiment_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experiment"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment"/>
         <addForeignKeyConstraint baseColumnNames="experiment_run_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="observation"
-                                 baseTableSchemaName="public"
                                  constraintName="observation_fk_experiment_run_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="experimentrun"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="experiment_run"/>
         <addForeignKeyConstraint baseColumnNames="artifact_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="observation"
-                                 baseTableSchemaName="public"
                                  constraintName="observation_fk_artifact_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="artifact"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="artifact"/>
         <addForeignKeyConstraint baseColumnNames="keyvaluemapping_id"
-                                 baseTableCatalogName="modeldb"
                                  baseTableName="observation"
-                                 baseTableSchemaName="public"
                                  constraintName="observation_fk_keyvaluemapping_id"
                                  referencedColumnNames="id"
-                                 referencedTableCatalogName="modeldb"
-                                 referencedTableName="keyvalue"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableName="keyvalue"/>
     </changeSet>
 </databaseChangeLog>

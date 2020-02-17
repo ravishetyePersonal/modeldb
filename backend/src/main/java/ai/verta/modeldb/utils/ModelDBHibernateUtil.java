@@ -136,6 +136,12 @@ public class ModelDBHibernateUtil {
         liquibaseLockThreshold =
             Long.parseLong(databasePropMap.getOrDefault("liquibaseLockThreshold", "60").toString());
 
+        // Change liquibase default table names
+        System.getProperties()
+            .put("liquibase.databaseChangeLogTableName", "database_change_log");
+        System.getProperties()
+            .put("liquibase.databaseChangeLogLockTableName", "database_change_log_lock");
+
         // Hibernate settings equivalent to hibernate.cfg.xml's properties
         Configuration configuration = new Configuration();
 
@@ -273,9 +279,9 @@ public class ModelDBHibernateUtil {
     try (Connection con =
         metaDataSrc.getServiceRegistry().getService(ConnectionProvider.class).getConnection()) {
 
-      boolean existsStatus = tableExists(con, "databasechangeloglock");
+      boolean existsStatus = tableExists(con, "database_change_log_lock");
       if (!existsStatus) {
-        LOGGER.info("Table databasechangeloglock does not exists in DB");
+        LOGGER.info("Table database_change_log_lock does not exists in DB");
         LOGGER.info("Proceeding with liquibase assuming it has never been run");
         return;
       }
@@ -284,7 +290,7 @@ public class ModelDBHibernateUtil {
 
       Statement stmt = jdbcCon.createStatement();
 
-      String sql = "SELECT * FROM DATABASECHANGELOGLOCK WHERE ID = 1";
+      String sql = "SELECT * FROM database_change_log_lock WHERE ID = 1";
       ResultSet rs = stmt.executeQuery(sql);
 
       long lastLockAcquireTimestamp = 0L;

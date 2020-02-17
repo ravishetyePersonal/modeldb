@@ -3,16 +3,18 @@ package ai.verta.modeldb.entities;
 import ai.verta.modeldb.GitSnapshot;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "gitSnapshot")
+@Table(name = "git_snapshot")
 public class GitSnapshotEntity {
 
   public GitSnapshotEntity() {}
@@ -33,7 +35,10 @@ public class GitSnapshotEntity {
   private Long id;
 
   @ElementCollection
-  @Column(name = "filepaths")
+  @CollectionTable(
+      name = "git_snapshot_file_paths",
+      joinColumns = @JoinColumn(name = "git_snapshot_id"))
+  @Column(name = "file_paths")
   private List<String> filepaths = Collections.emptyList(); // paths to relevant source code
 
   @Column(name = "repo")

@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "codeversion")
+@Table(name = "code_version")
 public class CodeVersionEntity {
 
   public CodeVersionEntity() {}

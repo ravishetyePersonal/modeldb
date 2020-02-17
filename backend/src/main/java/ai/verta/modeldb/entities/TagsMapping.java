@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TagMapping")
+@Table(name = "tag_mapping")
 public class TagsMapping {
 
   public TagsMapping() {}

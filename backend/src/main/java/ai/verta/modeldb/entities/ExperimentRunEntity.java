@@ -25,7 +25,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
-@Table(name = "experimentRun")
+@Table(name = "experiment_run")
 public class ExperimentRunEntity {
 
   private static Logger LOGGER = LogManager.getLogger(ExperimentRunEntity.class);
