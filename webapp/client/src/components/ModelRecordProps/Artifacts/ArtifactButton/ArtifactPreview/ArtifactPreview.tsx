@@ -62,16 +62,7 @@ class ArtifactPreview extends React.PureComponent<AllProps> {
       );
     }
     if (loadingArtifactPreview.error || !preview) {
-      return (
-        <div className={styles.root}>
-          <div className={styles.error_block}>
-            <InlineCommunicationError
-              error={loadingArtifactPreview.error}
-              customMessage={artifactErrorMessages.artifact_preview}
-            />
-          </div>
-        </div>
-      );
+      return null;
     }
     return (
       <div className={styles.root}>

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { IArtifactWithPath } from 'core/shared/models/Artifact';
+import { artifactErrorMessages } from 'core/shared/utils/customErrorMessages';
 import {
   ICommunication,
   initialCommunication,
@@ -27,6 +28,7 @@ interface ILocalProps {
   entityId: string;
   entityType: EntityType;
   artifact: IArtifactWithPath;
+  isShowErrorIfExist: boolean;
 }
 
 interface IPropsFromState {
@@ -46,7 +48,7 @@ class DownloadArtifactButton extends React.PureComponent<AllProps> {
   }
 
   public render() {
-    const { downloadingArtifact, artifact } = this.props;
+    const { downloadingArtifact, isShowErrorIfExist, artifact } = this.props;
     if (R.equals(downloadingArtifact, initialCommunication)) {
       return (
         <div className={styles.root}>
@@ -67,9 +69,14 @@ class DownloadArtifactButton extends React.PureComponent<AllProps> {
           <Button disabled={true} onClick={this.downloadArtifact}>
             Download Failed
           </Button>
-          <div className={styles.url_call_message}>
-            <InlineCommunicationError error={downloadingArtifact.error} />
-          </div>
+          {isShowErrorIfExist && (
+            <div className={styles.url_call_message}>
+              <InlineCommunicationError
+                error={downloadingArtifact.error}
+                customMessage={artifactErrorMessages.artifact_download}
+              />
+            </div>
+          )}
         </div>
       );
     }

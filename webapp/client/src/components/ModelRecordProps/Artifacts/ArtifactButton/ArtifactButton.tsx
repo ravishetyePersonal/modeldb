@@ -2,7 +2,7 @@ import cn from 'classnames';
 import { bind } from 'decko';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Artifact, checkArtifactWithPath } from 'core/shared/models/Artifact';
@@ -18,7 +18,7 @@ import { Icon } from 'core/shared/view/elements/Icon/Icon';
 import Popup from 'core/shared/view/elements/Popup/Popup';
 import Preloader from 'core/shared/view/elements/Preloader/Preloader';
 import { IDatasetVersion } from 'models/DatasetVersion';
-import routes from 'routes';
+import routes, { GetRouteParams } from 'routes';
 import {
   downloadArtifact,
   reset,
@@ -26,6 +26,8 @@ import {
   loadDatasetVersion,
   selectCommunications,
   selectDatasetVersion,
+  selectDownloadingArtifact,
+  selectLoadingArtifactPreview,
 } from 'store/artifactManager';
 import { checkSupportArtifactPreview } from 'store/artifactManager/helpers';
 import { IApplicationState } from 'store/store';
@@ -33,6 +35,8 @@ import { IApplicationState } from 'store/store';
 import DownloadArtifactButton from '../DownloadArtifactButton/DownloadArtifactButton';
 import styles from './ArtifactButton.module.css';
 import ArtifactPreview from './ArtifactPreview/ArtifactPreview';
+import { AppError } from 'core/shared/models/Error';
+import LastCommunicationError from 'core/shared/view/elements/LastCommunicationError/LastCommunicationError';
 
 interface ILocalProps {
   buttonTitle?: string;
@@ -45,7 +49,9 @@ interface ILocalProps {
 
 interface IPropsFromState {
   datasetVersion: IDatasetVersion | null;
+  downloadingArtifact: ICommunication;
   loadingDatasetVersions: ICommunication;
+  loadingArtifactPreview: ICommunication;
 }
 
 interface IActionProps {
@@ -58,7 +64,10 @@ interface ILocalState {
   isShownPreview: boolean;
 }
 
-type AllProps = ILocalProps & IPropsFromState & IActionProps;
+type AllProps = ILocalProps &
+  IPropsFromState &
+  IActionProps &
+  RouteComponentProps<GetRouteParams<typeof routes.workspace>>;
 
 export interface IDeleteArtifactInfo {
   delete: (entityId: string, artifactKey: string) => void;
@@ -78,7 +87,10 @@ class ArtifactButton extends React.PureComponent<AllProps, ILocalState> {
       this.state.isModalOpen &&
       this.props.artifact.linkedArtifactId
     ) {
-      this.props.loadDatasetVersion(this.props.artifact.linkedArtifactId);
+      this.props.loadDatasetVersion(
+        this.props.match.params.workspaceName,
+        this.props.artifact.linkedArtifactId
+      );
     }
   }
 
@@ -106,6 +118,7 @@ class ArtifactButton extends React.PureComponent<AllProps, ILocalState> {
       }
       return 'codepen';
     })();
+
     return (
       <div>
         <div
@@ -204,11 +217,13 @@ class ArtifactButton extends React.PureComponent<AllProps, ILocalState> {
                     />
                   )}
                 </div>
+                <this.LastCommunicationErrorIfExist />
                 {checkArtifactWithPath(artifact) && (
                   <div className={styles.popupActions}>
                     <div className={styles.popupAction}>
                       <div className={styles.downloadActionBlock}>
                         <DownloadArtifactButton
+                          isShowErrorIfExist={false}
                           artifact={artifact as any}
                           entityId={this.props.entityId}
                           entityType={this.props.entityType}
@@ -221,14 +236,6 @@ class ArtifactButton extends React.PureComponent<AllProps, ILocalState> {
                           <Button theme="red" onClick={this.deleteArtifact}>
                             Delete Artifact
                           </Button>
-                          {deleteInfo.deleting.error && (
-                            <InlineCommunicationError
-                              customMessage={
-                                artifactErrorMessages.artifact_deleting
-                              }
-                              error={deleteInfo.deleting.error}
-                            />
-                          )}
                         </div>
                       </div>
                     )}
@@ -239,6 +246,60 @@ class ArtifactButton extends React.PureComponent<AllProps, ILocalState> {
           </Popup>
         )}
       </div>
+    );
+  }
+
+  @bind
+  private LastCommunicationErrorIfExist() {
+    const handledCommunicationsDesc: Array<{
+      communication: ICommunication<any>;
+      render: (error: AppError<any>) => React.ReactNode;
+    }> = [
+      {
+        communication: this.props.downloadingArtifact,
+        render: (error: AppError) => (
+          <InlineCommunicationError
+            error={error}
+            customMessage={artifactErrorMessages.artifact_download}
+          />
+        ),
+      },
+      {
+        communication: this.props.loadingArtifactPreview,
+        render: (error: AppError) => (
+          <InlineCommunicationError
+            error={error}
+            customMessage={artifactErrorMessages.artifact_preview}
+          />
+        ),
+      },
+      this.props.deleteInfo
+        ? {
+            communication: this.props.deleteInfo.deleting,
+            render: (error: AppError) => (
+              <InlineCommunicationError
+                customMessage={artifactErrorMessages.artifact_deleting}
+                error={error}
+              />
+            ),
+          }
+        : null,
+    ].filter(isNotNill);
+    return (
+      <LastCommunicationError
+        communications={handledCommunicationsDesc.map(
+          ({ communication }) => communication
+        )}
+      >
+        {(error, lastFailedCommunication) => {
+          const targetCommunicationDesc = handledCommunicationsDesc.find(
+            ({ communication }) => communication === lastFailedCommunication
+          );
+          return targetCommunicationDesc
+            ? targetCommunicationDesc.render(error)
+            : null;
+        }}
+      </LastCommunicationError>
     );
   }
 
@@ -327,10 +388,16 @@ const mapStateToProps = (
       ? selectDatasetVersion(state, localProps.artifact.linkedArtifactId) ||
         null
       : null,
+    downloadingArtifact: selectDownloadingArtifact(state),
+    loadingArtifactPreview: selectLoadingArtifactPreview(state),
   };
 };
+
+function isNotNill<T>(elem: T | null | undefined): elem is T {
+  return elem !== null && elem !== undefined;
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ArtifactButton);
+)(withRouter(ArtifactButton));

@@ -22,8 +22,31 @@ import {
   deleteArtifactActionTypes,
   EntityType,
 } from './types';
+import { HttpError } from 'core/shared/models/Error';
+import { IWorkspace } from 'models/Workspace';
 
-export const loadArtifactUrl = (
+const loadArtifactUrlOrReturnLoaded = (
+  entityType: EntityType,
+  entityId: string,
+  artifact: IArtifact
+): ActionResult<Promise<string>, ILoadArtifactUrlActions> => async (
+  dispatch,
+  getState,
+  deps
+) => {
+  const artifactUrl = selectArtifactUrl(getState());
+  if (!artifactUrl) {
+    await loadArtifactUrl(entityType, entityId, artifact)(
+      dispatch,
+      getState,
+      deps
+    );
+    return selectArtifactUrl(getState())!;
+  }
+  return artifactUrl;
+};
+
+const loadArtifactUrl = (
   entityType: EntityType,
   entityId: string,
   artifact: IArtifact
@@ -110,27 +133,6 @@ export const loadArtifactUrl = (
   }
 };
 
-const downloadFromUrl = (url: string) => {
-  return fetch(url)
-    .then(response => {
-      if (response.status === 200) {
-        const link = document.createElement('a');
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.setAttribute('href', url);
-        link.setAttribute('download', '');
-        link.click();
-        window.URL.revokeObjectURL(link.href);
-        document.body.removeChild(link);
-      } else {
-        throw new Error(`${response.status} - ${response.statusText}`);
-      }
-    })
-    .catch(err => {
-      throw err;
-    });
-};
-
 export const reset = (): IResetAction => {
   return { type: resetActionType.RESET };
 };
@@ -144,31 +146,38 @@ export const downloadArtifact = (
   getState,
   deps
 ) => {
-  dispatch(action(downloadArtifactActionTypes.REQUEST, { key: artifact.key }));
+  try {
+    dispatch(
+      action(downloadArtifactActionTypes.REQUEST, { key: artifact.key })
+    );
 
-  (async () => {
-    const artifactUrl = selectArtifactUrl(getState());
-    if (!artifactUrl) {
-      await loadArtifactUrl(entityType, entityId, artifact)(
-        dispatch,
-        getState,
-        deps
-      );
-      return selectArtifactUrl(getState())!;
-    }
-    return artifactUrl;
-  })()
-    .then(url => downloadFromUrl(url))
-    .then(() =>
-      dispatch(
-        action(downloadArtifactActionTypes.SUCCESS, { key: artifact.key })
-      )
-    )
-    .catch(error => {
-      dispatch(
-        action(downloadArtifactActionTypes.FAILURE, normalizeError(error))
-      );
-    });
+    const artifactUrl = await loadArtifactUrlOrReturnLoaded(
+      entityType,
+      entityId,
+      artifact
+    )(dispatch, getState, deps);
+    await downloadFromUrl(artifactUrl);
+
+    dispatch(
+      action(downloadArtifactActionTypes.SUCCESS, { key: artifact.key })
+    );
+  } catch (error) {
+    dispatch(
+      action(downloadArtifactActionTypes.FAILURE, normalizeError(error))
+    );
+  }
+};
+const downloadFromUrl = async (url: string) => {
+  await fetchWithErrorNormalizing(url); // check that the file is available
+
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.setAttribute('href', url);
+  link.setAttribute('download', '');
+  link.click();
+  window.URL.revokeObjectURL(link.href);
+  document.body.removeChild(link);
 };
 
 export const loadArtifactPreview = (
@@ -180,48 +189,38 @@ export const loadArtifactPreview = (
   getState,
   deps
 ) => {
-  dispatch(
-    action(loadArtifactPreviewActionTypes.REQUEST, { key: artifact.key })
-  );
+  try {
+    dispatch(
+      action(loadArtifactPreviewActionTypes.REQUEST, { key: artifact.key })
+    );
 
-  (async () => {
-    const artifactUrl = selectArtifactUrl(getState());
-    if (!artifactUrl) {
-      await loadArtifactUrl(entityType, entityId, artifact)(
-        dispatch,
-        getState,
-        deps
-      );
-      return selectArtifactUrl(getState())!;
-    }
-    return artifactUrl;
-  })()
-    .then(url => {
-      if (isFileExtensionImage(getArtifactPreviewFileExtension(artifact)!)) {
-        dispatch(
-          action(loadArtifactPreviewActionTypes.SUCCESS, {
-            key: artifact.key,
-            preview: url,
-          })
-        );
-      } else {
-        return fetch(url)
-          .then(data => data.text())
-          .then(preview => {
-            dispatch(
-              action(loadArtifactPreviewActionTypes.SUCCESS, {
-                key: artifact.key,
-                preview,
-              })
-            );
-          });
-      }
-    })
-    .catch(error => {
+    const artifactUrl = await loadArtifactUrlOrReturnLoaded(
+      entityType,
+      entityId,
+      artifact
+    )(dispatch, getState, deps);
+    if (isFileExtensionImage(getArtifactPreviewFileExtension(artifact)!)) {
       dispatch(
-        action(loadArtifactPreviewActionTypes.FAILURE, normalizeError(error))
+        action(loadArtifactPreviewActionTypes.SUCCESS, {
+          key: artifact.key,
+          preview: artifactUrl,
+        })
       );
-    });
+      return;
+    }
+
+    const preview = await fetchWithErrorNormalizing(artifactUrl);
+    dispatch(
+      action(loadArtifactPreviewActionTypes.SUCCESS, {
+        key: artifact.key,
+        preview,
+      })
+    );
+  } catch (error) {
+    dispatch(
+      action(loadArtifactPreviewActionTypes.FAILURE, normalizeError(error))
+    );
+  }
 };
 
 export const loadDatasetVersion = (
@@ -277,4 +276,14 @@ export const deleteArtifact = (
         })
       );
     });
+};
+
+const fetchWithErrorNormalizing = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new HttpError({
+      status: response.status,
+    });
+  }
+  return await response.text();
 };

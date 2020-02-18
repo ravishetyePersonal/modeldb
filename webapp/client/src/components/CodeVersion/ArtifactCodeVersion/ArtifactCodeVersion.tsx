@@ -8,7 +8,7 @@ import { EntityType } from 'store/artifactManager';
 import { IApplicationState } from 'store/store';
 
 import DownloadArtifactButton from 'components/ModelRecordProps/Artifacts/DownloadArtifactButton/DownloadArtifactButton';
-import { IArtifact, checkArtifactWithPath } from 'core/shared/models/Artifact';
+import { checkArtifactWithPath } from 'core/shared/models/Artifact';
 import { IArtifactCodeVersion } from 'core/shared/models/CodeVersion';
 import PilePopup from 'core/shared/view/elements/PileWithPopup/PilePopup/PilePopup';
 import PileWithPopup from 'core/shared/view/elements/PileWithPopup/PileWithPopup/PileWithPopup';
@@ -84,6 +84,7 @@ const ArtifactCodeVersionPopup = React.memo(
         {checkArtifactWithPath(artifactCodeVersion.data) ? (
           <PilePopup.Actions>
             <DownloadArtifactButton
+              isShowErrorIfExist={true}
               artifact={artifactCodeVersion.data}
               entityId={entityId}
               entityType={entityType}
