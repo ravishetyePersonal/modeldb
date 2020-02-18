@@ -338,26 +338,55 @@ class TestExperimentRun:
 class TestExperimentRuns:
     def test_getitem(self, client):
         client.set_project()
-        expt = client.set_experiment()
+        expt_runs = client.set_experiment().expt_runs
 
-        # test for...in iteration
         local_run_ids = set(client.set_experiment_run().id for _ in range(3))
-        assert local_run_ids == set(run.id for run in expt.expt_runs)
 
-        # do it again
-        local_run_ids.update(client.set_experiment_run().id for _ in range(3))
-        assert local_run_ids == set(run.id for run in expt.expt_runs)
+        assert expt_runs[1].id in local_run_ids
 
-        # direct __getitem__
-        assert expt.expt_runs[0].id in local_run_ids
+    def test_negative_indexing(self, client):
+        client.set_project()
+        expt_runs = client.set_experiment().expt_runs
+
+        local_run_ids = set(client.set_experiment_run().id for _ in range(3))
+
+        assert expt_runs[-1].id in local_run_ids
+
+    def test_index_out_of_range_error(self, client):
+        client.set_project()
+        expt_runs = client.set_experiment().expt_runs
+
+        [client.set_experiment_run() for _ in range(3)]
+
+        with pytest.raises(IndexError):
+            expt_runs[6]
+
+        with pytest.raises(IndexError):
+            expt_runs[-6]
+
+    def test_iter(self, client):
+        client.set_project()
+        expt_runs = client.set_experiment().expt_runs
+
+        expt_runs._ITER_PAGE_LIMIT = 3
+
+        local_run_ids = set(client.set_experiment_run().id for _ in range(6))
+
+        # iterate through all 6 runs
+        assert local_run_ids == set(run.id for run in expt_runs)
+
+        # don't fail ungracefully while runs are added
+        for i, _ in enumerate(expt_runs):
+            if i == 4:
+                [client.set_experiment_run() for _ in range(3)]
 
     def test_len(self, client):
         client.set_project()
-        expt = client.set_experiment()
-        run_ids = [client.set_experiment_run().id for _ in range(3)]
+        expt_runs = client.set_experiment().expt_runs
 
-        assert len(run_ids) == len(expt.expt_runs)
+        assert len([client.set_experiment_run().id for _ in range(3)]) == len(expt_runs)
 
+    @pytest.mark.skip("functionality removed")
     def test_add(self, client):
         client.set_project()
         expt1 = client.set_experiment()

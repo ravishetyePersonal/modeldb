@@ -214,19 +214,7 @@ class Client(object):
         if self.expt is None:
             return None
         else:
-            Message = _ExperimentRunService.GetExperimentRunsInProject
-            msg = Message(project_id=self.proj.id)
-            data = _utils.proto_to_json(msg)
-            response = _utils.make_request("GET",
-                                           "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
-                                           self._conn, params=data)
-            _utils.raise_for_http_error(response)
-
-            response_msg = _utils.json_to_proto(response.json(), Message.Response)
-            expt_run_ids = [expt_run.id
-                            for expt_run in response_msg.experiment_runs
-                            if expt_run.experiment_id == self.expt.id]
-            return ExperimentRuns(self._conn, self._conf, expt_run_ids)
+            return self.expt.expt_runs
 
     def _load_config(self):
         config_file = self._find_config_in_all_dirs()
@@ -1088,18 +1076,9 @@ class Project(_ModelDBEntity):
     @property
     def expt_runs(self):
         # get runs in this Project
-        Message = _ExperimentRunService.GetExperimentRunsInProject
-        msg = Message(project_id=self.id)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInProject".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, params=data)
-        _utils.raise_for_http_error(response)
-
-        expt_run_ids = [expt_run.id
-                        for expt_run
-                        in _utils.json_to_proto(response.json(), Message.Response).experiment_runs]
-        return ExperimentRuns(self._conn, self._conf, expt_run_ids)
+        runs = ExperimentRuns(self._conn, self._conf)
+        runs._find_msg.project_id = self.id
+        return runs
 
     @staticmethod
     def _generate_default_name():
@@ -1242,18 +1221,9 @@ class Experiment(_ModelDBEntity):
     @property
     def expt_runs(self):
         # get runs in this Experiment
-        Message = _ExperimentRunService.GetExperimentRunsInExperiment
-        msg = Message(experiment_id=self.id)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/experiment-run/getExperimentRunsInExperiment".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, params=data)
-        _utils.raise_for_http_error(response)
-
-        expt_run_ids = [expt_run.id
-                        for expt_run
-                        in _utils.json_to_proto(response.json(), Message.Response).experiment_runs]
-        return ExperimentRuns(self._conn, self._conf, expt_run_ids)
+        runs = ExperimentRuns(self._conn, self._conf)
+        runs._find_msg.experiment_id = self.id
+        return runs
 
     @staticmethod
     def _generate_default_name():
@@ -1318,28 +1288,6 @@ class ExperimentRuns(object):
     There should not be a need to instantiate this class directly; please use other classes'
     attributes to access Experiment Runs.
 
-    Notes
-    -----
-    After an :class:`ExperimentRuns` instance is assigned to a variable, it will be detached from
-    the method that created it, and *will never automatically update itself*.
-
-    This is to allow filtering and sorting without modifying the Experiment Runs' parent and vice
-    versa.
-
-    For example, this behavior may be surprising:
-
-    >>> runs = expt.expt_runs
-    >>> runs
-    <ExperimentRuns containing 10 runs>
-    >>> new_run = client.set_experiment_run()
-    >>> expt.expt_runs  # updated
-    <ExperimentRuns containing 11 runs>
-    >>> runs  # still 10
-    <ExperimentRuns containing 10 runs>
-
-    The individual :class:`ExperimentRun`\ s themselves, however, are still synchronized with the
-    backend.
-
     Examples
     --------
     >>> runs = expt.find("hyperparameters.hidden_size == 256")
@@ -1371,36 +1319,100 @@ class ExperimentRuns(object):
         'attributes', 'hyperparameters', 'metrics',
     }
 
-    def __init__(self, conn, conf, expt_run_ids=None):
+    # number of runs IDs to fetch per back end call in __iter__()
+    _ITER_PAGE_LIMIT = 100
+
+    def __init__(self, conn, conf):
         self._conn = conn
         self._conf = conf
-        self._ids = expt_run_ids if expt_run_ids is not None else []
+        self._find_msg = _ExperimentRunService.FindExperimentRuns(ids_only=True)
 
     def __repr__(self):
         return "<ExperimentRuns containing {} runs>".format(self.__len__())
 
-    def __getitem__(self, key):
-        if isinstance(key, int):
-            expt_run_id = self._ids[key]
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            # copy msg to avoid mutating `self`'s state
+            msg = _ExperimentRunService.FindExperimentRuns()
+            msg.CopyFrom(self._find_msg)
+            msg.page_limit = 1
+            if index >= 0:
+                # convert zero-based indexing into page number
+                msg.page_number = index + 1
+            else:
+                # reverse page order to index from end
+                msg.ascending = not msg.ascending  # pylint: disable=no-member
+                msg.page_number = abs(index)
+
+            response_msg = self._call_back_end(msg)
+
+            if (not response_msg.experiment_runs
+                    and msg.page_number > response_msg.total_records):  # pylint: disable=no-member
+                raise IndexError("index out of range")
+
+            expt_run_id = response_msg.experiment_runs[0].id
             return ExperimentRun(self._conn, self._conf, _expt_run_id=expt_run_id)
-        elif isinstance(key, slice):
-            expt_run_ids = self._ids[key]
-            return self.__class__(self._conn, self._conf, expt_run_ids)
         else:
-            raise TypeError("index must be integer or slice, not {}".format(type(key)))
+            raise TypeError("index must be integer, not {}".format(type(index)))
+
+    def __iter__(self):
+        # copy msg to avoid mutating `self`'s state
+        msg = _ExperimentRunService.FindExperimentRuns()
+        msg.CopyFrom(self._find_msg)
+        msg.page_limit = self._ITER_PAGE_LIMIT
+        msg.page_number = 0  # this will be incremented as soon as we enter the loop
+
+        run_ids = set()
+        total_records = float('inf')
+        while msg.page_limit*msg.page_number < total_records:  # pylint: disable=no-member
+            msg.page_number += 1  # pylint: disable=no-member
+
+            response_msg = self._call_back_end(msg)
+
+            total_records = response_msg.total_records
+
+            for expt_run in response_msg.experiment_runs:
+                expt_run_id = expt_run.id
+
+                # skip the run if we've seen it before
+                if expt_run_id in run_ids:
+                    continue
+                else:
+                    run_ids.add(expt_run_id)
+
+                yield ExperimentRun(self._conn, self._conf, _expt_run_id=expt_run_id)
 
     def __len__(self):
-        return len(self._ids)
+        # copy msg to avoid mutating `self`'s state
+        msg = _ExperimentRunService.FindExperimentRuns()
+        msg.CopyFrom(self._find_msg)
+        msg.page_limit = msg.page_number = 1  # minimal request just to get total_records
 
-    def __add__(self, other):
-        if isinstance(other, self.__class__):
-            self_ids_set = set(self._ids)
-            other_ids = [expt_run_id for expt_run_id in other._ids if expt_run_id not in self_ids_set]
-            return self.__class__(self._conn, self._conf, self._ids + other_ids)
-        else:
-            return NotImplemented
+        response_msg = self._call_back_end(msg)
 
-    def find(self, where, ret_all_info=False, _proj_id=None, _expt_id=None):
+        return response_msg.total_records
+
+    # def __add__(self, other):
+    #     if isinstance(other, self.__class__):
+    #         self_ids_set = set(self._ids)
+    #         other_ids = [expt_run_id for expt_run_id in other._ids if expt_run_id not in self_ids_set]
+    #         return self.__class__(self._conn, self._conf, self._ids + other_ids)
+    #     else:
+    #         return NotImplemented
+
+    def _call_back_end(self, msg):
+        data = _utils.proto_to_json(msg)
+        response = _utils.make_request(
+            "POST",
+            "{}://{}/api/v1/modeldb/experiment-run/findExperimentRuns".format(self._conn.scheme, self._conn.socket),
+            self._conn, json=data,
+        )
+        _utils.raise_for_http_error(response)
+
+        response_msg = _utils.json_to_proto(response.json(), msg.Response)
+        return response_msg
+
+    def find(self, where, ret_all_info=False):
         """
         Gets the Experiment Runs from this collection that match predicates `where`.
 
@@ -1438,17 +1450,8 @@ class ExperimentRuns(object):
             warnings.warn("`ret_all_info` is deprecated and will removed in a later version",
                           category=FutureWarning)
 
-        if _proj_id is not None and _expt_id is not None:
-            raise ValueError("cannot specify both `_proj_id` and `_expt_id`")
-        elif _proj_id is None and _expt_id is None:
-            if self.__len__() == 0:
-                return self.__class__(self._conn, self._conf)
-            else:
-                expt_run_ids = self._ids
-        else:
-            expt_run_ids = None
+        new_runs = copy.deepcopy(self)
 
-        predicates = []
         if isinstance(where, six.string_types):
             where = [where]
         for predicate in where:
@@ -1485,22 +1488,14 @@ class ExperimentRuns(object):
                     e = ValueError("value `{}` must be a number or string literal".format(value))
                     six.raise_from(e, None)
 
-            predicates.append(_CommonService.KeyValueQuery(key=key, value=_utils.python_to_val_proto(value),
-                                                           operator=operator))
-        Message = _ExperimentRunService.FindExperimentRuns
-        msg = Message(project_id=_proj_id, experiment_id=_expt_id, experiment_run_ids=expt_run_ids,
-                      predicates=predicates, ids_only=not ret_all_info)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("POST",
-                                       "{}://{}/api/v1/modeldb/experiment-run/findExperimentRuns".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, json=data)
-        _utils.raise_for_http_error(response)
+            new_runs._find_msg.predicates.append(  # pylint: disable=no-member
+                _CommonService.KeyValueQuery(
+                    key=key, value=_utils.python_to_val_proto(value),
+                    operator=operator,
+                )
+            )
 
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        if ret_all_info:
-            return response_msg.experiment_runs
-        else:
-            return self.__class__(self._conn, self._conf, [expt_run.id for expt_run in response_msg.experiment_runs])
+        return new_runs
 
     def sort(self, key, descending=False, ret_all_info=False):
         """
@@ -1541,26 +1536,15 @@ class ExperimentRuns(object):
         if key.split('.')[0] not in self._VALID_QUERY_KEYS:
             raise ValueError("key `{}` is not a valid key for querying;"
                              " currently supported keys are: {}".format(key, self._VALID_QUERY_KEYS))
-        if self.__len__() == 0:
-            return self.__class__(self._conn, self._conf)
 
-        Message = _ExperimentRunService.SortExperimentRuns
-        msg = Message(experiment_run_ids=self._ids,
-                      sort_key=key, ascending=not descending, ids_only=not ret_all_info)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/experiment-run/sortExperimentRuns".format(self._conn.scheme, self._conn.socket),
-                                       self._conn,
-                                       params=data)
-        _utils.raise_for_http_error(response)
+        new_runs = copy.deepcopy(self)
 
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        if ret_all_info:
-            return response_msg.experiment_runs
-        else:
-            return self.__class__(self._conn, self._conf, [expt_run.id for expt_run in response_msg.experiment_runs])
+        new_runs._find_msg.sort_key = key
+        new_runs._find_msg.ascending = not descending
 
-    def top_k(self, key, k, ret_all_info=False, _proj_id=None, _expt_id=None):
+        return new_runs
+
+    def top_k(self, key, k, ret_all_info=False):
         r"""
         Gets the Experiment Runs from this collection with the `k` highest `key`\ s.
 
@@ -1599,32 +1583,27 @@ class ExperimentRuns(object):
         if key.split('.')[0] not in self._VALID_QUERY_KEYS:
             raise ValueError("key `{}` is not a valid key for querying;"
                              " currently supported keys are: {}".format(key, self._VALID_QUERY_KEYS))
-        if _proj_id is not None and _expt_id is not None:
-            raise ValueError("cannot specify both `_proj_id` and `_expt_id`")
-        elif _proj_id is None and _expt_id is None:
-            if self.__len__() == 0:
-                return self.__class__(self._conn, self._conf)
-            else:
-                expt_run_ids = self._ids
-        else:
-            expt_run_ids = None
 
-        Message = _ExperimentRunService.TopExperimentRunsSelector
-        msg = Message(project_id=_proj_id, experiment_id=_expt_id, experiment_run_ids=expt_run_ids,
-                      sort_key=key, ascending=False, top_k=k, ids_only=not ret_all_info)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, params=data)
-        _utils.raise_for_http_error(response)
+        # apply sort to new Runs
+        new_runs = copy.deepcopy(self)
+        new_runs._find_msg.sort_key = key
+        new_runs._find_msg.ascending = False
 
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        if ret_all_info:
-            return response_msg.experiment_runs
-        else:
-            return self.__class__(self._conn, self._conf, [expt_run.id for expt_run in response_msg.experiment_runs])
+        # copy msg to avoid mutating `new_runs`'s state
+        msg = _ExperimentRunService.FindExperimentRuns()
+        msg.CopyFrom(new_runs._find_msg)
+        msg.page_limit = k
+        msg.page_number = 1
 
-    def bottom_k(self, key, k, ret_all_info=False, _proj_id=None, _expt_id=None):
+        response_msg = self._call_back_end(msg)
+
+        # cannot assign to `experiment_run_ids` because Protobuf fields don't allow it
+        del new_runs._find_msg.experiment_run_ids[:]
+        new_runs._find_msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
+
+        return new_runs
+
+    def bottom_k(self, key, k, ret_all_info=False):
         r"""
         Gets the Experiment Runs from this collection with the `k` lowest `key`\ s.
 
@@ -1662,30 +1641,25 @@ class ExperimentRuns(object):
         if key.split('.')[0] not in self._VALID_QUERY_KEYS:
             raise ValueError("key `{}` is not a valid key for querying;"
                              " currently supported keys are: {}".format(key, self._VALID_QUERY_KEYS))
-        if _proj_id is not None and _expt_id is not None:
-            raise ValueError("cannot specify both `_proj_id` and `_expt_id`")
-        elif _proj_id is None and _expt_id is None:
-            if self.__len__() == 0:
-                return self.__class__(self._conn, self._conf)
-            else:
-                expt_run_ids = self._ids
-        else:
-            expt_run_ids = None
 
-        Message = _ExperimentRunService.TopExperimentRunsSelector
-        msg = Message(project_id=_proj_id, experiment_id=_expt_id, experiment_run_ids=expt_run_ids,
-                      sort_key=key, ascending=True, top_k=k, ids_only=not ret_all_info)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/experiment-run/getTopExperimentRuns".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, params=data)
-        _utils.raise_for_http_error(response)
+        # apply sort to new Runs
+        new_runs = copy.deepcopy(self)
+        new_runs._find_msg.sort_key = key
+        new_runs._find_msg.ascending = True
 
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        if ret_all_info:
-            return response_msg.experiment_runs
-        else:
-            return self.__class__(self._conn, self._conf, [expt_run.id for expt_run in response_msg.experiment_runs])
+        # copy msg to avoid mutating `new_runs`'s state
+        msg = _ExperimentRunService.FindExperimentRuns()
+        msg.CopyFrom(new_runs._find_msg)
+        msg.page_limit = k
+        msg.page_number = 1
+
+        response_msg = self._call_back_end(msg)
+
+        # cannot assign to `experiment_run_ids` because Protobuf fields don't allow it
+        del new_runs._find_msg.experiment_run_ids[:]
+        new_runs._find_msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
+
+        return new_runs
 
 
 class ExperimentRun(_ModelDBEntity):

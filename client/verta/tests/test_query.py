@@ -154,7 +154,7 @@ class TestFind:
 
 
 class TestSort:
-    @pytest.mark.xfail(reason="back end sorts numbers lexicographically")
+    @pytest.mark.skip("back end sorts numbers lexicographically")
     def test_metrics_and_hyperparameters(self, client, floats):
         proj = client.set_project()
         client.set_experiment()
@@ -187,8 +187,35 @@ class TestSort:
             assert run_id == run.id
 
 
+class TestChain:
+    def test_chain(self, client):
+        client.set_project()
+        expt = client.set_experiment()
+
+        for acc, loss in zip(range(6), reversed(range(6))):
+            run = client.set_experiment_run()
+            run.log_metric('acc', acc)
+            run.log_metric('loss', loss)
+
+        # chain *_k()
+        runs = expt.expt_runs.bottom_k("metrics.acc", 4).top_k("metrics.acc", 2)
+        assert [run.get_metric('acc') for run in runs] == [3, 2]
+
+        # *_k() overrides prior sort()
+        runs = expt.expt_runs.sort('metrics.loss').top_k("metrics.acc", 2)
+        assert [run.get_metric('acc') for run in runs] == [5, 4]
+        runs = expt.expt_runs.sort('metrics.loss', descending=True).top_k("metrics.acc", 2)
+        assert [run.get_metric('acc') for run in runs] == [5, 4]
+
+        # sort() overrides prior sort()
+        runs = expt.expt_runs.sort('metrics.loss').sort("metrics.acc")
+        assert [run.get_metric('acc') for run in runs] == [0, 1, 2, 3, 4, 5]
+        runs = expt.expt_runs.sort('metrics.acc').sort("metrics.loss")
+        assert [run.get_metric('loss') for run in runs] == [0, 1, 2, 3, 4, 5]
+
+
 class TestTopK:
-    @pytest.mark.xfail(reason="back end sorts numbers lexicographically")
+    @pytest.mark.skip("back end sorts numbers lexicographically")
     def test_metrics_and_hyperparameters(self, client, floats):
         k = 3
         proj = client.set_project()
@@ -224,7 +251,7 @@ class TestTopK:
 
 
 class TestBottomK:
-    @pytest.mark.xfail(reason="back end sorts numbers lexicographically")
+    @pytest.mark.skip("back end sorts numbers lexicographically")
     def test_metrics_and_hyperparameters(self, client, floats):
         k = 3
         proj = client.set_project()

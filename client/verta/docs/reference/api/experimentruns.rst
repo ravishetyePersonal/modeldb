@@ -13,6 +13,7 @@ ExperimentRuns
 
         Returns the :class:`ExperimentRun` in this collection at index `i`.
 
-    .. describe:: runs + other
+    .. commented out until union is supported again
+        .. describe:: runs + other
 
-        Returns a new :class:`ExperimentRuns` that is the concatenation of this collection and `other`.
+            Returns a new :class:`ExperimentRuns` that is the concatenation of this collection and `other`.
