@@ -17,6 +17,7 @@ try:
 except ImportError:  # Boto 3 not installed
     boto3 = None
 
+from ._protos.public.common import CommonService_pb2 as _CommonCommonService
 from ._protos.public.modeldb import CommonService_pb2 as _CommonService
 from ._protos.public.modeldb import DatasetService_pb2 as _DatasetService
 from ._protos.public.modeldb import DatasetVersionService_pb2 as _DatasetVersionService
@@ -132,7 +133,7 @@ class Dataset(object):
     @staticmethod
     def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None):
         if attrs is not None:
-            attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+            attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _DatasetService.CreateDataset
@@ -536,7 +537,7 @@ class DatasetVersion(object):
                 desc=None, tags=None, attrs=None,
                 version=None):
         if attrs is not None:
-            attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+            attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         if dataset_type == _DatasetService.DatasetTypeEnum.PATH:
@@ -844,7 +845,7 @@ class AtlasHiveDatasetVersionInfo(QueryDatasetVersionInfo):
         attributes['update_time'] = table_obj['updateTime']
         attributes['load_queries'] = AtlasHiveDatasetVersionInfo.get_inbound_queries(table_obj)
         # for key, value in six.viewitems(attributes):
-            # attribute_keyvals.append(_CommonService.KeyValue(key=key,
+            # attribute_keyvals.append(_CommonCommonService.KeyValue(key=key,
             #                                                  value=_utils.python_to_val_proto(value, allow_collection=True)))
         # return attribute_keyvals
         return attributes

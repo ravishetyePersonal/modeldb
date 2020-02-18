@@ -1123,7 +1123,7 @@ class Project(_ModelDBEntity):
     @staticmethod
     def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None):
         if attrs is not None:
-            attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+            attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _ProjectService.CreateProject
@@ -1253,7 +1253,7 @@ class Experiment(_ModelDBEntity):
     @staticmethod
     def _create(conn, proj_id, expt_name, desc=None, tags=None, attrs=None):
         if attrs is not None:
-            attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+            attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _ExperimentService.CreateExperiment
@@ -1751,7 +1751,7 @@ class ExperimentRun(_ModelDBEntity):
     @staticmethod
     def _create(conn, proj_id, expt_id, expt_run_name, desc=None, tags=None, attrs=None, date_created=None):
         if attrs is not None:
-            attrs = [_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+            attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _ExperimentRunService.CreateExperimentRun
@@ -2145,7 +2145,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         _utils.validate_flat_key(key)
 
-        attribute = _CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
+        attribute = _CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
         msg = _ExperimentRunService.LogAttribute(id=self.id, attribute=attribute)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
@@ -2175,7 +2175,7 @@ class ExperimentRun(_ModelDBEntity):
         # build KeyValues
         attribute_keyvals = []
         for key, value in six.viewitems(attributes):
-            attribute_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True)))
+            attribute_keyvals.append(_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True)))
 
         msg = _ExperimentRunService.LogAttributes(id=self.id, attributes=attribute_keyvals)
         data = _utils.proto_to_json(msg)
@@ -2258,7 +2258,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         _utils.validate_flat_key(key)
 
-        metric = _CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
+        metric = _CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
         msg = _ExperimentRunService.LogMetric(id=self.id, metric=metric)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
@@ -2288,7 +2288,7 @@ class ExperimentRun(_ModelDBEntity):
         # build KeyValues
         metric_keyvals = []
         for key, value in six.viewitems(metrics):
-            metric_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
+            metric_keyvals.append(_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
 
         msg = _ExperimentRunService.LogMetrics(id=self.id, metrics=metric_keyvals)
         data = _utils.proto_to_json(msg)
@@ -2369,7 +2369,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         _utils.validate_flat_key(key)
 
-        hyperparameter = _CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
+        hyperparameter = _CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
         msg = _ExperimentRunService.LogHyperparameter(id=self.id, hyperparameter=hyperparameter)
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
@@ -2399,7 +2399,7 @@ class ExperimentRun(_ModelDBEntity):
         # build KeyValues
         hyperparameter_keyvals = []
         for key, value in six.viewitems(hyperparams):
-            hyperparameter_keyvals.append(_CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
+            hyperparameter_keyvals.append(_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value)))
 
         msg = _ExperimentRunService.LogHyperparameters(id=self.id, hyperparameters=hyperparameter_keyvals)
         data = _utils.proto_to_json(msg)
@@ -3058,7 +3058,7 @@ class ExperimentRun(_ModelDBEntity):
         else:
             timestamp = _utils.ensure_timestamp(timestamp)
 
-        attribute = _CommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
+        attribute = _CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value))
         observation = _ExperimentRunService.Observation(attribute=attribute, timestamp=timestamp)  # TODO: support Artifacts
         msg = _ExperimentRunService.LogObservation(id=self.id, observation=observation)
         data = _utils.proto_to_json(msg)
