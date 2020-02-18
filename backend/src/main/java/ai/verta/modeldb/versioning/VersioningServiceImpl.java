@@ -207,61 +207,57 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   public void createCommit(
       CreateCommitRequest request, StreamObserver<CreateCommitRequest.Response> responseObserver) {
     QPSCountResource.inc();
-    try {
-      try (RequestLatencyResource latencyResource =
-          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-        String message = null;
-        if (request.getBlobsCount() == 0) {
-          message = "Blob list should not be empty";
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      if (request.getBlobsCount() == 0) {
+        throw new ModelDBException("Blob list should not be empty", Code.INVALID_ARGUMENT);
+      }
+      WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getRepositoryId());
+      CreateCommitRequest.Builder newRequest = CreateCommitRequest.newBuilder();
+      for (BlobExpanded blob : request.getBlobsList()) {
+        if (blob.getPath().isEmpty()) {
+          throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
         }
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getRepositoryId());
-        for (BlobExpanded blob: request.getBlobsList()) {
-          if (blob.getPath().isEmpty()) {
-            message = "Blob path should not be empty";
-          }
-          final DatasetBlob dataset = blob.getBlob().getDataset();
-          if (!dataset.hasPath() && !dataset.hasS3()) {
-            message = "Blob unknown type";
-          }
-        }
+        final DatasetBlob dataset = blob.getBlob().getDataset();
+        final DatasetBlob.Builder newDataset = DatasetBlob.newBuilder();
 
-        if (message != null) {
-          throw new ModelDBException(message, Code.INVALID_ARGUMENT);
+        switch (dataset.getContentCase()) {
+          case S3:
+            S3DatasetBlob.Builder newS3BlobBuilder = S3DatasetBlob.newBuilder();
+            for (S3DatasetComponentBlob component : dataset.getS3().getComponentsList()) {
+              if (!component.hasPath()) {
+                throw new ModelDBException("Blob path should not be empty",
+                    Code.INVALID_ARGUMENT);
+              }
+              newS3BlobBuilder.addComponents(component.toBuilder().setPath(component.getPath()
+                  .toBuilder().setSha256(generateAndValidateSha(component.getPath()))));
+            }
+            newDataset.setS3(newS3BlobBuilder);
+            break;
+          case PATH:
+            PathDatasetBlob.Builder newPathBlobBuilder = PathDatasetBlob.newBuilder();
+            for (PathDatasetComponentBlob component : dataset.getPath().getComponentsList()) {
+              newPathBlobBuilder.addComponents((component.toBuilder()
+                  .setSha256(generateAndValidateSha(component))));
+            }
+            newDataset.setPath(newPathBlobBuilder);
+            break;
+          default:
+            throw new ModelDBException("Blob unknown type", Code.INVALID_ARGUMENT);
         }
-        blobDAO.createBlobs(request.getBlobsList());
+        newRequest.addBlobs(blob.toBuilder().setBlob(Blob.newBuilder().setDataset(newDataset)));
+      }
 
-        final DatasetBlob dataset = entity.getBlob().getDataset();
-          final String path;
-          final boolean isDir;
-          if (dataset.hasS3()) {
-            path = dataset.getS3().getPath().getPath();
-            isDir = false;
-          } else if (dataset.hasPath()) {
-            path = dataset.getPath().getPath();
-            isDir = true;
-          } else {
-            throw new ModelDBException("Dataset info not specified", Code.INVALID_ARGUMENT);
-          }
-          String sha = entity.getSha256();
-          String generatedSha = fileHasher.getSha(path, isDir);
-          if (!entity.getSha256().isEmpty() && !sha.equals(generatedSha)) {
-            throw new ModelDBException("Checksum is wrong", Code.INVALID_ARGUMENT);
-          }
-          if (isDir) {
-            response = entityDAO.addPathDatasetBlob(path);
-          } else {
-            response = entityDAO.addS3DatasetBlob(path);
-          }
-        } else if (entity.hasTree()) {
-          response = entityDAO.addTree(entity.getTree());
-        } else {
-          throw new ModelDBException("Unknown type", Code.UNIMPLEMENTED);
-        }
+      CreateCommitRequest.Response response = commitDAO.setCommit(request.getCommit(),
+          (session) -> blobDAO.setBlobs(session, request.getBlobsList()),
+          (session) ->
+              repositoryDAO.getRepositoryById(session, request.getRepositoryId(), workspaceDTO));
 
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();*/
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
     } catch (Exception e) {
-      ModelDBUtils.observeError(responseObserver, e, CreateCommitRequest.Response.getDefaultInstance());
+      ModelDBUtils
+          .observeError(responseObserver, e, CreateCommitRequest.Response.getDefaultInstance());
     }
   }
 
@@ -284,6 +280,15 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       GetCommitFolderRequest request,
       StreamObserver<GetCommitFolderRequest.Response> responseObserver) {
     super.getCommitFolder(request, responseObserver);
+  }
+
+  String generateAndValidateSha(PathDatasetComponentBlob path) throws ModelDBException {
+    String sha = path.getSha256();
+    String generatedSha = fileHasher.generateSha(path.getPath(), false);
+    if (!sha.isEmpty() && !sha.equals(generatedSha)) {
+      throw new ModelDBException("Checksum is wrong", Code.INVALID_ARGUMENT);
+    }
+    return generatedSha;
   }
 
   @Override

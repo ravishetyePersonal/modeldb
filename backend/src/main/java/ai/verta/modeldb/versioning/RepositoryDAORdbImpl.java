@@ -67,7 +67,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     }
   }
 
-  private RepositoryEntity getRepositoryById(
+  @Override
+  public RepositoryEntity getRepositoryById(
       Session session, RepositoryIdentification id, WorkspaceDTO workspaceDTO)
       throws ModelDBException {
     RepositoryEntity repository;
