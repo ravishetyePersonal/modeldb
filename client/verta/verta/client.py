@@ -568,16 +568,8 @@ class Client(object):
         Message = _dataset._DatasetService.FindDatasets
         msg = Message(dataset_ids=dataset_ids, predicates=predicates,
                       ascending=ascending, sort_key=sort_key)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("POST",
-                                       "{}://{}/api/v1/modeldb/dataset/findDatasets".format(
-                                           self._conn.scheme, self._conn.socket),
-                                       self._conn, json=data)
-        _utils.raise_for_http_error(response)
-
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        return [_dataset.Dataset(self._conn, self._conf, _dataset_id=dataset.id)
-                for dataset in response_msg.datasets]
+        endpoint = "{}://{}/api/v1/modeldb/dataset/findDatasets"
+        return _dataset.DatasetLazyList(self._conn, self._conf, msg, endpoint, "POST")
 
     def get_dataset_version(self, id):
         """
@@ -1077,7 +1069,7 @@ class Project(_ModelDBEntity):
     def expt_runs(self):
         # get runs in this Project
         runs = ExperimentRuns(self._conn, self._conf)
-        runs._find_msg.project_id = self.id
+        runs._msg.project_id = self.id
         return runs
 
     @staticmethod
@@ -1222,7 +1214,7 @@ class Experiment(_ModelDBEntity):
     def expt_runs(self):
         # get runs in this Experiment
         runs = ExperimentRuns(self._conn, self._conf)
-        runs._find_msg.experiment_id = self.id
+        runs._msg.experiment_id = self.id
         return runs
 
     @staticmethod
@@ -1279,7 +1271,7 @@ class Experiment(_ModelDBEntity):
             _utils.raise_for_http_error(response)
 
 
-class ExperimentRuns(object):
+class ExperimentRuns(_utils.LazyList):
     r"""
     ``list``-like object representing a collection of machine learning Experiment Runs.
 
@@ -1319,98 +1311,22 @@ class ExperimentRuns(object):
         'attributes', 'hyperparameters', 'metrics',
     }
 
-    # number of runs IDs to fetch per back end call in __iter__()
-    _ITER_PAGE_LIMIT = 100
-
     def __init__(self, conn, conf):
-        self._conn = conn
-        self._conf = conf
-        self._find_msg = _ExperimentRunService.FindExperimentRuns(ids_only=True)
+        super(ExperimentRuns, self).__init__(
+            conn, conf,
+            _ExperimentRunService.FindExperimentRuns(ids_only=True),
+            "{}://{}/api/v1/modeldb/experiment-run/findExperimentRuns",
+            "POST",
+        )
 
     def __repr__(self):
         return "<ExperimentRuns containing {} runs>".format(self.__len__())
 
-    def __getitem__(self, index):
-        if isinstance(index, int):
-            # copy msg to avoid mutating `self`'s state
-            msg = _ExperimentRunService.FindExperimentRuns()
-            msg.CopyFrom(self._find_msg)
-            msg.page_limit = 1
-            if index >= 0:
-                # convert zero-based indexing into page number
-                msg.page_number = index + 1
-            else:
-                # reverse page order to index from end
-                msg.ascending = not msg.ascending  # pylint: disable=no-member
-                msg.page_number = abs(index)
+    def _get_records(self, response_msg):
+        return response_msg.experiment_runs
 
-            response_msg = self._call_back_end(msg)
-
-            if (not response_msg.experiment_runs
-                    and msg.page_number > response_msg.total_records):  # pylint: disable=no-member
-                raise IndexError("index out of range")
-
-            expt_run_id = response_msg.experiment_runs[0].id
-            return ExperimentRun(self._conn, self._conf, _expt_run_id=expt_run_id)
-        else:
-            raise TypeError("index must be integer, not {}".format(type(index)))
-
-    def __iter__(self):
-        # copy msg to avoid mutating `self`'s state
-        msg = _ExperimentRunService.FindExperimentRuns()
-        msg.CopyFrom(self._find_msg)
-        msg.page_limit = self._ITER_PAGE_LIMIT
-        msg.page_number = 0  # this will be incremented as soon as we enter the loop
-
-        run_ids = set()
-        total_records = float('inf')
-        while msg.page_limit*msg.page_number < total_records:  # pylint: disable=no-member
-            msg.page_number += 1  # pylint: disable=no-member
-
-            response_msg = self._call_back_end(msg)
-
-            total_records = response_msg.total_records
-
-            for expt_run in response_msg.experiment_runs:
-                expt_run_id = expt_run.id
-
-                # skip the run if we've seen it before
-                if expt_run_id in run_ids:
-                    continue
-                else:
-                    run_ids.add(expt_run_id)
-
-                yield ExperimentRun(self._conn, self._conf, _expt_run_id=expt_run_id)
-
-    def __len__(self):
-        # copy msg to avoid mutating `self`'s state
-        msg = _ExperimentRunService.FindExperimentRuns()
-        msg.CopyFrom(self._find_msg)
-        msg.page_limit = msg.page_number = 1  # minimal request just to get total_records
-
-        response_msg = self._call_back_end(msg)
-
-        return response_msg.total_records
-
-    # def __add__(self, other):
-    #     if isinstance(other, self.__class__):
-    #         self_ids_set = set(self._ids)
-    #         other_ids = [expt_run_id for expt_run_id in other._ids if expt_run_id not in self_ids_set]
-    #         return self.__class__(self._conn, self._conf, self._ids + other_ids)
-    #     else:
-    #         return NotImplemented
-
-    def _call_back_end(self, msg):
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request(
-            "POST",
-            "{}://{}/api/v1/modeldb/experiment-run/findExperimentRuns".format(self._conn.scheme, self._conn.socket),
-            self._conn, json=data,
-        )
-        _utils.raise_for_http_error(response)
-
-        response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        return response_msg
+    def _create_element(self, id_):
+        return ExperimentRun(self._conn, self._conf, _expt_run_id=id_)
 
     def find(self, where, ret_all_info=False):
         """
@@ -1488,7 +1404,7 @@ class ExperimentRuns(object):
                     e = ValueError("value `{}` must be a number or string literal".format(value))
                     six.raise_from(e, None)
 
-            new_runs._find_msg.predicates.append(  # pylint: disable=no-member
+            new_runs._msg.predicates.append(  # pylint: disable=no-member
                 _CommonService.KeyValueQuery(
                     key=key, value=_utils.python_to_val_proto(value),
                     operator=operator,
@@ -1539,8 +1455,8 @@ class ExperimentRuns(object):
 
         new_runs = copy.deepcopy(self)
 
-        new_runs._find_msg.sort_key = key
-        new_runs._find_msg.ascending = not descending
+        new_runs._msg.sort_key = key
+        new_runs._msg.ascending = not descending
 
         return new_runs
 
@@ -1586,20 +1502,20 @@ class ExperimentRuns(object):
 
         # apply sort to new Runs
         new_runs = copy.deepcopy(self)
-        new_runs._find_msg.sort_key = key
-        new_runs._find_msg.ascending = False
+        new_runs._msg.sort_key = key
+        new_runs._msg.ascending = False
 
         # copy msg to avoid mutating `new_runs`'s state
-        msg = _ExperimentRunService.FindExperimentRuns()
-        msg.CopyFrom(new_runs._find_msg)
+        msg = self._msg.__class__()
+        msg.CopyFrom(new_runs._msg)
         msg.page_limit = k
         msg.page_number = 1
 
         response_msg = self._call_back_end(msg)
 
         # cannot assign to `experiment_run_ids` because Protobuf fields don't allow it
-        del new_runs._find_msg.experiment_run_ids[:]
-        new_runs._find_msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
+        del new_runs._msg.experiment_run_ids[:]
+        new_runs._msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
 
         return new_runs
 
@@ -1644,20 +1560,20 @@ class ExperimentRuns(object):
 
         # apply sort to new Runs
         new_runs = copy.deepcopy(self)
-        new_runs._find_msg.sort_key = key
-        new_runs._find_msg.ascending = True
+        new_runs._msg.sort_key = key
+        new_runs._msg.ascending = True
 
         # copy msg to avoid mutating `new_runs`'s state
-        msg = _ExperimentRunService.FindExperimentRuns()
-        msg.CopyFrom(new_runs._find_msg)
+        msg = self._msg.__class__()
+        msg.CopyFrom(new_runs._msg)
         msg.page_limit = k
         msg.page_number = 1
 
         response_msg = self._call_back_end(msg)
 
         # cannot assign to `experiment_run_ids` because Protobuf fields don't allow it
-        del new_runs._find_msg.experiment_run_ids[:]
-        new_runs._find_msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
+        del new_runs._msg.experiment_run_ids[:]
+        new_runs._msg.experiment_run_ids.extend(record.id for record in response_msg.experiment_runs)
 
         return new_runs
 

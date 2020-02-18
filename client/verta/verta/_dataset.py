@@ -164,15 +164,8 @@ class Dataset(object):
         """
         Message = _DatasetVersionService.GetAllDatasetVersionsByDatasetId
         msg = Message(dataset_id=self.id)
-        data = _utils.proto_to_json(msg)
-        response = _utils.make_request("GET",
-                                       "{}://{}/api/v1/modeldb/dataset-version/getAllDatasetVersionsByDatasetId".format(self._conn.scheme, self._conn.socket),
-                                       self._conn, params=data)
-        _utils.raise_for_http_error(response)
-
-        response_msg = _utils.json_to_proto(response.json(), Message.Response)
-        return [DatasetVersion(self._conn, self._conf, _dataset_version_id=dataset_version.id)
-                for dataset_version in response_msg.dataset_versions]
+        endpoint = "{}://{}/api/v1/modeldb/dataset-version/getAllDatasetVersionsByDatasetId"
+        return DatasetVersionLazyList(self._conn, self._conf, msg, endpoint, "GET")
 
     # TODO: sorting seems to be incorrect
     def get_latest_version(self, ascending=None, sort_key=None):
@@ -910,3 +903,25 @@ class RDBMSDatasetVersionInfo(QueryDatasetVersionInfo):
         self.query_template = query_template
         self.query_parameters = query_parameters
         self.num_records = num_records
+
+
+class DatasetLazyList(_utils.LazyList):
+    def __repr__(self):
+        return "<list-like of {} Dataset(s)>".format(self.__len__())
+
+    def _get_records(self, response_msg):
+        return response_msg.datasets
+
+    def _create_element(self, id_):
+        return Dataset(self._conn, self._conf, _dataset_id=id_)
+
+
+class DatasetVersionLazyList(_utils.LazyList):
+    def __repr__(self):
+        return "<list-like of {} DatasetVersion(s)>".format(self.__len__())
+
+    def _get_records(self, response_msg):
+        return response_msg.dataset_versions
+
+    def _create_element(self, id_):
+        return DatasetVersion(self._conn, self._conf, _dataset_version_id=id_)

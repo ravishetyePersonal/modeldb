@@ -106,6 +106,111 @@ class Configuration:
         self.debug = debug
 
 
+class LazyList(object):
+    # number of items to fetch per back end call in __iter__()
+    _ITER_PAGE_LIMIT = 100
+
+    def __init__(self, conn, conf, msg, endpoint, rest_method):
+        self._conn = conn
+        self._conf = conf
+        self._msg = msg  # protobuf msg used to make back end calls
+        self._endpoint = endpoint
+        self._rest_method = rest_method
+
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            # copy msg to avoid mutating `self`'s state
+            msg = self._msg.__class__()
+            msg.CopyFrom(self._msg)
+            msg.page_limit = 1
+            if index >= 0:
+                # convert zero-based indexing into page number
+                msg.page_number = index + 1
+            else:
+                # reverse page order to index from end
+                msg.ascending = not msg.ascending  # pylint: disable=no-member
+                msg.page_number = abs(index)
+
+            response_msg = self._call_back_end(msg)
+
+            records = self._get_records(response_msg)
+            if (not records
+                    and msg.page_number > response_msg.total_records):  # pylint: disable=no-member
+                raise IndexError("index out of range")
+            id_ = records[0].id
+
+            return self._create_element(id_)
+        else:
+            raise TypeError("index must be integer, not {}".format(type(index)))
+
+    def __iter__(self):
+        # copy msg to avoid mutating `self`'s state
+        msg = self._msg.__class__()
+        msg.CopyFrom(self._msg)
+        msg.page_limit = self._ITER_PAGE_LIMIT
+        msg.page_number = 0  # this will be incremented as soon as we enter the loop
+
+        seen_ids = set()
+        total_records = float('inf')
+        while msg.page_limit*msg.page_number < total_records:  # pylint: disable=no-member
+            msg.page_number += 1  # pylint: disable=no-member
+
+            response_msg = self._call_back_end(msg)
+
+            total_records = response_msg.total_records
+
+            ids = self._get_ids(response_msg)
+            for id_ in ids:
+                # skip if we've seen the ID before
+                if id_ in seen_ids:
+                    continue
+                else:
+                    seen_ids.add(id_)
+
+                yield self._create_element(id_)
+
+    def __len__(self):
+        # copy msg to avoid mutating `self`'s state
+        msg = self._msg.__class__()
+        msg.CopyFrom(self._msg)
+        msg.page_limit = msg.page_number = 1  # minimal request just to get total_records
+
+        response_msg = self._call_back_end(msg)
+
+        return response_msg.total_records
+
+    def _call_back_end(self, msg):
+        data = proto_to_json(msg)
+
+        if self._rest_method == "GET":
+            response = make_request(
+                self._rest_method,
+                self._endpoint.format(self._conn.scheme, self._conn.socket),
+                self._conn, params=data,
+            )
+        elif self._rest_method == "POST":
+            response = make_request(
+                self._rest_method,
+                self._endpoint.format(self._conn.scheme, self._conn.socket),
+                self._conn, json=data,
+            )
+        raise_for_http_error(response)
+
+        response_msg = json_to_proto(response.json(), msg.Response)
+        return response_msg
+
+    def _get_ids(self, response_msg):
+        return (record.id for record in self._get_records(response_msg))
+
+    def _get_records(self, response_msg):
+        """Get the attribute of `response_msg` that is not `total_records`."""
+        raise NotImplementedError
+
+    def _create_element(self, id_):
+        """Instantiate element to return to user."""
+        raise NotImplementedError
+
+
 def make_request(method, url, conn, **kwargs):
     """
     Makes a REST request.
