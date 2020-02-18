@@ -14,7 +14,7 @@ def verta_callback(run):
     This callback logs ``eval_metric``\ s passed into ``xgb.train()``.
 
     See our `GitHub repository
-    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/xgboost-integration.ipynb>`_
+    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/xgboost-integration.ipynb>`__
     for an example of this intergation in action.
 
     .. versionadded:: 0.13.20
@@ -26,14 +26,16 @@ def verta_callback(run):
 
     Examples
     --------
-    >>> from verta.integrations.xgboost import verta_callback
-    >>> run = client.set_experiment_run()
-    >>> run.log_hyperparameters(params)
-    >>> bst = xgb.train(
-    ...     params, dtrain,
-    ...     evals=[(dtrain, "train")],
-    ...     callbacks=[verta_callback(run)],
-    ... )
+    .. code-block:: python
+
+        from verta.integrations.xgboost import verta_callback
+        run = client.set_experiment_run()
+        run.log_hyperparameters(params)
+        bst = xgb.train(
+            params, dtrain,
+            evals=[(dtrain, "train")],
+            callbacks=[verta_callback(run)],
+        )
 
     """
     def callback(env):

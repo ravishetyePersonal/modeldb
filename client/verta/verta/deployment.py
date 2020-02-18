@@ -38,13 +38,15 @@ class DeployedModel:
 
     Examples
     --------
-    >>> # host == "https://app.verta.ai/"
-    >>> # run.id == "01234567-0123-0123-0123-012345678901"
-    >>> DeployedModel(
-    ...     host="https://app.verta.ai/",
-    ...     run_id="01234567-0123-0123-0123-012345678901",
-    ... )
-    <DeployedModel 01234567-0123-0123-0123-012345678901>
+    .. code-block:: python
+
+        # host == "https://app.verta.ai/"
+        # run.id == "01234567-0123-0123-0123-012345678901"
+        DeployedModel(
+            host="https://app.verta.ai/",
+            run_id="01234567-0123-0123-0123-012345678901",
+        )
+        # <DeployedModel 01234567-0123-0123-0123-012345678901>
 
     """
     def __init__(self, _host=None, _run_id=None, _from_url=False, **kwargs):
@@ -113,13 +115,15 @@ class DeployedModel:
 
         Examples
         --------
-        >>> # run.id == "01234567-0123-0123-0123-012345678901"
-        >>> # token == "abcdefgh-abcd-abcd-abcd-abcdefghijkl"
-        >>> DeployedModel.from_url(
-        ...     url="https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901",
-        ...     token="abcdefgh-abcd-abcd-abcd-abcdefghijkl",
-        ... )
-        <DeployedModel at https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901>
+        .. code-block:: python
+
+            # run.id == "01234567-0123-0123-0123-012345678901"
+            # token == "abcdefgh-abcd-abcd-abcd-abcdefghijkl"
+            DeployedModel.from_url(
+                url="https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901",
+                token="abcdefgh-abcd-abcd-abcd-abcdefghijkl",
+            )
+            # <DeployedModel at https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901>
 
         """
         parsed_url = urlparse(url)
@@ -245,27 +249,27 @@ def prediction_input_unpack(func):
 
     Examples
     --------
-    Before:
+    Before::
 
-    >>> class Model(object):
-    ...     def predict(self, data):
-    ...         x = data['x']
-    ...         y = data['y']
-    ...         z = data['z']
-    ...         return x + y + z
+        class Model(object):
+            def predict(self, data):
+                x = data['x']
+                y = data['y']
+                z = data['z']
+                return x + y + z
 
-    >>> deployed_model.predict({'x': 0, 'y': 1, 'z': 2})
-    3
+        deployed_model.predict({'x': 0, 'y': 1, 'z': 2})
+        # 3
 
-    After:
+    After::
 
-    >>> class Model(object):
-    ...     @prediction_input_unpack
-    ...     def predict(self, x, y, z):
-    ...         return x + y + z
+        class Model(object):
+            @prediction_input_unpack
+            def predict(self, x, y, z):
+                return x + y + z
 
-    >>> deployed_model.predict({'x': 0, 'y': 1, 'z': 2})
-    3
+        deployed_model.predict({'x': 0, 'y': 1, 'z': 2})
+        # 3
 
     """
     def prediction(self, X):
@@ -287,37 +291,35 @@ def prediction_io_cleanup(func):
 
     Examples
     --------
-    Before:
+    Before::
 
-    >>> class Model(object):
-    ...     def predict(self, data):
-    ...         return data.mean()
+        class Model(object):
+            def predict(self, data):
+                return data.mean()
 
-    >>> data = np.array([0, 1, 2])
-    >>> # succeeds; predict() locally receives NumPy array
-    >>> model.predict(data)
-    1.0
-    >>> # fails; predict() in deployment receives list
-    >>> deployed_model.predict(data)
-    HTTPError: 400 Client Error: Traceback (most recent call last):
-      File "<stdin>", line 3, in predict
-    AttributeError: 'list' object has no attribute 'mean'
-     for url: https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901
+        data = np.array([0, 1, 2])
+        model.predict(data)  # succeeds; predict() locally receives NumPy array
+        # 1.0
+        deployed_model.predict(data)  # fails; predict() in deployment receives list
+        # HTTPError: 400 Client Error: Traceback (most recent call last):
+        #   File "<stdin>", line 3, in predict
+        # AttributeError: 'list' object has no attribute 'mean'
+        #  for url: https://app.verta.ai/api/v1/predict/01234567-0123-0123-0123-012345678901
 
-    After:
+    After::
 
-    >>> class Model(object):
-    ...     @prediction_io_cleanup
-    ...     def predict(self, data):
-    ...         # anticipate `data` being list
-    ...         return sum(data) / float(len(data))
+        class Model(object):
+            @prediction_io_cleanup
+            def predict(self, data):
+                # anticipate `data` being list
+                return sum(data) / float(len(data))
 
-    >>> data = np.array([1, 2, 3])
-    >>> # consistent behavior locally and in deployment
-    >>> model.predict(data)
-    1.0
-    >>> deployed_model.predict(data)
-    1.0
+        data = np.array([1, 2, 3])
+        # consistent behavior locally and in deployment
+        model.predict(data)
+        # 1.0
+        deployed_model.predict(data)
+        # 1.0
 
     """
     def prediction(self, X):

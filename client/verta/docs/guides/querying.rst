@@ -14,10 +14,10 @@ their ``expt_runs`` attribute:
 
     proj = client.set_project("Project Banana")
     proj.expt_runs
-    # output: <ExperimentRuns containing 24 runs>
+    # <ExperimentRuns containing 24 runs>
     expt = client.set_project("Experiment Coconut")
     expt.expt_runs
-    # output: <ExperimentRuns containing 8 runs>
+    # <ExperimentRuns containing 8 runs>
 
 These are :class:`~verta.client.ExperimentRuns` objects, which have a method
 :meth:`~verta.client.ExperimentRuns.find` for filtering their contents:
@@ -25,13 +25,13 @@ These are :class:`~verta.client.ExperimentRuns` objects, which have a method
 .. code-block:: python
 
     expt.expt_runs
-    # output: <ExperimentRuns containing 8 runs>
+    # <ExperimentRuns containing 8 runs>
     expt.expt_runs.find("metrics.acc > .95")
-    # output: <ExperimentRuns containing 3 runs>
+    # <ExperimentRuns containing 3 runs>
     expt.expt_runs.find("hyperparameters.dropout < .8")
-    # output: <ExperimentRuns containing 4 runs>
+    # <ExperimentRuns containing 4 runs>
     expt.expt_runs.find("hyperparameters.optimizer == 'adam'")
-    # output: <ExperimentRuns containing 6 runs>
+    # <ExperimentRuns containing 6 runs>
 
 Multiple queries can be specified together, which returns the intersection of their results.
 
@@ -41,7 +41,7 @@ Multiple queries can be specified together, which returns the intersection of th
         "metrics.acc > .95",
         "hyperparameters.dropout < .8",
     ])
-    # output: <ExperimentRuns containing 2 runs>
+    # <ExperimentRuns containing 2 runs>
 
 Query Syntax
 ------------

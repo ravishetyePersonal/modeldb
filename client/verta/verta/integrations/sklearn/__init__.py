@@ -7,17 +7,19 @@ This patch adds a ``run`` parameter to the ``fit()`` methods of most scikit-lear
 the model's hyperparameters.
 
 See our `GitHub repository
-<https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/sklearn-integration.ipynb>`_
+<https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/sklearn-integration.ipynb>`__
 for an example of this intergation in action.
 
 .. versionadded:: 0.13.20
 
 Examples
 --------
->>> import verta.integrations.sklearn
->>> run = client.set_experiment_run()
->>> model = sklearn.linear_model.LogisticRegression()
->>> model.fit(X, y, run=run)
+.. code-block:: python
+
+    import verta.integrations.sklearn
+    run = client.set_experiment_run()
+    model = sklearn.linear_model.LogisticRegression()
+    model.fit(X, y, run=run)
 
 """
 

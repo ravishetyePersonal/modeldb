@@ -13,9 +13,9 @@ To do this, a ``workspace`` parameter is available in both
 
 .. code-block:: python
 
-    >>> client.set_project("Project Banana")
-    created new Project: Project Banana in personal workspace
-    <Project "Project Banana">
-    >>> client.set_project("Project Coconut", workspace="Organization-Coconut")
-    created new Project: Project Coconut in workspace: Organization-Coconut
-    <Project "Project Coconut">
+    client.set_project("Project Banana")
+    # created new Project: Project Banana in personal workspace
+    # <Project "Project Banana">
+    client.set_project("Project Coconut", workspace="Organization-Coconut")
+    # created new Project: Project Coconut in workspace: Organization-Coconut
+    # <Project "Project Coconut">

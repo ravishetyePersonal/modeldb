@@ -19,7 +19,7 @@ class VertaCallback(keras.callbacks.Callback):
     and accuracy during fitting.
 
     See our `GitHub repository
-    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/keras-integration.ipynb>`_
+    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/keras-integration.ipynb>`__
     for an example of this intergation in action.
 
     .. versionadded:: 0.13.20
@@ -31,12 +31,14 @@ class VertaCallback(keras.callbacks.Callback):
 
     Examples
     --------
-    >>> from verta.integrations.keras import VertaCallback
-    >>> run = client.set_experiment_run()
-    >>> model.fit(
-    ...     X_train, y_train,
-    ...     callbacks=[VertaCallback(run)],
-    ... )
+    .. code-block:: python
+
+        from verta.integrations.keras import VertaCallback
+        run = client.set_experiment_run()
+        model.fit(
+            X_train, y_train,
+            callbacks=[VertaCallback(run)],
+        )
 
     """
     def __init__(self, run):

@@ -14,7 +14,7 @@ def verta_hook(run):
     This hook logs details about the network topology.
 
     See our `GitHub repository
-    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/pytorch-integration.ipynb>`_
+    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/pytorch-integration.ipynb>`__
     for an example of this intergation in action.
 
     .. versionadded:: 0.13.20
@@ -26,10 +26,12 @@ def verta_hook(run):
 
     Examples
     --------
-    >>> from verta.integrations.torch import verta_hook
-    >>> run = client.set_experiment_run()
-    >>> model.register_forward_hook(verta_hook(run))
-    >>> output = model(X_train)
+    .. code-block:: python
+
+        from verta.integrations.torch import verta_hook
+        run = client.set_experiment_run()
+        model.register_forward_hook(verta_hook(run))
+        output = model(X_train)
 
     """
     def hook(module, input, output):

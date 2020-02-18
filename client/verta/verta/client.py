@@ -763,40 +763,48 @@ class _ModelDBEntity(object):
             Log Git snapshot information, plus the location of the currently executing notebook/script
             relative to the repository root:
 
-            >>> proj.log_code()
-            >>> proj.get_code()
-            {'exec_path': 'comparison/outcomes/classification.ipynb',
-            'repo_url': 'git@github.com:VertaAI/experiments.git',
-            'commit_hash': 'f99abcfae6c3ce6d22597f95ad6ef260d31527a6',
-            'is_dirty': False}
+            .. code-block:: python
+
+                proj.log_code()
+                proj.get_code()
+                # {'exec_path': 'comparison/outcomes/classification.ipynb',
+                #  'repo_url': 'git@github.com:VertaAI/experiments.git',
+                #  'commit_hash': 'f99abcfae6c3ce6d22597f95ad6ef260d31527a6',
+                #  'is_dirty': False}
 
             Log Git snapshot information, plus the location of a specific source code file relative
             to the repository root:
 
-            >>> proj.log_code("../trainer/training_pipeline.py")
-            >>> proj.get_code()
-            {'exec_path': 'comparison/trainer/training_pipeline.py',
-            'repo_url': 'git@github.com:VertaAI/experiments.git',
-            'commit_hash': 'f99abcfae6c3ce6d22597f95ad6ef260d31527a6',
-            'is_dirty': False}
+            .. code-block:: python
+
+                proj.log_code("../trainer/training_pipeline.py")
+                proj.get_code()
+                # {'exec_path': 'comparison/trainer/training_pipeline.py',
+                #  'repo_url': 'git@github.com:VertaAI/experiments.git',
+                #  'commit_hash': 'f99abcfae6c3ce6d22597f95ad6ef260d31527a6',
+                #  'is_dirty': False}
 
         With ``Client(use_git=False)``:
 
             Find and upload the currently executing notebook/script:
 
-            >>> proj.log_code()
-            >>> zip_file = proj.get_code()
-            >>> zip_file.printdir()
-            File Name                          Modified             Size
-            classification.ipynb        2019-07-10 17:18:24        10287
+            .. code-block:: python
+
+                proj.log_code()
+                zip_file = proj.get_code()
+                zip_file.printdir()
+                # File Name                          Modified             Size
+                # classification.ipynb        2019-07-10 17:18:24        10287
 
             Upload a specific source code file:
 
-            >>> proj.log_code("../trainer/training_pipeline.py")
-            >>> zip_file = proj.get_code()
-            >>> zip_file.printdir()
-            File Name                          Modified             Size
-            training_pipeline.py        2019-05-31 10:34:44          964
+            .. code-block:: python
+
+                proj.log_code("../trainer/training_pipeline.py")
+                zip_file = proj.get_code()
+                zip_file.printdir()
+                # File Name                          Modified             Size
+                # training_pipeline.py        2019-05-31 10:34:44          964
 
         """
         if self._conf.use_git:
@@ -1282,17 +1290,19 @@ class ExperimentRuns(_utils.LazyList):
 
     Examples
     --------
-    >>> runs = expt.find("hyperparameters.hidden_size == 256")
-    >>> len(runs)
-    12
-    >>> runs += expt.find("hyperparameters.hidden_size == 512")
-    >>> len(runs)
-    24
-    >>> runs = runs.find("metrics.accuracy >= .8")
-    >>> len(runs)
-    5
-    >>> runs[0].get_metric("accuracy")
-    0.8921755939794525
+    .. code-block:: python
+
+        runs = expt.find("hyperparameters.hidden_size == 256")
+        len(runs)
+        # 12
+        runs += expt.find("hyperparameters.hidden_size == 512")
+        len(runs)
+        # 24
+        runs = runs.find("metrics.accuracy >= .8")
+        len(runs)
+        # 5
+        runs[0].get_metric("accuracy")
+        # 0.8921755939794525
 
     """
     _OP_MAP = {'==': _CommonService.OperatorEnum.EQ,
@@ -1357,9 +1367,11 @@ class ExperimentRuns(_utils.LazyList):
 
         Examples
         --------
-        >>> runs.find(["hyperparameters.hidden_size == 256",
-        ...            "metrics.accuracy >= .8"])
-        <ExperimentRuns containing 3 runs>
+        .. code-block:: python
+
+            runs.find(["hyperparameters.hidden_size == 256",
+                       "metrics.accuracy >= .8"])
+            # <ExperimentRuns containing 3 runs>
 
         """
         if ret_all_info:
@@ -1441,8 +1453,10 @@ class ExperimentRuns(_utils.LazyList):
 
         Examples
         --------
-        >>> runs.sort("metrics.accuracy")
-        <ExperimentRuns containing 3 runs>
+        .. code-block:: python
+
+            runs.sort("metrics.accuracy")
+            # <ExperimentRuns containing 3 runs>
 
         """
         if ret_all_info:
@@ -1488,8 +1502,10 @@ class ExperimentRuns(_utils.LazyList):
 
         Examples
         --------
-        >>> runs.top_k("metrics.accuracy", 3)
-        <ExperimentRuns containing 3 runs>
+        .. code-block:: python
+
+            runs.top_k("metrics.accuracy", 3)
+            # <ExperimentRuns containing 3 runs>
 
         """
         if ret_all_info:
@@ -1546,8 +1562,10 @@ class ExperimentRuns(_utils.LazyList):
 
         Examples
         --------
-        >>> runs.bottom_k("metrics.loss", 3)
-        <ExperimentRuns containing 3 runs>
+        .. code-block:: python
+
+            runs.bottom_k("metrics.loss", 3)
+            # <ExperimentRuns containing 3 runs>
 
         """
         if ret_all_info:
@@ -3145,24 +3163,28 @@ class ExperimentRun(_ModelDBEntity):
         --------
         From a file:
 
-            >>> run.log_requirements("../requirements.txt")
-            upload complete (requirements.txt)
-            >>> print(run.get_artifact("requirements.txt").read().decode())
-            cloudpickle==1.2.1
-            jupyter==1.0.0
-            matplotlib==3.1.1
-            pandas==0.25.0
-            scikit-learn==0.21.3
-            verta==0.13.13
+        .. code-block:: python
+
+            run.log_requirements("../requirements.txt")
+            # upload complete (requirements.txt)
+            print(run.get_artifact("requirements.txt").read().decode())
+            # cloudpickle==1.2.1
+            # jupyter==1.0.0
+            # matplotlib==3.1.1
+            # pandas==0.25.0
+            # scikit-learn==0.21.3
+            # verta==0.13.13
 
         From a list of package names:
 
-            >>> run.log_requirements(['verta', 'cloudpickle', 'scikit-learn'])
-            upload complete (requirements.txt)
-            >>> print(run.get_artifact("requirements.txt").read().decode())
-            verta==0.13.13
-            cloudpickle==1.2.1
-            scikit-learn==0.21.3
+        .. code-block:: python
+
+            run.log_requirements(['verta', 'cloudpickle', 'scikit-learn'])
+            # upload complete (requirements.txt)
+            print(run.get_artifact("requirements.txt").read().decode())
+            # verta==0.13.13
+            # cloudpickle==1.2.1
+            # scikit-learn==0.21.3
 
         """
         if isinstance(requirements, six.string_types):
@@ -3409,21 +3431,23 @@ class ExperimentRun(_ModelDBEntity):
 
         Examples
         --------
-        >>> run.log_artifact("weights", open("weights.npz", 'rb'))
-        upload complete (weights)
-        >>> run.log_artifact("text_embeddings", open("embedding.csv", 'rb'))
-        upload complete (text_embeddings)
-        >>> artifact_keys = ["weights", "text_embeddings"]
-        >>> artifacts = run.fetch_artifacts(artifact_keys)
-        >>> artifacts
-        {'weights': '/Users/convoliution/.verta/cache/artifacts/50a9726b3666d99aea8af006cf224a7637d0c0b5febb3b0051192ce1e8615f47/weights.npz',
-         'text_embeddings': '/Users/convoliution/.verta/cache/artifacts/2d2d1d809e9bce229f0a766126ae75df14cadd1e8f182561ceae5ad5457a3c38/embedding.csv'}
-        >>> ModelClass(artifacts=artifacts).predict(["Good book.", "Bad book!"])
-        [0.955998517288053, 0.09809996313422353]
-        >>> run.log_model(ModelClass, artifacts=artifact_keys)
-        upload complete (custom_modules.zip)
-        upload complete (model.pkl)
-        upload complete (model_api.json)
+        .. code-block:: python
+
+            run.log_artifact("weights", open("weights.npz", 'rb'))
+            # upload complete (weights)
+            run.log_artifact("text_embeddings", open("embedding.csv", 'rb'))
+            # upload complete (text_embeddings)
+            artifact_keys = ["weights", "text_embeddings"]
+            artifacts = run.fetch_artifacts(artifact_keys)
+            artifacts
+            # {'weights': '/Users/convoliution/.verta/cache/artifacts/50a9726b3666d99aea8af006cf224a7637d0c0b5febb3b0051192ce1e8615f47/weights.npz',
+            #  'text_embeddings': '/Users/convoliution/.verta/cache/artifacts/2d2d1d809e9bce229f0a766126ae75df14cadd1e8f182561ceae5ad5457a3c38/embedding.csv'}
+            ModelClass(artifacts=artifacts).predict(["Good book.", "Bad book!"])
+            # [0.955998517288053, 0.09809996313422353]
+            run.log_model(ModelClass, artifacts=artifact_keys)
+            # upload complete (custom_modules.zip)
+            # upload complete (model.pkl)
+            # upload complete (model_api.json)
 
         """
         if not (isinstance(keys, list)
@@ -3525,14 +3549,16 @@ class ExperimentRun(_ModelDBEntity):
 
         Examples
         --------
-        >>> status = run.deploy(path="banana", no_token=True, wait=True)
-        waiting for deployment.........
-        >>> status
-        {'status': 'deployed',
-         'url': 'https://app.verta.ai/api/v1/predict/abcdefgh-1234-abcd-1234-abcdefghijkl/banana',
-         'token': None}
-        >>> DeployedModel.from_url(status['url']).predict([x])
-        [0.973340685896]
+        .. code-block:: python
+
+            status = run.deploy(path="banana", no_token=True, wait=True)
+            # waiting for deployment.........
+            status
+            # {'status': 'deployed',
+            #  'url': 'https://app.verta.ai/api/v1/predict/abcdefgh-1234-abcd-1234-abcdefghijkl/banana',
+            #  'token': None}
+            DeployedModel.from_url(status['url']).predict([x])
+            # [0.973340685896]
 
         """
         data = {}

@@ -5,7 +5,7 @@
 
   .. code-block:: console
 
-    $ pip install verta
+    pip install verta
 
   Verta currently officially supports Python 2.7 & 3.5–3.7. For more information, read the
   `installation guide <installation.html>`_.
@@ -31,7 +31,7 @@
     .. code-block:: python
 
         run = client.set_experiment_run("Two-Layer Dropout LSTM")
-        ...
+
         run.log_hyperparameter("num_layers", 2)
         run.log_hyperparameter("hidden_size", 512)
         run.log_hyperparameter("dropout", 0.5)

@@ -50,12 +50,14 @@ class VertaHook(SessionRunHook):
 
     Examples
     --------
-    >>> from verta.integrations.tensorflow import VertaHook
-    >>> run = client.set_experiment_run()
-    >>> estimator.train(
-    ...     input_fn=train_input_fn,
-    ...     hooks=[VertaHook(run)],
-    ... )
+    .. code-block:: python
+
+        from verta.integrations.tensorflow import VertaHook
+        run = client.set_experiment_run()
+        estimator.train(
+            input_fn=train_input_fn,
+            hooks=[VertaHook(run)],
+        )
 
     """
     def __init__(self, run, every_n_steps=1000):
@@ -167,7 +169,7 @@ def log_tensorboard_events(run, log_dir):
     This integration has been verified to work with TensorFlow >=1.14 and 2.X.
 
     See our `GitHub repository
-    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/tensorboard-integration.ipynb>`_
+    <https://github.com/VertaAI/modeldb/blob/master/client/workflows/examples/tensorboard-integration.ipynb>`__
     for an example of this intergation in action.
 
     Parameters
@@ -179,11 +181,13 @@ def log_tensorboard_events(run, log_dir):
 
     Examples
     --------
-    >>> from verta.integrations.tensorflow import log_tensorboard_log_dir
-    >>> run = client.set_experiment_run()
-    >>> # log summary event files to `log_dir` during model operations
-    >>> # see https://www.tensorflow.org/tensorboard/get_started
-    >>> log_tensorboard_events(run, log_dir)
+    .. code-block:: python
+
+        from verta.integrations.tensorflow import log_tensorboard_log_dir
+        run = client.set_experiment_run()
+        # log summary event files to `log_dir` during model operations
+        # see https://www.tensorflow.org/tensorboard/get_started
+        log_tensorboard_events(run, log_dir)
 
     """
     observations = []
