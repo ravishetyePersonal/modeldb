@@ -280,26 +280,26 @@ service VersioningService {
 
     rpc GetRepository(GetRepositoryRequest) returns (GetRepositoryRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            get: "/v1/versioning/workspaces/{id.named_id.workspace_name}/repositories/{id.named_id.name}"
             additional_bindings {
-                get: "/v1/versioning/repositories/{id.code}"
+                get: "/v1/versioning/repositories/{id.repo_id}"
             }
         };
     };
 
     rpc CreateRepository(SetRepository) returns (SetRepository.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories"
+            post: "/v1/versioning/workspaces/{id.named_id.workspace_name}/repositories"
             body: "repository"
         };
     }
 
     rpc UpdateRepository(SetRepository) returns (SetRepository.Response) {
         option (google.api.http) = {
-            put: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            put: "/v1/versioning/workspaces/{id.named_id.workspace_name}/repositories/{id.named_id.name}"
             body: "repository"
             additional_bindings {
-                put: "/v1/versioning/repositories/{id.code}"
+                put: "/v1/versioning/repositories/{id.repo_id}"
                 body: "repository"
             }
         };
@@ -307,9 +307,9 @@ service VersioningService {
 
     rpc DeleteRepository(DeleteRepositoryRequest) returns (DeleteRepositoryRequest.Response) {
         option (google.api.http) = {
-            delete: "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}"
+            delete: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}"
             additional_bindings {
-                delete: "/v1/versioning/repositories/{id.code}"
+                delete: "/v1/versioning/repositories/{repository_id.repo_id}"
             }
         };
     }
@@ -317,28 +317,28 @@ service VersioningService {
     // CRUD for commits
     rpc ListCommits(ListCommitsRequest) returns (ListCommitsRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/commits"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits"
             }
         };
     }
 
     rpc GetCommit(GetCommitRequest) returns (GetCommitRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}"
             }
         };
     };
 
     rpc CreateCommit(CreateCommitRequest) returns (CreateCommitRequest.Response) {
         option (google.api.http) = {
-            post: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits"
+            post: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits"
             body: "*"
             additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.code}/commits"
+                put: "/v1/versioning/repositories/{repository_id.repo_id}/commits"
                 body: "*"
             }
         };
@@ -346,9 +346,9 @@ service VersioningService {
 
     rpc DeleteCommit(DeleteCommitRequest) returns(DeleteCommitRequest.Response) {
         option (google.api.http) = {
-            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}"
+            delete: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}"
             additional_bindings {
-                delete: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}"
+                delete: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}"
             }
         };
     }
@@ -356,27 +356,27 @@ service VersioningService {
     // Getting blobs and folders in a commit
     rpc ListCommitBlobs(ListCommitBlobsRequest) returns (ListCommitBlobsRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs"
             }
         };
     }
 
     rpc GetCommitBlob(GetCommitBlobRequest) returns (GetCommitBlobRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/path"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs/path"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/path"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs/path"
             }
         };
     }
 
     rpc GetCommitFolder(GetCommitFolderRequest) returns (GetCommitFolderRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/path"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/folders/path"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/path"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/folders/path"
             }
         };
     }
@@ -384,9 +384,9 @@ service VersioningService {
     // Git-like operations
     rpc ComputeRepositoryDiff(ComputeRepositoryDiffRequest) returns (ComputeRepositoryDiffRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/diff"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/diff"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/diff"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/diff"
             }
         };
     }
@@ -394,28 +394,28 @@ service VersioningService {
     // CRUD for tags
     rpc ListTags(ListTagsRequest) returns (ListTagsRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/tags"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/tags"
             }
         };
     };
 
     rpc GetTag(GetTagRequest) returns (GetTagRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags/{tag}"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/tags/{tag}"
             }
         };
     };
 
     rpc SetTag(SetTagRequest) returns (SetTagRequest.Response) {
         option (google.api.http) = {
-            put: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            put: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags/{tag}"
             body: "commit_sha"
             additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+                put: "/v1/versioning/repositories/{repository_id.repo_id}/tags/{tag}"
                 body: "commit_sha"
             }
         };
@@ -423,9 +423,9 @@ service VersioningService {
 
     rpc DeleteTag(DeleteTagRequest) returns (DeleteTagRequest.Response) {
         option (google.api.http) = {
-            delete: "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}"
+            delete: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags/{tag}"
             additional_bindings {
-                delete: "/v1/versioning/repositories/{repository_id.code}/tags/{tag}"
+                delete: "/v1/versioning/repositories/{repository_id.repo_id}/tags/{tag}"
             }
         };
     }
