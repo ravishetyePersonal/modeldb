@@ -56,7 +56,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{id.code}": {
+    "/v1/versioning/repositories/{id.repo_id}": {
       "get": {
         "operationId": "GetRepository2",
         "responses": {
@@ -75,61 +75,20 @@
         },
         "parameters": [
           {
-            "name": "id.code",
+            "name": "id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "id.named.name",
+            "name": "id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "id.named.workspace_name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "VersioningService"
-        ]
-      },
-      "delete": {
-        "operationId": "DeleteRepository2",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id.code",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "id.named.name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "id.named.workspace_name",
+            "name": "id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -157,7 +116,7 @@
         },
         "parameters": [
           {
-            "name": "id.code",
+            "name": "id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -177,7 +136,50 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits": {
+    "/v1/versioning/repositories/{repository_id.repo_id}": {
+      "delete": {
+        "operationId": "DeleteRepository2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id.repo_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "repository_id.named_id.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "repository_id.named_id.workspace_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/repositories/{repository_id.repo_id}/commits": {
       "get": {
         "summary": "CRUD for commits",
         "operationId": "ListCommits2",
@@ -197,20 +199,20 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -270,7 +272,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -290,7 +292,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}": {
       "get": {
         "operationId": "GetCommit2",
         "responses": {
@@ -309,7 +311,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -322,13 +324,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -356,7 +358,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -369,13 +371,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -386,7 +388,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs": {
       "get": {
         "summary": "Getting blobs and folders in a commit",
         "operationId": "ListCommitBlobs2",
@@ -406,7 +408,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -419,13 +421,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -456,7 +458,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/blobs/path": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs/path": {
       "get": {
         "operationId": "GetCommitBlob2",
         "responses": {
@@ -475,7 +477,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -488,13 +490,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -511,7 +513,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/commits/{commit_sha}/folders/path": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/folders/path": {
       "get": {
         "operationId": "GetCommitFolder2",
         "responses": {
@@ -530,7 +532,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -543,13 +545,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -566,7 +568,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/diff": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/diff": {
       "get": {
         "summary": "Git-like operations",
         "operationId": "ComputeRepositoryDiff2",
@@ -586,20 +588,20 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -628,7 +630,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/tags": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/tags": {
       "get": {
         "summary": "CRUD for tags",
         "operationId": "ListTags2",
@@ -648,20 +650,20 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -672,7 +674,7 @@
         ]
       }
     },
-    "/v1/versioning/repositories/{repository_id.code}/tags/{tag}": {
+    "/v1/versioning/repositories/{repository_id.repo_id}/tags/{tag}": {
       "get": {
         "operationId": "GetTag2",
         "responses": {
@@ -691,7 +693,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -704,13 +706,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -738,7 +740,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -751,13 +753,13 @@
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "query",
             "required": false,
             "type": "string"
@@ -785,7 +787,7 @@
         },
         "parameters": [
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "path",
             "required": true,
             "type": "string",
@@ -811,7 +813,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{id.named.workspace_name}/repositories": {
+    "/v1/versioning/workspaces/{id.named_id.workspace_name}/repositories": {
       "post": {
         "operationId": "CreateRepository",
         "responses": {
@@ -830,7 +832,7 @@
         },
         "parameters": [
           {
-            "name": "id.named.workspace_name",
+            "name": "id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -849,7 +851,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{id.named.workspace_name}/repositories/{id.named.name}": {
+    "/v1/versioning/workspaces/{id.named_id.workspace_name}/repositories/{id.named_id.name}": {
       "get": {
         "operationId": "GetRepository",
         "responses": {
@@ -868,60 +870,19 @@
         },
         "parameters": [
           {
-            "name": "id.named.workspace_name",
+            "name": "id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "id.named.name",
+            "name": "id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "id.code",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "VersioningService"
-        ]
-      },
-      "delete": {
-        "operationId": "DeleteRepository",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id.named.workspace_name",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id.named.name",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "id.code",
+            "name": "id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -950,13 +911,13 @@
         },
         "parameters": [
           {
-            "name": "id.named.workspace_name",
+            "name": "id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "id.named.name",
+            "name": "id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -975,7 +936,50 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}": {
+      "delete": {
+        "operationId": "DeleteRepository",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "repository_id.named_id.workspace_name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "repository_id.named_id.name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "repository_id.repo_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "VersioningService"
+        ]
+      }
+    },
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits": {
       "get": {
         "summary": "CRUD for commits",
         "operationId": "ListCommits",
@@ -995,19 +999,19 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1068,13 +1072,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1093,7 +1097,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}": {
       "get": {
         "operationId": "GetCommit",
         "responses": {
@@ -1112,13 +1116,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1130,7 +1134,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1159,13 +1163,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1177,7 +1181,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1189,7 +1193,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs": {
       "get": {
         "summary": "Getting blobs and folders in a commit",
         "operationId": "ListCommitBlobs",
@@ -1209,13 +1213,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1227,7 +1231,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1259,7 +1263,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/blobs/path": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs/path": {
       "get": {
         "operationId": "GetCommitBlob",
         "responses": {
@@ -1278,13 +1282,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1296,7 +1300,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1314,7 +1318,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/commits/{commit_sha}/folders/path": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/folders/path": {
       "get": {
         "operationId": "GetCommitFolder",
         "responses": {
@@ -1333,13 +1337,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1351,7 +1355,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1369,7 +1373,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/diff": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/diff": {
       "get": {
         "summary": "Git-like operations",
         "operationId": "ComputeRepositoryDiff",
@@ -1389,19 +1393,19 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1431,7 +1435,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags": {
       "get": {
         "summary": "CRUD for tags",
         "operationId": "ListTags",
@@ -1451,19 +1455,19 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1475,7 +1479,7 @@
         ]
       }
     },
-    "/v1/versioning/workspaces/{repository_id.named.workspace_name}/repositories/{repository_id.named.name}/tags/{tag}": {
+    "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags/{tag}": {
       "get": {
         "operationId": "GetTag",
         "responses": {
@@ -1494,13 +1498,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1512,7 +1516,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1541,13 +1545,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1559,7 +1563,7 @@
             "type": "string"
           },
           {
-            "name": "repository_id.code",
+            "name": "repository_id.repo_id",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1588,13 +1592,13 @@
         },
         "parameters": [
           {
-            "name": "repository_id.named.workspace_name",
+            "name": "repository_id.named_id.workspace_name",
             "in": "path",
             "required": true,
             "type": "string"
           },
           {
-            "name": "repository_id.named.name",
+            "name": "repository_id.named_id.name",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1828,7 +1832,13 @@
       "type": "object"
     },
     "versioningDeleteRepositoryRequestResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
     },
     "versioningDeleteTagRequestResponse": {
       "type": "object"
@@ -1843,7 +1853,7 @@
           },
           "title": "Blobs, which correspond to direct entries/files"
         },
-        "subfolders": {
+        "sub_folders": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/versioningFolderElement"
@@ -2047,10 +2057,10 @@
     "versioningRepositoryIdentification": {
       "type": "object",
       "properties": {
-        "named": {
+        "named_id": {
           "$ref": "#/definitions/versioningRepositoryNamedIdentification"
         },
-        "code": {
+        "repo_id": {
           "type": "string",
           "format": "uint64"
         }

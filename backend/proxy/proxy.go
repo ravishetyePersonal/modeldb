@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	gw "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb"
+	mdb "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb"
+	metadata "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/metadata"
+	versioning "github.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioning"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -26,14 +28,16 @@ func main() {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 	endpoints := []func(context.Context, *runtime.ServeMux, string, []grpc.DialOption) (err error){
-		gw.RegisterProjectServiceHandlerFromEndpoint,
-		gw.RegisterExperimentServiceHandlerFromEndpoint,
-		gw.RegisterExperimentRunServiceHandlerFromEndpoint,
-		gw.RegisterCommentServiceHandlerFromEndpoint,
-		gw.RegisterHydratedServiceHandlerFromEndpoint,
-		gw.RegisterDatasetServiceHandlerFromEndpoint,
-		gw.RegisterDatasetVersionServiceHandlerFromEndpoint,
-		gw.RegisterLineageServiceHandlerFromEndpoint,
+		mdb.RegisterProjectServiceHandlerFromEndpoint,
+		mdb.RegisterExperimentServiceHandlerFromEndpoint,
+		mdb.RegisterExperimentRunServiceHandlerFromEndpoint,
+		mdb.RegisterCommentServiceHandlerFromEndpoint,
+		mdb.RegisterHydratedServiceHandlerFromEndpoint,
+		mdb.RegisterDatasetServiceHandlerFromEndpoint,
+		mdb.RegisterDatasetVersionServiceHandlerFromEndpoint,
+		mdb.RegisterLineageServiceHandlerFromEndpoint,
+		versioning.RegisterVersioningServiceHandlerFromEndpoint,
+		metadata.RegisterMetadataServiceHandlerFromEndpoint,
 	}
 	for i, endpoint := range endpoints {
 		if err := endpoint(context.Background(), mux, address, opts); err != nil {

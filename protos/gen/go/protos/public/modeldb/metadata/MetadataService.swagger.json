@@ -74,14 +74,14 @@
             "default": "UNKNOWN"
           },
           {
-            "name": "id.code",
+            "name": "id.int_id",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "id.uuid",
+            "name": "id.string_id",
             "in": "query",
             "required": false,
             "type": "string"
@@ -184,11 +184,11 @@
         "id_type": {
           "$ref": "#/definitions/IDTypeEnumIDType"
         },
-        "code": {
+        "int_id": {
           "type": "string",
           "format": "uint64"
         },
-        "uuid": {
+        "string_id": {
           "type": "string"
         }
       }

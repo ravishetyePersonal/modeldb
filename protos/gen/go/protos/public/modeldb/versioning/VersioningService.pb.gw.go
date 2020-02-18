@@ -134,7 +134,7 @@ func local_request_VersioningService_ListRepositories_1(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_GetRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "named": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
+	filter_VersioningService_GetRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "named_id": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
 )
 
 func request_VersioningService_GetRepository_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -148,26 +148,26 @@ func request_VersioningService_GetRepository_0(ctx context.Context, marshaler ru
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -193,26 +193,26 @@ func local_request_VersioningService_GetRepository_0(ctx context.Context, marsha
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetRepository_0); err != nil {
@@ -225,7 +225,7 @@ func local_request_VersioningService_GetRepository_0(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_GetRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "code": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+	filter_VersioningService_GetRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "repo_id": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_VersioningService_GetRepository_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -239,15 +239,15 @@ func request_VersioningService_GetRepository_1(ctx context.Context, marshaler ru
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -273,15 +273,15 @@ func local_request_VersioningService_GetRepository_1(ctx context.Context, marsha
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_GetRepository_1); err != nil {
@@ -294,7 +294,7 @@ func local_request_VersioningService_GetRepository_1(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_CreateRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "named": 2, "workspace_name": 3}, Base: []int{1, 1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 4, 2, 5}}
+	filter_VersioningService_CreateRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "named_id": 2, "workspace_name": 3}, Base: []int{1, 1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 4, 2, 5}}
 )
 
 func request_VersioningService_CreateRepository_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -316,15 +316,15 @@ func request_VersioningService_CreateRepository_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -358,15 +358,15 @@ func local_request_VersioningService_CreateRepository_0(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_CreateRepository_0); err != nil {
@@ -379,7 +379,7 @@ func local_request_VersioningService_CreateRepository_0(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_UpdateRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "named": 2, "workspace_name": 3, "name": 4}, Base: []int{1, 1, 3, 1, 2, 4, 0, 0, 4, 0}, Check: []int{0, 1, 1, 3, 4, 3, 2, 5, 6, 9}}
+	filter_VersioningService_UpdateRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "named_id": 2, "workspace_name": 3, "name": 4}, Base: []int{1, 1, 3, 1, 2, 4, 0, 0, 4, 0}, Check: []int{0, 1, 1, 3, 4, 3, 2, 5, 6, 9}}
 )
 
 func request_VersioningService_UpdateRepository_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -401,26 +401,26 @@ func request_VersioningService_UpdateRepository_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -454,26 +454,26 @@ func local_request_VersioningService_UpdateRepository_0(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_UpdateRepository_0); err != nil {
@@ -486,7 +486,7 @@ func local_request_VersioningService_UpdateRepository_0(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_UpdateRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "code": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
+	filter_VersioningService_UpdateRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository": 0, "id": 1, "repo_id": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
 func request_VersioningService_UpdateRepository_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -508,15 +508,15 @@ func request_VersioningService_UpdateRepository_1(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -550,15 +550,15 @@ func local_request_VersioningService_UpdateRepository_1(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_UpdateRepository_1); err != nil {
@@ -571,7 +571,7 @@ func local_request_VersioningService_UpdateRepository_1(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_DeleteRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "named": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
+	filter_VersioningService_DeleteRepository_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
 )
 
 func request_VersioningService_DeleteRepository_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -585,26 +585,26 @@ func request_VersioningService_DeleteRepository_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -630,26 +630,26 @@ func local_request_VersioningService_DeleteRepository_0(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_DeleteRepository_0); err != nil {
@@ -662,7 +662,7 @@ func local_request_VersioningService_DeleteRepository_0(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_DeleteRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "code": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+	filter_VersioningService_DeleteRepository_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_VersioningService_DeleteRepository_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -676,15 +676,15 @@ func request_VersioningService_DeleteRepository_1(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -710,15 +710,15 @@ func local_request_VersioningService_DeleteRepository_1(ctx context.Context, mar
 		_   = err
 	)
 
-	val, ok = pathParams["id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_DeleteRepository_1); err != nil {
@@ -731,7 +731,7 @@ func local_request_VersioningService_DeleteRepository_1(ctx context.Context, mar
 }
 
 var (
-	filter_VersioningService_ListCommits_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
+	filter_VersioningService_ListCommits_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
 )
 
 func request_VersioningService_ListCommits_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -745,26 +745,26 @@ func request_VersioningService_ListCommits_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -790,26 +790,26 @@ func local_request_VersioningService_ListCommits_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ListCommits_0); err != nil {
@@ -822,7 +822,7 @@ func local_request_VersioningService_ListCommits_0(ctx context.Context, marshale
 }
 
 var (
-	filter_VersioningService_ListCommits_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+	filter_VersioningService_ListCommits_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_VersioningService_ListCommits_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -836,15 +836,15 @@ func request_VersioningService_ListCommits_1(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -870,15 +870,15 @@ func local_request_VersioningService_ListCommits_1(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ListCommits_1); err != nil {
@@ -891,7 +891,7 @@ func local_request_VersioningService_ListCommits_1(ctx context.Context, marshale
 }
 
 var (
-	filter_VersioningService_GetCommit_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_GetCommit_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetCommit_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -905,26 +905,26 @@ func request_VersioningService_GetCommit_0(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -961,26 +961,26 @@ func local_request_VersioningService_GetCommit_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1004,7 +1004,7 @@ func local_request_VersioningService_GetCommit_0(ctx context.Context, marshaler 
 }
 
 var (
-	filter_VersioningService_GetCommit_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_GetCommit_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetCommit_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1018,15 +1018,15 @@ func request_VersioningService_GetCommit_1(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1063,15 +1063,15 @@ func local_request_VersioningService_GetCommit_1(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1113,26 +1113,26 @@ func request_VersioningService_CreateCommit_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	msg, err := client.CreateCommit(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1159,26 +1159,26 @@ func local_request_VersioningService_CreateCommit_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	msg, err := server.CreateCommit(ctx, &protoReq)
@@ -1205,15 +1205,15 @@ func request_VersioningService_CreateCommit_1(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	msg, err := client.CreateCommit(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1240,15 +1240,15 @@ func local_request_VersioningService_CreateCommit_1(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	msg, err := server.CreateCommit(ctx, &protoReq)
@@ -1257,7 +1257,7 @@ func local_request_VersioningService_CreateCommit_1(ctx context.Context, marshal
 }
 
 var (
-	filter_VersioningService_DeleteCommit_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_DeleteCommit_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_DeleteCommit_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1271,26 +1271,26 @@ func request_VersioningService_DeleteCommit_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1327,26 +1327,26 @@ func local_request_VersioningService_DeleteCommit_0(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1370,7 +1370,7 @@ func local_request_VersioningService_DeleteCommit_0(ctx context.Context, marshal
 }
 
 var (
-	filter_VersioningService_DeleteCommit_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_DeleteCommit_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_DeleteCommit_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1384,15 +1384,15 @@ func request_VersioningService_DeleteCommit_1(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1429,15 +1429,15 @@ func local_request_VersioningService_DeleteCommit_1(ctx context.Context, marshal
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1461,7 +1461,7 @@ func local_request_VersioningService_DeleteCommit_1(ctx context.Context, marshal
 }
 
 var (
-	filter_VersioningService_ListCommitBlobs_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_ListCommitBlobs_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_ListCommitBlobs_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1475,26 +1475,26 @@ func request_VersioningService_ListCommitBlobs_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1531,26 +1531,26 @@ func local_request_VersioningService_ListCommitBlobs_0(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1574,7 +1574,7 @@ func local_request_VersioningService_ListCommitBlobs_0(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_ListCommitBlobs_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_ListCommitBlobs_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_ListCommitBlobs_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1588,15 +1588,15 @@ func request_VersioningService_ListCommitBlobs_1(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1633,15 +1633,15 @@ func local_request_VersioningService_ListCommitBlobs_1(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1665,7 +1665,7 @@ func local_request_VersioningService_ListCommitBlobs_1(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_GetCommitBlob_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_GetCommitBlob_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetCommitBlob_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1679,26 +1679,26 @@ func request_VersioningService_GetCommitBlob_0(ctx context.Context, marshaler ru
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1735,26 +1735,26 @@ func local_request_VersioningService_GetCommitBlob_0(ctx context.Context, marsha
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1778,7 +1778,7 @@ func local_request_VersioningService_GetCommitBlob_0(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_GetCommitBlob_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_GetCommitBlob_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetCommitBlob_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1792,15 +1792,15 @@ func request_VersioningService_GetCommitBlob_1(ctx context.Context, marshaler ru
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1837,15 +1837,15 @@ func local_request_VersioningService_GetCommitBlob_1(ctx context.Context, marsha
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1869,7 +1869,7 @@ func local_request_VersioningService_GetCommitBlob_1(ctx context.Context, marsha
 }
 
 var (
-	filter_VersioningService_GetCommitFolder_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_GetCommitFolder_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "commit_sha": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetCommitFolder_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1883,26 +1883,26 @@ func request_VersioningService_GetCommitFolder_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1939,26 +1939,26 @@ func local_request_VersioningService_GetCommitFolder_0(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -1982,7 +1982,7 @@ func local_request_VersioningService_GetCommitFolder_0(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_GetCommitFolder_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_GetCommitFolder_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "commit_sha": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetCommitFolder_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1996,15 +1996,15 @@ func request_VersioningService_GetCommitFolder_1(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -2041,15 +2041,15 @@ func local_request_VersioningService_GetCommitFolder_1(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["commit_sha"]
@@ -2073,7 +2073,7 @@ func local_request_VersioningService_GetCommitFolder_1(ctx context.Context, mars
 }
 
 var (
-	filter_VersioningService_ComputeRepositoryDiff_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
+	filter_VersioningService_ComputeRepositoryDiff_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
 )
 
 func request_VersioningService_ComputeRepositoryDiff_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2087,26 +2087,26 @@ func request_VersioningService_ComputeRepositoryDiff_0(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2132,26 +2132,26 @@ func local_request_VersioningService_ComputeRepositoryDiff_0(ctx context.Context
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ComputeRepositoryDiff_0); err != nil {
@@ -2164,7 +2164,7 @@ func local_request_VersioningService_ComputeRepositoryDiff_0(ctx context.Context
 }
 
 var (
-	filter_VersioningService_ComputeRepositoryDiff_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+	filter_VersioningService_ComputeRepositoryDiff_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_VersioningService_ComputeRepositoryDiff_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2178,15 +2178,15 @@ func request_VersioningService_ComputeRepositoryDiff_1(ctx context.Context, mars
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2212,15 +2212,15 @@ func local_request_VersioningService_ComputeRepositoryDiff_1(ctx context.Context
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ComputeRepositoryDiff_1); err != nil {
@@ -2233,7 +2233,7 @@ func local_request_VersioningService_ComputeRepositoryDiff_1(ctx context.Context
 }
 
 var (
-	filter_VersioningService_ListTags_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
+	filter_VersioningService_ListTags_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3}, Base: []int{1, 3, 1, 1, 3, 0, 3, 0}, Check: []int{0, 1, 2, 3, 2, 4, 5, 7}}
 )
 
 func request_VersioningService_ListTags_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2247,26 +2247,26 @@ func request_VersioningService_ListTags_0(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2292,26 +2292,26 @@ func local_request_VersioningService_ListTags_0(ctx context.Context, marshaler r
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ListTags_0); err != nil {
@@ -2324,7 +2324,7 @@ func local_request_VersioningService_ListTags_0(ctx context.Context, marshaler r
 }
 
 var (
-	filter_VersioningService_ListTags_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+	filter_VersioningService_ListTags_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_VersioningService_ListTags_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2338,15 +2338,15 @@ func request_VersioningService_ListTags_1(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := req.ParseForm(); err != nil {
@@ -2372,15 +2372,15 @@ func local_request_VersioningService_ListTags_1(ctx context.Context, marshaler r
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_VersioningService_ListTags_1); err != nil {
@@ -2393,7 +2393,7 @@ func local_request_VersioningService_ListTags_1(ctx context.Context, marshaler r
 }
 
 var (
-	filter_VersioningService_GetTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "tag": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_GetTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "tag": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_GetTag_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2407,26 +2407,26 @@ func request_VersioningService_GetTag_0(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2463,26 +2463,26 @@ func local_request_VersioningService_GetTag_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2506,7 +2506,7 @@ func local_request_VersioningService_GetTag_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_VersioningService_GetTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "tag": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_GetTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "tag": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_GetTag_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2520,15 +2520,15 @@ func request_VersioningService_GetTag_1(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2565,15 +2565,15 @@ func local_request_VersioningService_GetTag_1(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2597,7 +2597,7 @@ func local_request_VersioningService_GetTag_1(ctx context.Context, marshaler run
 }
 
 var (
-	filter_VersioningService_SetTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"commit_sha": 0, "repository_id": 1, "named": 2, "workspace_name": 3, "name": 4, "tag": 5}, Base: []int{1, 1, 3, 1, 2, 5, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 3, 4, 3, 1, 2, 5, 6, 10, 7}}
+	filter_VersioningService_SetTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"commit_sha": 0, "repository_id": 1, "named_id": 2, "workspace_name": 3, "name": 4, "tag": 5}, Base: []int{1, 1, 3, 1, 2, 5, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 3, 4, 3, 1, 2, 5, 6, 10, 7}}
 )
 
 func request_VersioningService_SetTag_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2619,26 +2619,26 @@ func request_VersioningService_SetTag_0(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2683,26 +2683,26 @@ func local_request_VersioningService_SetTag_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2726,7 +2726,7 @@ func local_request_VersioningService_SetTag_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_VersioningService_SetTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"commit_sha": 0, "repository_id": 1, "code": 2, "tag": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
+	filter_VersioningService_SetTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"commit_sha": 0, "repository_id": 1, "repo_id": 2, "tag": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
 func request_VersioningService_SetTag_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2748,15 +2748,15 @@ func request_VersioningService_SetTag_1(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2801,15 +2801,15 @@ func local_request_VersioningService_SetTag_1(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2833,7 +2833,7 @@ func local_request_VersioningService_SetTag_1(ctx context.Context, marshaler run
 }
 
 var (
-	filter_VersioningService_DeleteTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named": 1, "workspace_name": 2, "name": 3, "tag": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
+	filter_VersioningService_DeleteTag_0 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "named_id": 1, "workspace_name": 2, "name": 3, "tag": 4}, Base: []int{1, 3, 1, 1, 4, 4, 0, 3, 0, 0}, Check: []int{0, 1, 2, 3, 2, 1, 4, 5, 8, 6}}
 )
 
 func request_VersioningService_DeleteTag_0(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2847,26 +2847,26 @@ func request_VersioningService_DeleteTag_0(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2903,26 +2903,26 @@ func local_request_VersioningService_DeleteTag_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.named.workspace_name"]
+	val, ok = pathParams["repository_id.named_id.workspace_name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.workspace_name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.workspace_name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.workspace_name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.workspace_name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.workspace_name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.workspace_name", err)
 	}
 
-	val, ok = pathParams["repository_id.named.name"]
+	val, ok = pathParams["repository_id.named_id.name"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.named_id.name")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named.name", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.named_id.name", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named.name", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.named_id.name", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -2946,7 +2946,7 @@ func local_request_VersioningService_DeleteTag_0(ctx context.Context, marshaler 
 }
 
 var (
-	filter_VersioningService_DeleteTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "code": 1, "tag": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
+	filter_VersioningService_DeleteTag_1 = &utilities.DoubleArray{Encoding: map[string]int{"repository_id": 0, "repo_id": 1, "tag": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 1, 3, 4}}
 )
 
 func request_VersioningService_DeleteTag_1(ctx context.Context, marshaler runtime.Marshaler, client VersioningServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2960,15 +2960,15 @@ func request_VersioningService_DeleteTag_1(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -3005,15 +3005,15 @@ func local_request_VersioningService_DeleteTag_1(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["repository_id.code"]
+	val, ok = pathParams["repository_id.repo_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.code")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repository_id.repo_id")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.code", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "repository_id.repo_id", val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.code", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repository_id.repo_id", err)
 	}
 
 	val, ok = pathParams["tag"]
@@ -4410,67 +4410,67 @@ var (
 
 	pattern_VersioningService_ListRepositories_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "versioning", "repositories"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "id.named.workspace_name", "repositories", "id.named.name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "id.named_id.workspace_name", "repositories", "id.named_id.name"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "id.code"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "id.repo_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_CreateRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "workspaces", "id.named.workspace_name", "repositories"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_CreateRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "workspaces", "id.named_id.workspace_name", "repositories"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_UpdateRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "id.named.workspace_name", "repositories", "id.named.name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_UpdateRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "id.named_id.workspace_name", "repositories", "id.named_id.name"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_UpdateRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "id.code"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_UpdateRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "id.repo_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "id.named.workspace_name", "repositories", "id.named.name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteRepository_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "id.code"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteRepository_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "versioning", "repositories", "repository_id.repo_id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListCommits_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListCommits_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListCommits_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListCommits_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_CreateCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_CreateCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_CreateCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_CreateCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteCommit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteCommit_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits", "commit_sha"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListCommitBlobs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "blobs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListCommitBlobs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits", "commit_sha", "blobs"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListCommitBlobs_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "blobs"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListCommitBlobs_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits", "commit_sha", "blobs"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitBlob_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitBlob_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitBlob_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitBlob_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits", "commit_sha", "blobs", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitFolder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitFolder_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 2, 9}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetCommitFolder_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.code", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetCommitFolder_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 2, 7}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "commits", "commit_sha", "folders", "path"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ComputeRepositoryDiff_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "diff"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ComputeRepositoryDiff_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "diff"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ComputeRepositoryDiff_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.code", "diff"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ComputeRepositoryDiff_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "diff"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListTags_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "tags"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListTags_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "tags"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_ListTags_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.code", "tags"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_ListTags_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "tags"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_GetTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.code", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_GetTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_SetTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_SetTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_SetTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.code", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_SetTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named.workspace_name", "repositories", "repository_id.named.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteTag_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"v1", "versioning", "workspaces", "repository_id.named_id.workspace_name", "repositories", "repository_id.named_id.name", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_VersioningService_DeleteTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.code", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_VersioningService_DeleteTag_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "versioning", "repositories", "repository_id.repo_id", "tags", "tag"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
