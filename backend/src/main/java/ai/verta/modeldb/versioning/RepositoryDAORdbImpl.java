@@ -2,10 +2,12 @@ package ai.verta.modeldb.versioning;
 
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBException;
+import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.dto.WorkspaceDTO;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
+import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response.Builder;
 import io.grpc.Status.Code;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +46,14 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(".")
           .append(ModelDBConstants.NAME)
           .append(" = :repositoryName ")
+          .toString();
+
+  private static final String GET_REPOSITORY_PREFIX_HQL =
+      new StringBuilder("From ")
+          .append(RepositoryEntity.class.getSimpleName())
+          .append(" ")
+          .append(SHORT_NAME)
+          .append(" where ")
           .toString();
 
   @Override
@@ -94,7 +104,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             name,
             ModelDBConstants.WORKSPACE_ID,
             workspaceDTO.getWorkspaceId(),
-            workspaceDTO.getWorkspaceType());
+            workspaceDTO.getWorkspaceType(),
+            true);
     return Optional.ofNullable((RepositoryEntity) query.uniqueResult());
   }
 
@@ -104,21 +115,32 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       RepositoryEntity repository;
       session.beginTransaction();
-      ModelDBHibernateUtil.checkIfEntityAlreadyExists(
-          session,
-          SHORT_NAME,
-          GET_REPOSITORY_COUNT_BY_NAME_PREFIX_HQL,
-          "Repository",
-          "repositoryName",
-          request.getRepository().getName(),
-          ModelDBConstants.WORKSPACE_ID,
-          workspaceDTO.getWorkspaceId(),
-          workspaceDTO.getWorkspaceType(),
-          LOGGER);
       if (create) {
+        ModelDBHibernateUtil.checkIfEntityAlreadyExists(
+            session,
+            SHORT_NAME,
+            GET_REPOSITORY_COUNT_BY_NAME_PREFIX_HQL,
+            "Repository",
+            "repositoryName",
+            request.getRepository().getName(),
+            ModelDBConstants.WORKSPACE_ID,
+            workspaceDTO.getWorkspaceId(),
+            workspaceDTO.getWorkspaceType(),
+            LOGGER);
         repository = new RepositoryEntity(request.getRepository().getName(), workspaceDTO);
       } else {
         repository = getRepositoryById(session, request.getId(), workspaceDTO);
+        ModelDBHibernateUtil.checkIfEntityAlreadyExists(
+            session,
+            SHORT_NAME,
+            GET_REPOSITORY_COUNT_BY_NAME_PREFIX_HQL,
+            "Repository",
+            "repositoryName",
+            request.getRepository().getName(),
+            ModelDBConstants.WORKSPACE_ID,
+            repository.getWorkspace_id(),
+            WorkspaceType.forNumber(repository.getWorkspace_type()),
+            LOGGER);
         repository.update(request);
       }
       session.saveOrUpdate(repository);
@@ -144,12 +166,25 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   public ListRepositoriesRequest.Response listRepositories(
       ListRepositoriesRequest request, WorkspaceDTO workspaceDTO) {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      Query query = session.createQuery("From " + RepositoryEntity.class.getSimpleName());
+      Query query =
+          ModelDBHibernateUtil.getWorkspaceEntityQuery(
+              session,
+              SHORT_NAME,
+              GET_REPOSITORY_PREFIX_HQL,
+              "repositoryName",
+              null,
+              ModelDBConstants.WORKSPACE_ID,
+              workspaceDTO.getWorkspaceId(),
+              workspaceDTO.getWorkspaceType(),
+              false);
       int pageLimit = request.getPagination().getPageLimit();
       query.setFirstResult(request.getPagination().getPageNumber() * pageLimit);
       query.setMaxResults(pageLimit);
       List list = query.list();
-      return ListRepositoriesRequest.Response.newBuilder().addAllRepository(list).build();
+      ListRepositoriesRequest.Response.Builder builder = ListRepositoriesRequest.Response
+          .newBuilder();
+      list.forEach((o) -> builder.addRepository(((RepositoryEntity) o).toProto()));
+      return builder.build();
     }
   }
 }
