@@ -14,6 +14,7 @@ import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBase;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,7 +101,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         if (request.getRepository().getName().isEmpty()) {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId());
+        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false);
 
         SetRepository.Response response = repositoryDAO.setRepository(request, workspaceDTO, true);
         responseObserver.onNext(response);
@@ -152,29 +153,38 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
-      throws ModelDBException {
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(
+      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
     WorkspaceDTO workspaceDTO = null;
     String message = null;
-    switch (id.getRepoIdentifierCase()) {
-      case NAMED_ID:
-        UserInfo userInfo = authService.getCurrentLoginUserInfo();
-        RepositoryNamedIdentification named = id.getNamedId();
+    if (id.hasNamedId()) {
+      UserInfo userInfo;
+      try {
+        userInfo = authService.getCurrentLoginUserInfo();
+      } catch (StatusRuntimeException e) {
+        throw new ModelDBException("Authorization error", e.getStatus().getCode());
+      }
+      RepositoryNamedIdentification named = id.getNamedId();
+      try {
         workspaceDTO =
             roleService.getWorkspaceDTOByWorkspaceName(userInfo, named.getWorkspaceName());
-        if (named.getName().isEmpty()) {
-          message = "Name should not be empty";
-        }
-      case REPO_ID:
-        break;
-      default:
-        message = "Unknown id type";
+      } catch (StatusRuntimeException e) {
+        throw new ModelDBException("Error getting workspace", e.getStatus().getCode());
+      }
+      if (named.getName().isEmpty() && shouldCheckNamed) {
+        message = "Name should not be empty";
+      }
     }
 
     if (message != null) {
       throw new ModelDBException(message, Code.INVALID_ARGUMENT);
     }
     return workspaceDTO;
+  }
+
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
+      throws ModelDBException {
+    return verifyAndGetWorkspaceDTO(id, true);
   }
 
   @Override

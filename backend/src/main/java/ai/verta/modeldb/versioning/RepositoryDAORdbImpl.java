@@ -61,22 +61,16 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       Session session, RepositoryIdentification id, WorkspaceDTO workspaceDTO)
       throws ModelDBException {
     RepositoryEntity repository;
-    switch (id.getRepoIdentifierCase()) {
-      case NAMED_ID:
-        repository =
-            getRepositoryByName(session, id.getNamedId().getName(), workspaceDTO)
-                .orElseThrow(
-                    () -> new ModelDBException("Couldn't find repository by name", Code.NOT_FOUND));
-        break;
-      case REPO_ID:
-        repository =
-            getRepositoryById(session, id.getRepoId())
-                .orElseThrow(
-                    () -> new ModelDBException("Couldn't find repository by id", Code.NOT_FOUND));
-        break;
-      default:
-        LOGGER.error("Unknown repository id type");
-        throw new ModelDBException("Unknown type", Code.INTERNAL);
+    if (id.hasNamedId()) {
+      repository =
+          getRepositoryByName(session, id.getNamedId().getName(), workspaceDTO)
+              .orElseThrow(
+                  () -> new ModelDBException("Couldn't find repository by name", Code.NOT_FOUND));
+    } else {
+      repository =
+          getRepositoryById(session, id.getRepoId())
+              .orElseThrow(
+                  () -> new ModelDBException("Couldn't find repository by id", Code.NOT_FOUND));
     }
     return repository;
   }
@@ -110,18 +104,18 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       RepositoryEntity repository;
       session.beginTransaction();
+      ModelDBHibernateUtil.checkIfEntityAlreadyExists(
+          session,
+          SHORT_NAME,
+          GET_REPOSITORY_COUNT_BY_NAME_PREFIX_HQL,
+          "Repository",
+          "repositoryName",
+          request.getRepository().getName(),
+          ModelDBConstants.WORKSPACE_ID,
+          workspaceDTO.getWorkspaceId(),
+          workspaceDTO.getWorkspaceType(),
+          LOGGER);
       if (create) {
-        ModelDBHibernateUtil.checkIfEntityAlreadyExists(
-            session,
-            SHORT_NAME,
-            GET_REPOSITORY_COUNT_BY_NAME_PREFIX_HQL,
-            "Repository",
-            "repositoryName",
-            request.getRepository().getName(),
-            ModelDBConstants.WORKSPACE_ID,
-            workspaceDTO.getWorkspaceId(),
-            workspaceDTO.getWorkspaceType(),
-            LOGGER);
         repository = new RepositoryEntity(request.getRepository().getName(), workspaceDTO);
       } else {
         repository = getRepositoryById(session, request.getId(), workspaceDTO);

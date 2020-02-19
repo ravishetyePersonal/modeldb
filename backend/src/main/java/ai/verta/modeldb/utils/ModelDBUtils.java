@@ -404,25 +404,30 @@ public class ModelDBUtils {
   public static <T extends GeneratedMessageV3> void observeError(
       StreamObserver<T> responseObserver, Exception e, T defaultInstance) {
     Status status;
-    if (e instanceof ModelDBException) {
-      LOGGER.warn("Exception occured:", e);
-      ModelDBException ModelDBException = (ModelDBException) e;
-      status =
-          Status.newBuilder()
-              .setCode(ModelDBException.getCode().value())
-              .setMessage(ModelDBException.getMessage())
-              .addDetails(Any.pack(defaultInstance))
-              .build();
+    Exception statusRuntimeException;
+    if (e instanceof StatusRuntimeException) {
+      statusRuntimeException = e;
     } else {
-      LOGGER.error("Exception occured:", e);
-      status =
-          Status.newBuilder()
-              .setCode(io.grpc.Status.Code.INTERNAL.value())
-              .setMessage(ModelDBConstants.INTERNAL_ERROR)
-              .addDetails(Any.pack(defaultInstance))
-              .build();
+      if (e instanceof ModelDBException) {
+        LOGGER.warn("Exception occured:", e);
+        ModelDBException ModelDBException = (ModelDBException) e;
+        status =
+            Status.newBuilder()
+                .setCode(ModelDBException.getCode().value())
+                .setMessage(ModelDBException.getMessage())
+                .addDetails(Any.pack(defaultInstance))
+                .build();
+      } else {
+        LOGGER.error("Exception occured:", e);
+        status =
+            Status.newBuilder()
+                .setCode(io.grpc.Status.Code.INTERNAL.value())
+                .setMessage(ModelDBConstants.INTERNAL_ERROR)
+                .addDetails(Any.pack(defaultInstance))
+                .build();
+      }
+      statusRuntimeException = StatusProto.toStatusRuntimeException(status);
     }
-    StatusRuntimeException statusRuntimeException = StatusProto.toStatusRuntimeException(status);
     ErrorCountResource.inc(statusRuntimeException);
     responseObserver.onError(statusRuntimeException);
   }
