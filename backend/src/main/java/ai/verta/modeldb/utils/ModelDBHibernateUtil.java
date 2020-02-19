@@ -26,6 +26,13 @@ import ai.verta.modeldb.entities.QueryParameterEntity;
 import ai.verta.modeldb.entities.RawDatasetVersionInfoEntity;
 import ai.verta.modeldb.entities.TagsMapping;
 import ai.verta.modeldb.entities.UserCommentEntity;
+import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.metadata.LabelsMappingEntity;
+import ai.verta.modeldb.entities.versioning.CommitEntity;
+import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import ai.verta.modeldb.entities.versioning.RepositoryEntity;
+import ai.verta.modeldb.entities.versioning.TagsEntity;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.health.v1.HealthCheckResponse;
@@ -101,7 +108,14 @@ public class ModelDBHibernateUtil {
     UserCommentEntity.class,
     ArtifactStoreMapping.class,
     AttributeEntity.class,
-    LineageEntity.class
+    LineageEntity.class,
+    RepositoryEntity.class,
+    CommitEntity.class,
+    LabelsMappingEntity.class,
+    TagsEntity.class,
+    PathDatasetComponentBlobEntity.class,
+    S3DatasetComponentBlobEntity.class,
+    InternalFolderElementEntity.class
   };
 
   private ModelDBHibernateUtil() {}
@@ -137,8 +151,7 @@ public class ModelDBHibernateUtil {
             Long.parseLong(databasePropMap.getOrDefault("liquibaseLockThreshold", "60").toString());
 
         // Change liquibase default table names
-        System.getProperties()
-            .put("liquibase.databaseChangeLogTableName", "database_change_log");
+        System.getProperties().put("liquibase.databaseChangeLogTableName", "database_change_log");
         System.getProperties()
             .put("liquibase.databaseChangeLogLockTableName", "database_change_log_lock");
 

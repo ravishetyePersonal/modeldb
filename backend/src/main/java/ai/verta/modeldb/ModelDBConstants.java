@@ -188,4 +188,8 @@ public interface ModelDBConstants {
   String TELEMETRY_CONSUMER = "consumer";
   String TELEMETRY_CONSUMER_URL =
       "https://app.verta.ai/api/v1/uac-proxy/telemetry/collectTelemetry";
+
+  // Versioning constant
+  String BLOBS = "blobs";
+  String SUBTREES = "subtrees";
 }

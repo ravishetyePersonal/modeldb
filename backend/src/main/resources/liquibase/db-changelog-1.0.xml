@@ -132,4 +132,6 @@
             <column name="output_type" type="int4"/>
         </createIndex>
     </changeSet>
+
+	<include file="src/main/resources/liquibase/create-versioning-tables-changelog.xml"/>
 </databaseChangeLog>
