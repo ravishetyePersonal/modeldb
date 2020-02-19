@@ -1,5 +1,6 @@
 package ai.verta.modeldb.collaborator;
 
+import ai.verta.common.CollaboratorTypeEnum;
 import ai.verta.common.TernaryEnum.Ternary;
 import ai.verta.modeldb.ModelDBAuthInterceptor;
 import ai.verta.modeldb.ModelDBConstants;
@@ -18,7 +19,6 @@ import ai.verta.uac.AddCollaboratorRequest;
 import ai.verta.uac.AddCollaboratorRequest.Response;
 import ai.verta.uac.AddCollaboratorRequest.Response.Builder;
 import ai.verta.uac.CollaboratorServiceGrpc.CollaboratorServiceImplBase;
-import ai.verta.uac.CollaboratorTypeEnum;
 import ai.verta.uac.EntitiesEnum;
 import ai.verta.uac.GetCollaborator;
 import ai.verta.uac.GetCollaboratorResponse;

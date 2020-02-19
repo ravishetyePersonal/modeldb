@@ -27,9 +27,10 @@ echo "Fixing python folders"
 for pythondir in $(find $PYTHON_OUTPUT -type d)
 do
     touch $pythondir/__init__.py
-    for filename in ${pythondir}/*_pb2*; do
+    for filename in ${pythondir}/*_pb2*.py; do
         if [ -e $filename ]
         then
+            echo sed -i '' 's|^from protos\.|from ...|g' $filename
             sed -i '' 's|^from protos\.|from ...|g' $filename
         fi
     done

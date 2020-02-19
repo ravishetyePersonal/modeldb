@@ -18,7 +18,6 @@ import ai.verta.modeldb.versioning.VersioningServiceGrpc;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceBlockingStub;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
@@ -194,7 +193,8 @@ public class RepositoryTest {
 
     getRepositoryRequest =
         GetRepositoryRequest.newBuilder()
-            .setId(RepositoryIdentification.newBuilder()
+            .setId(
+                RepositoryIdentification.newBuilder()
                     .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME_2)))
             .build();
     GetRepositoryRequest.Response getByNameResult =
