@@ -4,6 +4,10 @@
     "title": "protos/public/modeldb/versioning/VersioningService.proto",
     "version": "version not set"
   },
+  "schemes": [
+    "http",
+    "https"
+  ],
   "consumes": [
     "application/json"
   ],
@@ -20,12 +24,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningListRepositoriesRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -65,12 +63,6 @@
             "schema": {
               "$ref": "#/definitions/versioningGetRepositoryRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -106,12 +98,6 @@
             "schema": {
               "$ref": "#/definitions/versioningSetRepositoryResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -144,12 +130,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -188,12 +168,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningListCommitsRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -262,12 +236,6 @@
             "schema": {
               "$ref": "#/definitions/versioningCreateCommitRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -300,12 +268,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetCommitRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -347,12 +309,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningDeleteCommitRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -397,12 +353,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningListCommitBlobsRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -467,12 +417,6 @@
             "schema": {
               "$ref": "#/definitions/versioningGetCommitBlobRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -521,12 +465,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetCommitFolderRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -577,12 +515,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningComputeRepositoryDiffRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -640,12 +572,6 @@
             "schema": {
               "$ref": "#/definitions/versioningListTagsRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -682,12 +608,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetTagRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -730,12 +650,6 @@
             "schema": {
               "$ref": "#/definitions/versioningDeleteTagRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -777,12 +691,6 @@
             "schema": {
               "$ref": "#/definitions/versioningSetTagRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -822,12 +730,6 @@
             "schema": {
               "$ref": "#/definitions/versioningSetRepositoryResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -859,12 +761,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetRepositoryRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -900,12 +796,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningSetRepositoryResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -945,12 +835,6 @@
             "schema": {
               "$ref": "#/definitions/versioningDeleteRepositoryRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -988,12 +872,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningListCommitsRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1062,12 +940,6 @@
             "schema": {
               "$ref": "#/definitions/versioningCreateCommitRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -1105,12 +977,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetCommitRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1152,12 +1018,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningDeleteCommitRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1202,12 +1062,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningListCommitBlobsRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1272,12 +1126,6 @@
             "schema": {
               "$ref": "#/definitions/versioningGetCommitBlobRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -1326,12 +1174,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetCommitFolderRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1382,12 +1224,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningComputeRepositoryDiffRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1445,12 +1281,6 @@
             "schema": {
               "$ref": "#/definitions/versioningListTagsRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -1487,12 +1317,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningGetTagRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1535,12 +1359,6 @@
             "schema": {
               "$ref": "#/definitions/versioningDeleteTagRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -1581,12 +1399,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/versioningSetTagRequestResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1633,12 +1445,6 @@
             "schema": {
               "$ref": "#/definitions/versioningListRepositoriesRequestResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -1678,39 +1484,6 @@
         "USER"
       ],
       "default": "UNKNOWN"
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "type_url": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "runtimeError": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
     },
     "versioningBlob": {
       "type": "object",
