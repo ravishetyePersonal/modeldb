@@ -1,5 +1,6 @@
 package ai.verta.modeldb.entities.versioning;
 
+import ai.verta.modeldb.versioning.Commit;
 import ai.verta.modeldb.versioning.InternalCommit;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +95,15 @@ public class CommitEntity {
   public InternalCommit toProto() {
     return InternalCommit.newBuilder()
         .setFolderSha(this.commit_hash)
+        .addAllParentShas(getParentCommitIds())
+        .setDateCreated(this.date_created)
+        .setMessage(this.message)
+        .setAuthor(this.author)
+        .build();
+  }
+
+  public Commit toProtoCommit() {
+    return Commit.newBuilder()
         .addAllParentShas(getParentCommitIds())
         .setDateCreated(this.date_created)
         .setMessage(this.message)

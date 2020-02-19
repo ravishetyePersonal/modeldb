@@ -11,6 +11,7 @@ import ai.verta.modeldb.monitoring.QPSCountResource;
 import ai.verta.modeldb.monitoring.RequestLatencyResource;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response;
+import ai.verta.modeldb.versioning.PathDatasetComponentBlob.Builder;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBase;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
@@ -26,7 +27,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   private final RoleService roleService;
   private final RepositoryDAO repositoryDAO;
   private final CommitDAO commitDAO;
-  private final BlobDAO blobDAO;
+  private final DatasetComponentDAO datasetComponentDAO;
   private final ExperimentDAO experimentDAO;
   private final ExperimentRunDAO experimentRunDAO;
   private final ModelDBAuthInterceptor modelDBAuthInterceptor;
@@ -37,7 +38,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       RoleService roleService,
       RepositoryDAO repositoryDAO,
       CommitDAO commitDAO,
-      BlobDAO blobDAO,
+      DatasetComponentDAO datasetComponentDAO,
       ExperimentDAO experimentDAO,
       ExperimentRunDAO experimentRunDAO,
       ModelDBAuthInterceptor modelDBAuthInterceptor,
@@ -46,7 +47,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     this.roleService = roleService;
     this.repositoryDAO = repositoryDAO;
     this.commitDAO = commitDAO;
-    this.blobDAO = blobDAO;
+    this.datasetComponentDAO = datasetComponentDAO;
     this.experimentDAO = experimentDAO;
     this.experimentRunDAO = experimentRunDAO;
     this.modelDBAuthInterceptor = modelDBAuthInterceptor;
@@ -226,19 +227,19 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
             S3DatasetBlob.Builder newS3BlobBuilder = S3DatasetBlob.newBuilder();
             for (S3DatasetComponentBlob component : dataset.getS3().getComponentsList()) {
               if (!component.hasPath()) {
-                throw new ModelDBException("Blob path should not be empty",
-                    Code.INVALID_ARGUMENT);
+                throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
               }
-              newS3BlobBuilder.addComponents(component.toBuilder().setPath(component.getPath()
-                  .toBuilder().setSha256(generateAndValidateSha(component.getPath()))));
+              newS3BlobBuilder.addComponents(
+                  component
+                      .toBuilder()
+                      .setPath(getPathInfo(component.getPath())));
             }
             newDataset.setS3(newS3BlobBuilder);
             break;
           case PATH:
             PathDatasetBlob.Builder newPathBlobBuilder = PathDatasetBlob.newBuilder();
             for (PathDatasetComponentBlob component : dataset.getPath().getComponentsList()) {
-              newPathBlobBuilder.addComponents((component.toBuilder()
-                  .setSha256(generateAndValidateSha(component))));
+              newPathBlobBuilder.addComponents((getPathInfo(component)));
             }
             newDataset.setPath(newPathBlobBuilder);
             break;
@@ -248,16 +249,18 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         newRequest.addBlobs(blob.toBuilder().setBlob(Blob.newBuilder().setDataset(newDataset)));
       }
 
-      CreateCommitRequest.Response response = commitDAO.setCommit(request.getCommit(),
-          (session) -> blobDAO.setBlobs(session, request.getBlobsList()),
-          (session) ->
-              repositoryDAO.getRepositoryById(session, request.getRepositoryId(), workspaceDTO));
+      CreateCommitRequest.Response response =
+          commitDAO.setCommit(
+              request.getCommit(),
+              (session) -> datasetComponentDAO.setBlobs(session, request.getBlobsList()),
+              (session) -> repositoryDAO.getRepositoryById(
+                      session, request.getRepositoryId(), workspaceDTO));
 
       responseObserver.onNext(response);
       responseObserver.onCompleted();
     } catch (Exception e) {
-      ModelDBUtils
-          .observeError(responseObserver, e, CreateCommitRequest.Response.getDefaultInstance());
+      ModelDBUtils.observeError(
+          responseObserver, e, CreateCommitRequest.Response.getDefaultInstance());
     }
   }
 
@@ -280,6 +283,11 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       GetCommitFolderRequest request,
       StreamObserver<GetCommitFolderRequest.Response> responseObserver) {
     super.getCommitFolder(request, responseObserver);
+  }
+
+  private Builder getPathInfo(PathDatasetComponentBlob path) throws ModelDBException {
+    //TODO: md5
+    return path.toBuilder().setSha256(generateAndValidateSha(path));
   }
 
   String generateAndValidateSha(PathDatasetComponentBlob path) throws ModelDBException {
