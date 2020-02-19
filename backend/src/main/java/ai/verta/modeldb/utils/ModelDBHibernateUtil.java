@@ -3,6 +3,7 @@ package ai.verta.modeldb.utils;
 import ai.verta.modeldb.App;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBMessages;
+import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.entities.ArtifactEntity;
 import ai.verta.modeldb.entities.ArtifactStoreMapping;
 import ai.verta.modeldb.entities.AttributeEntity;
@@ -70,6 +71,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+import org.hibernate.query.Query;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 
@@ -444,5 +446,75 @@ public class ModelDBHibernateUtil {
       }
     }
     return tExists;
+  }
+
+  public static void checkIfEntityAlreadyExists(
+      Session session,
+      String shortName,
+      String command,
+      String entityName,
+      String fieldName,
+      String name,
+      String workspaceColumnName,
+      String workspaceId,
+      WorkspaceType workspaceType,
+      Logger logger) {
+    Query query =
+        getWorkspaceEntityQuery(
+            session,
+            shortName,
+            command,
+            fieldName,
+            name,
+            workspaceColumnName,
+            workspaceId,
+            workspaceType);
+    Long count = (Long) query.uniqueResult();
+
+    if (count > 0) {
+      // Throw error if it is an insert request and project with same name already exists
+      logger.warn(entityName + " with name {} already exists", name);
+      Status status =
+          Status.newBuilder()
+              .setCode(Code.ALREADY_EXISTS_VALUE)
+              .setMessage(entityName + " already exists in database")
+              .build();
+      throw StatusProto.toStatusRuntimeException(status);
+    }
+  }
+
+  public static Query getWorkspaceEntityQuery(
+      Session session,
+      String shortName,
+      String command,
+      String fieldName,
+      String name,
+      String workspaceColumnName,
+      String workspaceId,
+      WorkspaceType workspaceType) {
+    StringBuilder stringQueryBuilder = new StringBuilder(command);
+    if (!workspaceId.isEmpty()) {
+      stringQueryBuilder
+          .append(" AND ")
+          .append(shortName)
+          .append(".")
+          .append(workspaceColumnName)
+          .append(" =: ")
+          .append(workspaceColumnName)
+          .append(" AND ")
+          .append(shortName)
+          .append(".")
+          .append(ModelDBConstants.WORKSPACE_TYPE)
+          .append(" =: ")
+          .append(ModelDBConstants.WORKSPACE_TYPE);
+    }
+
+    Query query = session.createQuery(stringQueryBuilder.toString());
+    query.setParameter(fieldName, name);
+    if (!workspaceId.isEmpty()) {
+      query.setParameter(workspaceColumnName, workspaceId);
+      query.setParameter(ModelDBConstants.WORKSPACE_TYPE, workspaceType.getNumber());
+    }
+    return query;
   }
 }

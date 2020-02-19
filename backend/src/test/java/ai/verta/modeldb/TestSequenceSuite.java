@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
   LineageTest.class,
   LineageServiceImplNegativeTest.class,
   FindProjectEntitiesTest.class,
-  FindDatasetEntitiesTest.class
+  FindDatasetEntitiesTest.class,
+  RepositoryTest.class
   //  ArtifactStoreTest.class
 })
 public class TestSequenceSuite {}

@@ -93,39 +93,17 @@ public class DatasetDAORdbImpl implements DatasetDAO {
 
   private void checkDatasetAlreadyExist(Dataset dataset) {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      StringBuilder stringQueryBuilder = new StringBuilder(CHECK_DATASE_QUERY_PREFIX);
-
-      // On public repository, the owner should be empty, on private repository owner will never be
-      // empty.
-      if (!dataset.getWorkspaceId().isEmpty()) {
-        stringQueryBuilder
-            .append(" AND ds.")
-            .append(ModelDBConstants.WORKSPACE)
-            .append(" =: ")
-            .append(ModelDBConstants.WORKSPACE)
-            .append(" AND ds.")
-            .append(ModelDBConstants.WORKSPACE_TYPE)
-            .append(" =: ")
-            .append(ModelDBConstants.WORKSPACE_TYPE);
-      }
-
-      Query<?> query = session.createQuery(stringQueryBuilder.toString());
-      query.setParameter("datasetName", dataset.getName());
-      if (!dataset.getWorkspaceId().isEmpty()) {
-        query.setParameter(ModelDBConstants.WORKSPACE, dataset.getWorkspaceId());
-        query.setParameter(ModelDBConstants.WORKSPACE_TYPE, dataset.getWorkspaceTypeValue());
-      }
-      Long count = (Long) query.uniqueResult();
-      if (count > 0) {
-        Status status =
-            Status.newBuilder()
-                .setCode(Code.ALREADY_EXISTS_VALUE)
-                .setMessage(
-                    "Dataset being logged already exists. existing dataset Name : "
-                        + dataset.getName())
-                .build();
-        throw StatusProto.toStatusRuntimeException(status);
-      }
+      ModelDBHibernateUtil.checkIfEntityAlreadyExists(
+          session,
+          "ds",
+          CHECK_DATASE_QUERY_PREFIX,
+          "Dataset",
+          "datasetName",
+          dataset.getName(),
+          ModelDBConstants.WORKSPACE,
+          dataset.getWorkspaceId(),
+          dataset.getWorkspaceType(),
+          LOGGER);
     }
   }
 

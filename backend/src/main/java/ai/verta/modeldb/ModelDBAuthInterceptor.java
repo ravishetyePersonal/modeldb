@@ -60,4 +60,8 @@ public class ModelDBAuthInterceptor implements ServerInterceptor {
       }
     };
   }
+
+  public String getMethodName() {
+    return METHOD_NAME.get();
+  }
 }

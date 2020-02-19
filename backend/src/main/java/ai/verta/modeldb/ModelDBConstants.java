@@ -82,6 +82,7 @@ public interface ModelDBConstants {
   String TAGS = "tags";
   String VALUE = "value";
   String WORKSPACE = "workspace";
+  String WORKSPACE_ID = "workspace_id";
   String WORKSPACE_NAME = "workspace_name";
   String WORKSPACE_TYPE = "workspace_type";
   String PROJECTS = "projects";

@@ -8,18 +8,13 @@ import ai.verta.modeldb.FindAllOutputs;
 import ai.verta.modeldb.LineageEntryEnum.LineageEntryType;
 import ai.verta.modeldb.LineageServiceGrpc.LineageServiceImplBase;
 import ai.verta.modeldb.ModelDBAuthInterceptor;
-import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.datasetVersion.DatasetVersionDAO;
 import ai.verta.modeldb.experimentRun.ExperimentRunDAO;
-import ai.verta.modeldb.monitoring.ErrorCountResource;
 import ai.verta.modeldb.monitoring.QPSCountResource;
 import ai.verta.modeldb.monitoring.RequestLatencyResource;
-import com.google.protobuf.Any;
-import com.google.rpc.Status;
+import ai.verta.modeldb.utils.ModelDBUtils;
 import io.grpc.Status.Code;
-import io.grpc.StatusRuntimeException;
-import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,31 +34,6 @@ public class LineageServiceImpl extends LineageServiceImplBase {
     this.lineageDAO = lineageDAO;
     this.experimentDAO = experimentRunDAO;
     this.datasetVersionDAO = datasetVersionDAO;
-  }
-
-  private <T> void observeError(StreamObserver<T> responseObserver, Exception e) {
-    Status status;
-    if (e instanceof ModelDBException) {
-      LOGGER.warn("Exception occured:", e);
-      ModelDBException ModelDBException = (ModelDBException) e;
-      status =
-          Status.newBuilder()
-              .setCode(ModelDBException.getCode().value())
-              .setMessage(ModelDBException.getMessage())
-              .addDetails(Any.pack(AddLineage.Response.getDefaultInstance()))
-              .build();
-    } else {
-      LOGGER.error("Exception occured:", e);
-      status =
-          Status.newBuilder()
-              .setCode(Code.INTERNAL.value())
-              .setMessage(ModelDBConstants.INTERNAL_ERROR)
-              .addDetails(Any.pack(AddLineage.Response.getDefaultInstance()))
-              .build();
-    }
-    StatusRuntimeException statusRuntimeException = StatusProto.toStatusRuntimeException(status);
-    ErrorCountResource.inc(statusRuntimeException);
-    responseObserver.onError(statusRuntimeException);
   }
 
   @Override
@@ -86,7 +56,7 @@ public class LineageServiceImpl extends LineageServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      observeError(responseObserver, e);
+      ModelDBUtils.observeError(responseObserver, e, AddLineage.Response.getDefaultInstance());
     }
   }
 
@@ -111,7 +81,7 @@ public class LineageServiceImpl extends LineageServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      observeError(responseObserver, e);
+      ModelDBUtils.observeError(responseObserver, e, DeleteLineage.Response.getDefaultInstance());
     }
   }
 
@@ -130,7 +100,7 @@ public class LineageServiceImpl extends LineageServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      observeError(responseObserver, e);
+      ModelDBUtils.observeError(responseObserver, e, FindAllInputs.Response.getDefaultInstance());
     }
   }
 
@@ -149,7 +119,7 @@ public class LineageServiceImpl extends LineageServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      observeError(responseObserver, e);
+      ModelDBUtils.observeError(responseObserver, e, FindAllOutputs.Response.getDefaultInstance());
     }
   }
 
@@ -169,7 +139,8 @@ public class LineageServiceImpl extends LineageServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      observeError(responseObserver, e);
+      ModelDBUtils.observeError(
+          responseObserver, e, FindAllInputsOutputs.Response.getDefaultInstance());
     }
   }
 

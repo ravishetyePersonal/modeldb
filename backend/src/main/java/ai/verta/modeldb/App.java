@@ -43,6 +43,9 @@ import ai.verta.modeldb.project.ProjectServiceImpl;
 import ai.verta.modeldb.telemetry.TelemetryCron;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
+import ai.verta.modeldb.versioning.FileHasher;
+import ai.verta.modeldb.versioning.RepositoryDAORdbImpl;
+import ai.verta.modeldb.versioning.VersioningServiceImpl;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.health.v1.HealthCheckResponse;
@@ -429,6 +432,18 @@ public class App implements ApplicationContextAware {
     serverBuilder.addService(
         new LineageServiceImpl(lineageDAO, experimentRunDAO, datasetVersionDAO));
     LOGGER.trace("Lineage serviceImpl initialized");
+
+    serverBuilder.addService(
+        new VersioningServiceImpl(
+            authService,
+            roleService,
+            new RepositoryDAORdbImpl(),
+            null,
+            experimentDAO,
+            experimentRunDAO,
+            new ModelDBAuthInterceptor(),
+            new FileHasher()));
+    LOGGER.trace("Versioning serviceImpl initialized");
     LOGGER.info("All services initialized and resolved dependency before server start");
   }
 

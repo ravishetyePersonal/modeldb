@@ -185,39 +185,17 @@ public class ProjectDAORdbImpl implements ProjectDAO {
   }
 
   private void checkIfEntityAlreadyExists(Session session, Project project) {
-    String stringQueryBuilder = GET_PROJECT_COUNT_BY_NAME_PREFIX_HQL;
-
-    if (!project.getWorkspaceId().isEmpty()) {
-      stringQueryBuilder =
-          stringQueryBuilder
-              + " AND p."
-              + ModelDBConstants.WORKSPACE
-              + " =: "
-              + ModelDBConstants.WORKSPACE
-              + " AND p."
-              + ModelDBConstants.WORKSPACE_TYPE
-              + " =: "
-              + ModelDBConstants.WORKSPACE_TYPE;
-    }
-
-    Query query = session.createQuery(stringQueryBuilder);
-    query.setParameter("projectName", project.getName());
-    if (!project.getWorkspaceId().isEmpty()) {
-      query.setParameter(ModelDBConstants.WORKSPACE, project.getWorkspaceId());
-      query.setParameter(ModelDBConstants.WORKSPACE_TYPE, project.getWorkspaceTypeValue());
-    }
-    Long count = (Long) query.uniqueResult();
-
-    if (count > 0) {
-      // Throw error if it is an insert request and project with same name already exists
-      LOGGER.warn("Project with name {} already exists", project.getName());
-      Status status =
-          Status.newBuilder()
-              .setCode(Code.ALREADY_EXISTS_VALUE)
-              .setMessage("Project already exists in database")
-              .build();
-      throw StatusProto.toStatusRuntimeException(status);
-    }
+    ModelDBHibernateUtil.checkIfEntityAlreadyExists(
+        session,
+        "p",
+        GET_PROJECT_COUNT_BY_NAME_PREFIX_HQL,
+        "Project",
+        "projectName",
+        project.getName(),
+        ModelDBConstants.WORKSPACE,
+        project.getWorkspaceId(),
+        project.getWorkspaceType(),
+        LOGGER);
   }
 
   @Override

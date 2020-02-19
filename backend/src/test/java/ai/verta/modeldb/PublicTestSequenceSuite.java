@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
   LineageTest.class,
   LineageServiceImplNegativeTest.class,
   FindProjectEntitiesTest.class,
-  FindDatasetEntitiesTest.class
+  FindDatasetEntitiesTest.class,
+  RepositoryTest.class
 })
 public class PublicTestSequenceSuite {}
