@@ -468,7 +468,8 @@ public class ModelDBHibernateUtil {
             name,
             workspaceColumnName,
             workspaceId,
-            workspaceType, true);
+            workspaceType,
+            true);
     Long count = (Long) query.uniqueResult();
 
     if (count > 0) {

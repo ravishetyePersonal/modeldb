@@ -62,9 +62,13 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
         WorkspaceDTO workspaceDTO =
-            verifyAndGetWorkspaceDTO(RepositoryIdentification.newBuilder().setNamedId(
-                RepositoryNamedIdentification.newBuilder()
-                    .setWorkspaceName(request.getWorkspaceName())).build(), false);
+            verifyAndGetWorkspaceDTO(
+                RepositoryIdentification.newBuilder()
+                    .setNamedId(
+                        RepositoryNamedIdentification.newBuilder()
+                            .setWorkspaceName(request.getWorkspaceName()))
+                    .build(),
+                false);
 
         Response response = repositoryDAO.listRepositories(request, workspaceDTO);
         responseObserver.onNext(response);
@@ -230,9 +234,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
                 throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
               }
               newS3BlobBuilder.addComponents(
-                  component
-                      .toBuilder()
-                      .setPath(getPathInfo(component.getPath())));
+                  component.toBuilder().setPath(getPathInfo(component.getPath())));
             }
             newDataset.setS3(newS3BlobBuilder);
             break;
@@ -253,7 +255,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           commitDAO.setCommit(
               request.getCommit(),
               (session) -> datasetComponentDAO.setBlobs(session, request.getBlobsList()),
-              (session) -> repositoryDAO.getRepositoryById(
+              (session) ->
+                  repositoryDAO.getRepositoryById(
                       session, request.getRepositoryId(), workspaceDTO));
 
       responseObserver.onNext(response);
@@ -286,13 +289,13 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   }
 
   private Builder getPathInfo(PathDatasetComponentBlob path) throws ModelDBException {
-    //TODO: md5
+    // TODO: md5
     return path.toBuilder().setSha256(generateAndValidateSha(path));
   }
 
   String generateAndValidateSha(PathDatasetComponentBlob path) throws ModelDBException {
     String sha = path.getSha256();
-    String generatedSha = fileHasher.generateSha(path.getPath(), false);
+    String generatedSha = fileHasher.getSha(path);
     if (!sha.isEmpty() && !sha.equals(generatedSha)) {
       throw new ModelDBException("Checksum is wrong", Code.INVALID_ARGUMENT);
     }

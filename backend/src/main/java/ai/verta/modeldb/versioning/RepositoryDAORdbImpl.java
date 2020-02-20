@@ -7,7 +7,6 @@ import ai.verta.modeldb.dto.WorkspaceDTO;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
-import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response.Builder;
 import io.grpc.Status.Code;
 import java.util.List;
 import java.util.Optional;
@@ -182,8 +181,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       query.setFirstResult(request.getPagination().getPageNumber() * pageLimit);
       query.setMaxResults(pageLimit);
       List list = query.list();
-      ListRepositoriesRequest.Response.Builder builder = ListRepositoriesRequest.Response
-          .newBuilder();
+      ListRepositoriesRequest.Response.Builder builder =
+          ListRepositoriesRequest.Response.newBuilder();
       list.forEach((o) -> builder.addRepository(((RepositoryEntity) o).toProto()));
       return builder.build();
     }

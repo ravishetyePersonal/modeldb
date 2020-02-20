@@ -10,8 +10,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 public class CommitDAORdbImpl implements CommitDAO {
-  public Response setCommit(
-      Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
+  public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
