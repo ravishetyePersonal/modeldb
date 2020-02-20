@@ -5,6 +5,7 @@ import ai.verta.uac.UserInfo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PublicAuthServiceUtils implements AuthService {
 
@@ -33,7 +34,7 @@ public class PublicAuthServiceUtils implements AuthService {
    */
   @Override
   public Map<String, UserInfo> getUserInfoFromAuthServer(
-      List<String> vertaIdList, List<String> emailIdList, List<String> usernameList) {
+      Set<String> vertaIdList, Set<String> emailIdList, List<String> usernameList) {
     return new HashMap<>();
   }
 

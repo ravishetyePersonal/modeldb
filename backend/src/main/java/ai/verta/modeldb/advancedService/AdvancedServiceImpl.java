@@ -85,6 +85,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import io.grpc.Metadata;
 import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
@@ -96,6 +97,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,27 +145,37 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
 
     List<HydratedProject> hydratedProjects = new ArrayList<>();
     // Map from project id to list of users (owners + collaborators) which need to be resolved
-    Map<String, List<GetCollaboratorResponse>> projectCollaboratorMap = new HashMap<>();
-    List<String> vertaIds = new ArrayList<>();
-    List<String> emailIds = new ArrayList<>();
+    Map<String, List<GetCollaboratorResponse>> projectCollaboratorMap =
+        new ConcurrentHashMap<String, List<GetCollaboratorResponse>>();
+    Set<String> vertaIds = new HashSet<>();
+    Set<String> emailIds = new HashSet<>();
     LOGGER.trace("projects {}", projects);
     List<String> resourceIds = new LinkedList<>();
-    for (Project project : projects) {
-      // Get list of collaborators
-      List<GetCollaboratorResponse> projectCollaboratorList =
-          roleService.getResourceCollaborators(
-              ModelDBServiceResourceTypes.PROJECT, project.getId(), project.getOwner());
-      projectCollaboratorMap.put(project.getId(), projectCollaboratorList);
+    Metadata requestHeaders = ModelDBAuthInterceptor.METADATA_INFO.get();
 
-      Map<String, List<String>> vertaIdAndEmailIdMap =
-          ModelDBUtils.getVertaIdOrEmailIdMapFromCollaborator(projectCollaboratorList);
+    projects
+        .parallelStream()
+        .forEach(
+            (project) -> {
+              vertaIds.add(project.getOwner());
+              resourceIds.add(project.getId());
+              List<GetCollaboratorResponse> projectCollaboratorList =
+                  roleService.getResourceCollaborators(
+                      ModelDBServiceResourceTypes.PROJECT,
+                      project.getId(),
+                      project.getOwner(),
+                      requestHeaders);
+              projectCollaboratorMap.put(project.getId(), projectCollaboratorList);
+            });
 
-      vertaIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.VERTA_ID));
-      emailIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.EMAILID));
+    projectCollaboratorMap.forEach(
+        (k, projectCollaboratorList) -> {
+          Map<String, List<String>> vertaIdAndEmailIdMap =
+              ModelDBUtils.getVertaIdOrEmailIdMapFromCollaborator(projectCollaboratorList);
+          vertaIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.VERTA_ID));
+          emailIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.EMAILID));
+        });
 
-      vertaIds.add(project.getOwner());
-      resourceIds.add(project.getId());
-    }
     LOGGER.trace("getHydratedProjects vertaIds : {}", vertaIds);
     LOGGER.trace("getHydratedProjects emailIds : {}", emailIds);
 
@@ -187,7 +199,10 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
       if (project.getOwner() != null && userInfoMap.get(project.getOwner()) != null) {
         hydratedProjectBuilder.setOwnerUserInfo(userInfoMap.get(project.getOwner()));
 
-        if (selfAllowedActions != null && selfAllowedActions.size() > 0) {
+        if (selfAllowedActions != null
+            && selfAllowedActions.size() > 0
+            && selfAllowedActions.containsKey(project.getId())
+            && selfAllowedActions.get(project.getId()).getActionsList().size() > 0) {
           hydratedProjectBuilder.addAllAllowedActions(
               selfAllowedActions.get(project.getId()).getActionsList());
         }
@@ -485,7 +500,7 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
     LOGGER.debug(
         "experimentRuns count in getHydratedExperimentRuns method : {}", experimentRuns.size());
     Set<String> experimentIdSet = new HashSet<>();
-    List<String> vertaIdList = new ArrayList<>();
+    Set<String> vertaIdList = new HashSet<>();
     Set<String> projectIdSet = new HashSet<>();
     for (ExperimentRun experimentRun : experimentRuns) {
       vertaIdList.add(experimentRun.getOwner());
@@ -947,7 +962,7 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
         roleService.getSelfAllowedActionsBatch(
             Collections.singletonList(projectId), ModelDBServiceResourceTypes.PROJECT);
     LOGGER.debug("experiments count in getHydratedExperiments method : {}", experiments.size());
-    List<String> vertaIdList = new ArrayList<>();
+    Set<String> vertaIdList = new HashSet<>();
     for (Experiment experiment : experiments) {
       vertaIdList.add(experiment.getOwner());
     }
@@ -1153,26 +1168,32 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
 
     // Map from dataset id to list of users (owners + collaborators) which need to be resolved
     Map<String, List<GetCollaboratorResponse>> datasetCollaboratorMap = new HashMap<>();
-    List<String> vertaIds = new ArrayList<>();
-    List<String> emailIds = new ArrayList<>();
-
+    Set<String> vertaIds = new HashSet<>();
+    Set<String> emailIds = new HashSet<>();
+    Metadata requestHeaders = ModelDBAuthInterceptor.METADATA_INFO.get();
     List<String> resourceIds = new LinkedList<>();
-    for (Dataset dataset : datasets) {
-      // Get list of collaborators
-      List<GetCollaboratorResponse> datasetCollaboratorList =
-          roleService.getResourceCollaborators(
-              ModelDBServiceResourceTypes.DATASET, dataset.getId(), dataset.getOwner());
-      datasetCollaboratorMap.put(dataset.getId(), datasetCollaboratorList);
 
-      Map<String, List<String>> vertaIdAndEmailIdMap =
-          ModelDBUtils.getVertaIdOrEmailIdMapFromCollaborator(datasetCollaboratorList);
-
-      vertaIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.VERTA_ID));
-      emailIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.EMAILID));
-
-      vertaIds.add(dataset.getOwner());
-      resourceIds.add(dataset.getId());
-    }
+    datasets
+        .parallelStream()
+        .forEach(
+            (dataset) -> {
+              vertaIds.add(dataset.getOwner());
+              resourceIds.add(dataset.getId());
+              List<GetCollaboratorResponse> datasetCollaboratorList =
+                  roleService.getResourceCollaborators(
+                      ModelDBServiceResourceTypes.DATASET,
+                      dataset.getId(),
+                      dataset.getOwner(),
+                      requestHeaders);
+              datasetCollaboratorMap.put(dataset.getId(), datasetCollaboratorList);
+            });
+    datasetCollaboratorMap.forEach(
+        (k, datasetCollaboratorList) -> {
+          Map<String, List<String>> vertaIdAndEmailIdMap =
+              ModelDBUtils.getVertaIdOrEmailIdMapFromCollaborator(datasetCollaboratorList);
+          vertaIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.VERTA_ID));
+          emailIds.addAll(vertaIdAndEmailIdMap.get(ModelDBConstants.EMAILID));
+        });
 
     LOGGER.trace("getHydratedDatasets vertaIds : {}", vertaIds.size());
     LOGGER.trace("getHydratedDatasets emailIds : {}", emailIds.size());
@@ -1201,7 +1222,10 @@ public class AdvancedServiceImpl extends HydratedServiceImplBase {
       } else {
         LOGGER.error(ModelDBMessages.USER_NOT_FOUND_ERROR_MSG, dataset.getOwner());
       }
-      if (selfAllowedActions != null && selfAllowedActions.size() > 0) {
+      if (selfAllowedActions != null
+          && selfAllowedActions.size() > 0
+          && selfAllowedActions.containsKey(dataset.getId())
+          && selfAllowedActions.get(dataset.getId()).getActionsList().size() > 0) {
         hydratedDatasetBuilder.addAllAllowedActions(
             selfAllowedActions.get(dataset.getId()).getActionsList());
       }

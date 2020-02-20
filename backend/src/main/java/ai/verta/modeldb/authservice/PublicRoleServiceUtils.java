@@ -21,6 +21,7 @@ import ai.verta.uac.UserInfo;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.grpc.Metadata;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,8 @@ public class PublicRoleServiceUtils implements RoleService {
   public List<GetCollaboratorResponse> getResourceCollaborators(
       ModelDBServiceResourceTypes modelDBServiceResourceTypes,
       String resourceId,
-      String resourceOwnerId) {
+      String resourceOwnerId,
+      Metadata requestHeaders) {
     return Collections.emptyList();
   }
 

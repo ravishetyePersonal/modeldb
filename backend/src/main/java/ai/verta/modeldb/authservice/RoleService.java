@@ -13,6 +13,7 @@ import ai.verta.uac.UserInfo;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.grpc.Metadata;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,8 @@ public interface RoleService {
   List<GetCollaboratorResponse> getResourceCollaborators(
       ModelDBServiceResourceTypes modelDBServiceResourceTypes,
       String resourceId,
-      String resourceOwnerId);
+      String resourceOwnerId,
+      Metadata requestHeaders);
 
   /**
    * Checks permissions of the user wrt the Entity

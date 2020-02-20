@@ -13,6 +13,7 @@ import io.grpc.protobuf.StatusProto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,7 +141,7 @@ public class AuthServiceUtils implements AuthService {
    */
   @Override
   public Map<String, UserInfo> getUserInfoFromAuthServer(
-      List<String> vertaIdList, List<String> emailIdList, List<String> usernameList) {
+      Set<String> vertaIdList, Set<String> emailIdList, List<String> usernameList) {
     try (AuthServiceChannel authServiceChannel = new AuthServiceChannel()) {
       GetUsers.Builder getUserRequestBuilder = GetUsers.newBuilder().addAllUserIds(vertaIdList);
       if (emailIdList != null && !emailIdList.isEmpty()) {

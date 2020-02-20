@@ -293,14 +293,21 @@ public class HydratedServiceOrgTeamTest {
           .setCollaboratorType(CollaboratorType.READ_WRITE)
           .setAuthzEntityType(EntitiesTypes.TEAM)
           .setCanDeploy(Ternary.TRUE);
-      Mockito.doReturn(Collections.singletonList(response1.build()))
+      Mockito.doAnswer(
+              (arg) -> {
+                Assert.assertEquals(ModelDBServiceResourceTypes.PROJECT, arg.getArgument(0));
+                Assert.assertEquals(RESOURCE_OWNER_ID, arg.getArgument(2));
+                if (project1.getId().equals(arg.getArgument(1))) {
+                  return Collections.singletonList(response1.build());
+                } else if (project2.getId().equals(arg.getArgument(1))) {
+                  return Collections.singletonList(response2.build());
+                }
+                Assert.fail("project id unknown");
+                return null;
+              })
           .when(roleService)
           .getResourceCollaborators(
-              ModelDBServiceResourceTypes.PROJECT, project1.getId(), RESOURCE_OWNER_ID);
-      Mockito.doReturn(Collections.singletonList(response2.build()))
-          .when(roleService)
-          .getResourceCollaborators(
-              ModelDBServiceResourceTypes.PROJECT, project2.getId(), RESOURCE_OWNER_ID);
+              Mockito.any(), Mockito.anyString(), Mockito.anyString(), Mockito.any());
       Mockito.doReturn(Collections.singletonList(project1.getId()))
           .when(roleService)
           .getAccessibleResourceIds(
