@@ -7,7 +7,7 @@
 
     <changeSet author="anandJ" id="create-versioning-tables-1">
         <createTable tableName="commit">
-            <column name="commit_hash" type="varchar(32)">
+            <column name="commit_hash" type="varchar(64)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="date_created" type="int8"/>
@@ -31,7 +31,7 @@
                 <constraints foreignKeyName="fk_repository_id_commit_hash_mapping"
                              referencedTableName="repository" referencedColumnNames="id"/>
             </column>
-            <column name="commit_hash" type="varchar(32)">
+            <column name="commit_hash" type="varchar(64)">
                 <constraints foreignKeyName="fk_entity_id_repository_entity_mapping"
                              referencedTableName="commit" referencedColumnNames="commit_hash"/>
             </column>
@@ -41,17 +41,17 @@
             <column name="id" type="int8" autoIncrement="true" incrementBy="1">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="folder_hash" type="varchar(32)"/>
-            <column name="element_sha" type="varchar(32)"/>
+            <column name="folder_hash" type="varchar(64)"/>
+            <column name="element_sha" type="varchar(64)"/>
             <column name="element_name" type="varchar(200)"/>
             <column name="element_type" type="varchar(50)"/>
         </createTable>
 
         <createTable tableName="path_dataset_component_blob">
-            <column name="path_dataset_blob_id" type="varchar(32)">
+            <column name="path_dataset_blob_id" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_path_dataset_component"/>
             </column>
-            <column name="blob_hash" type="varchar(32)">
+            <column name="blob_hash" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_path_dataset_component"/>
             </column>
             <column name="last_modified_at_source" type="int8"/>
@@ -62,10 +62,10 @@
         </createTable>
 
         <createTable tableName="s3_dataset_component_blob">
-            <column name="s3_dataset_blob_id" type="varchar(32)">
+            <column name="s3_dataset_blob_id" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s3_dataset_component"/>
             </column>
-            <column name="blob_hash" type="varchar(32)">
+            <column name="blob_hash" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_s3_dataset_component"/>
             </column>
             <column name="last_modified_at_source" type="int8"/>
@@ -79,7 +79,7 @@
             <column name="tag" type="varchar(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tag"/>
             </column>
-            <column name="commit_hash" type="varchar(32)"/>
+            <column name="commit_hash" type="varchar(64)"/>
             <column name="repository_id" type="int8">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tag"/>
             </column>
@@ -96,7 +96,7 @@
                                  referencedTableName="repository"/>
 
         <createTable tableName="labels_mapping">
-            <column name="entity_hash" type="varchar(32)">
+            <column name="entity_hash" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_label_mapping"/>
             </column>
             <column name="entity_type" type="int4">
@@ -108,11 +108,11 @@
         </createTable>
 
         <createTable tableName="commit_parent">
-            <column name="parent_hash " type="varchar(32)">
+            <column name="parent_hash " type="varchar(64)">
                 <constraints foreignKeyName="fk_parent_hash_commit_parent" referencedTableName="commit"
                              referencedColumnNames="commit_hash"/>
             </column>
-            <column name="child_hash " type="varchar(32)">
+            <column name="child_hash " type="varchar(64)">
                 <constraints foreignKeyName="fk_child_hash_commit_parent" referencedTableName="commit"
                              referencedColumnNames="commit_hash"/>
             </column>

@@ -35,7 +35,7 @@ public class CommitEntity {
   }
 
   @Id
-  @Column(name = "commit_hash", columnDefinition = "varchar", length = 32, nullable = false)
+  @Column(name = "commit_hash", columnDefinition = "varchar", length = 64, nullable = false)
   private String commit_hash;
 
   @Column(name = "message", columnDefinition = "text")

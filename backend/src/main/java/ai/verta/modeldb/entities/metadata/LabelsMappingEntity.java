@@ -29,7 +29,7 @@ class LabelMappingId implements Serializable {
   @Column(name = "entity_type", length = 50)
   private Integer entity_type;
 
-  @Column(name = "entity_hash", nullable = false, columnDefinition = "varchar", length = 32)
+  @Column(name = "entity_hash", nullable = false, columnDefinition = "varchar", length = 64)
   private String entity_hash;
 
   public LabelMappingId(String entityHash, Integer entityType, String label) {
