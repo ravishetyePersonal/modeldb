@@ -117,6 +117,7 @@ message ListRepositoriesRequest {
 
     message Response {
         repeated Repository repository = 1;
+        int64 total_records = 2;
     }
 }
 
@@ -156,6 +157,7 @@ message ListCommitsRequest {
 
     message Response {
         repeated Commit commits = 1;
+        int64 total_records = 2;
     }
 }
 
@@ -195,6 +197,7 @@ message ListCommitBlobsRequest {
 
     message Response {
         repeated BlobExpanded blobs = 1;
+        int64 total_records = 2;
     }
 }
 
@@ -237,6 +240,7 @@ message ListTagsRequest {
 
     message Response {
         repeated string tags = 1;
+        int64 total_records = 2;
     }
 }
 
