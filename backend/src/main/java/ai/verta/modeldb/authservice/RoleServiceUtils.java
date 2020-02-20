@@ -1,5 +1,6 @@
 package ai.verta.modeldb.authservice;
 
+import ai.verta.common.CollaboratorTypeEnum.CollaboratorType;
 import ai.verta.common.TernaryEnum;
 import ai.verta.modeldb.DatasetVisibilityEnum.DatasetVisibility;
 import ai.verta.modeldb.ModelDBConstants;
@@ -13,7 +14,6 @@ import ai.verta.modeldb.collaborator.CollaboratorUser;
 import ai.verta.modeldb.dto.WorkspaceDTO;
 import ai.verta.uac.Action;
 import ai.verta.uac.Actions;
-import ai.verta.uac.CollaboratorTypeEnum.CollaboratorType;
 import ai.verta.uac.DeleteRoleBinding;
 import ai.verta.uac.Entities;
 import ai.verta.uac.GetAllowedEntities;

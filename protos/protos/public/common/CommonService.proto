@@ -42,3 +42,10 @@ message ValueTypeEnum {
         BLOB = 3;
     }
 }
+
+message CollaboratorTypeEnum {
+    enum CollaboratorType {
+        READ_ONLY = 0;
+        READ_WRITE = 1;
+    }
+}

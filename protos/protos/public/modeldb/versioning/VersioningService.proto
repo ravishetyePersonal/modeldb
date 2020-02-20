@@ -105,6 +105,7 @@ message RepositoryNamedIdentification {
     string workspace_name = 2;
 }
 
+// changed from oneof because of that bug: https://github.com/grpc-ecosystem/grpc-gateway/issues/753
 message RepositoryIdentification {
     RepositoryNamedIdentification named_id = 1;
     uint64 repo_id = 2;

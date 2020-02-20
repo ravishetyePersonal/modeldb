@@ -3,6 +3,7 @@ package ai.verta.modeldb;
 import static ai.verta.modeldb.CollaboratorTest.addCollaboratorRequestUser;
 import static org.junit.Assert.*;
 
+import ai.verta.common.CollaboratorTypeEnum;
 import ai.verta.common.KeyValue;
 import ai.verta.common.ValueTypeEnum.ValueType;
 import ai.verta.modeldb.DatasetVisibilityEnum.DatasetVisibility;
@@ -15,7 +16,6 @@ import ai.verta.modeldb.authservice.RoleServiceUtils;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.uac.AddCollaboratorRequest;
 import ai.verta.uac.CollaboratorServiceGrpc;
-import ai.verta.uac.CollaboratorTypeEnum;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
 import io.grpc.ManagedChannel;

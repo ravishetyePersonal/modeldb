@@ -30,6 +30,7 @@ class Dataset(object):
                  name=None, dataset_type=None,
                  desc=None, tags=None, attrs=None,
                  workspace=None,
+                 public_within_org=None,
                  _dataset_id=None):
         if name is not None and _dataset_id is not None:
             raise ValueError("cannot specify both `name` and `_dataset_id`")
@@ -49,7 +50,7 @@ class Dataset(object):
             if name is None:
                 name = Dataset._generate_default_name()
             try:
-                dataset = Dataset._create(conn, name, dataset_type, desc, tags, attrs, workspace)
+                dataset = Dataset._create(conn, name, dataset_type, desc, tags, attrs, workspace, public_within_org)
             except requests.HTTPError as e:
                 if e.response.status_code == 403:  # cannot create in other workspace
                     dataset = Dataset._get(conn, name, workspace)
@@ -58,9 +59,11 @@ class Dataset(object):
                     else:  # no accessible dataset in other workspace
                         six.raise_from(e, None)
                 elif e.response.status_code == 409:  # already exists
-                    if any(param is not None for param in (desc, tags, attrs)):
-                        warnings.warn("Dataset with name {} already exists;"
-                                      " cannot initialize `desc`, `tags`, or `attrs`".format(name))
+                    if any(param is not None for param in (desc, tags, attrs, public_within_org)):
+                        warnings.warn(
+                            "Dataset with name {} already exists;"
+                            " cannot set `desc`, `tags`, `attrs`, or `public_within_org`".format(name)
+                        )
                     dataset = Dataset._get(conn, name, workspace)
                     print("set existing Dataset: {} from {}".format(dataset.name, WORKSPACE_PRINT_MSG))
                 else:
@@ -131,7 +134,7 @@ class Dataset(object):
             raise ValueError("insufficient arguments")
 
     @staticmethod
-    def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None):
+    def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None, public_within_org=None):
         if attrs is not None:
             attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
@@ -140,6 +143,16 @@ class Dataset(object):
         msg = Message(name=dataset_name, dataset_type=dataset_type,
                       description=desc, tags=tags, attributes=attrs,
                       workspace_name=workspace)
+        if public_within_org:
+            if workspace is None:
+                raise ValueError("cannot set `public_within_org` for personal workspace")
+            elif not _utils.is_org(workspace, conn):
+                raise ValueError(
+                    "cannot set `public_within_org`"
+                    " because workspace \"{}\" is not an organization".format(workspace)
+                )
+            else:
+                msg.dataset_visibility = _DatasetService.DatasetVisibilityEnum.ORG_SCOPED_PUBLIC
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
                                        "{}://{}/api/v1/modeldb/dataset/createDataset".format(conn.scheme, conn.socket),

@@ -40,7 +40,7 @@ message CollaboratorUserInfo {
       uac.Organization collaborator_organization = 3;
       uac.Team collaborator_team = 4;
     }
-    uac.CollaboratorTypeEnum.CollaboratorType collaborator_type = 2;
+    common.CollaboratorTypeEnum.CollaboratorType collaborator_type = 2;
     common.TernaryEnum.Ternary can_deploy = 8;
     uac.EntitiesEnum.EntitiesTypes entity_type = 9;
 }

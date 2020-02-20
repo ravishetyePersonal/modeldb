@@ -4,6 +4,7 @@ import static ai.verta.modeldb.CollaboratorTest.addCollaboratorRequestProjectInt
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ai.verta.common.CollaboratorTypeEnum.CollaboratorType;
 import ai.verta.common.TernaryEnum;
 import ai.verta.common.TernaryEnum.Ternary;
 import ai.verta.modeldb.HydratedServiceGrpc.HydratedServiceBlockingStub;
@@ -23,7 +24,6 @@ import ai.verta.uac.AddCollaboratorRequest;
 import ai.verta.uac.AddCollaboratorRequest.Response;
 import ai.verta.uac.CollaboratorServiceGrpc;
 import ai.verta.uac.CollaboratorServiceGrpc.CollaboratorServiceBlockingStub;
-import ai.verta.uac.CollaboratorTypeEnum.CollaboratorType;
 import ai.verta.uac.EntitiesEnum.EntitiesTypes;
 import ai.verta.uac.GetCollaboratorResponse;
 import ai.verta.uac.ModelDBActionEnum.ModelDBServiceActions;

@@ -57,7 +57,7 @@ Example:
 
 ```yaml
 BACKEND_API_PROTOCOL='https'
-BACKEND_API_DOMAIN='dev.verta.ai'
+BACKEND_API_DOMAIN='app.verta.ai'
 ```
 
 ### `yarn start-with-client`
@@ -68,8 +68,8 @@ Note, .env file with `BACKEND_API_PROTOCOL` and `BACKEND_API_DOMAIN` is required
 Example:
 
 ```yaml
-BACKEND_API_PROTOCOL='https'<br>
-BACKEND_API_DOMAIN='dev.verta.ai'
+BACKEND_API_PROTOCOL='https'
+BACKEND_API_DOMAIN='app.verta.ai'
 ```
 
 ### `yarn test`

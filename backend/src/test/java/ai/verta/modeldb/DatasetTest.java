@@ -2,6 +2,7 @@ package ai.verta.modeldb;
 
 import static org.junit.Assert.*;
 
+import ai.verta.common.CollaboratorTypeEnum;
 import ai.verta.common.KeyValue;
 import ai.verta.common.ValueTypeEnum.ValueType;
 import ai.verta.modeldb.DatasetServiceGrpc.DatasetServiceBlockingStub;
@@ -15,7 +16,6 @@ import ai.verta.modeldb.authservice.RoleServiceUtils;
 import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.uac.AddCollaboratorRequest;
 import ai.verta.uac.CollaboratorServiceGrpc;
-import ai.verta.uac.CollaboratorTypeEnum;
 import ai.verta.uac.GetUser;
 import ai.verta.uac.UACServiceGrpc;
 import ai.verta.uac.UserInfo;
