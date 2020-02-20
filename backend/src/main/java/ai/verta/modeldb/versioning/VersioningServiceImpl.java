@@ -17,6 +17,7 @@ import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
+import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -241,7 +242,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           case PATH:
             PathDatasetBlob.Builder newPathBlobBuilder = PathDatasetBlob.newBuilder();
             for (PathDatasetComponentBlob component : dataset.getPath().getComponentsList()) {
-              newPathBlobBuilder.addComponents((getPathInfo(component)));
+              newPathBlobBuilder.addComponents(getPathInfo(component));
             }
             newDataset.setPath(newPathBlobBuilder);
             break;
@@ -255,7 +256,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           commitDAO.setCommit(
               request.getCommit(),
               (session) ->
-                  datasetComponentDAO.setBlobs(session, request.getBlobsList(), fileHasher),
+                  datasetComponentDAO.setBlobs(session, newRequest.getBlobsList(), fileHasher),
               (session) ->
                   repositoryDAO.getRepositoryById(
                       session, request.getRepositoryId(), workspaceDTO));
@@ -289,12 +290,14 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     super.getCommitFolder(request, responseObserver);
   }
 
-  private Builder getPathInfo(PathDatasetComponentBlob path) throws ModelDBException {
+  private Builder getPathInfo(PathDatasetComponentBlob path)
+      throws ModelDBException, NoSuchAlgorithmException {
     // TODO: md5
     return path.toBuilder().setSha256(generateAndValidateSha(path));
   }
 
-  String generateAndValidateSha(PathDatasetComponentBlob path) throws ModelDBException {
+  String generateAndValidateSha(PathDatasetComponentBlob path)
+      throws ModelDBException, NoSuchAlgorithmException {
     String sha = path.getSha256();
     String generatedSha = fileHasher.getSha(path);
     if (!sha.isEmpty() && !sha.equals(generatedSha)) {

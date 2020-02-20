@@ -5,13 +5,14 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import com.google.protobuf.ProtocolStringList;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.Session;
 
 public class CommitDAORdbImpl implements CommitDAO {
   public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
-      throws ModelDBException {
+      throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
       InternalCommit internalCommit =

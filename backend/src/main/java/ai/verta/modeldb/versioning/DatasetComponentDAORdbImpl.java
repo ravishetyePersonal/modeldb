@@ -3,6 +3,7 @@ package ai.verta.modeldb.versioning;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,7 +70,8 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       return type;
     }
 
-    InternalFolderElement saveFolders(Session session, FileHasher fileHasher) {
+    InternalFolderElement saveFolders(Session session, FileHasher fileHasher)
+        throws NoSuchAlgorithmException {
       if (tree.isEmpty()) {
         return InternalFolderElement.newBuilder()
             .setElementName(getPath())
@@ -102,50 +104,48 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
-  public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher) {
+  public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
+      throws NoSuchAlgorithmException {
     TreeElem treeElem = new TreeElem();
-    blobsList.forEach(
-        blob -> {
-          final DatasetBlob dataset = blob.getBlob().getDataset();
-          TreeElem treeChild =
-              treeElem.push(
-                  Arrays.asList(blob.getPath().split("/")),
-                  blob.getPath(),
-                  fileHasher.getSha(dataset),
-                  "Folder");
-          switch (dataset.getContentCase()) {
-            case S3:
-              for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
-                final String sha256 = componentBlob.getPath().getSha256();
-                S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
-                    new S3DatasetComponentBlobEntity(
-                        UUID.randomUUID().toString(), sha256, componentBlob.getPath());
-                session.saveOrUpdate(s3DatasetComponentBlobEntity);
-                final String[] split = componentBlob.getPath().getPath().split("/");
-                treeChild.push(
-                    Collections.singletonList(split[split.length - 1]),
-                    componentBlob.getPath().getPath(),
-                    componentBlob.getPath().getSha256(),
-                    componentBlob.getClass().getSimpleName());
-              }
-              break;
-            case PATH:
-              for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
-                final String sha256 = componentBlob.getSha256();
-                PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
-                    new PathDatasetComponentBlobEntity(
-                        UUID.randomUUID().toString(), sha256, componentBlob);
-                session.saveOrUpdate(pathDatasetComponentBlobEntity);
-                final String[] split = componentBlob.getPath().split("/");
-                treeChild.push(
-                    Collections.singletonList(split[split.length - 1]),
-                    componentBlob.getPath(),
-                    componentBlob.getSha256(),
-                    componentBlob.getClass().getSimpleName());
-              }
-              break;
+    for (BlobExpanded blob : blobsList) {
+      final DatasetBlob dataset = blob.getBlob().getDataset();
+      TreeElem treeChild =
+          treeElem.push(
+              Arrays.asList(blob.getPath().split("/")),
+              blob.getPath(),
+              fileHasher.getSha(dataset),
+              "Folder");
+      switch (dataset.getContentCase()) {
+        case S3:
+          for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
+            S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
+                new S3DatasetComponentBlobEntity(
+                    UUID.randomUUID().toString(), String.valueOf(componentBlob.hashCode()), componentBlob.getPath());
+            session.saveOrUpdate(s3DatasetComponentBlobEntity);
+            final String[] split = componentBlob.getPath().getPath().split("/");
+            treeChild.push(
+                Collections.singletonList(split[split.length - 1]),
+                componentBlob.getPath().getPath(),
+                componentBlob.getPath().getSha256(),
+                componentBlob.getClass().getSimpleName());
           }
-        });
+          break;
+        case PATH:
+          for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
+            PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
+                new PathDatasetComponentBlobEntity(
+                    UUID.randomUUID().toString(), String.valueOf(componentBlob.hashCode()), componentBlob);
+            session.saveOrUpdate(pathDatasetComponentBlobEntity);
+            final String[] split = componentBlob.getPath().split("/");
+            treeChild.push(
+                Collections.singletonList(split[split.length - 1]),
+                componentBlob.getPath(),
+                componentBlob.getSha256(),
+                componentBlob.getClass().getSimpleName());
+          }
+          break;
+      }
+    }
     final InternalFolderElement internalFolderElement = treeElem.saveFolders(session, fileHasher);
     session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, "Folder"));
     return internalFolderElement.getElementSha();
