@@ -1,4 +1,3 @@
-
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.modeldb.versioning.api
 
@@ -10,7 +9,6 @@ import ai.verta.swagger.client.Client
 import ai.verta.swagger._public.modeldb.versioning.model._
 
 class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
-
   def ComputeRepositoryDiffAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String, commitA: String, commitB: String, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningComputeRepositoryDiffRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.repo_id" -> client.toQuery(repositoryIdRepoId),
@@ -25,7 +23,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def ComputeRepositoryDiff(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String, commitA: String, commitB: String, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningComputeRepositoryDiffRequestResponse] = Await.result(ComputeRepositoryDiffAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, repositoryIdRepoId, commitA, commitB, pathPrefix), Duration.Inf)
-
 
   def ComputeRepositoryDiff2Async(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, commitA: String, commitB: String, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningComputeRepositoryDiffRequestResponse]] = {
     val __query = Map[String,String](
@@ -42,10 +39,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ComputeRepositoryDiff2(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, commitA: String, commitB: String, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningComputeRepositoryDiffRequestResponse] = Await.result(ComputeRepositoryDiff2Async(repositoryIdRepoId, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName, commitA, commitB, pathPrefix), Duration.Inf)
 
-
   def CreateCommitAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, body: VersioningCreateCommitRequest)(implicit ec: ExecutionContext): Future[Try[VersioningCreateCommitRequestResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (repositoryIdNamedIdWorkspaceName == null) throw new Exception("Missing required parameter \"repositoryIdNamedIdWorkspaceName\"")
     if (repositoryIdNamedIdName == null) throw new Exception("Missing required parameter \"repositoryIdNamedIdName\"")
@@ -55,10 +50,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def CreateCommit(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, body: VersioningCreateCommitRequest)(implicit ec: ExecutionContext): Try[VersioningCreateCommitRequestResponse] = Await.result(CreateCommitAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, body), Duration.Inf)
 
-
   def CreateCommit2Async(repositoryIdRepoId: String, body: VersioningCreateCommitRequest)(implicit ec: ExecutionContext): Future[Try[VersioningCreateCommitRequestResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (repositoryIdRepoId == null) throw new Exception("Missing required parameter \"repositoryIdRepoId\"")
     if (body == null) throw new Exception("Missing required parameter \"body\"")
@@ -67,10 +60,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def CreateCommit2(repositoryIdRepoId: String, body: VersioningCreateCommitRequest)(implicit ec: ExecutionContext): Try[VersioningCreateCommitRequestResponse] = Await.result(CreateCommit2Async(repositoryIdRepoId, body), Duration.Inf)
 
-
   def CreateRepositoryAsync(idNamedIdWorkspaceName: String, body: VersioningRepository)(implicit ec: ExecutionContext): Future[Try[VersioningSetRepositoryResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (idNamedIdWorkspaceName == null) throw new Exception("Missing required parameter \"idNamedIdWorkspaceName\"")
     if (body == null) throw new Exception("Missing required parameter \"body\"")
@@ -78,7 +69,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def CreateRepository(idNamedIdWorkspaceName: String, body: VersioningRepository)(implicit ec: ExecutionContext): Try[VersioningSetRepositoryResponse] = Await.result(CreateRepositoryAsync(idNamedIdWorkspaceName, body), Duration.Inf)
-
 
   def DeleteCommitAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteCommitRequestResponse]] = {
     val __query = Map[String,String](
@@ -93,7 +83,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def DeleteCommit(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningDeleteCommitRequestResponse] = Await.result(DeleteCommitAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, commitSha, repositoryIdRepoId), Duration.Inf)
 
-
   def DeleteCommit2Async(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteCommitRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -107,7 +96,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def DeleteCommit2(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningDeleteCommitRequestResponse] = Await.result(DeleteCommit2Async(repositoryIdRepoId, commitSha, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
 
-
   def DeleteRepositoryAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteRepositoryRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.repo_id" -> client.toQuery(repositoryIdRepoId)
@@ -120,7 +108,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def DeleteRepository(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningDeleteRepositoryRequestResponse] = Await.result(DeleteRepositoryAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, repositoryIdRepoId), Duration.Inf)
 
-
   def DeleteRepository2Async(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteRepositoryRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -132,7 +119,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def DeleteRepository2(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningDeleteRepositoryRequestResponse] = Await.result(DeleteRepository2Async(repositoryIdRepoId, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
-
 
   def DeleteTagAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteTagRequestResponse]] = {
     val __query = Map[String,String](
@@ -147,7 +133,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def DeleteTag(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningDeleteTagRequestResponse] = Await.result(DeleteTagAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, tag, repositoryIdRepoId), Duration.Inf)
 
-
   def DeleteTag2Async(repositoryIdRepoId: String, tag: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningDeleteTagRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -160,7 +145,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def DeleteTag2(repositoryIdRepoId: String, tag: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningDeleteTagRequestResponse] = Await.result(DeleteTag2Async(repositoryIdRepoId, tag, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
-
 
   def GetCommitAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitRequestResponse]] = {
     val __query = Map[String,String](
@@ -175,7 +159,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetCommit(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitRequestResponse] = Await.result(GetCommitAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, commitSha, repositoryIdRepoId), Duration.Inf)
 
-
   def GetCommit2Async(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -188,7 +171,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def GetCommit2(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitRequestResponse] = Await.result(GetCommit2Async(repositoryIdRepoId, commitSha, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
-
 
   def GetCommitBlobAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, path: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitBlobRequestResponse]] = {
     val __query = Map[String,String](
@@ -204,7 +186,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetCommitBlob(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, path: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitBlobRequestResponse] = Await.result(GetCommitBlobAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, commitSha, repositoryIdRepoId, path), Duration.Inf)
 
-
   def GetCommitBlob2Async(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, path: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitBlobRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -218,7 +199,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def GetCommitBlob2(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, path: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitBlobRequestResponse] = Await.result(GetCommitBlob2Async(repositoryIdRepoId, commitSha, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName, path), Duration.Inf)
-
 
   def GetCommitFolderAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, path: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitFolderRequestResponse]] = {
     val __query = Map[String,String](
@@ -234,7 +214,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetCommitFolder(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, path: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitFolderRequestResponse] = Await.result(GetCommitFolderAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, commitSha, repositoryIdRepoId, path), Duration.Inf)
 
-
   def GetCommitFolder2Async(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, path: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetCommitFolderRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -249,7 +228,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetCommitFolder2(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, path: String)(implicit ec: ExecutionContext): Try[VersioningGetCommitFolderRequestResponse] = Await.result(GetCommitFolder2Async(repositoryIdRepoId, commitSha, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName, path), Duration.Inf)
 
-
   def GetRepositoryAsync(idNamedIdWorkspaceName: String, idNamedIdName: String, idRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetRepositoryRequestResponse]] = {
     val __query = Map[String,String](
       "id.repo_id" -> client.toQuery(idRepoId)
@@ -262,7 +240,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetRepository(idNamedIdWorkspaceName: String, idNamedIdName: String, idRepoId: String)(implicit ec: ExecutionContext): Try[VersioningGetRepositoryRequestResponse] = Await.result(GetRepositoryAsync(idNamedIdWorkspaceName, idNamedIdName, idRepoId), Duration.Inf)
 
-
   def GetRepository2Async(idRepoId: String, idNamedIdName: String, idNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetRepositoryRequestResponse]] = {
     val __query = Map[String,String](
       "id.named_id.name" -> client.toQuery(idNamedIdName),
@@ -274,7 +251,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def GetRepository2(idRepoId: String, idNamedIdName: String, idNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningGetRepositoryRequestResponse] = Await.result(GetRepository2Async(idRepoId, idNamedIdName, idNamedIdWorkspaceName), Duration.Inf)
-
 
   def GetTagAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetTagRequestResponse]] = {
     val __query = Map[String,String](
@@ -289,7 +265,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def GetTag(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningGetTagRequestResponse] = Await.result(GetTagAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, tag, repositoryIdRepoId), Duration.Inf)
 
-
   def GetTag2Async(repositoryIdRepoId: String, tag: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningGetTagRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -302,7 +277,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def GetTag2(repositoryIdRepoId: String, tag: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningGetTagRequestResponse] = Await.result(GetTag2Async(repositoryIdRepoId, tag, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
-
 
   def ListCommitBlobsAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, paginationPageNumber: Integer, paginationPageLimit: Integer, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningListCommitBlobsRequestResponse]] = {
     val __query = Map[String,String](
@@ -320,7 +294,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ListCommitBlobs(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, commitSha: String, repositoryIdRepoId: String, paginationPageNumber: Integer, paginationPageLimit: Integer, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningListCommitBlobsRequestResponse] = Await.result(ListCommitBlobsAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, commitSha, repositoryIdRepoId, paginationPageNumber, paginationPageLimit, pathPrefix), Duration.Inf)
 
-
   def ListCommitBlobs2Async(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningListCommitBlobsRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -336,7 +309,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def ListCommitBlobs2(repositoryIdRepoId: String, commitSha: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningListCommitBlobsRequestResponse] = Await.result(ListCommitBlobs2Async(repositoryIdRepoId, commitSha, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName, paginationPageNumber, paginationPageLimit, pathPrefix), Duration.Inf)
-
 
   def ListCommitsAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String, paginationPageNumber: Integer, paginationPageLimit: Integer, commitBase: String, commitHead: String, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningListCommitsRequestResponse]] = {
     val __query = Map[String,String](
@@ -355,7 +327,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ListCommits(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String, paginationPageNumber: Integer, paginationPageLimit: Integer, commitBase: String, commitHead: String, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningListCommitsRequestResponse] = Await.result(ListCommitsAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, repositoryIdRepoId, paginationPageNumber, paginationPageLimit, commitBase, commitHead, pathPrefix), Duration.Inf)
 
-
   def ListCommits2Async(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer, commitBase: String, commitHead: String, pathPrefix: String)(implicit ec: ExecutionContext): Future[Try[VersioningListCommitsRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repositoryIdNamedIdName),
@@ -373,7 +344,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ListCommits2(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer, commitBase: String, commitHead: String, pathPrefix: String)(implicit ec: ExecutionContext): Try[VersioningListCommitsRequestResponse] = Await.result(ListCommits2Async(repositoryIdRepoId, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName, paginationPageNumber, paginationPageLimit, commitBase, commitHead, pathPrefix), Duration.Inf)
 
-
   def ListRepositoriesAsync(workspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer)(implicit ec: ExecutionContext): Future[Try[VersioningListRepositoriesRequestResponse]] = {
     val __query = Map[String,String](
       "pagination.page_number" -> client.toQuery(paginationPageNumber),
@@ -385,7 +355,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def ListRepositories(workspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer)(implicit ec: ExecutionContext): Try[VersioningListRepositoriesRequestResponse] = Await.result(ListRepositoriesAsync(workspaceName, paginationPageNumber, paginationPageLimit), Duration.Inf)
-
 
   def ListRepositories2Async(workspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer)(implicit ec: ExecutionContext): Future[Try[VersioningListRepositoriesRequestResponse]] = {
     val __query = Map[String,String](
@@ -399,7 +368,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ListRepositories2(workspaceName: String, paginationPageNumber: Integer, paginationPageLimit: Integer)(implicit ec: ExecutionContext): Try[VersioningListRepositoriesRequestResponse] = Await.result(ListRepositories2Async(workspaceName, paginationPageNumber, paginationPageLimit), Duration.Inf)
 
-
   def ListTagsAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Future[Try[VersioningListTagsRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.repo_id" -> client.toQuery(repositoryIdRepoId)
@@ -411,7 +379,6 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def ListTags(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, repositoryIdRepoId: String)(implicit ec: ExecutionContext): Try[VersioningListTagsRequestResponse] = Await.result(ListTagsAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, repositoryIdRepoId), Duration.Inf)
-
 
   def ListTags2Async(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Future[Try[VersioningListTagsRequestResponse]] = {
     val __query = Map[String,String](
@@ -425,10 +392,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def ListTags2(repositoryIdRepoId: String, repositoryIdNamedIdName: String, repositoryIdNamedIdWorkspaceName: String)(implicit ec: ExecutionContext): Try[VersioningListTagsRequestResponse] = Await.result(ListTags2Async(repositoryIdRepoId, repositoryIdNamedIdName, repositoryIdNamedIdWorkspaceName), Duration.Inf)
 
-
   def SetTagAsync(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, body: String)(implicit ec: ExecutionContext): Future[Try[VersioningSetTagRequestResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (repositoryIdNamedIdWorkspaceName == null) throw new Exception("Missing required parameter \"repositoryIdNamedIdWorkspaceName\"")
     if (repositoryIdNamedIdName == null) throw new Exception("Missing required parameter \"repositoryIdNamedIdName\"")
@@ -439,10 +404,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def SetTag(repositoryIdNamedIdWorkspaceName: String, repositoryIdNamedIdName: String, tag: String, body: String)(implicit ec: ExecutionContext): Try[VersioningSetTagRequestResponse] = Await.result(SetTagAsync(repositoryIdNamedIdWorkspaceName, repositoryIdNamedIdName, tag, body), Duration.Inf)
 
-
   def SetTag2Async(repositoryIdRepoId: String, tag: String, body: String)(implicit ec: ExecutionContext): Future[Try[VersioningSetTagRequestResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (repositoryIdRepoId == null) throw new Exception("Missing required parameter \"repositoryIdRepoId\"")
     if (tag == null) throw new Exception("Missing required parameter \"tag\"")
@@ -452,10 +415,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def SetTag2(repositoryIdRepoId: String, tag: String, body: String)(implicit ec: ExecutionContext): Try[VersioningSetTagRequestResponse] = Await.result(SetTag2Async(repositoryIdRepoId, tag, body), Duration.Inf)
 
-
   def UpdateRepositoryAsync(idNamedIdWorkspaceName: String, idNamedIdName: String, body: VersioningRepository)(implicit ec: ExecutionContext): Future[Try[VersioningSetRepositoryResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (idNamedIdWorkspaceName == null) throw new Exception("Missing required parameter \"idNamedIdWorkspaceName\"")
     if (idNamedIdName == null) throw new Exception("Missing required parameter \"idNamedIdName\"")
@@ -465,10 +426,8 @@ class VersioningServiceApi(client: Client, val basePath: String = "/v1") {
 
   def UpdateRepository(idNamedIdWorkspaceName: String, idNamedIdName: String, body: VersioningRepository)(implicit ec: ExecutionContext): Try[VersioningSetRepositoryResponse] = Await.result(UpdateRepositoryAsync(idNamedIdWorkspaceName, idNamedIdName, body), Duration.Inf)
 
-
   def UpdateRepository2Async(idRepoId: String, body: VersioningRepository)(implicit ec: ExecutionContext): Future[Try[VersioningSetRepositoryResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (idRepoId == null) throw new Exception("Missing required parameter \"idRepoId\"")
     if (body == null) throw new Exception("Missing required parameter \"body\"")

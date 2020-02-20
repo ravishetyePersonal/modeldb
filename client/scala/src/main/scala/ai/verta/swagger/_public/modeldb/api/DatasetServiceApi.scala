@@ -1,4 +1,3 @@
-
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.modeldb.api
 
@@ -10,10 +9,8 @@ import ai.verta.swagger.client.Client
 import ai.verta.swagger._public.modeldb.model._
 
 class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
-
   def addDatasetAttributesAsync(body: ModeldbAddDatasetAttributes)(implicit ec: ExecutionContext): Future[Try[ModeldbAddDatasetAttributesResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbAddDatasetAttributes, ModeldbAddDatasetAttributesResponse]("POST", basePath + s"/dataset/addDatasetAttributes", __query, body)
@@ -21,10 +18,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def addDatasetAttributes(body: ModeldbAddDatasetAttributes)(implicit ec: ExecutionContext): Try[ModeldbAddDatasetAttributesResponse] = Await.result(addDatasetAttributesAsync(body), Duration.Inf)
 
-
   def addDatasetTagsAsync(body: ModeldbAddDatasetTags)(implicit ec: ExecutionContext): Future[Try[ModeldbAddDatasetTagsResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbAddDatasetTags, ModeldbAddDatasetTagsResponse]("POST", basePath + s"/dataset/addDatasetTags", __query, body)
@@ -32,10 +27,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def addDatasetTags(body: ModeldbAddDatasetTags)(implicit ec: ExecutionContext): Try[ModeldbAddDatasetTagsResponse] = Await.result(addDatasetTagsAsync(body), Duration.Inf)
 
-
   def createDatasetAsync(body: ModeldbCreateDataset)(implicit ec: ExecutionContext): Future[Try[ModeldbCreateDatasetResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbCreateDataset, ModeldbCreateDatasetResponse]("POST", basePath + s"/dataset/createDataset", __query, body)
@@ -43,17 +36,14 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def createDataset(body: ModeldbCreateDataset)(implicit ec: ExecutionContext): Try[ModeldbCreateDatasetResponse] = Await.result(createDatasetAsync(body), Duration.Inf)
 
-
   def deleteDatasetAsync(body: ModeldbDeleteDataset)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbDeleteDataset, ModeldbDeleteDatasetResponse]("DELETE", basePath + s"/dataset/deleteDataset", __query, body)
   }
 
   def deleteDataset(body: ModeldbDeleteDataset)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetResponse] = Await.result(deleteDatasetAsync(body), Duration.Inf)
-
 
   def deleteDatasetAttributesAsync(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetAttributesResponse]] = {
     val __query = Map[String,String](
@@ -67,10 +57,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteDatasetAttributes(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetAttributesResponse] = Await.result(deleteDatasetAttributesAsync(id, attributeKeys, deleteAll), Duration.Inf)
 
-
   def deleteDatasetTagsAsync(body: ModeldbDeleteDatasetTags)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetTagsResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbDeleteDatasetTags, ModeldbDeleteDatasetTagsResponse]("DELETE", basePath + s"/dataset/deleteDatasetTags", __query, body)
@@ -78,10 +66,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteDatasetTags(body: ModeldbDeleteDatasetTags)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetTagsResponse] = Await.result(deleteDatasetTagsAsync(body), Duration.Inf)
 
-
   def deleteDatasetsAsync(body: ModeldbDeleteDatasets)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetsResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbDeleteDatasets, ModeldbDeleteDatasetsResponse]("DELETE", basePath + s"/dataset/deleteDatasets", __query, body)
@@ -89,17 +75,14 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteDatasets(body: ModeldbDeleteDatasets)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetsResponse] = Await.result(deleteDatasetsAsync(body), Duration.Inf)
 
-
   def findDatasetsAsync(body: ModeldbFindDatasets)(implicit ec: ExecutionContext): Future[Try[ModeldbFindDatasetsResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbFindDatasets, ModeldbFindDatasetsResponse]("POST", basePath + s"/dataset/findDatasets", __query, body)
   }
 
   def findDatasets(body: ModeldbFindDatasets)(implicit ec: ExecutionContext): Try[ModeldbFindDatasetsResponse] = Await.result(findDatasetsAsync(body), Duration.Inf)
-
 
   def getAllDatasetsAsync(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAllDatasetsResponse]] = {
     val __query = Map[String,String](
@@ -115,7 +98,6 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getAllDatasets(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetAllDatasetsResponse] = Await.result(getAllDatasetsAsync(pageNumber, pageLimit, ascending, sortKey, workspaceName), Duration.Inf)
 
-
   def getDatasetAttributesAsync(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
@@ -128,7 +110,6 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getDatasetAttributes(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getDatasetAttributesAsync(id, attributeKeys, getAll), Duration.Inf)
 
-
   def getDatasetByIdAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetDatasetByIdResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id)
@@ -138,7 +119,6 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
   }
 
   def getDatasetById(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetDatasetByIdResponse] = Await.result(getDatasetByIdAsync(id), Duration.Inf)
-
 
   def getDatasetByNameAsync(name: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetDatasetByNameResponse]] = {
     val __query = Map[String,String](
@@ -151,7 +131,6 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getDatasetByName(name: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetDatasetByNameResponse] = Await.result(getDatasetByNameAsync(name, workspaceName), Duration.Inf)
 
-
   def getDatasetTagsAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetTagsResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id)
@@ -162,17 +141,14 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getDatasetTags(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetTagsResponse] = Await.result(getDatasetTagsAsync(id), Duration.Inf)
 
-
   def getExperimentRunByDatasetAsync(body: ModeldbGetExperimentRunByDataset)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentRunByDatasetResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbGetExperimentRunByDataset, ModeldbGetExperimentRunByDatasetResponse]("POST", basePath + s"/dataset/getExperimentRunByDataset", __query, body)
   }
 
   def getExperimentRunByDataset(body: ModeldbGetExperimentRunByDataset)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentRunByDatasetResponse] = Await.result(getExperimentRunByDatasetAsync(body), Duration.Inf)
-
 
   def getLastExperimentByDatasetIdAsync(datasetId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbLastExperimentByDatasetIdResponse]] = {
     val __query = Map[String,String](
@@ -184,10 +160,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getLastExperimentByDatasetId(datasetId: String)(implicit ec: ExecutionContext): Try[ModeldbLastExperimentByDatasetIdResponse] = Await.result(getLastExperimentByDatasetIdAsync(datasetId), Duration.Inf)
 
-
   def setDatasetVisibilityAsync(body: ModeldbSetDatasetVisibilty)(implicit ec: ExecutionContext): Future[Try[ModeldbSetDatasetVisibiltyResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbSetDatasetVisibilty, ModeldbSetDatasetVisibiltyResponse]("POST", basePath + s"/dataset/setDatasetVisibility", __query, body)
@@ -195,10 +169,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def setDatasetVisibility(body: ModeldbSetDatasetVisibilty)(implicit ec: ExecutionContext): Try[ModeldbSetDatasetVisibiltyResponse] = Await.result(setDatasetVisibilityAsync(body), Duration.Inf)
 
-
   def setDatasetWorkspaceAsync(body: ModeldbSetDatasetWorkspace)(implicit ec: ExecutionContext): Future[Try[ModeldbSetDatasetWorkspaceResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbSetDatasetWorkspace, ModeldbSetDatasetWorkspaceResponse]("POST", basePath + s"/dataset/setDatasetWorkspace", __query, body)
@@ -206,10 +178,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def setDatasetWorkspace(body: ModeldbSetDatasetWorkspace)(implicit ec: ExecutionContext): Try[ModeldbSetDatasetWorkspaceResponse] = Await.result(setDatasetWorkspaceAsync(body), Duration.Inf)
 
-
   def updateDatasetAttributesAsync(body: ModeldbUpdateDatasetAttributes)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateDatasetAttributesResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbUpdateDatasetAttributes, ModeldbUpdateDatasetAttributesResponse]("POST", basePath + s"/dataset/updateDatasetAttributes", __query, body)
@@ -217,10 +187,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def updateDatasetAttributes(body: ModeldbUpdateDatasetAttributes)(implicit ec: ExecutionContext): Try[ModeldbUpdateDatasetAttributesResponse] = Await.result(updateDatasetAttributesAsync(body), Duration.Inf)
 
-
   def updateDatasetDescriptionAsync(body: ModeldbUpdateDatasetDescription)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateDatasetDescriptionResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbUpdateDatasetDescription, ModeldbUpdateDatasetDescriptionResponse]("POST", basePath + s"/dataset/updateDatasetDescription", __query, body)
@@ -228,10 +196,8 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def updateDatasetDescription(body: ModeldbUpdateDatasetDescription)(implicit ec: ExecutionContext): Try[ModeldbUpdateDatasetDescriptionResponse] = Await.result(updateDatasetDescriptionAsync(body), Duration.Inf)
 
-
   def updateDatasetNameAsync(body: ModeldbUpdateDatasetName)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateDatasetNameResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[ModeldbUpdateDatasetName, ModeldbUpdateDatasetNameResponse]("POST", basePath + s"/dataset/updateDatasetName", __query, body)
