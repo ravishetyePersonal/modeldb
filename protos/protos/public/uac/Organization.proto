@@ -16,6 +16,9 @@ message Organization {
 
     int64 created_timestamp = 5;
     int64 updated_timestamp = 6;
+
+    common.CollaboratorTypeEnum.CollaboratorType global_collaborator_type = 8;
+    common.TernaryEnum.Ternary global_can_deploy = 9;
 }
 
 message GetOrganizationById {
@@ -50,8 +53,6 @@ message ListMyOrganizations {
 
 message SetOrganization {
     Organization organization = 1;
-    common.CollaboratorTypeEnum.CollaboratorType global_collaborator_type = 2;
-    common.TernaryEnum.Ternary global_can_deploy = 3;
 
     message Response {
         Organization organization = 1;
