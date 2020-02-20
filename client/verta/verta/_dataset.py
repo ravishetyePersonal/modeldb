@@ -30,7 +30,7 @@ class Dataset(object):
                  name=None, dataset_type=None,
                  desc=None, tags=None, attrs=None,
                  workspace=None,
-                 public_within_org=False,
+                 public_within_org=None,
                  _dataset_id=None):
         if name is not None and _dataset_id is not None:
             raise ValueError("cannot specify both `name` and `_dataset_id`")
@@ -134,7 +134,7 @@ class Dataset(object):
             raise ValueError("insufficient arguments")
 
     @staticmethod
-    def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None, public_within_org=False):
+    def _create(conn, dataset_name, dataset_type, desc=None, tags=None, attrs=None, workspace=None, public_within_org=None):
         if attrs is not None:
             attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]

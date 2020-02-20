@@ -250,7 +250,7 @@ class Client(object):
             return self._config[resource_name]
         return var
 
-    def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, public_within_org=False, id=None):
+    def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, public_within_org=None, id=None):
         """
         Attaches a Project to this Client.
 
@@ -454,7 +454,7 @@ class Client(object):
     def set_dataset(self, name=None, type="local",
                     desc=None, tags=None, attrs=None,
                     workspace=None,
-                    public_within_org=False,
+                    public_within_org=None,
                     id=None):
         """
         Attaches a Dataset to this Client.
@@ -1026,7 +1026,7 @@ class Project(_ModelDBEntity):
                  proj_name=None,
                  desc=None, tags=None, attrs=None,
                  workspace=None,
-                 public_within_org=False,
+                 public_within_org=None,
                  _proj_id=None):
         if proj_name is not None and _proj_id is not None:
             raise ValueError("cannot specify both `proj_name` and `_proj_id`")
@@ -1141,7 +1141,7 @@ class Project(_ModelDBEntity):
             raise ValueError("insufficient arguments")
 
     @staticmethod
-    def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None, public_within_org=False):
+    def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None, public_within_org=None):
         if attrs is not None:
             attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
