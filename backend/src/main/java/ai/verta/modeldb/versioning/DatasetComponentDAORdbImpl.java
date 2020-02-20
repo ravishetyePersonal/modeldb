@@ -118,9 +118,10 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
+            final String sha256 = componentBlob.getPath().getSha256();
             S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
                 new S3DatasetComponentBlobEntity(
-                    UUID.randomUUID().toString(), String.valueOf(componentBlob.hashCode()), componentBlob.getPath());
+                    UUID.randomUUID().toString(), sha256, componentBlob.getPath());
             session.saveOrUpdate(s3DatasetComponentBlobEntity);
             final String[] split = componentBlob.getPath().getPath().split("/");
             treeChild.push(
@@ -132,9 +133,10 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           break;
         case PATH:
           for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
+            final String sha256 = componentBlob.getSha256();
             PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
                 new PathDatasetComponentBlobEntity(
-                    UUID.randomUUID().toString(), String.valueOf(componentBlob.hashCode()), componentBlob);
+                    UUID.randomUUID().toString(), sha256, componentBlob);
             session.saveOrUpdate(pathDatasetComponentBlobEntity);
             final String[] split = componentBlob.getPath().split("/");
             treeChild.push(
