@@ -977,3 +977,13 @@ def get_git_repo_root_dir():
 
 #     """
 #     return six.ensure_str(subprocess.check_output(["pip", "freeze"])).splitlines()
+
+
+def is_org(workspace_name, conn):
+    response = make_request(
+        "GET",
+        "{}://{}/api/v1/uac-proxy/organization/getOrganizationByName".format(conn.scheme, conn.socket),
+        conn, params={'org_name': workspace_name},
+    )
+
+    return response.status_code != 404

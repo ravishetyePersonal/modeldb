@@ -250,7 +250,7 @@ class Client(object):
             return self._config[resource_name]
         return var
 
-    def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, id=None):
+    def set_project(self, name=None, desc=None, tags=None, attrs=None, workspace=None, public_within_org=False, id=None):
         """
         Attaches a Project to this Client.
 
@@ -270,9 +270,12 @@ class Client(object):
             Tags of the Project.
         attrs : dict of str to {None, bool, float, int, str}, optional
             Attributes of the Project.
-        workspace : str, optionnal
+        workspace : str, optional
             Workspace under which the Project with name `name` exists. If not provided, the current
             user's personal workspace will be used.
+        public_within_org : bool, default False
+            If creating a Project in an organization's workspace, whether to make this Project
+            accessible to all members of that organization.
         id : str, optional
             ID of the Project. This parameter cannot be provided alongside `name`, and other
             parameters will be ignored.
@@ -299,6 +302,7 @@ class Client(object):
                             name,
                             desc, tags, attrs,
                             workspace,
+                            public_within_org,
                             id)
 
         return self.proj
@@ -450,6 +454,7 @@ class Client(object):
     def set_dataset(self, name=None, type="local",
                     desc=None, tags=None, attrs=None,
                     workspace=None,
+                    public_within_org=False,
                     id=None):
         """
         Attaches a Dataset to this Client.
@@ -473,6 +478,9 @@ class Client(object):
         workspace : str, optional
             Workspace under which the Dataset with name `name` exists. If not provided, the current
             user's personal workspace will be used.
+        public_within_org : bool, default False
+            If creating a Dataset in an organization's workspace, whether to make this Dataset
+            accessible to all members of that organization.
         id : str, optional
             ID of the Dataset. This parameter cannot be provided alongside `name`, and other
             parameters will be ignored.
@@ -508,6 +516,7 @@ class Client(object):
         return DatasetSubclass(self._conn, self._conf,
                                name=name, desc=desc, tags=tags, attrs=attrs,
                                workspace=workspace,
+                               public_within_org=public_within_org,
                                _dataset_id=id)
 
     def get_dataset(self, name=None, id=None):
@@ -1017,6 +1026,7 @@ class Project(_ModelDBEntity):
                  proj_name=None,
                  desc=None, tags=None, attrs=None,
                  workspace=None,
+                 public_within_org=False,
                  _proj_id=None):
         if proj_name is not None and _proj_id is not None:
             raise ValueError("cannot specify both `proj_name` and `_proj_id`")
@@ -1036,7 +1046,7 @@ class Project(_ModelDBEntity):
             if proj_name is None:
                 proj_name = Project._generate_default_name()
             try:
-                proj = Project._create(conn, proj_name, desc, tags, attrs, workspace)
+                proj = Project._create(conn, proj_name, desc, tags, attrs, workspace, public_within_org)
             except requests.HTTPError as e:
                 if e.response.status_code == 403:  # cannot create in other workspace
                     proj = Project._get(conn, proj_name, workspace)
@@ -1045,9 +1055,11 @@ class Project(_ModelDBEntity):
                     else:  # no accessible project in other workspace
                         six.raise_from(e, None)
                 elif e.response.status_code == 409:  # already exists
-                    if any(param is not None for param in (desc, tags, attrs)):
-                        warnings.warn("Project with name {} already exists;"
-                                      " cannot initialize `desc`, `tags`, or `attrs`".format(proj_name))
+                    if any(param is not None for param in (desc, tags, attrs, public_within_org)):
+                        warnings.warn(
+                            "Project with name {} already exists;"
+                            " cannot set `desc`, `tags`, `attrs`, or `public_within_org`".format(proj_name)
+                        )
                     proj = Project._get(conn, proj_name, workspace)
                     print("set existing Project: {} from {}".format(proj.name, WORKSPACE_PRINT_MSG))
                 else:
@@ -1129,13 +1141,23 @@ class Project(_ModelDBEntity):
             raise ValueError("insufficient arguments")
 
     @staticmethod
-    def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None):
+    def _create(conn, proj_name, desc=None, tags=None, attrs=None, workspace=None, public_within_org=False):
         if attrs is not None:
             attrs = [_CommonCommonService.KeyValue(key=key, value=_utils.python_to_val_proto(value, allow_collection=True))
                      for key, value in six.viewitems(attrs)]
 
         Message = _ProjectService.CreateProject
         msg = Message(name=proj_name, description=desc, tags=tags, attributes=attrs, workspace_name=workspace)
+        if public_within_org:
+            if workspace is None:
+                raise ValueError("cannot set `public_within_org` for personal workspace")
+            elif not _utils.is_org(workspace, conn):
+                raise ValueError(
+                    "cannot set `public_within_org`"
+                    " because workspace \"{}\" is not an organization".format(workspace)
+                )
+            else:
+                msg.project_visibility = _ProjectService.ORG_SCOPED_PUBLIC
         data = _utils.proto_to_json(msg)
         response = _utils.make_request("POST",
                                        "{}://{}/api/v1/modeldb/project/createProject".format(conn.scheme, conn.socket),
