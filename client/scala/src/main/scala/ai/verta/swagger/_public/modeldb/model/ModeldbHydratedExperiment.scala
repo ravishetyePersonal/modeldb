@@ -21,7 +21,7 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbHydratedExperiment (
-  experiment: Option[ModeldbExperiment],
-  ownerUserInfo: Option[UacUserInfo],
-  allowedActions: Option[List[UacAction]]
+  experiment: Option[ModeldbExperiment] = None,
+  ownerUserInfo: Option[UacUserInfo] = None,
+  allowedActions: Option[List[UacAction]] = None
 )

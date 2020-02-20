@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.IdServiceProviderEnumIdServiceProvider
 import ai.verta.swagger._public.uac.model.UacFlagEnum._
 
 case class UacCreateUserResponse (
-  info: Option[UacUserInfo]
+  info: Option[UacUserInfo] = None
 )

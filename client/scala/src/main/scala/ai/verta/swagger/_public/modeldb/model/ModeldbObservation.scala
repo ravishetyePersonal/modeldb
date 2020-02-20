@@ -21,7 +21,7 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbObservation (
-  attribute: Option[CommonKeyValue],
-  artifact: Option[ModeldbArtifact],
-  timestamp: Option[String]
+  attribute: Option[CommonKeyValue] = None,
+  artifact: Option[ModeldbArtifact] = None,
+  timestamp: Option[String] = None
 )

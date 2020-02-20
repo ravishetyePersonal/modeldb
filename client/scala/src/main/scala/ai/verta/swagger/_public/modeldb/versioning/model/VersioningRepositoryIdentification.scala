@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningRepositoryIdentification (
-  namedId: Option[VersioningRepositoryNamedIdentification],
-  repoId: Option[String]
+  namedId: Option[VersioningRepositoryNamedIdentification] = None,
+  repoId: Option[String] = None
 )

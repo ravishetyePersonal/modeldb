@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningBlobExpanded (
-  path: Option[String],
-  blob: Option[VersioningBlob]
+  path: Option[String] = None,
+  blob: Option[VersioningBlob] = None
 )

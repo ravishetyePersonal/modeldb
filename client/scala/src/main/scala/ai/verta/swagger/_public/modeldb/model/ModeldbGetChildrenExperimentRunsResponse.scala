@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetChildrenExperimentRunsResponse (
-  experimentRuns: Option[List[ModeldbExperimentRun]],
-  totalRecords: Option[String]
+  experimentRuns: Option[List[ModeldbExperimentRun]] = None,
+  totalRecords: Option[String] = None
 )

@@ -10,10 +10,10 @@ import ai.verta.swagger._public.uac.model.RoleResourceEnumRoleServiceResourceTyp
 import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacRoleBinding (
-  id: Option[String],
-  name: Option[String],
-  scope: Option[UacRoleScope],
-  entities: Option[List[UacEntities]],
-  resources: Option[List[UacResources]],
-  roleId: Option[String]
+  id: Option[String] = None,
+  name: Option[String] = None,
+  scope: Option[UacRoleScope] = None,
+  entities: Option[List[UacEntities]] = None,
+  resources: Option[List[UacResources]] = None,
+  roleId: Option[String] = None
 )

@@ -10,7 +10,7 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbMetricsSummary (
-  key: Option[String],
-  minValue: Option[Double],
-  maxValue: Option[Double]
+  key: Option[String] = None,
+  minValue: Option[Double] = None,
+  maxValue: Option[Double] = None
 )

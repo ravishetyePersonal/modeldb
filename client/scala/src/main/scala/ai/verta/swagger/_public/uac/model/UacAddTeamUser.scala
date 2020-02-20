@@ -3,6 +3,6 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacAddTeamUser (
-  teamId: Option[String],
-  shareWith: Option[String]
+  teamId: Option[String] = None,
+  shareWith: Option[String] = None
 )

@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbFindExperimentsResponse (
-  experiments: Option[List[ModeldbExperiment]],
-  totalRecords: Option[String]
+  experiments: Option[List[ModeldbExperiment]] = None,
+  totalRecords: Option[String] = None
 )

@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.CollaboratorTypeEnumCollaboratorType._
 import ai.verta.swagger._public.uac.model.TernaryEnumTernary._
 
 case class UacListTeamsResponse (
-  teamIds: Option[List[String]]
+  teamIds: Option[List[String]] = None
 )

@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectReadme (
-  id: Option[String],
-  readmeText: Option[String]
+  id: Option[String] = None,
+  readmeText: Option[String] = None
 )

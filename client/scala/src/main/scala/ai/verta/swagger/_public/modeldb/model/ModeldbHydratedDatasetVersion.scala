@@ -21,7 +21,7 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbHydratedDatasetVersion (
-  datasetVersion: Option[ModeldbDatasetVersion],
-  ownerUserInfo: Option[UacUserInfo],
-  allowedActions: Option[List[UacAction]]
+  datasetVersion: Option[ModeldbDatasetVersion] = None,
+  ownerUserInfo: Option[UacUserInfo] = None,
+  allowedActions: Option[List[UacAction]] = None
 )

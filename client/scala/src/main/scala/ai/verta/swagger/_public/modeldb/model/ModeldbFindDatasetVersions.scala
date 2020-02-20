@@ -21,12 +21,12 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbFindDatasetVersions (
-  datasetId: Option[String],
-  datasetVersionIds: Option[List[String]],
-  predicates: Option[List[ModeldbKeyValueQuery]],
-  idsOnly: Option[Boolean],
-  pageNumber: Option[Integer],
-  pageLimit: Option[Integer],
-  ascending: Option[Boolean],
-  sortKey: Option[String]
+  datasetId: Option[String] = None,
+  datasetVersionIds: Option[List[String]] = None,
+  predicates: Option[List[ModeldbKeyValueQuery]] = None,
+  idsOnly: Option[Boolean] = None,
+  pageNumber: Option[Integer] = None,
+  pageLimit: Option[Integer] = None,
+  ascending: Option[Boolean] = None,
+  sortKey: Option[String] = None
 )

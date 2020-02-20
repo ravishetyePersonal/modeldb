@@ -5,8 +5,8 @@ import ai.verta.swagger._public.modeldb.model.IdServiceProviderEnumIdServiceProv
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbUpdateComment (
-  id: Option[String],
-  entityId: Option[String],
-  dateTime: Option[String],
-  message: Option[String]
+  id: Option[String] = None,
+  entityId: Option[String] = None,
+  dateTime: Option[String] = None,
+  message: Option[String] = None
 )

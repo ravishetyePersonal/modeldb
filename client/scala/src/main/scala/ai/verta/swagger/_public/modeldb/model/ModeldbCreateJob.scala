@@ -7,10 +7,10 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCreateJob (
-  description: Option[String],
-  startTime: Option[String],
-  endTime: Option[String],
-  metadata: Option[List[CommonKeyValue]],
-  jobStatus: Option[JobStatusEnumJobStatus],
-  jobType: Option[JobTypeEnumJobType]
+  description: Option[String] = None,
+  startTime: Option[String] = None,
+  endTime: Option[String] = None,
+  metadata: Option[List[CommonKeyValue]] = None,
+  jobStatus: Option[JobStatusEnumJobStatus] = None,
+  jobType: Option[JobTypeEnumJobType] = None
 )

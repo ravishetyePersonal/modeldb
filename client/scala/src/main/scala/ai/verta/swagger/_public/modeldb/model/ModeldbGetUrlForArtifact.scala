@@ -10,8 +10,8 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetUrlForArtifact (
-  id: Option[String],
-  key: Option[String],
-  method: Option[String],
-  artifactType: Option[ArtifactTypeEnumArtifactType]
+  id: Option[String] = None,
+  key: Option[String] = None,
+  method: Option[String] = None,
+  artifactType: Option[ArtifactTypeEnumArtifactType] = None
 )

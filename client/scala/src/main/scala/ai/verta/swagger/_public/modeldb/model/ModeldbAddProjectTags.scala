@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbAddProjectTags (
-  id: Option[String],
-  tags: Option[List[String]]
+  id: Option[String] = None,
+  tags: Option[List[String]] = None
 )

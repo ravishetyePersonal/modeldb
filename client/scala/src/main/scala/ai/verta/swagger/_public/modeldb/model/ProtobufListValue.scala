@@ -9,7 +9,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
-case class ProtobufAny (
-  typeUrl: Option[String],
-  value: Option[String]
+case class ProtobufListValue (
+  values: Option[List[ProtobufValue]] = None
 )

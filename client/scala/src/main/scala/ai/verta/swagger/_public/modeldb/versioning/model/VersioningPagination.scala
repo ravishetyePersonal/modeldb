@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningPagination (
-  pageNumber: Option[Integer],
-  pageLimit: Option[Integer]
+  pageNumber: Option[Integer] = None,
+  pageLimit: Option[Integer] = None
 )

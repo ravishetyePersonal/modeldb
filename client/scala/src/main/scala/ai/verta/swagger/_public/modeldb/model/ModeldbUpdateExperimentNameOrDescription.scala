@@ -8,7 +8,7 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateExperimentNameOrDescription (
-  id: Option[String],
-  name: Option[String],
-  description: Option[String]
+  id: Option[String] = None,
+  name: Option[String] = None,
+  description: Option[String] = None
 )

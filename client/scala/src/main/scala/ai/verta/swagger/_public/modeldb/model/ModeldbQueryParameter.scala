@@ -21,7 +21,7 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbQueryParameter (
-  parameterName: Option[String],
-  parameterType: Option[ValueTypeEnumValueType],
-  value: Option[Any]
+  parameterName: Option[String] = None,
+  parameterType: Option[ValueTypeEnumValueType] = None,
+  value: Option[ProtobufValue] = None
 )

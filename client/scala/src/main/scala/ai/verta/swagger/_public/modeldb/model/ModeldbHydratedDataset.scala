@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbHydratedDataset (
-  dataset: Option[ModeldbDataset],
-  collaboratorUserInfos: Option[List[ModeldbCollaboratorUserInfo]],
-  ownerUserInfo: Option[UacUserInfo],
-  allowedActions: Option[List[UacAction]]
+  dataset: Option[ModeldbDataset] = None,
+  collaboratorUserInfos: Option[List[ModeldbCollaboratorUserInfo]] = None,
+  ownerUserInfo: Option[UacUserInfo] = None,
+  allowedActions: Option[List[UacAction]] = None
 )

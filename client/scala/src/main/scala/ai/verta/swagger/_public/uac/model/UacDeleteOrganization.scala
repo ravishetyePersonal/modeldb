@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.CollaboratorTypeEnumCollaboratorType._
 import ai.verta.swagger._public.uac.model.TernaryEnumTernary._
 
 case class UacDeleteOrganization (
-  orgId: Option[String]
+  orgId: Option[String] = None
 )

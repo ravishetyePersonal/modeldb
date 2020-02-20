@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateProjectDescription (
-  id: Option[String],
-  description: Option[String]
+  id: Option[String] = None,
+  description: Option[String] = None
 )

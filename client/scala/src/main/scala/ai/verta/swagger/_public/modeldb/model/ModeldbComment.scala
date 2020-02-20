@@ -21,10 +21,10 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbComment (
-  id: Option[String],
-  userId: Option[String],
-  dateTime: Option[String],
-  message: Option[String],
-  userInfo: Option[UacUserInfo],
-  vertaId: Option[String]
+  id: Option[String] = None,
+  userId: Option[String] = None,
+  dateTime: Option[String] = None,
+  message: Option[String] = None,
+  userInfo: Option[UacUserInfo] = None,
+  vertaId: Option[String] = None
 )

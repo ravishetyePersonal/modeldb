@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningBlobDiff (
-  path: Option[String],
-  dataset: Option[VersioningDatasetDiff]
+  path: Option[String] = None,
+  dataset: Option[VersioningDatasetDiff] = None
 )

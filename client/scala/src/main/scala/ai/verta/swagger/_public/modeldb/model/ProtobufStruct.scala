@@ -9,9 +9,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
-case class RuntimeError (
-  error: Option[String],
-  code: Option[Integer],
-  message: Option[String],
-  details: Option[List[ProtobufAny]]
+case class ProtobufStruct (
+  fields: Option[Map[String,ProtobufValue]] = None
 )

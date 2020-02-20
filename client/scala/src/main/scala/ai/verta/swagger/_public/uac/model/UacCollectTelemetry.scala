@@ -5,6 +5,6 @@ import ai.verta.swagger._public.uac.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.uac.model.ProtobufNullValue._
 
 case class UacCollectTelemetry (
-  id: Option[String],
-  metrics: Option[List[CommonKeyValue]]
+  id: Option[String] = None,
+  metrics: Option[List[CommonKeyValue]] = None
 )

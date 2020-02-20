@@ -3,5 +3,5 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacGetTeamByNameResponse (
-  team: Option[UacTeam]
+  team: Option[UacTeam] = None
 )

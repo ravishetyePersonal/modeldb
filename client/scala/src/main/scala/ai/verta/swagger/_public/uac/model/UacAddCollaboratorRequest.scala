@@ -13,12 +13,12 @@ import ai.verta.swagger._public.uac.model.UacFlagEnum._
 import ai.verta.swagger._public.uac.model.UacShareViaEnum._
 
 case class UacAddCollaboratorRequest (
-  entityIds: Option[List[String]],
-  shareWith: Option[String],
-  collaboratorType: Option[CollaboratorTypeEnumCollaboratorType],
-  message: Option[String],
-  dateCreated: Option[String],
-  dateUpdated: Option[String],
-  canDeploy: Option[TernaryEnumTernary],
-  authzEntityType: Option[EntitiesEnumEntitiesTypes]
+  entityIds: Option[List[String]] = None,
+  shareWith: Option[String] = None,
+  collaboratorType: Option[CollaboratorTypeEnumCollaboratorType] = None,
+  message: Option[String] = None,
+  dateCreated: Option[String] = None,
+  dateUpdated: Option[String] = None,
+  canDeploy: Option[TernaryEnumTernary] = None,
+  authzEntityType: Option[EntitiesEnumEntitiesTypes] = None
 )

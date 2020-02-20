@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectShortName (
-  id: Option[String],
-  shortName: Option[String]
+  id: Option[String] = None,
+  shortName: Option[String] = None
 )

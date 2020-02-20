@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetDatasetByIdResponse (
-  dataset: Option[ModeldbDataset]
+  dataset: Option[ModeldbDataset] = None
 )

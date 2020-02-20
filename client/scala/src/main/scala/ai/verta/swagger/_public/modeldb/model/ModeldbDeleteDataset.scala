@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteDataset (
-  id: Option[String]
+  id: Option[String] = None
 )

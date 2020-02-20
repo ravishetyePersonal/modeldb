@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetProjectByNameResponse (
-  projectByUser: Option[ModeldbProject],
-  sharedProjects: Option[List[ModeldbProject]]
+  projectByUser: Option[ModeldbProject] = None,
+  sharedProjects: Option[List[ModeldbProject]] = None
 )

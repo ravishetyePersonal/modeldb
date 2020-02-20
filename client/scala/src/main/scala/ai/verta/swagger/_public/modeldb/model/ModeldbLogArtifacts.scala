@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogArtifacts (
-  id: Option[String],
-  artifacts: Option[List[ModeldbArtifact]]
+  id: Option[String] = None,
+  artifacts: Option[List[ModeldbArtifact]] = None
 )

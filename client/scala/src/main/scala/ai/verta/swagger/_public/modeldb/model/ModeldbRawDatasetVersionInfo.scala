@@ -21,9 +21,9 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbRawDatasetVersionInfo (
-  size: Option[String],
-  features: Option[List[String]],
-  numRecords: Option[String],
-  objectPath: Option[String],
-  checksum: Option[String]
+  size: Option[String] = None,
+  features: Option[List[String]] = None,
+  numRecords: Option[String] = None,
+  objectPath: Option[String] = None,
+  checksum: Option[String] = None
 )

@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogProjectArtifacts (
-  id: Option[String],
-  artifacts: Option[List[ModeldbArtifact]]
+  id: Option[String] = None,
+  artifacts: Option[List[ModeldbArtifact]] = None
 )

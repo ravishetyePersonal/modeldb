@@ -21,16 +21,16 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbDataset (
-  id: Option[String],
-  name: Option[String],
-  owner: Option[String],
-  description: Option[String],
-  tags: Option[List[String]],
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility],
-  datasetType: Option[DatasetTypeEnumDatasetType],
-  attributes: Option[List[CommonKeyValue]],
-  timeCreated: Option[String],
-  timeUpdated: Option[String],
-  workspaceId: Option[String],
-  workspaceType: Option[WorkspaceTypeEnumWorkspaceType]
+  id: Option[String] = None,
+  name: Option[String] = None,
+  owner: Option[String] = None,
+  description: Option[String] = None,
+  tags: Option[List[String]] = None,
+  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  datasetType: Option[DatasetTypeEnumDatasetType] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  timeCreated: Option[String] = None,
+  timeUpdated: Option[String] = None,
+  workspaceId: Option[String] = None,
+  workspaceType: Option[WorkspaceTypeEnumWorkspaceType] = None
 )

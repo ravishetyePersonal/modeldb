@@ -211,7 +211,7 @@ def resolve_type(typedef):
         return 'List[' + resolve_type(typedef['items']) + ']'
     elif typedef['type'] == 'object' and len(typedef) == 1:
         return 'Any'
-    elif typedef['type'] == 'object' and 'additionalProperties' in typedef and len(typedef) == 2:
+    elif typedef['type'] == 'object' and 'additionalProperties' in typedef and 'properties' not in typedef:
         return 'Map[String,%s]' % resolve_type(typedef['additionalProperties'])
     else:
         raise ValueError(typedef['type'])

@@ -9,6 +9,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetAllDatasetVersionsByDatasetIdResponse (
-  datasetVersions: Option[List[ModeldbDatasetVersion]],
-  totalRecords: Option[String]
+  datasetVersions: Option[List[ModeldbDatasetVersion]] = None,
+  totalRecords: Option[String] = None
 )

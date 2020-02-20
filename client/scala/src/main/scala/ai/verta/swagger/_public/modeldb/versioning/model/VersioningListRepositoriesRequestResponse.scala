@@ -4,5 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningListRepositoriesRequestResponse (
-  repository: Option[List[VersioningRepository]]
+  repository: Option[List[VersioningRepository]] = None,
+  totalRecords: Option[String] = None
 )

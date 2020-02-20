@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateDatasetAttributes (
-  id: Option[String],
-  attribute: Option[CommonKeyValue]
+  id: Option[String] = None,
+  attribute: Option[CommonKeyValue] = None
 )

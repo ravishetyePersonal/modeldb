@@ -3,5 +3,5 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacDeleteTeam (
-  teamId: Option[String]
+  teamId: Option[String] = None
 )

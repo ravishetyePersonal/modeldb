@@ -10,6 +10,6 @@ import ai.verta.swagger._public.uac.model.RoleResourceEnumRoleServiceResourceTyp
 import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacRoleScope (
-  orgId: Option[String],
-  teamId: Option[String]
+  orgId: Option[String] = None,
+  teamId: Option[String] = None
 )

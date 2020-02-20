@@ -10,10 +10,10 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetSummaryResponse (
-  name: Option[String],
-  lastUpdatedTime: Option[String],
-  totalExperiment: Option[String],
-  totalExperimentRuns: Option[String],
-  lastModifiedExperimentrunSummary: Option[ModeldbLastModifiedExperimentRunSummary],
-  metrics: Option[List[ModeldbMetricsSummary]]
+  name: Option[String] = None,
+  lastUpdatedTime: Option[String] = None,
+  totalExperiment: Option[String] = None,
+  totalExperimentRuns: Option[String] = None,
+  lastModifiedExperimentrunSummary: Option[ModeldbLastModifiedExperimentRunSummary] = None,
+  metrics: Option[List[ModeldbMetricsSummary]] = None
 )

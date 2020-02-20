@@ -12,7 +12,7 @@ case class {{class_name}} (
   {{name}}: {{type}}{{^last}},{{/last}}
   {{/required}}
   {{^required}}
-  {{name}}: Option[{{type}}]{{^last}},{{/last}}
+  {{name}}: Option[{{type}}] = None{{^last}},{{/last}}
   {{/required}}
 {{/properties}}
 )

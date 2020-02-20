@@ -10,7 +10,7 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteProjectTags (
-  id: Option[String],
-  tags: Option[List[String]],
-  deleteAll: Option[Boolean]
+  id: Option[String] = None,
+  tags: Option[List[String]] = None,
+  deleteAll: Option[Boolean] = None
 )

@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogObservation (
-  id: Option[String],
-  observation: Option[ModeldbObservation]
+  id: Option[String] = None,
+  observation: Option[ModeldbObservation] = None
 )

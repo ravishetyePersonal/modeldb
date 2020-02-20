@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectVisibilty (
-  id: Option[String],
-  projectVisibility: Option[ModeldbProjectVisibility]
+  id: Option[String] = None,
+  projectVisibility: Option[ModeldbProjectVisibility] = None
 )

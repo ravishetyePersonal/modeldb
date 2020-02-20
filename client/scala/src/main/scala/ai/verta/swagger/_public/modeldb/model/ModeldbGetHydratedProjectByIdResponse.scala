@@ -21,5 +21,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbGetHydratedProjectByIdResponse (
-  hydratedProject: Option[ModeldbHydratedProject]
+  hydratedProject: Option[ModeldbHydratedProject] = None
 )

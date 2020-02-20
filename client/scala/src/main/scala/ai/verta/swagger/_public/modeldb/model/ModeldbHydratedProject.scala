@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbHydratedProject (
-  project: Option[ModeldbProject],
-  collaboratorUserInfos: Option[List[ModeldbCollaboratorUserInfo]],
-  ownerUserInfo: Option[UacUserInfo],
-  allowedActions: Option[List[UacAction]]
+  project: Option[ModeldbProject] = None,
+  collaboratorUserInfos: Option[List[ModeldbCollaboratorUserInfo]] = None,
+  ownerUserInfo: Option[UacUserInfo] = None,
+  allowedActions: Option[List[UacAction]] = None
 )

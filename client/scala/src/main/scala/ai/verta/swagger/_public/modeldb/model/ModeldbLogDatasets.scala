@@ -8,7 +8,7 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogDatasets (
-  id: Option[String],
-  datasets: Option[List[ModeldbArtifact]],
-  overwrite: Option[Boolean]
+  id: Option[String] = None,
+  datasets: Option[List[ModeldbArtifact]] = None,
+  overwrite: Option[Boolean] = None
 )

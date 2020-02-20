@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbPathDatasetVersionInfo (
-  locationType: Option[PathLocationTypeEnumPathLocationType],
-  size: Option[String],
-  datasetPartInfos: Option[List[ModeldbDatasetPartInfo]],
-  basePath: Option[String]
+  locationType: Option[PathLocationTypeEnumPathLocationType] = None,
+  size: Option[String] = None,
+  datasetPartInfos: Option[List[ModeldbDatasetPartInfo]] = None,
+  basePath: Option[String] = None
 )

@@ -10,5 +10,5 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetProjectByIdResponse (
-  project: Option[ModeldbProject]
+  project: Option[ModeldbProject] = None
 )

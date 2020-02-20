@@ -11,12 +11,12 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCreateDataset (
-  name: Option[String],
-  description: Option[String],
-  tags: Option[List[String]],
-  attributes: Option[List[CommonKeyValue]],
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility],
-  datasetType: Option[DatasetTypeEnumDatasetType],
-  workspaceName: Option[String],
-  timeCreated: Option[String]
+  name: Option[String] = None,
+  description: Option[String] = None,
+  tags: Option[List[String]] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  datasetType: Option[DatasetTypeEnumDatasetType] = None,
+  workspaceName: Option[String] = None,
+  timeCreated: Option[String] = None
 )

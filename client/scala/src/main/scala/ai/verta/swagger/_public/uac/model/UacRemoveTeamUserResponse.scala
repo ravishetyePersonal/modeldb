@@ -3,5 +3,5 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacRemoveTeamUserResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

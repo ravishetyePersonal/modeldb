@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectWorkspace (
-  id: Option[String],
-  workspaceName: Option[String]
+  id: Option[String] = None,
+  workspaceName: Option[String] = None
 )

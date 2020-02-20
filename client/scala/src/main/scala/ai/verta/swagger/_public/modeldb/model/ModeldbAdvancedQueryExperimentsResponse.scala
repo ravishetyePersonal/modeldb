@@ -21,6 +21,6 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbAdvancedQueryExperimentsResponse (
-  hydratedExperiments: Option[List[ModeldbHydratedExperiment]],
-  totalRecords: Option[String]
+  hydratedExperiments: Option[List[ModeldbHydratedExperiment]] = None,
+  totalRecords: Option[String] = None
 )

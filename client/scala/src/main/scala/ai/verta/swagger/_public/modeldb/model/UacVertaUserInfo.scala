@@ -21,10 +21,10 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class UacVertaUserInfo (
-  individualUser: Option[Boolean],
-  username: Option[String],
-  refreshTimestamp: Option[String],
-  lastLoginTimestamp: Option[String],
-  userId: Option[String],
-  publicProfile: Option[UacFlagEnum]
+  individualUser: Option[Boolean] = None,
+  username: Option[String] = None,
+  refreshTimestamp: Option[String] = None,
+  lastLoginTimestamp: Option[String] = None,
+  userId: Option[String] = None,
+  publicProfile: Option[UacFlagEnum] = None
 )

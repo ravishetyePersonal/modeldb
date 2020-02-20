@@ -3,12 +3,12 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacTeam (
-  id: Option[String],
-  orgId: Option[String],
-  name: Option[String],
-  shortName: Option[String],
-  description: Option[String],
-  ownerId: Option[String],
-  createdTimestamp: Option[String],
-  updatedTimestamp: Option[String]
+  id: Option[String] = None,
+  orgId: Option[String] = None,
+  name: Option[String] = None,
+  shortName: Option[String] = None,
+  description: Option[String] = None,
+  ownerId: Option[String] = None,
+  createdTimestamp: Option[String] = None,
+  updatedTimestamp: Option[String] = None
 )

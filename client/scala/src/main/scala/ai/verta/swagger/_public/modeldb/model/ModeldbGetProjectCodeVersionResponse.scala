@@ -10,5 +10,5 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetProjectCodeVersionResponse (
-  codeVersion: Option[ModeldbCodeVersion]
+  codeVersion: Option[ModeldbCodeVersion] = None
 )

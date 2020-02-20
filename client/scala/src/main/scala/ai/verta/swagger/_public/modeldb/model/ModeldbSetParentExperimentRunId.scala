@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetParentExperimentRunId (
-  experimentRunId: Option[String],
-  parentId: Option[String]
+  experimentRunId: Option[String] = None,
+  parentId: Option[String] = None
 )
