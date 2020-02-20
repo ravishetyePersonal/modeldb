@@ -254,7 +254,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       CreateCommitRequest.Response response =
           commitDAO.setCommit(
               request.getCommit(),
-              (session) -> datasetComponentDAO.setBlobs(session, request.getBlobsList()),
+              (session) ->
+                  datasetComponentDAO.setBlobs(session, request.getBlobsList(), fileHasher),
               (session) ->
                   repositoryDAO.getRepositoryById(
                       session, request.getRepositoryId(), workspaceDTO));

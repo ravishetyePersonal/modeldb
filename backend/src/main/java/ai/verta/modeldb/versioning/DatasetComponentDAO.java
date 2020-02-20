@@ -5,5 +5,5 @@ import org.hibernate.Session;
 
 interface DatasetComponentDAO {
 
-  String setBlobs(Session session, List<BlobExpanded> blobsList);
+  String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher);
 }
