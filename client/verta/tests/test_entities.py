@@ -38,9 +38,7 @@ class TestClient:
     @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_verta_https(self):
         hosts = [
-            "dev.verta.ai",
             "app.verta.ai",
-            "sandbox.app.verta.ai",
         ]
 
         for host in hosts:
@@ -59,6 +57,37 @@ class TestClient:
             assert conn.scheme == "https"
             assert conn.scheme == conn.auth['Grpc-Metadata-scheme']
 
+    def test_else_http(self):
+        # test hosts must not redirect http to https
+        hosts = [
+            "www.google.com",
+        ]
+
+        for host in hosts:
+            # http by default
+            try:
+                verta.Client(host, max_retries=0)
+            except requests.HTTPError as e:
+                assert e.request.url.split(':', 1)[0] == "http"
+            else:
+                raise RuntimeError("faulty test; expected error")
+
+            # http if provided
+            try:
+                verta.Client("http://{}".format(host), max_retries=0)
+            except requests.HTTPError as e:
+                assert e.request.url.split(':', 1)[0] == "http"
+            else:
+                raise RuntimeError("faulty test; expected error")
+
+            # https if provided
+            try:
+                verta.Client("https://{}".format(host), max_retries=0)
+            except requests.HTTPError as e:
+                assert e.request.url.split(':', 1)[0] == "https"
+            else:
+                raise RuntimeError("faulty test; expected error")
+
     @pytest.mark.skipif('VERTA_EMAIL' not in os.environ or 'VERTA_DEV_KEY' not in os.environ, reason="insufficient Verta credentials")
     def test_config_file(self):
         PROJECT_NAME = "test_project"
@@ -66,7 +95,7 @@ class TestClient:
         EXPERIMENT_NAME = "test_experiment"
         CONFIG_FILENAME = "verta_config.json"
 
-        HOST = "sandbox.app.verta.ai"
+        HOST = "app.verta.ai"
         EMAIL_KEY, DEV_KEY_KEY = "VERTA_EMAIL", "VERTA_DEV_KEY"
 
         EMAIL, DEV_KEY = os.environ[EMAIL_KEY], os.environ[DEV_KEY_KEY]
@@ -112,37 +141,6 @@ class TestClient:
                     os.remove(CONFIG_FILENAME)
         finally:
             os.environ[EMAIL_KEY], os.environ[DEV_KEY_KEY] = EMAIL, DEV_KEY
-
-    def test_else_http(self):
-        # test hosts must not redirect http to https
-        hosts = [
-            "www.google.com",
-        ]
-
-        for host in hosts:
-            # http by default
-            try:
-                verta.Client(host, max_retries=0)
-            except requests.HTTPError as e:
-                assert e.request.url.split(':', 1)[0] == "http"
-            else:
-                raise RuntimeError("faulty test; expected error")
-
-            # http if provided
-            try:
-                verta.Client("http://{}".format(host), max_retries=0)
-            except requests.HTTPError as e:
-                assert e.request.url.split(':', 1)[0] == "http"
-            else:
-                raise RuntimeError("faulty test; expected error")
-
-            # https if provided
-            try:
-                verta.Client("https://{}".format(host), max_retries=0)
-            except requests.HTTPError as e:
-                assert e.request.url.split(':', 1)[0] == "https"
-            else:
-                raise RuntimeError("faulty test; expected error")
 
 
 class TestEntities:
