@@ -5,9 +5,12 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import com.google.protobuf.ProtocolStringList;
+import io.grpc.Status.Code;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.hibernate.Session;
 
 public class CommitDAORdbImpl implements CommitDAO {
@@ -33,7 +36,14 @@ public class CommitDAORdbImpl implements CommitDAO {
     }
   }
 
-  private List<CommitEntity> getCommits(Session session, ProtocolStringList parentShasList) {
-    return null;
+  private List<CommitEntity> getCommits(Session session, ProtocolStringList parentShasList)
+      throws ModelDBException {
+    List<CommitEntity> result = parentShasList.stream()
+        .map(sha -> session.get(CommitEntity.class, sha))
+        .filter(Objects::nonNull).collect(Collectors.toList());
+    if (result.size() != parentShasList.size()) {
+      throw new ModelDBException("Cannot find parent commits", Code.INVALID_ARGUMENT);
+    }
+    return result;
   }
 }
