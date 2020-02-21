@@ -10,7 +10,8 @@ public class FileHasher {
 
   public String getSha(GeneratedMessageV3 path) throws NoSuchAlgorithmException {
     MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hash = digest.digest(path.toString().getBytes(StandardCharsets.UTF_8));
+    final String payload = path.toString();
+    byte[] hash = digest.digest(payload.getBytes(StandardCharsets.UTF_8));
     return new String(new Hex().encode(hash));
   }
 }

@@ -6,50 +6,31 @@ import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 import org.hibernate.Session;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
 
   static class TreeElem {
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-      TreeElem treeElem = (TreeElem) o;
-      return Objects.equals(path, treeElem.path);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(path);
-    }
-
     String path;
     String fullPath;
-    String sha256;
-    String type;
-    Set<TreeElem> tree = new HashSet<>();
+    String sha256 = null;
+    String type = null;
+    Map<String, TreeElem> children = new HashMap<>();
 
-    TreeElem push(List<String> pathArray, String fullPath, String sha256, String type) {
-      path = pathArray.get(0);
-      if (pathArray.size() > 1) {
-        this.sha256 = null;
-        this.type = null;
-        TreeElem elem = push(pathArray.subList(1, pathArray.size()), fullPath, sha256, type);
-        tree.add(elem);
-        return elem;
+    TreeElem() {
+    }
+
+    TreeElem push(List<String> pathList, String fullPath, String sha256, String type) {
+      path = pathList.get(0);
+      if (pathList.size() > 1) {
+        children.putIfAbsent(pathList.get(1), new TreeElem());
+        return children.get(pathList.get(1)).push(pathList.subList(1, pathList.size()), fullPath, sha256, type);
       } else {
         this.sha256 = sha256;
         this.type = type;
@@ -59,7 +40,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
 
     String getPath() {
-      return fullPath;
+      return fullPath == null ? "" : fullPath;
     }
 
     String getSha256() {
@@ -72,7 +53,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
 
     InternalFolderElement saveFolders(Session session, FileHasher fileHasher)
         throws NoSuchAlgorithmException {
-      if (tree.isEmpty()) {
+      if (children.isEmpty()) {
         return InternalFolderElement.newBuilder()
             .setElementName(getPath())
             .setElementSha(getSha256())
@@ -80,7 +61,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       } else {
         InternalFolder.Builder internalFolder = InternalFolder.newBuilder();
         List<InternalFolderElement> elems = new LinkedList<>();
-        for (TreeElem elem : tree) {
+        for (TreeElem elem : children.values()) {
           InternalFolderElement build = elem.saveFolders(session, fileHasher);
           elems.add(build);
           if (elem.getType().equals("Folder")) {
@@ -94,7 +75,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                 .setElementName(getPath())
                 .setElementSha(fileHasher.getSha(internalFolder.build()))
                 .build();
-        Iterator<TreeElem> iter = tree.iterator();
+        Iterator<TreeElem> iter = children.values().iterator();
         for (InternalFolderElement elem : elems) {
           session.saveOrUpdate(
               new InternalFolderElementEntity(elem, build.getElementSha(), iter.next().getType()));
@@ -114,7 +95,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
               Arrays.asList(blob.getPath().split("/")),
               blob.getPath(),
               fileHasher.getSha(dataset),
-              "Folder");
+              "TREE");
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
@@ -123,9 +104,9 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                 new S3DatasetComponentBlobEntity(
                     UUID.randomUUID().toString(), sha256, componentBlob.getPath());
             session.saveOrUpdate(s3DatasetComponentBlobEntity);
-            final String[] split = componentBlob.getPath().getPath().split("/");
+            List<String> paths = Arrays.asList(componentBlob.getPath().getPath().split("/"));
             treeChild.push(
-                Collections.singletonList(split[split.length - 1]),
+                paths.subList(paths.size() - 2, paths.size()),
                 componentBlob.getPath().getPath(),
                 componentBlob.getPath().getSha256(),
                 componentBlob.getClass().getSimpleName());
@@ -138,9 +119,9 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                 new PathDatasetComponentBlobEntity(
                     UUID.randomUUID().toString(), sha256, componentBlob);
             session.saveOrUpdate(pathDatasetComponentBlobEntity);
-            final String[] split = componentBlob.getPath().split("/");
+            List<String> paths = Arrays.asList(componentBlob.getPath().split("/"));
             treeChild.push(
-                Collections.singletonList(split[split.length - 1]),
+                paths.subList(paths.size() - 2, paths.size()),
                 componentBlob.getPath(),
                 componentBlob.getSha256(),
                 componentBlob.getClass().getSimpleName());
@@ -149,7 +130,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       }
     }
     final InternalFolderElement internalFolderElement = treeElem.saveFolders(session, fileHasher);
-    session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, "Folder"));
+    session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, "TREE"));
     return internalFolderElement.getElementSha();
   }
 }

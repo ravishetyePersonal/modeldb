@@ -38,9 +38,11 @@ public class CommitDAORdbImpl implements CommitDAO {
 
   private List<CommitEntity> getCommits(Session session, ProtocolStringList parentShasList)
       throws ModelDBException {
-    List<CommitEntity> result = parentShasList.stream()
-        .map(sha -> session.get(CommitEntity.class, sha))
-        .filter(Objects::nonNull).collect(Collectors.toList());
+    List<CommitEntity> result =
+        parentShasList.stream()
+            .map(sha -> session.get(CommitEntity.class, sha))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     if (result.size() != parentShasList.size()) {
       throw new ModelDBException("Cannot find parent commits", Code.INVALID_ARGUMENT);
     }
