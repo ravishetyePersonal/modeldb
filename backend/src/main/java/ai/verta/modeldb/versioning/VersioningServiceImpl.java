@@ -57,9 +57,10 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-        UserInfo userInfo = authService.getCurrentLoginUserInfo();
         WorkspaceDTO workspaceDTO =
-            roleService.getWorkspaceDTOByWorkspaceName(userInfo, request.getWorkspaceName());
+            verifyAndGetWorkspaceDTO(RepositoryIdentification.newBuilder().setNamedId(
+                RepositoryNamedIdentification.newBuilder()
+                    .setWorkspaceName(request.getWorkspaceName())).build(), false);
 
         Response response = repositoryDAO.listRepositories(request, workspaceDTO);
         responseObserver.onNext(response);
@@ -101,7 +102,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         if (request.getRepository().getName().isEmpty()) {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId());
+        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false);
 
         SetRepository.Response response = repositoryDAO.setRepository(request, workspaceDTO, true);
         responseObserver.onNext(response);
@@ -153,8 +154,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
-      throws ModelDBException {
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(
+      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
     WorkspaceDTO workspaceDTO = null;
     String message = null;
     if (id.hasNamedId()) {
@@ -171,7 +172,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       } catch (StatusRuntimeException e) {
         throw new ModelDBException("Error getting workspace", e.getStatus().getCode());
       }
-      if (named.getName().isEmpty()) {
+      if (named.getName().isEmpty() && shouldCheckNamed) {
         message = "Name should not be empty";
       }
     }
@@ -180,6 +181,11 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       throw new ModelDBException(message, Code.INVALID_ARGUMENT);
     }
     return workspaceDTO;
+  }
+
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
+      throws ModelDBException {
+    return verifyAndGetWorkspaceDTO(id, true);
   }
 
   @Override

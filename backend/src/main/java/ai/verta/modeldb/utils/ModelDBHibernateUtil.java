@@ -468,7 +468,7 @@ public class ModelDBHibernateUtil {
             name,
             workspaceColumnName,
             workspaceId,
-            workspaceType);
+            workspaceType, true);
     Long count = (Long) query.uniqueResult();
 
     if (count > 0) {
@@ -491,11 +491,14 @@ public class ModelDBHibernateUtil {
       String name,
       String workspaceColumnName,
       String workspaceId,
-      WorkspaceType workspaceType) {
+      WorkspaceType workspaceType,
+      boolean shouldSetName) {
     StringBuilder stringQueryBuilder = new StringBuilder(command);
     if (!workspaceId.isEmpty()) {
+      if (shouldSetName) {
+        stringQueryBuilder.append(" AND ");
+      }
       stringQueryBuilder
-          .append(" AND ")
           .append(shortName)
           .append(".")
           .append(workspaceColumnName)
@@ -510,7 +513,9 @@ public class ModelDBHibernateUtil {
     }
 
     Query query = session.createQuery(stringQueryBuilder.toString());
-    query.setParameter(fieldName, name);
+    if (shouldSetName) {
+      query.setParameter(fieldName, name);
+    }
     if (!workspaceId.isEmpty()) {
       query.setParameter(workspaceColumnName, workspaceId);
       query.setParameter(ModelDBConstants.WORKSPACE_TYPE, workspaceType.getNumber());
