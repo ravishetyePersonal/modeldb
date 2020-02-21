@@ -20,7 +20,7 @@ public class TagsEntity {
 
   @EmbeddedId private TagId id;
 
-  @Column(name = "commit_hash", nullable = false, columnDefinition = "varchar", length = 32)
+  @Column(name = "commit_hash", nullable = false, columnDefinition = "varchar", length = 64)
   private String commit_hash;
 
   public String getCommit_hash() {

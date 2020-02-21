@@ -78,14 +78,14 @@ public class PathDatasetComponentBlobEntity implements DatasetComponentEntity {
 @Embeddable
 class PathDatasetComponentBlobId implements Serializable {
 
-  @Column(name = "blob_hash", nullable = false, columnDefinition = "varchar", length = 32)
+  @Column(name = "blob_hash", nullable = false, columnDefinition = "varchar", length = 64)
   private String blob_hash;
 
   @Column(
       name = "path_dataset_blob_id",
       nullable = false,
       columnDefinition = "varchar",
-      length = 32)
+      length = 64)
   private String path_dataset_blob_id;
 
   public PathDatasetComponentBlobId(String blobHash, String pathDatasetBlobId) {
