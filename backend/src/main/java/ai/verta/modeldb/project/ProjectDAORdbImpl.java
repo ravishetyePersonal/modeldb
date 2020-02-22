@@ -40,6 +40,7 @@ import ai.verta.uac.ModelResourceEnum.ModelDBServiceResourceTypes;
 import ai.verta.uac.Organization;
 import ai.verta.uac.Role;
 import ai.verta.uac.RoleBinding;
+import ai.verta.uac.RoleScope;
 import ai.verta.uac.UserInfo;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Value;
@@ -207,14 +208,15 @@ public class ProjectDAORdbImpl implements ProjectDAO {
       ProjectEntity projectEntity = RdbmsUtils.generateProjectEntity(project);
       session.save(projectEntity);
 
-      Role ownerRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_OWNER);
+      Role ownerRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_OWNER, null);
       roleService.createRoleBinding(
           ownerRole,
           new CollaboratorUser(authService, userInfo),
           project.getId(),
           ModelDBServiceResourceTypes.PROJECT);
       if (project.getProjectVisibility().equals(ProjectVisibility.PUBLIC)) {
-        Role publicReadRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_PUBLIC_READ);
+        Role publicReadRole =
+            roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_PUBLIC_READ, null);
         UserInfo unsignedUser = authService.getUnsignedUser();
         roleService.createRoleBinding(
             publicReadRole,
@@ -242,8 +244,8 @@ public class ProjectDAORdbImpl implements ProjectDAO {
       String projectId,
       ProjectVisibility projectVisibility) {
     if (workspaceId != null && !workspaceId.isEmpty()) {
-      Role projAdmin = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_ADMIN);
-      Role projRead = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_READ_ONLY);
+      Role projAdmin = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_ADMIN, null);
+      Role projRead = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_READ_ONLY, null);
       switch (workspaceType) {
         case ORGANIZATION:
           Organization org = (Organization) roleService.getOrgById(workspaceId);
@@ -258,6 +260,29 @@ public class ProjectDAORdbImpl implements ProjectDAO {
                 new CollaboratorOrg(org.getId()),
                 projectId,
                 ModelDBServiceResourceTypes.PROJECT);
+          }
+          String globalSharingRoleName =
+              new StringBuilder()
+                  .append("O_")
+                  .append(workspaceId)
+                  .append("_GLOBAL_SHARING")
+                  .toString();
+          try {
+            Role globalSharingRole =
+                roleService.getRoleByName(
+                    globalSharingRoleName, RoleScope.newBuilder().setOrgId(workspaceId).build());
+            roleService.createRoleBinding(
+                globalSharingRole,
+                new CollaboratorOrg(workspaceId),
+                projectId,
+                ModelDBServiceResourceTypes.PROJECT);
+          } catch (StatusRuntimeException ex) {
+            if (ex.getStatus().getCode().value() == Code.NOT_FOUND_VALUE) {
+              // DO NOTHING if the role does not exist
+              LOGGER.warn(ex.getMessage());
+            } else {
+              throw ex;
+            }
           }
           break;
         case USER:
@@ -788,6 +813,25 @@ public class ProjectDAORdbImpl implements ProjectDAO {
               roleService.deleteRoleBinding(orgProjectReadRoleBinding.getId());
             }
           }
+          String globalSharingRoleName =
+              new StringBuilder()
+                  .append("O_")
+                  .append(workspaceId)
+                  .append("_GLOBAL_SHARING")
+                  .toString();
+
+          String globalSharingRoleBindingName =
+              roleService.buildRoleBindingName(
+                  globalSharingRoleName,
+                  projectId,
+                  new CollaboratorOrg(workspaceId),
+                  ModelDBServiceResourceTypes.PROJECT.name());
+          RoleBinding globalSharingRoleBinding =
+              roleService.getRoleBindingByName(globalSharingRoleBindingName);
+          if (globalSharingRoleBinding != null && !globalSharingRoleBinding.getId().isEmpty()) {
+            roleService.deleteRoleBinding(globalSharingRoleBinding.getId());
+          }
+
           break;
         case USER:
           String projectRoleBindingName =
@@ -996,7 +1040,7 @@ public class ProjectDAORdbImpl implements ProjectDAO {
     switch (newVisibility) {
       case ORG_SCOPED_PUBLIC:
         if (projectWorkspaceType == WorkspaceType.ORGANIZATION_VALUE) {
-          Role projRead = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_READ_ONLY);
+          Role projRead = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_READ_ONLY, null);
           roleService.createRoleBinding(
               projRead,
               new CollaboratorOrg(workspaceId),
@@ -1005,7 +1049,8 @@ public class ProjectDAORdbImpl implements ProjectDAO {
         }
         break;
       case PUBLIC:
-        Role publicReadRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_PUBLIC_READ);
+        Role publicReadRole =
+            roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_PUBLIC_READ, null);
         roleService.createRoleBinding(
             publicReadRole,
             new CollaboratorUser(authService, authService.getUnsignedUser()),
