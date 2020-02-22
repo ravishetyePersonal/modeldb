@@ -217,12 +217,12 @@ public class CollaboratorServiceImpl extends CollaboratorServiceImplBase {
       String roleName =
           getRoleNameBasedOnRequest(modelDBServiceResourceTypes, request.getCollaboratorType());
       assert roleName != null;
-      Role role = roleService.getRoleByName(roleName);
+      Role role = roleService.getRoleByName(roleName, null);
 
       Role projectDeployRole = null;
       if (modelDBServiceResourceTypes.equals(ModelDBServiceResourceTypes.PROJECT)) {
         if (request.getCanDeploy().equals(Ternary.TRUE)) {
-          projectDeployRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_DEPLOY);
+          projectDeployRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_DEPLOY, null);
         }
       }
 

@@ -17,6 +17,7 @@ import ai.verta.uac.ModelResourceEnum.ModelDBServiceResourceTypes;
 import ai.verta.uac.Organization;
 import ai.verta.uac.Role;
 import ai.verta.uac.RoleBinding;
+import ai.verta.uac.RoleScope;
 import ai.verta.uac.UserInfo;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -75,7 +76,7 @@ public class PublicRoleServiceUtils implements RoleService {
   }
 
   @Override
-  public Role getRoleByName(String roleName) {
+  public Role getRoleByName(String roleName, RoleScope roleScope) {
     return null;
   }
 

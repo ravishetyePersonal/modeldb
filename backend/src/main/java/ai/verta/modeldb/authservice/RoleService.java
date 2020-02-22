@@ -9,6 +9,7 @@ import ai.verta.uac.ModelResourceEnum.ModelDBServiceResourceTypes;
 import ai.verta.uac.Organization;
 import ai.verta.uac.Role;
 import ai.verta.uac.RoleBinding;
+import ai.verta.uac.RoleScope;
 import ai.verta.uac.UserInfo;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -40,7 +41,7 @@ public interface RoleService {
   Map<String, Actions> getSelfAllowedActionsBatch(
       List<String> resourceIds, ModelDBServiceResourceTypes type);
 
-  Role getRoleByName(String roleName);
+  Role getRoleByName(String roleName, RoleScope roleScope);
 
   boolean deleteRoleBinding(String roleBindingId);
 

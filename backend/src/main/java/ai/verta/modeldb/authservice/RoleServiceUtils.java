@@ -35,6 +35,7 @@ import ai.verta.uac.Organization;
 import ai.verta.uac.Resources;
 import ai.verta.uac.Role;
 import ai.verta.uac.RoleBinding;
+import ai.verta.uac.RoleScope;
 import ai.verta.uac.ServiceEnum;
 import ai.verta.uac.SetRoleBinding;
 import ai.verta.uac.UserInfo;
@@ -214,12 +215,17 @@ public class RoleServiceUtils implements RoleService {
   }
 
   @Override
-  public Role getRoleByName(String roleName) {
+  public Role getRoleByName(String roleName, RoleScope roleScope) {
     try (AuthServiceChannel authServiceChannel = new AuthServiceChannel()) {
       LOGGER.info(ModelDBMessages.CALL_TO_ROLE_SERVICE_MSG);
-      GetRoleByName getRoleByNameRequest = GetRoleByName.newBuilder().setName(roleName).build();
+      GetRoleByName.Builder getRoleByNameRequest = GetRoleByName.newBuilder().setName(roleName);
+      if (roleScope != null) {
+        getRoleByNameRequest.setScope(roleScope);
+      }
       GetRoleByName.Response getRoleByNameResponse =
-          authServiceChannel.getRoleServiceBlockingStub().getRoleByName(getRoleByNameRequest);
+          authServiceChannel
+              .getRoleServiceBlockingStub()
+              .getRoleByName(getRoleByNameRequest.build());
       LOGGER.info(ModelDBMessages.ROLE_SERVICE_RES_RECEIVED_MSG);
       LOGGER.trace(ModelDBMessages.ROLE_SERVICE_RES_RECEIVED_TRACE_MSG, getRoleByNameResponse);
 
