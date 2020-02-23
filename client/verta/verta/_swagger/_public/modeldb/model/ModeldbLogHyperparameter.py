@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbLogHyperparameter(dict):
+class ModeldbLogHyperparameter(BaseType):
   def __init__(self, id=None, hyperparameter=None):
+    required = {
+      "id": False,
+      "hyperparameter": False,
+    }
     self.id = id
     self.hyperparameter = hyperparameter
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .CommonKeyValue import CommonKeyValue
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('hyperparameter', None)
+    if tmp is not None:
+      d['hyperparameter'] = CommonKeyValue.from_json(tmp)
+
+    return ModeldbLogHyperparameter(**d)

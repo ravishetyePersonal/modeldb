@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbLineageEntry(dict):
+class ModeldbLineageEntry(BaseType):
   def __init__(self, `type`=None, external_id=None):
+    required = {
+      "`type`": False,
+      "external_id": False,
+    }
     self.`type` = `type`
     self.external_id = external_id
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .LineageEntryEnumLineageEntryType import LineageEntryEnumLineageEntryType
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('`type`', None)
+    if tmp is not None:
+      d['`type`'] = LineageEntryEnumLineageEntryType.from_json(tmp)
+    tmp = d.get('external_id', None)
+    if tmp is not None:
+      d['external_id'] = tmp
+
+    return ModeldbLineageEntry(**d)

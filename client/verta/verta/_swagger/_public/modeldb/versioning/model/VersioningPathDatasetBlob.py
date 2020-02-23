@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class VersioningPathDatasetBlob(dict):
+class VersioningPathDatasetBlob(BaseType):
   def __init__(self, components=None):
+    required = {
+      "components": False,
+    }
     self.components = components
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .VersioningPathDatasetComponentBlob import VersioningPathDatasetComponentBlob
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('components', None)
+    if tmp is not None:
+      d['components'] = [VersioningPathDatasetComponentBlob.from_json(tmp) for tmp in tmp]
+
+    return VersioningPathDatasetBlob(**d)

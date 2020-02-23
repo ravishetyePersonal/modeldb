@@ -1,17 +1,23 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetJobIdResponse(dict):
+class ModeldbGetJobIdResponse(BaseType):
   def __init__(self, job_id=None):
+    required = {
+      "job_id": False,
+    }
     self.job_id = job_id
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('job_id', None)
+    if tmp is not None:
+      d['job_id'] = tmp
+
+    return ModeldbGetJobIdResponse(**d)

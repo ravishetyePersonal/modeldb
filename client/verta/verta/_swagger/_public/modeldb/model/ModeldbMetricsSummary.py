@@ -1,19 +1,35 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbMetricsSummary(dict):
+class ModeldbMetricsSummary(BaseType):
   def __init__(self, key=None, min_value=None, max_value=None):
+    required = {
+      "key": False,
+      "min_value": False,
+      "max_value": False,
+    }
     self.key = key
     self.min_value = min_value
     self.max_value = max_value
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('key', None)
+    if tmp is not None:
+      d['key'] = tmp
+    tmp = d.get('min_value', None)
+    if tmp is not None:
+      d['min_value'] = tmp
+    tmp = d.get('max_value', None)
+    if tmp is not None:
+      d['max_value'] = tmp
+
+    return ModeldbMetricsSummary(**d)

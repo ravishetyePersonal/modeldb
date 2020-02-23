@@ -1,18 +1,29 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbAddExperimentTag(dict):
+class ModeldbAddExperimentTag(BaseType):
   def __init__(self, id=None, tag=None):
+    required = {
+      "id": False,
+      "tag": False,
+    }
     self.id = id
     self.tag = tag
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('tag', None)
+    if tmp is not None:
+      d['tag'] = tmp
+
+    return ModeldbAddExperimentTag(**d)

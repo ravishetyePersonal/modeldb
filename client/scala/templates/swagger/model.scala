@@ -9,10 +9,10 @@ import ai.verta.swagger.{{package}}.model.{{name}}._
 case class {{class_name}} (
 {{#properties}}
   {{#required}}
-  {{name}}: {{type}}{{^last}},{{/last}}
+  {{name}}: {{#type}}{{> type}}{{/type}}{{^last}},{{/last}}
   {{/required}}
   {{^required}}
-  {{name}}: Option[{{type}}] = None{{^last}},{{/last}}
+  {{name}}: Option[{{#type}}{{> type}}{{/type}}] = None{{^last}},{{/last}}
   {{/required}}
 {{/properties}}
 )

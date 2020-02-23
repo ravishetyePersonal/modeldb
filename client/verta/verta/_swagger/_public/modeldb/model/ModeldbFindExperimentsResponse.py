@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbFindExperimentsResponse(dict):
+class ModeldbFindExperimentsResponse(BaseType):
   def __init__(self, experiments=None, total_records=None):
+    required = {
+      "experiments": False,
+      "total_records": False,
+    }
     self.experiments = experiments
     self.total_records = total_records
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbExperiment import ModeldbExperiment
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('experiments', None)
+    if tmp is not None:
+      d['experiments'] = [ModeldbExperiment.from_json(tmp) for tmp in tmp]
+    tmp = d.get('total_records', None)
+    if tmp is not None:
+      d['total_records'] = tmp
+
+    return ModeldbFindExperimentsResponse(**d)

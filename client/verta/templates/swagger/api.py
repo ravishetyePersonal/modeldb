@@ -19,5 +19,25 @@ class {{api_name}}Api:
     {{^body_present}}
     body = None
     {{/body_present}}
-    return self.client.request("{{op}}", self.base_path + s"{{path}}", __query, body)
+
+    format_args = {}
+    path = "{{path}}"
+    {{#parameters}}
+    if "${{safe_name}}" in path:
+      path = path.replace("${{safe_name}}", "%({{safe_name}})s")
+      format_args["{{safe_name}}"] = {{safe_name}}
+    {{/parameters}}
+    ret = self.client.request("{{op}}", self.base_path + path % format_args, __query, body)
+    if ret is not None:
+      {{#success_type}}
+      {{#custom}}
+      from ..model.{{name}} import {{name}}
+      ret = {{name}}.from_json(ret)
+      {{/custom}}
+      {{^custom}}
+      pass
+      {{/custom}}
+      {{/success_type}}
+
+    return ret
 {{/operations}}

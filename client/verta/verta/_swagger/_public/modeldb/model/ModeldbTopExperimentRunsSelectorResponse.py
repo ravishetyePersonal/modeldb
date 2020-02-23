@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbTopExperimentRunsSelectorResponse(dict):
+class ModeldbTopExperimentRunsSelectorResponse(BaseType):
   def __init__(self, experiment_runs=None):
+    required = {
+      "experiment_runs": False,
+    }
     self.experiment_runs = experiment_runs
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbExperimentRun import ModeldbExperimentRun
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('experiment_runs', None)
+    if tmp is not None:
+      d['experiment_runs'] = [ModeldbExperimentRun.from_json(tmp) for tmp in tmp]
+
+    return ModeldbTopExperimentRunsSelectorResponse(**d)

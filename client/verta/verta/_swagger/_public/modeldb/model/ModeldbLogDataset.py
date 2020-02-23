@@ -1,19 +1,36 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbLogDataset(dict):
+class ModeldbLogDataset(BaseType):
   def __init__(self, id=None, dataset=None, overwrite=None):
+    required = {
+      "id": False,
+      "dataset": False,
+      "overwrite": False,
+    }
     self.id = id
     self.dataset = dataset
     self.overwrite = overwrite
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .ModeldbArtifact import ModeldbArtifact
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('dataset', None)
+    if tmp is not None:
+      d['dataset'] = ModeldbArtifact.from_json(tmp)
+    tmp = d.get('overwrite', None)
+    if tmp is not None:
+      d['overwrite'] = tmp
+
+    return ModeldbLogDataset(**d)

@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class VersioningBlobExpanded(dict):
+class VersioningBlobExpanded(BaseType):
   def __init__(self, path=None, blob=None):
+    required = {
+      "path": False,
+      "blob": False,
+    }
     self.path = path
     self.blob = blob
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .VersioningBlob import VersioningBlob
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('path', None)
+    if tmp is not None:
+      d['path'] = tmp
+    tmp = d.get('blob', None)
+    if tmp is not None:
+      d['blob'] = VersioningBlob.from_json(tmp)
+
+    return VersioningBlobExpanded(**d)

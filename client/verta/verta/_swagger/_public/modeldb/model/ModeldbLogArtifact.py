@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbLogArtifact(dict):
+class ModeldbLogArtifact(BaseType):
   def __init__(self, id=None, artifact=None):
+    required = {
+      "id": False,
+      "artifact": False,
+    }
     self.id = id
     self.artifact = artifact
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .ModeldbArtifact import ModeldbArtifact
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('artifact', None)
+    if tmp is not None:
+      d['artifact'] = ModeldbArtifact.from_json(tmp)
+
+    return ModeldbLogArtifact(**d)

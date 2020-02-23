@@ -1,17 +1,23 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class UacListTeamUserResponse(dict):
+class UacListTeamUserResponse(BaseType):
   def __init__(self, user_ids=None):
+    required = {
+      "user_ids": False,
+    }
     self.user_ids = user_ids
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('user_ids', None)
+    if tmp is not None:
+      d['user_ids'] = [tmp for tmp in tmp]
+
+    return UacListTeamUserResponse(**d)

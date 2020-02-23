@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbDeleteExperimentArtifactResponse(dict):
+class ModeldbDeleteExperimentArtifactResponse(BaseType):
   def __init__(self, experiment=None):
+    required = {
+      "experiment": False,
+    }
     self.experiment = experiment
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbExperiment import ModeldbExperiment
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('experiment', None)
+    if tmp is not None:
+      d['experiment'] = ModeldbExperiment.from_json(tmp)
+
+    return ModeldbDeleteExperimentArtifactResponse(**d)

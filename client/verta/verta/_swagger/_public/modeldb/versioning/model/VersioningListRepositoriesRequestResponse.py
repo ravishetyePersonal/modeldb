@@ -1,17 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class VersioningListRepositoriesRequestResponse(dict):
-  def __init__(self, repository=None):
+class VersioningListRepositoriesRequestResponse(BaseType):
+  def __init__(self, repository=None, total_records=None):
+    required = {
+      "repository": False,
+      "total_records": False,
+    }
     self.repository = repository
+    self.total_records = total_records
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .VersioningRepository import VersioningRepository
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('repository', None)
+    if tmp is not None:
+      d['repository'] = [VersioningRepository.from_json(tmp) for tmp in tmp]
+    tmp = d.get('total_records', None)
+    if tmp is not None:
+      d['total_records'] = tmp
+
+    return VersioningListRepositoriesRequestResponse(**d)

@@ -10,4 +10,15 @@ class TelemetryApi:
     }
     if body is None:
       raise Exception("Missing required parameter \"body\"")
-    return self.client.request("POST", self.base_path + s"/telemetry/collectTelemetry", __query, body)
+
+    format_args = {}
+    path = "/telemetry/collectTelemetry"
+    if "$body" in path:
+      path = path.replace("$body", "%(body)s")
+      format_args["body"] = body
+    ret = self.client.request("POST", self.base_path + path % format_args, __query, body)
+    if ret is not None:
+      from ..model.UacCollectTelemetryResponse import UacCollectTelemetryResponse
+      ret = UacCollectTelemetryResponse.from_json(ret)
+
+    return ret

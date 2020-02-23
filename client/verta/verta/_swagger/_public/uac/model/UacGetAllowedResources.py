@@ -1,18 +1,31 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class UacGetAllowedResources(dict):
+class UacGetAllowedResources(BaseType):
   def __init__(self, entities=None, actions=None):
+    required = {
+      "entities": False,
+      "actions": False,
+    }
     self.entities = entities
     self.actions = actions
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .UacEntities import UacEntities
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    from .UacAction import UacAction
+
+
+    tmp = d.get('entities', None)
+    if tmp is not None:
+      d['entities'] = [UacEntities.from_json(tmp) for tmp in tmp]
+    tmp = d.get('actions', None)
+    if tmp is not None:
+      d['actions'] = [UacAction.from_json(tmp) for tmp in tmp]
+
+    return UacGetAllowedResources(**d)

@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetHydratedDatasetsByProjectIdResponse(dict):
+class ModeldbGetHydratedDatasetsByProjectIdResponse(BaseType):
   def __init__(self, hydrated_datasets=None, total_records=None):
+    required = {
+      "hydrated_datasets": False,
+      "total_records": False,
+    }
     self.hydrated_datasets = hydrated_datasets
     self.total_records = total_records
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbHydratedDataset import ModeldbHydratedDataset
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('hydrated_datasets', None)
+    if tmp is not None:
+      d['hydrated_datasets'] = [ModeldbHydratedDataset.from_json(tmp) for tmp in tmp]
+    tmp = d.get('total_records', None)
+    if tmp is not None:
+      d['total_records'] = tmp
+
+    return ModeldbGetHydratedDatasetsByProjectIdResponse(**d)

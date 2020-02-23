@@ -1,19 +1,35 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbAddComment(dict):
+class ModeldbAddComment(BaseType):
   def __init__(self, entity_id=None, date_time=None, message=None):
+    required = {
+      "entity_id": False,
+      "date_time": False,
+      "message": False,
+    }
     self.entity_id = entity_id
     self.date_time = date_time
     self.message = message
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('entity_id', None)
+    if tmp is not None:
+      d['entity_id'] = tmp
+    tmp = d.get('date_time', None)
+    if tmp is not None:
+      d['date_time'] = tmp
+    tmp = d.get('message', None)
+    if tmp is not None:
+      d['message'] = tmp
+
+    return ModeldbAddComment(**d)

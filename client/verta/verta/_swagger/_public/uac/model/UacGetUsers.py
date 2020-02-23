@@ -1,19 +1,35 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class UacGetUsers(dict):
+class UacGetUsers(BaseType):
   def __init__(self, user_ids=None, emails=None, usernames=None):
+    required = {
+      "user_ids": False,
+      "emails": False,
+      "usernames": False,
+    }
     self.user_ids = user_ids
     self.emails = emails
     self.usernames = usernames
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('user_ids', None)
+    if tmp is not None:
+      d['user_ids'] = [tmp for tmp in tmp]
+    tmp = d.get('emails', None)
+    if tmp is not None:
+      d['emails'] = [tmp for tmp in tmp]
+    tmp = d.get('usernames', None)
+    if tmp is not None:
+      d['usernames'] = [tmp for tmp in tmp]
+
+    return UacGetUsers(**d)

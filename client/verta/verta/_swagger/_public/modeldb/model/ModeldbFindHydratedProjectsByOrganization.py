@@ -1,19 +1,36 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbFindHydratedProjectsByOrganization(dict):
+class ModeldbFindHydratedProjectsByOrganization(BaseType):
   def __init__(self, find_projects=None, name=None, id=None):
+    required = {
+      "find_projects": False,
+      "name": False,
+      "id": False,
+    }
     self.find_projects = find_projects
     self.name = name
     self.id = id
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbFindProjects import ModeldbFindProjects
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+    
+
+    tmp = d.get('find_projects', None)
+    if tmp is not None:
+      d['find_projects'] = ModeldbFindProjects.from_json(tmp)
+    tmp = d.get('name', None)
+    if tmp is not None:
+      d['name'] = tmp
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+
+    return ModeldbFindHydratedProjectsByOrganization(**d)

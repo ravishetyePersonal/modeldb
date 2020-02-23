@@ -1,17 +1,23 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetProjectReadmeResponse(dict):
+class ModeldbGetProjectReadmeResponse(BaseType):
   def __init__(self, readme_text=None):
+    required = {
+      "readme_text": False,
+    }
     self.readme_text = readme_text
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('readme_text', None)
+    if tmp is not None:
+      d['readme_text'] = tmp
+
+    return ModeldbGetProjectReadmeResponse(**d)

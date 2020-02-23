@@ -1,18 +1,29 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetUrlForArtifactResponse(dict):
+class ModeldbGetUrlForArtifactResponse(BaseType):
   def __init__(self, url=None, fields=None):
+    required = {
+      "url": False,
+      "fields": False,
+    }
     self.url = url
     self.fields = fields
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('url', None)
+    if tmp is not None:
+      d['url'] = tmp
+    tmp = d.get('fields', None)
+    if tmp is not None:
+      d['fields'] = {k: tmp for k, tmp in tmp.items()}
+
+    return ModeldbGetUrlForArtifactResponse(**d)

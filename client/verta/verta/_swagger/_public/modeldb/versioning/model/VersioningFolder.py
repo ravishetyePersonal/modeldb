@@ -1,18 +1,31 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class VersioningFolder(dict):
+class VersioningFolder(BaseType):
   def __init__(self, blobs=None, sub_folders=None):
+    required = {
+      "blobs": False,
+      "sub_folders": False,
+    }
     self.blobs = blobs
     self.sub_folders = sub_folders
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .VersioningFolderElement import VersioningFolderElement
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    from .VersioningFolderElement import VersioningFolderElement
+
+
+    tmp = d.get('blobs', None)
+    if tmp is not None:
+      d['blobs'] = [VersioningFolderElement.from_json(tmp) for tmp in tmp]
+    tmp = d.get('sub_folders', None)
+    if tmp is not None:
+      d['sub_folders'] = [VersioningFolderElement.from_json(tmp) for tmp in tmp]
+
+    return VersioningFolder(**d)

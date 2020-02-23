@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetDatasetByIdResponse(dict):
+class ModeldbGetDatasetByIdResponse(BaseType):
   def __init__(self, dataset=None):
+    required = {
+      "dataset": False,
+    }
     self.dataset = dataset
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbDataset import ModeldbDataset
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('dataset', None)
+    if tmp is not None:
+      d['dataset'] = ModeldbDataset.from_json(tmp)
+
+    return ModeldbGetDatasetByIdResponse(**d)

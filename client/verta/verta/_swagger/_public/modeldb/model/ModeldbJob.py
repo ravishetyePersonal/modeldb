@@ -1,7 +1,18 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbJob(dict):
+class ModeldbJob(BaseType):
   def __init__(self, id=None, description=None, start_time=None, end_time=None, metadata=None, job_status=None, job_type=None, owner=None):
+    required = {
+      "id": False,
+      "description": False,
+      "start_time": False,
+      "end_time": False,
+      "metadata": False,
+      "job_status": False,
+      "job_type": False,
+      "owner": False,
+    }
     self.id = id
     self.description = description
     self.start_time = start_time
@@ -11,14 +22,47 @@ class ModeldbJob(dict):
     self.job_type = job_type
     self.owner = owner
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
+    
+    
+    from .CommonKeyValue import CommonKeyValue
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    from .JobStatusEnumJobStatus import JobStatusEnumJobStatus
+
+    from .JobTypeEnumJobType import JobTypeEnumJobType
+
+    
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('description', None)
+    if tmp is not None:
+      d['description'] = tmp
+    tmp = d.get('start_time', None)
+    if tmp is not None:
+      d['start_time'] = tmp
+    tmp = d.get('end_time', None)
+    if tmp is not None:
+      d['end_time'] = tmp
+    tmp = d.get('metadata', None)
+    if tmp is not None:
+      d['metadata'] = [CommonKeyValue.from_json(tmp) for tmp in tmp]
+    tmp = d.get('job_status', None)
+    if tmp is not None:
+      d['job_status'] = JobStatusEnumJobStatus.from_json(tmp)
+    tmp = d.get('job_type', None)
+    if tmp is not None:
+      d['job_type'] = JobTypeEnumJobType.from_json(tmp)
+    tmp = d.get('owner', None)
+    if tmp is not None:
+      d['owner'] = tmp
+
+    return ModeldbJob(**d)

@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbGetExperimentRunCodeVersionResponse(dict):
+class ModeldbGetExperimentRunCodeVersionResponse(BaseType):
   def __init__(self, code_version=None):
+    required = {
+      "code_version": False,
+    }
     self.code_version = code_version
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbCodeVersion import ModeldbCodeVersion
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('code_version', None)
+    if tmp is not None:
+      d['code_version'] = ModeldbCodeVersion.from_json(tmp)
+
+    return ModeldbGetExperimentRunCodeVersionResponse(**d)

@@ -1,19 +1,35 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbDeleteDatasetTags(dict):
+class ModeldbDeleteDatasetTags(BaseType):
   def __init__(self, id=None, tags=None, delete_all=None):
+    required = {
+      "id": False,
+      "tags": False,
+      "delete_all": False,
+    }
     self.id = id
     self.tags = tags
     self.delete_all = delete_all
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    
+    
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('tags', None)
+    if tmp is not None:
+      d['tags'] = [tmp for tmp in tmp]
+    tmp = d.get('delete_all', None)
+    if tmp is not None:
+      d['delete_all'] = tmp
+
+    return ModeldbDeleteDatasetTags(**d)

@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbSetDatasetVisibilty(dict):
+class ModeldbSetDatasetVisibilty(BaseType):
   def __init__(self, id=None, dataset_visibility=None):
+    required = {
+      "id": False,
+      "dataset_visibility": False,
+    }
     self.id = id
     self.dataset_visibility = dataset_visibility
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .DatasetVisibilityEnumDatasetVisibility import DatasetVisibilityEnumDatasetVisibility
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = tmp
+    tmp = d.get('dataset_visibility', None)
+    if tmp is not None:
+      d['dataset_visibility'] = DatasetVisibilityEnumDatasetVisibility.from_json(tmp)
+
+    return ModeldbSetDatasetVisibilty(**d)

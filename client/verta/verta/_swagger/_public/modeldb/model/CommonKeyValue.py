@@ -1,19 +1,37 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class CommonKeyValue(dict):
+class CommonKeyValue(BaseType):
   def __init__(self, key=None, value=None, value_type=None):
+    required = {
+      "key": False,
+      "value": False,
+      "value_type": False,
+    }
     self.key = key
     self.value = value
     self.value_type = value_type
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    
+    from .ProtobufValue import ProtobufValue
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    from .ValueTypeEnumValueType import ValueTypeEnumValueType
+
+
+    tmp = d.get('key', None)
+    if tmp is not None:
+      d['key'] = tmp
+    tmp = d.get('value', None)
+    if tmp is not None:
+      d['value'] = ProtobufValue.from_json(tmp)
+    tmp = d.get('value_type', None)
+    if tmp is not None:
+      d['value_type'] = ValueTypeEnumValueType.from_json(tmp)
+
+    return CommonKeyValue(**d)

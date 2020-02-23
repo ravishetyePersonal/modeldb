@@ -1,18 +1,30 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class MetadataDeleteLabelsRequest(dict):
+class MetadataDeleteLabelsRequest(BaseType):
   def __init__(self, id=None, labels=None):
+    required = {
+      "id": False,
+      "labels": False,
+    }
     self.id = id
     self.labels = labels
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .MetadataIdentificationType import MetadataIdentificationType
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+    
+
+    tmp = d.get('id', None)
+    if tmp is not None:
+      d['id'] = MetadataIdentificationType.from_json(tmp)
+    tmp = d.get('labels', None)
+    if tmp is not None:
+      d['labels'] = [tmp for tmp in tmp]
+
+    return MetadataDeleteLabelsRequest(**d)

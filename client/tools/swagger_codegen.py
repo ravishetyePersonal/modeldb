@@ -55,7 +55,7 @@ def create_api(result_dir, result_package, api_name, content, templates, file_su
             query = []
             path_components = []
             got_body_parameter = False
-            body_type = 'Any'
+            body_type = create_typedef(any=True)
             required = []
 
             for param_def in op_content.get('parameters', []):
@@ -127,7 +127,18 @@ def create_api(result_dir, result_package, api_name, content, templates, file_su
     }
 
     with open(os.path.join(result_dir, 'api', api_name+'Api.'+file_suffix), 'w') as f:
-        f.write(pystache.render(template, info))
+        f.write(pystache.Renderer(partials=load_partials(templates)).render(template, info))
+
+
+def load_partials(templates_folder):
+    ret = {}
+    for _, _, files in os.walk(templates_folder):
+        for f in files:
+            parts = f.split('.')
+            if parts[1] == 'mustache':
+                ret[parts[0]] = open(os.path.join(templates_folder, f)).read()
+
+    return ret
 
 def keyword_safe(s):
     if s in ['type']:
@@ -181,38 +192,50 @@ def create_model(result_dir, result_package, definition_name, definition, enums,
         raise ValueError(definition['type'])
 
     with open(filename, 'w') as f:
-        f.write(pystache.render(template, info))
+        f.write(pystache.Renderer(partials=load_partials(templates)).render(template, info))
+
+def create_typedef(**kwargs):
+    return dict(kwargs, **{
+        'is_list': kwargs.get('is_list', False),
+        'is_basic': kwargs.get('is_basic', False),
+        'is_map': kwargs.get('is_map', False),
+        'string': kwargs.get('string', False),
+        'integer': kwargs.get('integer', False),
+        'double': kwargs.get('double', False),
+        'any': kwargs.get('any', False),
+        'is_custom': kwargs.get('custom', None) is not None,
+    })
 
 
 # TODO: generalize to types besides Scala
 def resolve_type(typedef):
     if '$ref' in typedef:
         ref = typedef['$ref'].split('/')[-1]
-        return capitalize_first(ref)
+        return create_typedef(custom={'name': capitalize_first(ref)})
 
     if 'schema' in typedef:
         return resolve_type(typedef['schema'])
 
     if typedef['type'] == 'string':
-        return 'String'
+        return create_typedef(string=True, is_basic=True)
     elif typedef['type'] == 'boolean':
-        return 'Boolean'
+        return create_typedef(boolean=True, is_basic=True)
     elif typedef['type'] == 'integer':
         if typedef['format'] == 'int32':
-            return 'Integer'
+            return create_typedef(integer=True, is_basic=True)
         else:
             raise ValueError(typedef['format'])
     elif typedef['type'] == 'number':
         if typedef['format'] == 'double':
-            return 'Double'
+            return create_typedef(double=True, is_basic=True)
         else:
             raise ValueError(typedef['format'])
     elif typedef['type'] == 'array':
-        return 'List[' + resolve_type(typedef['items']) + ']'
+        return create_typedef(is_list=True, list_type=resolve_type(typedef['items']))
     elif typedef['type'] == 'object' and len(typedef) == 1:
-        return 'Any'
+        return create_typedef(any=True)
     elif typedef['type'] == 'object' and 'additionalProperties' in typedef and 'properties' not in typedef:
-        return 'Map[String,%s]' % resolve_type(typedef['additionalProperties'])
+        return create_typedef(is_map=True, map_key_type=resolve_type({'type': 'string'}), map_val_type=resolve_type(typedef['additionalProperties']))
     else:
         raise ValueError(typedef['type'])
 

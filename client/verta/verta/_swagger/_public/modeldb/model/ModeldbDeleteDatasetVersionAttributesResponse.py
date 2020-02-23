@@ -1,17 +1,24 @@
 # THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+from verta._swagger.base_type import BaseType
 
-class ModeldbDeleteDatasetVersionAttributesResponse(dict):
+class ModeldbDeleteDatasetVersionAttributesResponse(BaseType):
   def __init__(self, dataset_version=None):
+    required = {
+      "dataset_version": False,
+    }
     self.dataset_version = dataset_version
 
-  def __setattr__(self, name, value):
-    self[name] = value
+    for k, v in required.items():
+      if self[k] is None and v:
+        raise ValueError('attribute {} is required'.format(k))
 
-  def __delattr__(self, name):
-    del self[name]
+  @staticmethod
+  def from_json(d):
+    from .ModeldbDatasetVersion import ModeldbDatasetVersion
 
-  def __getattr__(self, name):
-    if name in self:
-      return self[name]
-    else:
-      raise AttributeError
+
+    tmp = d.get('dataset_version', None)
+    if tmp is not None:
+      d['dataset_version'] = ModeldbDatasetVersion.from_json(tmp)
+
+    return ModeldbDeleteDatasetVersionAttributesResponse(**d)
