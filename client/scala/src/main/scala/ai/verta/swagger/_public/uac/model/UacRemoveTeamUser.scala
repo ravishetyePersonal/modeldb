@@ -3,6 +3,6 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacRemoveTeamUser (
-  teamId: Option[String] = None,
-  shareWith: Option[String] = None
+  team_id: Option[String] = None,
+  share_with: Option[String] = None
 )

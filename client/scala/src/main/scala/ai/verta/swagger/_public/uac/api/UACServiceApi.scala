@@ -36,9 +36,9 @@ class UACServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getCurrentUser()(implicit ec: ExecutionContext): Try[UacUserInfo] = Await.result(getCurrentUserAsync(), Duration.Inf)
 
-  def getUserAsync(userId: String, email: String, username: String)(implicit ec: ExecutionContext): Future[Try[UacUserInfo]] = {
+  def getUserAsync(user_id: String, email: String, username: String)(implicit ec: ExecutionContext): Future[Try[UacUserInfo]] = {
     val __query = Map[String,String](
-      "user_id" -> client.toQuery(userId),
+      "user_id" -> client.toQuery(user_id),
       "email" -> client.toQuery(email),
       "username" -> client.toQuery(username)
     )
@@ -46,7 +46,7 @@ class UACServiceApi(client: Client, val basePath: String = "/v1") {
     return client.request[Any, UacUserInfo]("GET", basePath + s"/uac/getUser", __query, body)
   }
 
-  def getUser(userId: String, email: String, username: String)(implicit ec: ExecutionContext): Try[UacUserInfo] = Await.result(getUserAsync(userId, email, username), Duration.Inf)
+  def getUser(user_id: String, email: String, username: String)(implicit ec: ExecutionContext): Try[UacUserInfo] = Await.result(getUserAsync(user_id, email, username), Duration.Inf)
 
   def getUsersAsync(body: UacGetUsers)(implicit ec: ExecutionContext): Future[Try[UacGetUsersResponse]] = {
     val __query = Map[String,String](

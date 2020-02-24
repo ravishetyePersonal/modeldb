@@ -11,7 +11,7 @@ import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacAction (
   service: Option[ServiceEnumService] = None,
-  roleServiceAction: Option[RoleActionEnumRoleServiceActions] = None,
-  authzServiceAction: Option[AuthzActionEnumAuthzServiceActions] = None,
-  modeldbServiceAction: Option[ModelDBActionEnumModelDBServiceActions] = None
+  role_service_action: Option[RoleActionEnumRoleServiceActions] = None,
+  authz_service_action: Option[AuthzActionEnumAuthzServiceActions] = None,
+  modeldb_service_action: Option[ModelDBActionEnumModelDBServiceActions] = None
 )

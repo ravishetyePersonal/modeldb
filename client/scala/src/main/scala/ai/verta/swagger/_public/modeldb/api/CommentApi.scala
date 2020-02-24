@@ -18,26 +18,26 @@ class CommentApi(client: Client, val basePath: String = "/v1") {
 
   def addExperimentRunComment(body: ModeldbAddComment)(implicit ec: ExecutionContext): Try[ModeldbAddCommentResponse] = Await.result(addExperimentRunCommentAsync(body), Duration.Inf)
 
-  def deleteExperimentRunCommentAsync(id: String, entityId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteCommentResponse]] = {
+  def deleteExperimentRunCommentAsync(id: String, entity_id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteCommentResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "entity_id" -> client.toQuery(entityId)
+      "entity_id" -> client.toQuery(entity_id)
     )
     val body: Any = null
     return client.request[Any, ModeldbDeleteCommentResponse]("DELETE", basePath + s"/comment/deleteExperimentRunComment", __query, body)
   }
 
-  def deleteExperimentRunComment(id: String, entityId: String)(implicit ec: ExecutionContext): Try[ModeldbDeleteCommentResponse] = Await.result(deleteExperimentRunCommentAsync(id, entityId), Duration.Inf)
+  def deleteExperimentRunComment(id: String, entity_id: String)(implicit ec: ExecutionContext): Try[ModeldbDeleteCommentResponse] = Await.result(deleteExperimentRunCommentAsync(id, entity_id), Duration.Inf)
 
-  def getExperimentRunCommentsAsync(entityId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetCommentsResponse]] = {
+  def getExperimentRunCommentsAsync(entity_id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetCommentsResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId)
+      "entity_id" -> client.toQuery(entity_id)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetCommentsResponse]("GET", basePath + s"/comment/getExperimentRunComments", __query, body)
   }
 
-  def getExperimentRunComments(entityId: String)(implicit ec: ExecutionContext): Try[ModeldbGetCommentsResponse] = Await.result(getExperimentRunCommentsAsync(entityId), Duration.Inf)
+  def getExperimentRunComments(entity_id: String)(implicit ec: ExecutionContext): Try[ModeldbGetCommentsResponse] = Await.result(getExperimentRunCommentsAsync(entity_id), Duration.Inf)
 
   def updateExperimentRunCommentAsync(body: ModeldbUpdateComment)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateCommentResponse]] = {
     val __query = Map[String,String](

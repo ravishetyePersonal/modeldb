@@ -13,5 +13,5 @@ case class UacRole (
   id: Option[String] = None,
   name: Option[String] = None,
   scope: Option[UacRoleScope] = None,
-  resourceActionGroups: Option[List[UacResourceActionGroup]] = None
+  resource_action_groups: Option[List[UacResourceActionGroup]] = None
 )

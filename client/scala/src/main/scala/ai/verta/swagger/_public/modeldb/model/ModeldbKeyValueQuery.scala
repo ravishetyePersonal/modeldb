@@ -12,6 +12,6 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 case class ModeldbKeyValueQuery (
   key: Option[String] = None,
   value: Option[ProtobufValue] = None,
-  valueType: Option[ValueTypeEnumValueType] = None,
+  value_type: Option[ValueTypeEnumValueType] = None,
   operator: Option[OperatorEnumOperator] = None
 )

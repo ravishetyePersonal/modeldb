@@ -27,35 +27,35 @@ class OrganizationApi(client: Client, val basePath: String = "/v1") {
 
   def deleteOrganization(body: UacDeleteOrganization)(implicit ec: ExecutionContext): Try[UacDeleteOrganizationResponse] = Await.result(deleteOrganizationAsync(body), Duration.Inf)
 
-  def getOrganizationByIdAsync(orgId: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByIdResponse]] = {
+  def getOrganizationByIdAsync(org_id: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByIdResponse]] = {
     val __query = Map[String,String](
-      "org_id" -> client.toQuery(orgId)
+      "org_id" -> client.toQuery(org_id)
     )
     val body: Any = null
     return client.request[Any, UacGetOrganizationByIdResponse]("GET", basePath + s"/organization/getOrganizationById", __query, body)
   }
 
-  def getOrganizationById(orgId: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByIdResponse] = Await.result(getOrganizationByIdAsync(orgId), Duration.Inf)
+  def getOrganizationById(org_id: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByIdResponse] = Await.result(getOrganizationByIdAsync(org_id), Duration.Inf)
 
-  def getOrganizationByNameAsync(orgName: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByNameResponse]] = {
+  def getOrganizationByNameAsync(org_name: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByNameResponse]] = {
     val __query = Map[String,String](
-      "org_name" -> client.toQuery(orgName)
+      "org_name" -> client.toQuery(org_name)
     )
     val body: Any = null
     return client.request[Any, UacGetOrganizationByNameResponse]("GET", basePath + s"/organization/getOrganizationByName", __query, body)
   }
 
-  def getOrganizationByName(orgName: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByNameResponse] = Await.result(getOrganizationByNameAsync(orgName), Duration.Inf)
+  def getOrganizationByName(org_name: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByNameResponse] = Await.result(getOrganizationByNameAsync(org_name), Duration.Inf)
 
-  def getOrganizationByShortNameAsync(shortName: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByShortNameResponse]] = {
+  def getOrganizationByShortNameAsync(short_name: String)(implicit ec: ExecutionContext): Future[Try[UacGetOrganizationByShortNameResponse]] = {
     val __query = Map[String,String](
-      "short_name" -> client.toQuery(shortName)
+      "short_name" -> client.toQuery(short_name)
     )
     val body: Any = null
     return client.request[Any, UacGetOrganizationByShortNameResponse]("GET", basePath + s"/organization/getOrganizationByShortName", __query, body)
   }
 
-  def getOrganizationByShortName(shortName: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByShortNameResponse] = Await.result(getOrganizationByShortNameAsync(shortName), Duration.Inf)
+  def getOrganizationByShortName(short_name: String)(implicit ec: ExecutionContext): Try[UacGetOrganizationByShortNameResponse] = Await.result(getOrganizationByShortNameAsync(short_name), Duration.Inf)
 
   def listMyOrganizationsAsync()(implicit ec: ExecutionContext): Future[Try[UacListMyOrganizationsResponse]] = {
     val __query = Map[String,String](
@@ -66,25 +66,25 @@ class OrganizationApi(client: Client, val basePath: String = "/v1") {
 
   def listMyOrganizations()(implicit ec: ExecutionContext): Try[UacListMyOrganizationsResponse] = Await.result(listMyOrganizationsAsync(), Duration.Inf)
 
-  def listTeamsAsync(orgId: String)(implicit ec: ExecutionContext): Future[Try[UacListTeamsResponse]] = {
+  def listTeamsAsync(org_id: String)(implicit ec: ExecutionContext): Future[Try[UacListTeamsResponse]] = {
     val __query = Map[String,String](
-      "org_id" -> client.toQuery(orgId)
+      "org_id" -> client.toQuery(org_id)
     )
     val body: Any = null
     return client.request[Any, UacListTeamsResponse]("GET", basePath + s"/organization/listTeams", __query, body)
   }
 
-  def listTeams(orgId: String)(implicit ec: ExecutionContext): Try[UacListTeamsResponse] = Await.result(listTeamsAsync(orgId), Duration.Inf)
+  def listTeams(org_id: String)(implicit ec: ExecutionContext): Try[UacListTeamsResponse] = Await.result(listTeamsAsync(org_id), Duration.Inf)
 
-  def listUsersAsync(orgId: String)(implicit ec: ExecutionContext): Future[Try[UacListUsersResponse]] = {
+  def listUsersAsync(org_id: String)(implicit ec: ExecutionContext): Future[Try[UacListUsersResponse]] = {
     val __query = Map[String,String](
-      "org_id" -> client.toQuery(orgId)
+      "org_id" -> client.toQuery(org_id)
     )
     val body: Any = null
     return client.request[Any, UacListUsersResponse]("GET", basePath + s"/organization/listUsers", __query, body)
   }
 
-  def listUsers(orgId: String)(implicit ec: ExecutionContext): Try[UacListUsersResponse] = Await.result(listUsersAsync(orgId), Duration.Inf)
+  def listUsers(org_id: String)(implicit ec: ExecutionContext): Try[UacListUsersResponse] = Await.result(listUsersAsync(org_id), Duration.Inf)
 
   def removeUserAsync(body: UacRemoveUser)(implicit ec: ExecutionContext): Future[Try[UacRemoveUserResponse]] = {
     val __query = Map[String,String](

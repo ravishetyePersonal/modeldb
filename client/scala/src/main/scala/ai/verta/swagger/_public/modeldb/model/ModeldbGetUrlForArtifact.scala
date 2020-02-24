@@ -13,5 +13,5 @@ case class ModeldbGetUrlForArtifact (
   id: Option[String] = None,
   key: Option[String] = None,
   method: Option[String] = None,
-  artifactType: Option[ArtifactTypeEnumArtifactType] = None
+  artifact_type: Option[ArtifactTypeEnumArtifactType] = None
 )

@@ -38,16 +38,16 @@ class JobApi(client: Client, val basePath: String = "/v1") {
 
   def getJob(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetJobResponse] = Await.result(getJobAsync(id), Duration.Inf)
 
-  def updateJobAsync(id: String, endTime: String, jobStatus: String)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateJobResponse]] = {
+  def updateJobAsync(id: String, end_time: String, job_status: String)(implicit ec: ExecutionContext): Future[Try[ModeldbUpdateJobResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "end_time" -> client.toQuery(endTime),
-      "job_status" -> client.toQuery(jobStatus)
+      "end_time" -> client.toQuery(end_time),
+      "job_status" -> client.toQuery(job_status)
     )
     val body: Any = null
     return client.request[Any, ModeldbUpdateJobResponse]("GET", basePath + s"/job/updateJob", __query, body)
   }
 
-  def updateJob(id: String, endTime: String, jobStatus: String)(implicit ec: ExecutionContext): Try[ModeldbUpdateJobResponse] = Await.result(updateJobAsync(id, endTime, jobStatus), Duration.Inf)
+  def updateJob(id: String, end_time: String, job_status: String)(implicit ec: ExecutionContext): Try[ModeldbUpdateJobResponse] = Await.result(updateJobAsync(id, end_time, job_status), Duration.Inf)
 
 }

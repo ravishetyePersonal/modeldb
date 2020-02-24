@@ -22,9 +22,9 @@ import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbQueryDatasetVersionInfo (
   query: Option[String] = None,
-  queryTemplate: Option[String] = None,
-  queryParameters: Option[List[ModeldbQueryParameter]] = None,
-  dataSourceUri: Option[String] = None,
-  executionTimestamp: Option[String] = None,
-  numRecords: Option[String] = None
+  query_template: Option[String] = None,
+  query_parameters: Option[List[ModeldbQueryParameter]] = None,
+  data_source_uri: Option[String] = None,
+  execution_timestamp: Option[String] = None,
+  num_records: Option[String] = None
 )

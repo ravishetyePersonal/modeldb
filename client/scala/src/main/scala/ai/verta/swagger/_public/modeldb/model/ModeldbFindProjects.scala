@@ -10,12 +10,12 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbFindProjects (
-  projectIds: Option[List[String]] = None,
+  project_ids: Option[List[String]] = None,
   predicates: Option[List[ModeldbKeyValueQuery]] = None,
-  idsOnly: Option[Boolean] = None,
-  workspaceName: Option[String] = None,
-  pageNumber: Option[Integer] = None,
-  pageLimit: Option[Integer] = None,
+  ids_only: Option[Boolean] = None,
+  workspace_name: Option[String] = None,
+  page_number: Option[Integer] = None,
+  page_limit: Option[Integer] = None,
   ascending: Option[Boolean] = None,
-  sortKey: Option[String] = None
+  sort_key: Option[String] = None
 )

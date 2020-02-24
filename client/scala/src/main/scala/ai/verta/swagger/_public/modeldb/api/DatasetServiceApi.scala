@@ -45,17 +45,17 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteDataset(body: ModeldbDeleteDataset)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetResponse] = Await.result(deleteDatasetAsync(body), Duration.Inf)
 
-  def deleteDatasetAttributesAsync(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetAttributesResponse]] = {
+  def deleteDatasetAttributesAsync(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "delete_all" -> client.toQuery(deleteAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "delete_all" -> client.toQuery(delete_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbDeleteDatasetAttributesResponse]("DELETE", basePath + s"/dataset/deleteDatasetAttributes", __query, body)
   }
 
-  def deleteDatasetAttributes(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetAttributesResponse] = Await.result(deleteDatasetAttributesAsync(id, attributeKeys, deleteAll), Duration.Inf)
+  def deleteDatasetAttributes(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteDatasetAttributesResponse] = Await.result(deleteDatasetAttributesAsync(id, attribute_keys, delete_all), Duration.Inf)
 
   def deleteDatasetTagsAsync(body: ModeldbDeleteDatasetTags)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteDatasetTagsResponse]] = {
     val __query = Map[String,String](
@@ -84,31 +84,31 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def findDatasets(body: ModeldbFindDatasets)(implicit ec: ExecutionContext): Try[ModeldbFindDatasetsResponse] = Await.result(findDatasetsAsync(body), Duration.Inf)
 
-  def getAllDatasetsAsync(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAllDatasetsResponse]] = {
+  def getAllDatasetsAsync(page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String, workspace_name: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAllDatasetsResponse]] = {
     val __query = Map[String,String](
-      "page_number" -> client.toQuery(pageNumber),
-      "page_limit" -> client.toQuery(pageLimit),
+      "page_number" -> client.toQuery(page_number),
+      "page_limit" -> client.toQuery(page_limit),
       "ascending" -> client.toQuery(ascending),
-      "sort_key" -> client.toQuery(sortKey),
-      "workspace_name" -> client.toQuery(workspaceName)
+      "sort_key" -> client.toQuery(sort_key),
+      "workspace_name" -> client.toQuery(workspace_name)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetAllDatasetsResponse]("GET", basePath + s"/dataset/getAllDatasets", __query, body)
   }
 
-  def getAllDatasets(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetAllDatasetsResponse] = Await.result(getAllDatasetsAsync(pageNumber, pageLimit, ascending, sortKey, workspaceName), Duration.Inf)
+  def getAllDatasets(page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String, workspace_name: String)(implicit ec: ExecutionContext): Try[ModeldbGetAllDatasetsResponse] = Await.result(getAllDatasetsAsync(page_number, page_limit, ascending, sort_key, workspace_name), Duration.Inf)
 
-  def getDatasetAttributesAsync(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
+  def getDatasetAttributesAsync(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "get_all" -> client.toQuery(getAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "get_all" -> client.toQuery(get_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetAttributesResponse]("GET", basePath + s"/dataset/getDatasetAttributes", __query, body)
   }
 
-  def getDatasetAttributes(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getDatasetAttributesAsync(id, attributeKeys, getAll), Duration.Inf)
+  def getDatasetAttributes(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getDatasetAttributesAsync(id, attribute_keys, get_all), Duration.Inf)
 
   def getDatasetByIdAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetDatasetByIdResponse]] = {
     val __query = Map[String,String](
@@ -120,16 +120,16 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getDatasetById(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetDatasetByIdResponse] = Await.result(getDatasetByIdAsync(id), Duration.Inf)
 
-  def getDatasetByNameAsync(name: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetDatasetByNameResponse]] = {
+  def getDatasetByNameAsync(name: String, workspace_name: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetDatasetByNameResponse]] = {
     val __query = Map[String,String](
       "name" -> client.toQuery(name),
-      "workspace_name" -> client.toQuery(workspaceName)
+      "workspace_name" -> client.toQuery(workspace_name)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetDatasetByNameResponse]("GET", basePath + s"/dataset/getDatasetByName", __query, body)
   }
 
-  def getDatasetByName(name: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetDatasetByNameResponse] = Await.result(getDatasetByNameAsync(name, workspaceName), Duration.Inf)
+  def getDatasetByName(name: String, workspace_name: String)(implicit ec: ExecutionContext): Try[ModeldbGetDatasetByNameResponse] = Await.result(getDatasetByNameAsync(name, workspace_name), Duration.Inf)
 
   def getDatasetTagsAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetTagsResponse]] = {
     val __query = Map[String,String](
@@ -150,15 +150,15 @@ class DatasetServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getExperimentRunByDataset(body: ModeldbGetExperimentRunByDataset)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentRunByDatasetResponse] = Await.result(getExperimentRunByDatasetAsync(body), Duration.Inf)
 
-  def getLastExperimentByDatasetIdAsync(datasetId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbLastExperimentByDatasetIdResponse]] = {
+  def getLastExperimentByDatasetIdAsync(dataset_id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbLastExperimentByDatasetIdResponse]] = {
     val __query = Map[String,String](
-      "dataset_id" -> client.toQuery(datasetId)
+      "dataset_id" -> client.toQuery(dataset_id)
     )
     val body: Any = null
     return client.request[Any, ModeldbLastExperimentByDatasetIdResponse]("GET", basePath + s"/dataset/getLastExperimentByDatasetId", __query, body)
   }
 
-  def getLastExperimentByDatasetId(datasetId: String)(implicit ec: ExecutionContext): Try[ModeldbLastExperimentByDatasetIdResponse] = Await.result(getLastExperimentByDatasetIdAsync(datasetId), Duration.Inf)
+  def getLastExperimentByDatasetId(dataset_id: String)(implicit ec: ExecutionContext): Try[ModeldbLastExperimentByDatasetIdResponse] = Await.result(getLastExperimentByDatasetIdAsync(dataset_id), Duration.Inf)
 
   def setDatasetVisibilityAsync(body: ModeldbSetDatasetVisibilty)(implicit ec: ExecutionContext): Future[Try[ModeldbSetDatasetVisibiltyResponse]] = {
     val __query = Map[String,String](

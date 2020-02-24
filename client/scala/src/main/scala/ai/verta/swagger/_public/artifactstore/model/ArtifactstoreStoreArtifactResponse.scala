@@ -3,6 +3,6 @@ package ai.verta.swagger._public.artifactstore.model
 
 
 case class ArtifactstoreStoreArtifactResponse (
-  artifactStoreKey: Option[String] = None,
-  artifactStorePath: Option[String] = None
+  artifact_store_key: Option[String] = None,
+  artifact_store_path: Option[String] = None
 )

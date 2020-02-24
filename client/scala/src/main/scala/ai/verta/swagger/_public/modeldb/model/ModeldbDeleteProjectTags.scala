@@ -12,5 +12,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 case class ModeldbDeleteProjectTags (
   id: Option[String] = None,
   tags: Option[List[String]] = None,
-  deleteAll: Option[Boolean] = None
+  delete_all: Option[Boolean] = None
 )

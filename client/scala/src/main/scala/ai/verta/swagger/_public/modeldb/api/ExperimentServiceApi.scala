@@ -72,17 +72,17 @@ class ExperimentServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteExperiment(body: ModeldbDeleteExperiment)(implicit ec: ExecutionContext): Try[ModeldbDeleteExperimentResponse] = Await.result(deleteExperimentAsync(body), Duration.Inf)
 
-  def deleteExperimentAttributesAsync(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteExperimentAttributesResponse]] = {
+  def deleteExperimentAttributesAsync(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteExperimentAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "delete_all" -> client.toQuery(deleteAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "delete_all" -> client.toQuery(delete_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbDeleteExperimentAttributesResponse]("DELETE", basePath + s"/experiment/deleteExperimentAttributes", __query, body)
   }
 
-  def deleteExperimentAttributes(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteExperimentAttributesResponse] = Await.result(deleteExperimentAttributesAsync(id, attributeKeys, deleteAll), Duration.Inf)
+  def deleteExperimentAttributes(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteExperimentAttributesResponse] = Await.result(deleteExperimentAttributesAsync(id, attribute_keys, delete_all), Duration.Inf)
 
   def deleteExperimentTagAsync(body: ModeldbDeleteExperimentTag)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteExperimentTagResponse]] = {
     val __query = Map[String,String](
@@ -131,17 +131,17 @@ class ExperimentServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getArtifacts(id: String, key: String)(implicit ec: ExecutionContext): Try[ModeldbGetArtifactsResponse] = Await.result(getArtifactsAsync(id, key), Duration.Inf)
 
-  def getExperimentAttributesAsync(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
+  def getExperimentAttributesAsync(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "get_all" -> client.toQuery(getAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "get_all" -> client.toQuery(get_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetAttributesResponse]("GET", basePath + s"/experiment/getExperimentAttributes", __query, body)
   }
 
-  def getExperimentAttributes(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getExperimentAttributesAsync(id, attributeKeys, getAll), Duration.Inf)
+  def getExperimentAttributes(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getExperimentAttributesAsync(id, attribute_keys, get_all), Duration.Inf)
 
   def getExperimentByIdAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentByIdResponse]] = {
     val __query = Map[String,String](
@@ -153,16 +153,16 @@ class ExperimentServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getExperimentById(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentByIdResponse] = Await.result(getExperimentByIdAsync(id), Duration.Inf)
 
-  def getExperimentByNameAsync(name: String, projectId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentByNameResponse]] = {
+  def getExperimentByNameAsync(name: String, project_id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentByNameResponse]] = {
     val __query = Map[String,String](
       "name" -> client.toQuery(name),
-      "project_id" -> client.toQuery(projectId)
+      "project_id" -> client.toQuery(project_id)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetExperimentByNameResponse]("GET", basePath + s"/experiment/getExperimentByName", __query, body)
   }
 
-  def getExperimentByName(name: String, projectId: String)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentByNameResponse] = Await.result(getExperimentByNameAsync(name, projectId), Duration.Inf)
+  def getExperimentByName(name: String, project_id: String)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentByNameResponse] = Await.result(getExperimentByNameAsync(name, project_id), Duration.Inf)
 
   def getExperimentCodeVersionAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentCodeVersionResponse]] = {
     val __query = Map[String,String](
@@ -184,19 +184,19 @@ class ExperimentServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getExperimentTags(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetTagsResponse] = Await.result(getExperimentTagsAsync(id), Duration.Inf)
 
-  def getExperimentsInProjectAsync(projectId: String, pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentsInProjectResponse]] = {
+  def getExperimentsInProjectAsync(project_id: String, page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetExperimentsInProjectResponse]] = {
     val __query = Map[String,String](
-      "project_id" -> client.toQuery(projectId),
-      "page_number" -> client.toQuery(pageNumber),
-      "page_limit" -> client.toQuery(pageLimit),
+      "project_id" -> client.toQuery(project_id),
+      "page_number" -> client.toQuery(page_number),
+      "page_limit" -> client.toQuery(page_limit),
       "ascending" -> client.toQuery(ascending),
-      "sort_key" -> client.toQuery(sortKey)
+      "sort_key" -> client.toQuery(sort_key)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetExperimentsInProjectResponse]("GET", basePath + s"/experiment/getExperimentsInProject", __query, body)
   }
 
-  def getExperimentsInProject(projectId: String, pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentsInProjectResponse] = Await.result(getExperimentsInProjectAsync(projectId, pageNumber, pageLimit, ascending, sortKey), Duration.Inf)
+  def getExperimentsInProject(project_id: String, page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String)(implicit ec: ExecutionContext): Try[ModeldbGetExperimentsInProjectResponse] = Await.result(getExperimentsInProjectAsync(project_id, page_number, page_limit, ascending, sort_key), Duration.Inf)
 
   def getUrlForArtifactAsync(body: ModeldbGetUrlForArtifact)(implicit ec: ExecutionContext): Future[Try[ModeldbGetUrlForArtifactResponse]] = {
     val __query = Map[String,String](

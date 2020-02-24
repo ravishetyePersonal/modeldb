@@ -37,17 +37,17 @@ class RoleServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getBindingRoleById(id: String)(implicit ec: ExecutionContext): Try[UacGetRoleBindingByIdResponse] = Await.result(getBindingRoleByIdAsync(id), Duration.Inf)
 
-  def getRoleBindingByNameAsync(name: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Future[Try[UacGetRoleBindingByNameResponse]] = {
+  def getRoleBindingByNameAsync(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Future[Try[UacGetRoleBindingByNameResponse]] = {
     val __query = Map[String,String](
       "name" -> client.toQuery(name),
-      "scope.org_id" -> client.toQuery(scopeOrgId),
-      "scope.team_id" -> client.toQuery(scopeTeamId)
+      "scope.org_id" -> client.toQuery(scope_org_id),
+      "scope.team_id" -> client.toQuery(scope_team_id)
     )
     val body: Any = null
     return client.request[Any, UacGetRoleBindingByNameResponse]("GET", basePath + s"/role/getRoleBindingByName", __query, body)
   }
 
-  def getRoleBindingByName(name: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Try[UacGetRoleBindingByNameResponse] = Await.result(getRoleBindingByNameAsync(name, scopeOrgId, scopeTeamId), Duration.Inf)
+  def getRoleBindingByName(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacGetRoleBindingByNameResponse] = Await.result(getRoleBindingByNameAsync(name, scope_org_id, scope_team_id), Duration.Inf)
 
   def getRoleByIdAsync(id: String)(implicit ec: ExecutionContext): Future[Try[UacGetRoleByIdResponse]] = {
     val __query = Map[String,String](
@@ -59,40 +59,40 @@ class RoleServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getRoleById(id: String)(implicit ec: ExecutionContext): Try[UacGetRoleByIdResponse] = Await.result(getRoleByIdAsync(id), Duration.Inf)
 
-  def getRoleByNameAsync(name: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Future[Try[UacGetRoleByNameResponse]] = {
+  def getRoleByNameAsync(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Future[Try[UacGetRoleByNameResponse]] = {
     val __query = Map[String,String](
       "name" -> client.toQuery(name),
-      "scope.org_id" -> client.toQuery(scopeOrgId),
-      "scope.team_id" -> client.toQuery(scopeTeamId)
+      "scope.org_id" -> client.toQuery(scope_org_id),
+      "scope.team_id" -> client.toQuery(scope_team_id)
     )
     val body: Any = null
     return client.request[Any, UacGetRoleByNameResponse]("GET", basePath + s"/role/getRoleByName", __query, body)
   }
 
-  def getRoleByName(name: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Try[UacGetRoleByNameResponse] = Await.result(getRoleByNameAsync(name, scopeOrgId, scopeTeamId), Duration.Inf)
+  def getRoleByName(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacGetRoleByNameResponse] = Await.result(getRoleByNameAsync(name, scope_org_id, scope_team_id), Duration.Inf)
 
-  def listRoleBindingsAsync(entityId: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Future[Try[UacListRoleBindingsResponse]] = {
+  def listRoleBindingsAsync(entity_id: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Future[Try[UacListRoleBindingsResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId),
-      "scope.org_id" -> client.toQuery(scopeOrgId),
-      "scope.team_id" -> client.toQuery(scopeTeamId)
+      "entity_id" -> client.toQuery(entity_id),
+      "scope.org_id" -> client.toQuery(scope_org_id),
+      "scope.team_id" -> client.toQuery(scope_team_id)
     )
     val body: Any = null
     return client.request[Any, UacListRoleBindingsResponse]("GET", basePath + s"/role/listRoleBindings", __query, body)
   }
 
-  def listRoleBindings(entityId: String, scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Try[UacListRoleBindingsResponse] = Await.result(listRoleBindingsAsync(entityId, scopeOrgId, scopeTeamId), Duration.Inf)
+  def listRoleBindings(entity_id: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacListRoleBindingsResponse] = Await.result(listRoleBindingsAsync(entity_id, scope_org_id, scope_team_id), Duration.Inf)
 
-  def listRolesAsync(scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Future[Try[UacListRolesResponse]] = {
+  def listRolesAsync(scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Future[Try[UacListRolesResponse]] = {
     val __query = Map[String,String](
-      "scope.org_id" -> client.toQuery(scopeOrgId),
-      "scope.team_id" -> client.toQuery(scopeTeamId)
+      "scope.org_id" -> client.toQuery(scope_org_id),
+      "scope.team_id" -> client.toQuery(scope_team_id)
     )
     val body: Any = null
     return client.request[Any, UacListRolesResponse]("GET", basePath + s"/role/listRoles", __query, body)
   }
 
-  def listRoles(scopeOrgId: String, scopeTeamId: String)(implicit ec: ExecutionContext): Try[UacListRolesResponse] = Await.result(listRolesAsync(scopeOrgId, scopeTeamId), Duration.Inf)
+  def listRoles(scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacListRolesResponse] = Await.result(listRolesAsync(scope_org_id, scope_team_id), Duration.Inf)
 
   def setRoleAsync(body: UacSetRole)(implicit ec: ExecutionContext): Future[Try[UacSetRoleResponse]] = {
     val __query = Map[String,String](

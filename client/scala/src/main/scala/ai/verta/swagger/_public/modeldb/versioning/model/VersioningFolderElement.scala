@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningFolderElement (
-  elementName: Option[String] = None,
-  createdByCommit: Option[String] = None
+  element_name: Option[String] = None,
+  created_by_commit: Option[String] = None
 )

@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectReadme (
   id: Option[String] = None,
-  readmeText: Option[String] = None
+  readme_text: Option[String] = None
 )

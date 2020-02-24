@@ -11,9 +11,9 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetSummaryResponse (
   name: Option[String] = None,
-  lastUpdatedTime: Option[String] = None,
-  totalExperiment: Option[String] = None,
-  totalExperimentRuns: Option[String] = None,
-  lastModifiedExperimentrunSummary: Option[ModeldbLastModifiedExperimentRunSummary] = None,
+  last_updated_time: Option[String] = None,
+  total_experiment: Option[String] = None,
+  total_experiment_runs: Option[String] = None,
+  last_modified_experimentRun_summary: Option[ModeldbLastModifiedExperimentRunSummary] = None,
   metrics: Option[List[ModeldbMetricsSummary]] = None
 )

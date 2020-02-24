@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetDatasetByNameResponse (
-  datasetByUser: Option[ModeldbDataset] = None,
-  sharedDatasets: Option[List[ModeldbDataset]] = None
+  dataset_by_user: Option[ModeldbDataset] = None,
+  shared_datasets: Option[List[ModeldbDataset]] = None
 )

@@ -11,8 +11,8 @@ import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacResources (
   service: Option[ServiceEnumService] = None,
-  resourceIds: Option[List[String]] = None,
-  roleServiceResourceType: Option[RoleResourceEnumRoleServiceResourceTypes] = None,
-  authzServiceResourceType: Option[AuthzResourceEnumAuthzServiceResourceTypes] = None,
-  modeldbServiceResourceType: Option[ModelResourceEnumModelDBServiceResourceTypes] = None
+  resource_ids: Option[List[String]] = None,
+  role_service_resource_type: Option[RoleResourceEnumRoleServiceResourceTypes] = None,
+  authz_service_resource_type: Option[AuthzResourceEnumAuthzServiceResourceTypes] = None,
+  modeldb_service_resource_type: Option[ModelResourceEnumModelDBServiceResourceTypes] = None
 )

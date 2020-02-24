@@ -3,5 +3,5 @@ package ai.verta.swagger._public.uac.model
 
 
 case class UacListTeamUserResponse (
-  userIds: Option[List[String]] = None
+  user_ids: Option[List[String]] = None
 )

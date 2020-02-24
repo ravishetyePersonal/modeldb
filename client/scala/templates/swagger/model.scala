@@ -18,10 +18,10 @@ case class {{class_name}} (
 )
 {{/__object_flag}}
 {{#__enum_flag}}
-object {{class_name}} extends Enumeration {
-  type {{class_name}} = Value
+object {{class_name}} {
+  type {{class_name}} = String
   {{#enum_values}}
-  val {{name}} = Value("{{name}}")
+  val {{name}}: {{class_name}} = "{{name}}"
   {{/enum_values}}
 }
 {{/__enum_flag}}

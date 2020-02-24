@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogProjectCodeVersion (
   id: Option[String] = None,
-  codeVersion: Option[ModeldbCodeVersion] = None
+  code_version: Option[ModeldbCodeVersion] = None
 )

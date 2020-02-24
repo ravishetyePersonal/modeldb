@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLastModifiedExperimentRunSummary (
   name: Option[String] = None,
-  lastUpdatedTime: Option[String] = None
+  last_updated_time: Option[String] = None
 )

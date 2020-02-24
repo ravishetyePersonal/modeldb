@@ -21,10 +21,10 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbCollaboratorUserInfo (
-  collaboratorUserInfo: Option[UacUserInfo] = None,
-  collaboratorOrganization: Option[UacOrganization] = None,
-  collaboratorTeam: Option[UacTeam] = None,
-  collaboratorType: Option[CollaboratorTypeEnumCollaboratorType] = None,
-  canDeploy: Option[TernaryEnumTernary] = None,
-  entityType: Option[EntitiesEnumEntitiesTypes] = None
+  collaborator_user_info: Option[UacUserInfo] = None,
+  collaborator_organization: Option[UacOrganization] = None,
+  collaborator_team: Option[UacTeam] = None,
+  collaborator_type: Option[CollaboratorTypeEnumCollaboratorType] = None,
+  can_deploy: Option[TernaryEnumTernary] = None,
+  entity_type: Option[EntitiesEnumEntitiesTypes] = None
 )

@@ -15,5 +15,5 @@ case class UacRoleBinding (
   scope: Option[UacRoleScope] = None,
   entities: Option[List[UacEntities]] = None,
   resources: Option[List[UacResources]] = None,
-  roleId: Option[String] = None
+  role_id: Option[String] = None
 )

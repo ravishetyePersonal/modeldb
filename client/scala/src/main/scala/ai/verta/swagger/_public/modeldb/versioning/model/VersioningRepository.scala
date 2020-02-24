@@ -6,8 +6,8 @@ import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorksp
 case class VersioningRepository (
   id: Option[String] = None,
   name: Option[String] = None,
-  dateCreated: Option[String] = None,
-  dateUpdated: Option[String] = None,
-  workspaceId: Option[String] = None,
-  workspaceType: Option[WorkspaceTypeEnumWorkspaceType] = None
+  date_created: Option[String] = None,
+  date_updated: Option[String] = None,
+  workspace_id: Option[String] = None,
+  workspace_type: Option[WorkspaceTypeEnumWorkspaceType] = None
 )

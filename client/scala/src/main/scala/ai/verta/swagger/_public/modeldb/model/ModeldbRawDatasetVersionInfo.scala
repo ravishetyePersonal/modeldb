@@ -23,7 +23,7 @@ import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 case class ModeldbRawDatasetVersionInfo (
   size: Option[String] = None,
   features: Option[List[String]] = None,
-  numRecords: Option[String] = None,
-  objectPath: Option[String] = None,
+  num_records: Option[String] = None,
+  object_path: Option[String] = None,
   checksum: Option[String] = None
 )

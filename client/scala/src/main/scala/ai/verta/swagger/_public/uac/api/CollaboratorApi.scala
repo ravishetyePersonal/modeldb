@@ -27,50 +27,50 @@ class CollaboratorApi(client: Client, val basePath: String = "/v1") {
 
   def addOrUpdateProjectCollaborator(body: UacAddCollaboratorRequest)(implicit ec: ExecutionContext): Try[UacAddCollaboratorRequestResponse] = Await.result(addOrUpdateProjectCollaboratorAsync(body), Duration.Inf)
 
-  def getDatasetCollaboratorsAsync(entityId: String)(implicit ec: ExecutionContext): Future[Try[UacGetCollaboratorResponse]] = {
+  def getDatasetCollaboratorsAsync(entity_id: String)(implicit ec: ExecutionContext): Future[Try[UacGetCollaboratorResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId)
+      "entity_id" -> client.toQuery(entity_id)
     )
     val body: Any = null
     return client.request[Any, UacGetCollaboratorResponse]("GET", basePath + s"/collaborator/getDatasetCollaborators", __query, body)
   }
 
-  def getDatasetCollaborators(entityId: String)(implicit ec: ExecutionContext): Try[UacGetCollaboratorResponse] = Await.result(getDatasetCollaboratorsAsync(entityId), Duration.Inf)
+  def getDatasetCollaborators(entity_id: String)(implicit ec: ExecutionContext): Try[UacGetCollaboratorResponse] = Await.result(getDatasetCollaboratorsAsync(entity_id), Duration.Inf)
 
-  def getProjectCollaboratorsAsync(entityId: String)(implicit ec: ExecutionContext): Future[Try[UacGetCollaboratorResponse]] = {
+  def getProjectCollaboratorsAsync(entity_id: String)(implicit ec: ExecutionContext): Future[Try[UacGetCollaboratorResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId)
+      "entity_id" -> client.toQuery(entity_id)
     )
     val body: Any = null
     return client.request[Any, UacGetCollaboratorResponse]("GET", basePath + s"/collaborator/getProjectCollaborators", __query, body)
   }
 
-  def getProjectCollaborators(entityId: String)(implicit ec: ExecutionContext): Try[UacGetCollaboratorResponse] = Await.result(getProjectCollaboratorsAsync(entityId), Duration.Inf)
+  def getProjectCollaborators(entity_id: String)(implicit ec: ExecutionContext): Try[UacGetCollaboratorResponse] = Await.result(getProjectCollaboratorsAsync(entity_id), Duration.Inf)
 
-  def removeDatasetCollaboratorAsync(entityId: String, shareWith: String, dateDeleted: String, authzEntityType: String)(implicit ec: ExecutionContext): Future[Try[UacRemoveCollaboratorResponse]] = {
+  def removeDatasetCollaboratorAsync(entity_id: String, share_with: String, date_deleted: String, authz_entity_type: String)(implicit ec: ExecutionContext): Future[Try[UacRemoveCollaboratorResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId),
-      "share_with" -> client.toQuery(shareWith),
-      "date_deleted" -> client.toQuery(dateDeleted),
-      "authz_entity_type" -> client.toQuery(authzEntityType)
+      "entity_id" -> client.toQuery(entity_id),
+      "share_with" -> client.toQuery(share_with),
+      "date_deleted" -> client.toQuery(date_deleted),
+      "authz_entity_type" -> client.toQuery(authz_entity_type)
     )
     val body: Any = null
     return client.request[Any, UacRemoveCollaboratorResponse]("DELETE", basePath + s"/collaborator/removeDatasetCollaborator", __query, body)
   }
 
-  def removeDatasetCollaborator(entityId: String, shareWith: String, dateDeleted: String, authzEntityType: String)(implicit ec: ExecutionContext): Try[UacRemoveCollaboratorResponse] = Await.result(removeDatasetCollaboratorAsync(entityId, shareWith, dateDeleted, authzEntityType), Duration.Inf)
+  def removeDatasetCollaborator(entity_id: String, share_with: String, date_deleted: String, authz_entity_type: String)(implicit ec: ExecutionContext): Try[UacRemoveCollaboratorResponse] = Await.result(removeDatasetCollaboratorAsync(entity_id, share_with, date_deleted, authz_entity_type), Duration.Inf)
 
-  def removeProjectCollaboratorAsync(entityId: String, shareWith: String, dateDeleted: String, authzEntityType: String)(implicit ec: ExecutionContext): Future[Try[UacRemoveCollaboratorResponse]] = {
+  def removeProjectCollaboratorAsync(entity_id: String, share_with: String, date_deleted: String, authz_entity_type: String)(implicit ec: ExecutionContext): Future[Try[UacRemoveCollaboratorResponse]] = {
     val __query = Map[String,String](
-      "entity_id" -> client.toQuery(entityId),
-      "share_with" -> client.toQuery(shareWith),
-      "date_deleted" -> client.toQuery(dateDeleted),
-      "authz_entity_type" -> client.toQuery(authzEntityType)
+      "entity_id" -> client.toQuery(entity_id),
+      "share_with" -> client.toQuery(share_with),
+      "date_deleted" -> client.toQuery(date_deleted),
+      "authz_entity_type" -> client.toQuery(authz_entity_type)
     )
     val body: Any = null
     return client.request[Any, UacRemoveCollaboratorResponse]("DELETE", basePath + s"/collaborator/removeProjectCollaborator", __query, body)
   }
 
-  def removeProjectCollaborator(entityId: String, shareWith: String, dateDeleted: String, authzEntityType: String)(implicit ec: ExecutionContext): Try[UacRemoveCollaboratorResponse] = Await.result(removeProjectCollaboratorAsync(entityId, shareWith, dateDeleted, authzEntityType), Duration.Inf)
+  def removeProjectCollaborator(entity_id: String, share_with: String, date_deleted: String, authz_entity_type: String)(implicit ec: ExecutionContext): Try[UacRemoveCollaboratorResponse] = Await.result(removeProjectCollaboratorAsync(entity_id, share_with, date_deleted, authz_entity_type), Duration.Inf)
 
 }

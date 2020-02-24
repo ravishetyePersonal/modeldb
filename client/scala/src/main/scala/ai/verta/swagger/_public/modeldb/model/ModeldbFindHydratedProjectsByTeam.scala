@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbFindHydratedProjectsByTeam (
-  findProjects: Option[ModeldbFindProjects] = None,
-  orgId: Option[String] = None,
+  find_projects: Option[ModeldbFindProjects] = None,
+  org_id: Option[String] = None,
   name: Option[String] = None,
   id: Option[String] = None
 )

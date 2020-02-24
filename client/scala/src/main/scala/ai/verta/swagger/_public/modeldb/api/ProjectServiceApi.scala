@@ -72,17 +72,17 @@ class ProjectServiceApi(client: Client, val basePath: String = "/v1") {
 
   def deleteProject(body: ModeldbDeleteProject)(implicit ec: ExecutionContext): Try[ModeldbDeleteProjectResponse] = Await.result(deleteProjectAsync(body), Duration.Inf)
 
-  def deleteProjectAttributesAsync(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteProjectAttributesResponse]] = {
+  def deleteProjectAttributesAsync(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteProjectAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "delete_all" -> client.toQuery(deleteAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "delete_all" -> client.toQuery(delete_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbDeleteProjectAttributesResponse]("DELETE", basePath + s"/project/deleteProjectAttributes", __query, body)
   }
 
-  def deleteProjectAttributes(id: String, attributeKeys: List[String], deleteAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteProjectAttributesResponse] = Await.result(deleteProjectAttributesAsync(id, attributeKeys, deleteAll), Duration.Inf)
+  def deleteProjectAttributes(id: String, attribute_keys: List[String], delete_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbDeleteProjectAttributesResponse] = Await.result(deleteProjectAttributesAsync(id, attribute_keys, delete_all), Duration.Inf)
 
   def deleteProjectTagAsync(body: ModeldbDeleteProjectTag)(implicit ec: ExecutionContext): Future[Try[ModeldbDeleteProjectTagResponse]] = {
     val __query = Map[String,String](
@@ -131,17 +131,17 @@ class ProjectServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getArtifacts(id: String, key: String)(implicit ec: ExecutionContext): Try[ModeldbGetArtifactsResponse] = Await.result(getArtifactsAsync(id, key), Duration.Inf)
 
-  def getProjectAttributesAsync(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
+  def getProjectAttributesAsync(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Future[Try[ModeldbGetAttributesResponse]] = {
     val __query = Map[String,String](
       "id" -> client.toQuery(id),
-      "attribute_keys" -> client.toQuery(attributeKeys),
-      "get_all" -> client.toQuery(getAll)
+      "attribute_keys" -> client.toQuery(attribute_keys),
+      "get_all" -> client.toQuery(get_all)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetAttributesResponse]("GET", basePath + s"/project/getProjectAttributes", __query, body)
   }
 
-  def getProjectAttributes(id: String, attributeKeys: List[String], getAll: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getProjectAttributesAsync(id, attributeKeys, getAll), Duration.Inf)
+  def getProjectAttributes(id: String, attribute_keys: List[String], get_all: Boolean)(implicit ec: ExecutionContext): Try[ModeldbGetAttributesResponse] = Await.result(getProjectAttributesAsync(id, attribute_keys, get_all), Duration.Inf)
 
   def getProjectByIdAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectByIdResponse]] = {
     val __query = Map[String,String](
@@ -153,16 +153,16 @@ class ProjectServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getProjectById(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetProjectByIdResponse] = Await.result(getProjectByIdAsync(id), Duration.Inf)
 
-  def getProjectByNameAsync(name: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectByNameResponse]] = {
+  def getProjectByNameAsync(name: String, workspace_name: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectByNameResponse]] = {
     val __query = Map[String,String](
       "name" -> client.toQuery(name),
-      "workspace_name" -> client.toQuery(workspaceName)
+      "workspace_name" -> client.toQuery(workspace_name)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetProjectByNameResponse]("GET", basePath + s"/project/getProjectByName", __query, body)
   }
 
-  def getProjectByName(name: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetProjectByNameResponse] = Await.result(getProjectByNameAsync(name, workspaceName), Duration.Inf)
+  def getProjectByName(name: String, workspace_name: String)(implicit ec: ExecutionContext): Try[ModeldbGetProjectByNameResponse] = Await.result(getProjectByNameAsync(name, workspace_name), Duration.Inf)
 
   def getProjectCodeVersionAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectCodeVersionResponse]] = {
     val __query = Map[String,String](
@@ -204,30 +204,30 @@ class ProjectServiceApi(client: Client, val basePath: String = "/v1") {
 
   def getProjectTags(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetTagsResponse] = Await.result(getProjectTagsAsync(id), Duration.Inf)
 
-  def getProjectsAsync(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectsResponse]] = {
+  def getProjectsAsync(page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String, workspace_name: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetProjectsResponse]] = {
     val __query = Map[String,String](
-      "page_number" -> client.toQuery(pageNumber),
-      "page_limit" -> client.toQuery(pageLimit),
+      "page_number" -> client.toQuery(page_number),
+      "page_limit" -> client.toQuery(page_limit),
       "ascending" -> client.toQuery(ascending),
-      "sort_key" -> client.toQuery(sortKey),
-      "workspace_name" -> client.toQuery(workspaceName)
+      "sort_key" -> client.toQuery(sort_key),
+      "workspace_name" -> client.toQuery(workspace_name)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetProjectsResponse]("GET", basePath + s"/project/getProjects", __query, body)
   }
 
-  def getProjects(pageNumber: Integer, pageLimit: Integer, ascending: Boolean, sortKey: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetProjectsResponse] = Await.result(getProjectsAsync(pageNumber, pageLimit, ascending, sortKey, workspaceName), Duration.Inf)
+  def getProjects(page_number: Integer, page_limit: Integer, ascending: Boolean, sort_key: String, workspace_name: String)(implicit ec: ExecutionContext): Try[ModeldbGetProjectsResponse] = Await.result(getProjectsAsync(page_number, page_limit, ascending, sort_key, workspace_name), Duration.Inf)
 
-  def getPublicProjectsAsync(userId: String, workspaceName: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetPublicProjectsResponse]] = {
+  def getPublicProjectsAsync(user_id: String, workspace_name: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetPublicProjectsResponse]] = {
     val __query = Map[String,String](
-      "user_id" -> client.toQuery(userId),
-      "workspace_name" -> client.toQuery(workspaceName)
+      "user_id" -> client.toQuery(user_id),
+      "workspace_name" -> client.toQuery(workspace_name)
     )
     val body: Any = null
     return client.request[Any, ModeldbGetPublicProjectsResponse]("GET", basePath + s"/project/getPublicProjects", __query, body)
   }
 
-  def getPublicProjects(userId: String, workspaceName: String)(implicit ec: ExecutionContext): Try[ModeldbGetPublicProjectsResponse] = Await.result(getPublicProjectsAsync(userId, workspaceName), Duration.Inf)
+  def getPublicProjects(user_id: String, workspace_name: String)(implicit ec: ExecutionContext): Try[ModeldbGetPublicProjectsResponse] = Await.result(getPublicProjectsAsync(user_id, workspace_name), Duration.Inf)
 
   def getSummaryAsync(entityId: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetSummaryResponse]] = {
     val __query = Map[String,String](

@@ -3,6 +3,6 @@ package ai.verta.swagger._public.artifactstore.model
 
 
 case class ArtifactstoreStoreArtifactWithStreamResponse (
-  cloudFileKey: Option[String] = None,
-  cloudFilePath: Option[String] = None
+  cloud_file_key: Option[String] = None,
+  cloud_file_path: Option[String] = None
 )

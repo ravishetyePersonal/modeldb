@@ -26,11 +26,11 @@ case class ModeldbDataset (
   owner: Option[String] = None,
   description: Option[String] = None,
   tags: Option[List[String]] = None,
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
-  datasetType: Option[DatasetTypeEnumDatasetType] = None,
+  dataset_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  dataset_type: Option[DatasetTypeEnumDatasetType] = None,
   attributes: Option[List[CommonKeyValue]] = None,
-  timeCreated: Option[String] = None,
-  timeUpdated: Option[String] = None,
-  workspaceId: Option[String] = None,
-  workspaceType: Option[WorkspaceTypeEnumWorkspaceType] = None
+  time_created: Option[String] = None,
+  time_updated: Option[String] = None,
+  workspace_id: Option[String] = None,
+  workspace_type: Option[WorkspaceTypeEnumWorkspaceType] = None
 )

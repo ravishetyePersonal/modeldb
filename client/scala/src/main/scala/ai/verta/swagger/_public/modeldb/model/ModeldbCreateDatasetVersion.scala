@@ -9,16 +9,16 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCreateDatasetVersion (
-  datasetId: Option[String] = None,
-  parentId: Option[String] = None,
+  dataset_id: Option[String] = None,
+  parent_id: Option[String] = None,
   description: Option[String] = None,
   tags: Option[List[String]] = None,
-  datasetVersionVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
-  datasetType: Option[DatasetTypeEnumDatasetType] = None,
+  dataset_version_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  dataset_type: Option[DatasetTypeEnumDatasetType] = None,
   attributes: Option[List[CommonKeyValue]] = None,
   version: Option[String] = None,
-  rawDatasetVersionInfo: Option[ModeldbRawDatasetVersionInfo] = None,
-  pathDatasetVersionInfo: Option[ModeldbPathDatasetVersionInfo] = None,
-  queryDatasetVersionInfo: Option[ModeldbQueryDatasetVersionInfo] = None,
-  timeCreated: Option[String] = None
+  raw_dataset_version_info: Option[ModeldbRawDatasetVersionInfo] = None,
+  path_dataset_version_info: Option[ModeldbPathDatasetVersionInfo] = None,
+  query_dataset_version_info: Option[ModeldbQueryDatasetVersionInfo] = None,
+  time_created: Option[String] = None
 )

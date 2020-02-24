@@ -13,5 +13,5 @@ case class ModeldbGitSnapshot (
   filepaths: Option[List[String]] = None,
   repo: Option[String] = None,
   hash: Option[String] = None,
-  isDirty: Option[TernaryEnumTernary] = None
+  is_dirty: Option[TernaryEnumTernary] = None
 )

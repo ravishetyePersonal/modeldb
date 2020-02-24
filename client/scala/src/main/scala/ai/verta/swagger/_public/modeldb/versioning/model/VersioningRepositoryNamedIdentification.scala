@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorksp
 
 case class VersioningRepositoryNamedIdentification (
   name: Option[String] = None,
-  workspaceName: Option[String] = None
+  workspace_name: Option[String] = None
 )

@@ -1,8 +1,8 @@
 import Dependencies._
 
-ThisBuild / scalaVersion     := "2.11.12"
-ThisBuild / version          := "1.0.0"
-ThisBuild / organization     := "ai.verta"
+ThisBuild / scalaVersion := "2.11.12"
+ThisBuild / version := "1.0.0"
+ThisBuild / organization := "ai.verta"
 ThisBuild / organizationName := "verta"
 
 lazy val root = (project in file("."))
@@ -27,7 +27,7 @@ scalacOptions := Seq(
   "-feature"
 )
 
-publishArtifact in (Compile, packageDoc) := false
+publishArtifact in(Compile, packageDoc) := false
 
 // Uncomment the following for publishing to Sonatype.
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for more detail.

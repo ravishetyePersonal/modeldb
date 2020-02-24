@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbMetricsSummary (
   key: Option[String] = None,
-  minValue: Option[Double] = None,
-  maxValue: Option[Double] = None
+  min_value: Option[Double] = None,
+  max_value: Option[Double] = None
 )

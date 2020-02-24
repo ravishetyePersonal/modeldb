@@ -9,10 +9,10 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 case class ModeldbJob (
   id: Option[String] = None,
   description: Option[String] = None,
-  startTime: Option[String] = None,
-  endTime: Option[String] = None,
+  start_time: Option[String] = None,
+  end_time: Option[String] = None,
   metadata: Option[List[CommonKeyValue]] = None,
-  jobStatus: Option[JobStatusEnumJobStatus] = None,
-  jobType: Option[JobTypeEnumJobType] = None,
+  job_status: Option[JobStatusEnumJobStatus] = None,
+  job_type: Option[JobTypeEnumJobType] = None,
   owner: Option[String] = None
 )

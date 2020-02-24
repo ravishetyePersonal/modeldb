@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorksp
 
 case class VersioningListTagsRequestResponse (
   tags: Option[List[String]] = None,
-  totalRecords: Option[String] = None
+  total_records: Option[String] = None
 )

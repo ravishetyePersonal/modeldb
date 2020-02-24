@@ -8,5 +8,5 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteExperimentRunAttributesResponse (
-  experimentRun: Option[ModeldbExperimentRun] = None
+  experiment_run: Option[ModeldbExperimentRun] = None
 )

@@ -12,5 +12,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbFindDatasetsResponse (
   datasets: Option[List[ModeldbDataset]] = None,
-  totalRecords: Option[String] = None
+  total_records: Option[String] = None
 )

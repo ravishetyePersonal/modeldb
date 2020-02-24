@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectShortName (
   id: Option[String] = None,
-  shortName: Option[String] = None
+  short_name: Option[String] = None
 )

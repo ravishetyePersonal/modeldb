@@ -1,30 +1,44 @@
 package ai.verta.swagger.client
 
+import java.net.{URI, URLEncoder}
+
 import net.liftweb.json.Serialization.write
 import net.liftweb.json.{DefaultFormats, parse}
-import sttp.client.asynchttpclient.future.AsyncHttpClientFutureBackend
 import sttp.client._
+import sttp.client.asynchttpclient.future.AsyncHttpClientFutureBackend
 import sttp.model._
-import java.net.URI
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class HttpClient(val host: String, val headers: Map[String, String]) extends Client {
   implicit val formats = DefaultFormats
   implicit val sttpBackend = AsyncHttpClientFutureBackend()
 
+  private def urlEncodeUTF8(s: String) = {
+    URLEncoder.encode(s, "UTF-8")
+  }
+
+  private def urlEncodeUTF8(q: Map[String, String]): String = {
+    if (q.isEmpty) "" else
+      q
+        .map(entry => urlEncodeUTF8(entry._1) + "=" + urlEncodeUTF8(entry._2))
+        .reduce((p1, p2) => p1 + "&" + p2)
+  }
+
   def request[T1, T2](method: String, path: String, query: Map[String, String], body: T1)(implicit ec: ExecutionContext, m: Manifest[T2]): Future[Try[T2]] = {
     val request = if (body != null) basicRequest.body(write(body)) else basicRequest
 
-    val uriPath = Uri(new URI(host + path))
+    val queryString = urlEncodeUTF8(query)
+    val uriPath = if (query.isEmpty) Uri(new URI(host + path)) else Uri(new URI(host + path + "?" + queryString))
 
     val request2 = method match {
       case "GET" => request.get(uriPath)
       case "POST" => request.post(uriPath)
       case "PUT" => request.put(uriPath)
       case "DELETE" => request.delete(uriPath)
-      case other => request.get(uriPath) // TODO: exception
+      case _ => throw new IllegalArgumentException(s"unknown method $method")
     }
 
     val futureResponse = request2.headers(headers).send()
@@ -41,9 +55,7 @@ class HttpClient(val host: String, val headers: Map[String, String]) extends Cli
     })
   }
 
-  def toQuery[T](value: T): String = {
-    return ""
-  }
+  def toQuery[T](value: T): String = value.toString
 
-  def toQuery(value: String) = value
+  def close(): Unit = Await.result(sttpBackend.close(), Duration.Inf)
 }

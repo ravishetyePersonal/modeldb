@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.model.LineageEntryEnumLineageEntryType._
 
 case class ModeldbLineageEntry (
   `type`: Option[LineageEntryEnumLineageEntryType] = None,
-  externalId: Option[String] = None
+  external_id: Option[String] = None
 )

@@ -22,14 +22,14 @@ import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbExperiment (
   id: Option[String] = None,
-  projectId: Option[String] = None,
+  project_id: Option[String] = None,
   name: Option[String] = None,
   description: Option[String] = None,
-  dateCreated: Option[String] = None,
-  dateUpdated: Option[String] = None,
+  date_created: Option[String] = None,
+  date_updated: Option[String] = None,
   attributes: Option[List[CommonKeyValue]] = None,
   tags: Option[List[String]] = None,
   owner: Option[String] = None,
-  codeVersionSnapshot: Option[ModeldbCodeVersion] = None,
+  code_version_snapshot: Option[ModeldbCodeVersion] = None,
   artifacts: Option[List[ModeldbArtifact]] = None
 )

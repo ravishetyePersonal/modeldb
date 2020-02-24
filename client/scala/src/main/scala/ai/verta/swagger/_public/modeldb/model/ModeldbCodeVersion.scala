@@ -10,7 +10,7 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCodeVersion (
-  gitSnapshot: Option[ModeldbGitSnapshot] = None,
-  codeArchive: Option[ModeldbArtifact] = None,
-  dateLogged: Option[String] = None
+  git_snapshot: Option[ModeldbGitSnapshot] = None,
+  code_archive: Option[ModeldbArtifact] = None,
+  date_logged: Option[String] = None
 )

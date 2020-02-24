@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorksp
 
 case class VersioningFolder (
   blobs: Option[List[VersioningFolderElement]] = None,
-  subFolders: Option[List[VersioningFolderElement]] = None
+  sub_folders: Option[List[VersioningFolderElement]] = None
 )

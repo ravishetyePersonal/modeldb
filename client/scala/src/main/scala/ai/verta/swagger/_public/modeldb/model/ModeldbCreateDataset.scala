@@ -15,8 +15,8 @@ case class ModeldbCreateDataset (
   description: Option[String] = None,
   tags: Option[List[String]] = None,
   attributes: Option[List[CommonKeyValue]] = None,
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
-  datasetType: Option[DatasetTypeEnumDatasetType] = None,
-  workspaceName: Option[String] = None,
-  timeCreated: Option[String] = None
+  dataset_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  dataset_type: Option[DatasetTypeEnumDatasetType] = None,
+  workspace_name: Option[String] = None,
+  time_created: Option[String] = None
 )

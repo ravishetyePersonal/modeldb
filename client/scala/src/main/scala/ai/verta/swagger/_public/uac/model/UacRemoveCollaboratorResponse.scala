@@ -14,5 +14,5 @@ import ai.verta.swagger._public.uac.model.UacShareViaEnum._
 
 case class UacRemoveCollaboratorResponse (
   status: Option[Boolean] = None,
-  selfAllowedActions: Option[List[UacAction]] = None
+  self_allowed_actions: Option[List[UacAction]] = None
 )

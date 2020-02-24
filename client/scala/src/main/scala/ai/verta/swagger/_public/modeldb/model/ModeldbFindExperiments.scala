@@ -21,12 +21,12 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbFindExperiments (
-  projectId: Option[String] = None,
-  experimentIds: Option[List[String]] = None,
+  project_id: Option[String] = None,
+  experiment_ids: Option[List[String]] = None,
   predicates: Option[List[ModeldbKeyValueQuery]] = None,
-  idsOnly: Option[Boolean] = None,
-  pageNumber: Option[Integer] = None,
-  pageLimit: Option[Integer] = None,
+  ids_only: Option[Boolean] = None,
+  page_number: Option[Integer] = None,
+  page_limit: Option[Integer] = None,
   ascending: Option[Boolean] = None,
-  sortKey: Option[String] = None
+  sort_key: Option[String] = None
 )

@@ -21,6 +21,6 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbGetHydratedDatasetByNameResponse (
-  hydratedDatasetByUser: Option[ModeldbHydratedDataset] = None,
-  sharedHydratedDatasets: Option[List[ModeldbHydratedDataset]] = None
+  hydrated_dataset_by_user: Option[ModeldbHydratedDataset] = None,
+  shared_hydrated_datasets: Option[List[ModeldbHydratedDataset]] = None
 )

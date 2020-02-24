@@ -9,5 +9,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbFindExperimentsResponse (
   experiments: Option[List[ModeldbExperiment]] = None,
-  totalRecords: Option[String] = None
+  total_records: Option[String] = None
 )

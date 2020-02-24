@@ -22,9 +22,9 @@ import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbComment (
   id: Option[String] = None,
-  userId: Option[String] = None,
-  dateTime: Option[String] = None,
+  user_id: Option[String] = None,
+  date_time: Option[String] = None,
   message: Option[String] = None,
-  userInfo: Option[UacUserInfo] = None,
-  vertaId: Option[String] = None
+  user_info: Option[UacUserInfo] = None,
+  verta_id: Option[String] = None
 )

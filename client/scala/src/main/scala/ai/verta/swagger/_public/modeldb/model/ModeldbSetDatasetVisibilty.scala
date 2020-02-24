@@ -12,5 +12,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetDatasetVisibilty (
   id: Option[String] = None,
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility] = None
+  dataset_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None
 )

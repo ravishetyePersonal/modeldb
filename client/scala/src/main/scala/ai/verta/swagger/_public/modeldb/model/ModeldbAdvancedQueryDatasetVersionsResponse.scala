@@ -21,6 +21,6 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbAdvancedQueryDatasetVersionsResponse (
-  hydratedDatasetVersions: Option[List[ModeldbHydratedDatasetVersion]] = None,
-  totalRecords: Option[String] = None
+  hydrated_dataset_versions: Option[List[ModeldbHydratedDatasetVersion]] = None,
+  total_records: Option[String] = None
 )

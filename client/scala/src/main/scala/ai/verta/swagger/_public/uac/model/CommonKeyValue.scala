@@ -7,5 +7,5 @@ import ai.verta.swagger._public.uac.model.ProtobufNullValue._
 case class CommonKeyValue (
   key: Option[String] = None,
   value: Option[ProtobufValue] = None,
-  valueType: Option[ValueTypeEnumValueType] = None
+  value_type: Option[ValueTypeEnumValueType] = None
 )

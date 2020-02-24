@@ -14,9 +14,9 @@ case class ModeldbCreateProject (
   description: Option[String] = None,
   attributes: Option[List[CommonKeyValue]] = None,
   tags: Option[List[String]] = None,
-  readmeText: Option[String] = None,
-  projectVisibility: Option[ModeldbProjectVisibility] = None,
+  readme_text: Option[String] = None,
+  project_visibility: Option[ModeldbProjectVisibility] = None,
   artifacts: Option[List[ModeldbArtifact]] = None,
-  workspaceName: Option[String] = None,
-  dateCreated: Option[String] = None
+  workspace_name: Option[String] = None,
+  date_created: Option[String] = None
 )

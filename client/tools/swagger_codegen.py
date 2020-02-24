@@ -148,16 +148,23 @@ def keyword_safe(s):
 
 def create_models(result_dir, result_package, content, templates, file_suffix, case):
     enums = []
+    os.makedirs(os.path.join(result_dir, 'model'), exist_ok=True)
     for k, v in content['definitions'].items():
         if 'enum' in v:
             enums.append(capitalize_first(k))
     for k, v in content['definitions'].items():
         create_model(result_dir, result_package, k, v, enums, templates, file_suffix, case)
+    if len(content['definitions']) == 0:
+        filename = os.path.join(result_dir, 'model', 'dummy.'+file_suffix)
+        with open(filename, 'w') as f:
+            f.write('''
+// THIS FILE IS AUTO-GENERATED. DO NOT EDIT
+package ai.verta.swagger.%s.model
+''' % result_package)
 
 def create_model(result_dir, result_package, definition_name, definition, enums, templates, file_suffix, case):
     capitalized_definition_name = capitalize_first(definition_name)
     filename = os.path.join(result_dir, 'model', capitalized_definition_name+'.'+file_suffix)
-    os.makedirs(os.path.join(result_dir, 'model'), exist_ok=True)
 
     with open(os.path.join(templates, 'model.'+file_suffix)) as f:
         template = f.read()

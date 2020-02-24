@@ -23,11 +23,11 @@ import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 case class UacOrganization (
   id: Option[String] = None,
   name: Option[String] = None,
-  shortName: Option[String] = None,
+  short_name: Option[String] = None,
   description: Option[String] = None,
-  ownerId: Option[String] = None,
-  createdTimestamp: Option[String] = None,
-  updatedTimestamp: Option[String] = None,
-  globalCollaboratorType: Option[CollaboratorTypeEnumCollaboratorType] = None,
-  globalCanDeploy: Option[TernaryEnumTernary] = None
+  owner_id: Option[String] = None,
+  created_timestamp: Option[String] = None,
+  updated_timestamp: Option[String] = None,
+  global_collaborator_type: Option[CollaboratorTypeEnumCollaboratorType] = None,
+  global_can_deploy: Option[TernaryEnumTernary] = None
 )

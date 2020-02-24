@@ -24,5 +24,5 @@ case class ModeldbDatasetPartInfo (
   path: Option[String] = None,
   size: Option[String] = None,
   checksum: Option[String] = None,
-  lastModifiedAtSource: Option[String] = None
+  last_modified_at_source: Option[String] = None
 )

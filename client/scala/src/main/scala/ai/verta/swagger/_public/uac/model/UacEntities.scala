@@ -10,7 +10,7 @@ import ai.verta.swagger._public.uac.model.RoleResourceEnumRoleServiceResourceTyp
 import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacEntities (
-  userIds: Option[List[String]] = None,
-  orgIds: Option[List[String]] = None,
-  teamIds: Option[List[String]] = None
+  user_ids: Option[List[String]] = None,
+  org_ids: Option[List[String]] = None,
+  team_ids: Option[List[String]] = None
 )

@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetProjectWorkspace (
   id: Option[String] = None,
-  workspaceName: Option[String] = None
+  workspace_name: Option[String] = None
 )
