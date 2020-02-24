@@ -8,14 +8,14 @@ import ai.verta.swagger.client.ClientSet
 
 import scala.concurrent.ExecutionContext
 
-class Experiment(clientSet: ClientSet, proj: Project, expt: ModeldbExperiment) {
+class Experiment(clientSet: ClientSet, val proj: Project, val expt: ModeldbExperiment) {
   def getOrCreateExperimentRun(name: String = "")(implicit ec: ExecutionContext) = {
     val internalName = if (name == "") LocalDateTime.now.format(DateTimeFormatter.ofPattern("YYYY/MM/dd HH:mm:ss.SSSS")) else name
 
     GetOrCreateEntity.getOrCreate[ExperimentRun](
       get = () => {
         clientSet.experimentRunService.getExperimentRunByName(internalName, expt.id.get)
-          .map(r => if (r.experiment_run.isEmpty) null else new ExperimentRun(clientSet, r.experiment_run.get))
+          .map(r => if (r.experiment_run.isEmpty) null else new ExperimentRun(clientSet, this, r.experiment_run.get))
       },
       create = () => {
         clientSet.experimentRunService.createExperimentRun(ModeldbCreateExperimentRun(
@@ -23,7 +23,7 @@ class Experiment(clientSet: ClientSet, proj: Project, expt: ModeldbExperiment) {
           experiment_id = expt.id,
           project_id = proj.proj.id // TODO: remove since we can get from the experiment
         ))
-          .map(r => if (r.experiment_run.isEmpty) null else new ExperimentRun(clientSet, r.experiment_run.get))
+          .map(r => if (r.experiment_run.isEmpty) null else new ExperimentRun(clientSet, this, r.experiment_run.get))
       }
     )
   }
