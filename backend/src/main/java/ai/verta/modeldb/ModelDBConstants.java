@@ -193,4 +193,6 @@ public interface ModelDBConstants {
   // Versioning constant
   String BLOBS = "blobs";
   String SUBTREES = "subtrees";
+  String REPOSITORY_ID = "repository_id";
+  String TAG = "tag";
 }

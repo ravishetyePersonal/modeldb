@@ -437,7 +437,7 @@ public class App implements ApplicationContextAware {
         new VersioningServiceImpl(
             authService,
             roleService,
-            new RepositoryDAORdbImpl(),
+            new RepositoryDAORdbImpl(authService, roleService),
             null,
             experimentDAO,
             experimentRunDAO,
