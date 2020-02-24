@@ -1244,12 +1244,7 @@ public class ProjectDAORdbImpl implements ProjectDAO {
       if (!accessibleProjectIds.isEmpty()) {
         Expression<String> exp = projectRoot.get(ModelDBConstants.ID);
         Predicate predicate2 = exp.in(accessibleProjectIds);
-        finalPredicatesList.add(
-            builder.or(
-                predicate2,
-                builder.equal(
-                    projectRoot.get(ModelDBConstants.PROJECT_VISIBILITY),
-                    ProjectVisibility.PUBLIC.getNumber())));
+        finalPredicatesList.add(predicate2);
       }
 
       String entityName = "projectEntity";
