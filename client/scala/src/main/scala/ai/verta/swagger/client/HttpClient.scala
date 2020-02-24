@@ -2,6 +2,7 @@ package ai.verta.swagger.client
 
 import java.net.{URI, URLEncoder}
 
+import ai.verta.swagger.client.type_hints.CommonKeyValue
 import net.liftweb.json.Serialization.write
 import net.liftweb.json.{DefaultFormats, parse}
 import sttp.client._
@@ -13,7 +14,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class HttpClient(val host: String, val headers: Map[String, String]) extends Client {
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats.withHints(CommonKeyValue.hints)
   implicit val sttpBackend = AsyncHttpClientFutureBackend()
 
   private def urlEncodeUTF8(s: String) = {

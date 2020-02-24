@@ -12,6 +12,9 @@ object Hello extends App {
     client.getOrCreateProject("scala test")
       .flatMap(_.getOrCreateExperiment("experiment"))
       .flatMap(_.getOrCreateExperimentRun())
+      .map(run => {
+        run.hyperparameters += (("foo", 2), ("bar", "baz"))
+      })
       .get
   } finally {
     client.close()
