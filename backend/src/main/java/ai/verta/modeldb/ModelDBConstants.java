@@ -195,4 +195,7 @@ public interface ModelDBConstants {
   String SUBTREES = "subtrees";
   String REPOSITORY_ID = "repository_id";
   String TAG = "tag";
+  String ENTITY_HASH = "entity_hash";
+  String ENTITY_TYPE = "entity_type";
+  String LABEL = "label";
 }
