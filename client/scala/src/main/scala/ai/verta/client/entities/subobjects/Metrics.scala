@@ -1,4 +1,4 @@
-package ai.verta.client.entities.run_objects
+package ai.verta.client.entities.subobjects
 
 import ai.verta.client.entities.ExperimentRun
 import ai.verta.client.entities.utils.KVHandler

@@ -1,13 +1,36 @@
 package ai.verta.client.entities
 
-import ai.verta.client.entities.run_objects._
+import ai.verta.client.entities.subobjects._
 import ai.verta.swagger._public.modeldb.model._
 import ai.verta.swagger.client.ClientSet
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
-class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: ModeldbExperimentRun) {
+class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: ModeldbExperimentRun) extends Taggable {
+  def tags()(implicit ec: ExecutionContext) = new Tags(clientSet, ec, this)
+
+  override def getTags()(implicit ec: ExecutionContext): Try[List[String]] = {
+    clientSet.experimentRunService.getExperimentRunTags(run.id.get)
+      .map(r => r.tags.getOrElse(Nil))
+  }
+
+  override def delTags(tags: List[String])(implicit ec: ExecutionContext): Try[Unit] = {
+    clientSet.experimentRunService.deleteExperimentRunTags(ModeldbDeleteExperimentRunTags(
+      id = run.id,
+      tags = Some(tags)
+    ))
+      .map(_ => {})
+  }
+
+  override def addTags(tags: List[String])(implicit ec: ExecutionContext): Try[Unit] = {
+    clientSet.experimentRunService.addExperimentRunTags(ModeldbAddExperimentRunTags(
+      id = run.id,
+      tags = Some(tags)
+    ))
+      .map(_ => {})
+  }
+
   // TODO: add overwrite
   def hyperparameters()(implicit ec: ExecutionContext) = new Hyperparameters(clientSet, ec, this)
 
