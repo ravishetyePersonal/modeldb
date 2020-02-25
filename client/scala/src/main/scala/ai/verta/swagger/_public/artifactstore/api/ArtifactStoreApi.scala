@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.artifactstore.model._
 
-class ArtifactStoreApi(client: Client, val basePath: String = "/v1") {
+class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
   def deleteArtifactAsync(body: ArtifactstoreDeleteArtifact)(implicit ec: ExecutionContext): Future[Try[ArtifactstoreDeleteArtifactResponse]] = {
     val __query = Map[String,String](
     )

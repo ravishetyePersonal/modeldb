@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.modeldb.model._
 
-class CommentApi(client: Client, val basePath: String = "/v1") {
+class CommentApi(client: HttpClient, val basePath: String = "/v1") {
   def addExperimentRunCommentAsync(body: ModeldbAddComment)(implicit ec: ExecutionContext): Future[Try[ModeldbAddCommentResponse]] = {
     val __query = Map[String,String](
     )

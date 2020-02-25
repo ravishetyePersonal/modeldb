@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.modeldb.model._
 
-class DatasetVersionServiceApi(client: Client, val basePath: String = "/v1") {
+class DatasetVersionServiceApi(client: HttpClient, val basePath: String = "/v1") {
   def addDatasetVersionAttributesAsync(body: ModeldbAddDatasetVersionAttributes)(implicit ec: ExecutionContext): Future[Try[ModeldbAddDatasetVersionAttributesResponse]] = {
     val __query = Map[String,String](
     )

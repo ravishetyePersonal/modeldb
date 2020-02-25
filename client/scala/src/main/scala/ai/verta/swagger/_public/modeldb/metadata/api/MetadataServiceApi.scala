@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.modeldb.metadata.model._
 
-class MetadataServiceApi(client: Client, val basePath: String = "/v1") {
+class MetadataServiceApi(client: HttpClient, val basePath: String = "/v1") {
   def AddLabelsAsync(body: MetadataAddLabelsRequest)(implicit ec: ExecutionContext): Future[Try[MetadataAddLabelsRequestResponse]] = {
     val __query = Map[String,String](
     )

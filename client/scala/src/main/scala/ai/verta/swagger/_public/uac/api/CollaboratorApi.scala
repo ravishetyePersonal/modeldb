@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.uac.model._
 
-class CollaboratorApi(client: Client, val basePath: String = "/v1") {
+class CollaboratorApi(client: HttpClient, val basePath: String = "/v1") {
   def addOrUpdateDatasetCollaboratorAsync(body: UacAddCollaboratorRequest)(implicit ec: ExecutionContext): Future[Try[UacAddCollaboratorRequestResponse]] = {
     val __query = Map[String,String](
     )

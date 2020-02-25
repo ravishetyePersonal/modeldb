@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger._public.uac.model._
 
-class TeamApi(client: Client, val basePath: String = "/v1") {
+class TeamApi(client: HttpClient, val basePath: String = "/v1") {
   def addUserAsync(body: UacAddTeamUser)(implicit ec: ExecutionContext): Future[Try[UacAddTeamUserResponse]] = {
     val __query = Map[String,String](
     )
