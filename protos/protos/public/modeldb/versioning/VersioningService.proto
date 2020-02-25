@@ -9,17 +9,6 @@ import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
 
-// Data structure used to compute the SHA of a commit
-message InternalCommit {
-    repeated string parent_shas = 1;
-
-    string message = 2;
-    uint64 date_created = 3;
-    string author = 4;
-
-    string folder_sha = 1000;
-}
-
 // Base commit for the versioning system
 // DO NOT USE TO COMPUTE SHA
 message Commit {
@@ -33,6 +22,8 @@ message Commit {
     uint64 date_created = 3;
     // ID of the user who created the commit.
     string author = 4;
+
+    string folder_sha = 5;
 }
 
 // Data structure used to compute the SHA of a folder
