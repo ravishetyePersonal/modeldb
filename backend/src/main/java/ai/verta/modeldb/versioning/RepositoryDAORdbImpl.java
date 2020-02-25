@@ -56,6 +56,14 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(" = :repositoryName ")
           .toString();
 
+  private static final String GET_REPOSITORY_COUNT_PREFIX_HQL =
+      new StringBuilder("Select count(*) From ")
+          .append(RepositoryEntity.class.getSimpleName())
+          .append(" ")
+          .append(SHORT_NAME)
+          .append(" where ")
+          .toString();
+
   private static final String GET_REPOSITORY_PREFIX_HQL =
       new StringBuilder("From ")
           .append(RepositoryEntity.class.getSimpleName())
@@ -251,7 +259,20 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       List list = query.list();
       ListRepositoriesRequest.Response.Builder builder =
           ListRepositoriesRequest.Response.newBuilder();
+      query =
+          ModelDBHibernateUtil.getWorkspaceEntityQuery(
+              session,
+              SHORT_NAME,
+              GET_REPOSITORY_COUNT_PREFIX_HQL,
+              "repositoryName",
+              null,
+              ModelDBConstants.WORKSPACE_ID,
+              workspaceDTO.getWorkspaceId(),
+              workspaceDTO.getWorkspaceType(),
+              false);
       list.forEach((o) -> builder.addRepositories(((RepositoryEntity) o).toProto()));
+      final Long value = (Long) query.uniqueResult();
+      builder.setTotalRecords(value);
       return builder.build();
     } catch (ModelDBException e) {
       LOGGER.warn(e.getMessage(), e);
