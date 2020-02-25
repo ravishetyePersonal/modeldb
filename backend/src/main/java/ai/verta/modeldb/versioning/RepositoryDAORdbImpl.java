@@ -251,7 +251,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       List list = query.list();
       ListRepositoriesRequest.Response.Builder builder =
           ListRepositoriesRequest.Response.newBuilder();
-      list.forEach((o) -> builder.addRepository(((RepositoryEntity) o).toProto()));
+      list.forEach((o) -> builder.addRepositories(((RepositoryEntity) o).toProto()));
       return builder.build();
     } catch (ModelDBException e) {
       LOGGER.warn(e.getMessage(), e);

@@ -116,7 +116,7 @@ message ListRepositoriesRequest {
     Pagination pagination = 2;
 
     message Response {
-        repeated Repository repository = 1;
+        repeated Repository repositories = 1;
         int64 total_records = 2;
     }
 }
