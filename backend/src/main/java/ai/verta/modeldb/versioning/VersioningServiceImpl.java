@@ -15,6 +15,8 @@ import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBa
 import io.grpc.Status.Code;
 import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -154,7 +156,22 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   @Override
   public void getCommit(
       GetCommitRequest request, StreamObserver<GetCommitRequest.Response> responseObserver) {
-    super.getCommit(request, responseObserver);
+
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        Commit commit =
+            commitDAO.getCommit(
+                request.getCommitSha(),
+                (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+        responseObserver.onNext(GetCommitRequest.Response.newBuilder().setCommit(commit).build());
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, GetCommitRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
@@ -255,7 +272,44 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   public void computeRepositoryDiff(
       ComputeRepositoryDiffRequest request,
       StreamObserver<ComputeRepositoryDiffRequest.Response> responseObserver) {
-    super.computeRepositoryDiff(request, responseObserver);
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      List<BlobDiff> blobDiffList = new ArrayList<>();
+
+      Commit internalCommitA =
+          commitDAO.getCommit(
+              request.getCommitA(),
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+
+      Commit internalCommitB =
+          commitDAO.getCommit(
+              request.getCommitB(),
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+
+      /*InternalFolderElementEntity internalFolderElementEntity = datasetComponentDAO.getBlob();
+
+      internalCommitA.getFolderSha();
+
+
+
+      PathDatasetComponentBlob pathDatasetComponentBlob = PathDatasetComponentBlob.newBuilder().setPath().setSha256().build();
+      PathDatasetBlob pathDatasetBlob = PathDatasetBlob.newBuilder().addAllComponents().build();
+
+
+      PathDatasetDiff pathDatasetDiff = PathDatasetDiff.newBuilder().setA().setB().setDeleted().setAdded().build();
+      DatasetDiff datasetDiff = DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
+
+      BlobDiff blobDiff = BlobDiff.newBuilder().setDataset(datasetDiff).build();
+
+
+      ComputeRepositoryDiffRequest.Response response = ComputeRepositoryDiffRequest.Response.newBuilder().addAllDiffs(blobDiffList).build();
+      responseObserver.onNext(response);*/
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ComputeRepositoryDiffRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override

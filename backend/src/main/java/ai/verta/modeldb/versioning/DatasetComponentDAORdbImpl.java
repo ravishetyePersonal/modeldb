@@ -85,6 +85,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
+  @Override
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException {
     TreeElem treeElem = new TreeElem();

@@ -7,4 +7,6 @@ import java.security.NoSuchAlgorithmException;
 interface CommitDAO {
   Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException;
+
+  Commit getCommit(String commitHash, RepositoryFunction getRepository) throws ModelDBException;
 }
