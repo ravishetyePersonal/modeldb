@@ -148,40 +148,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(
-      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
-    WorkspaceDTO workspaceDTO = null;
-    String message = null;
-    if (id.hasNamedId()) {
-      UserInfo userInfo;
-      try {
-        userInfo = authService.getCurrentLoginUserInfo();
-      } catch (StatusRuntimeException e) {
-        throw new ModelDBException("Authorization error", e.getStatus().getCode());
-      }
-      RepositoryNamedIdentification named = id.getNamedId();
-      try {
-        workspaceDTO =
-            roleService.getWorkspaceDTOByWorkspaceName(userInfo, named.getWorkspaceName());
-      } catch (StatusRuntimeException e) {
-        throw new ModelDBException("Error getting workspace", e.getStatus().getCode());
-      }
-      if (named.getName().isEmpty() && shouldCheckNamed) {
-        message = "Name should not be empty";
-      }
-    }
-
-    if (message != null) {
-      throw new ModelDBException(message, Code.INVALID_ARGUMENT);
-    }
-    return workspaceDTO;
-  }
-
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
-      throws ModelDBException {
-    return verifyAndGetWorkspaceDTO(id, true);
-  }
-
   @Override
   public void listCommits(
       ListCommitsRequest request, StreamObserver<ListCommitsRequest.Response> responseObserver) {
@@ -203,7 +169,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       if (request.getBlobsCount() == 0) {
         throw new ModelDBException("Blob list should not be empty", Code.INVALID_ARGUMENT);
       }
-      WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getRepositoryId());
       CreateCommitRequest.Builder newRequest = CreateCommitRequest.newBuilder();
       for (BlobExpanded blob : request.getBlobsList()) {
         if (blob.getPath().isEmpty()) {
