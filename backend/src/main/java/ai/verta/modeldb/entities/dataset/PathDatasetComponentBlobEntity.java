@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "path_dataset_component_blob")
-public class PathDatasetComponentBlobEntity implements DatasetComponentEntity {
+public class PathDatasetComponentBlobEntity {
   public PathDatasetComponentBlobEntity() {}
 
   public PathDatasetComponentBlobEntity(

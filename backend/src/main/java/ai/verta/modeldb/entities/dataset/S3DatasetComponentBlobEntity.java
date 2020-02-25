@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "s3_dataset_component_blob")
-public class S3DatasetComponentBlobEntity implements DatasetComponentEntity {
+public class S3DatasetComponentBlobEntity {
   public S3DatasetComponentBlobEntity() {}
 
   public S3DatasetComponentBlobEntity(
