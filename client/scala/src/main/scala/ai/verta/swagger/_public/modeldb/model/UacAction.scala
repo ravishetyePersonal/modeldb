@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class UacAction (
-  service: Option[ServiceEnumService],
-  roleServiceAction: Option[RoleActionEnumRoleServiceActions],
-  authzServiceAction: Option[AuthzActionEnumAuthzServiceActions],
-  modeldbServiceAction: Option[ModelDBActionEnumModelDBServiceActions]
+  service: Option[ServiceEnumService] = None,
+  role_service_action: Option[RoleActionEnumRoleServiceActions] = None,
+  authz_service_action: Option[AuthzActionEnumAuthzServiceActions] = None,
+  modeldb_service_action: Option[ModelDBActionEnumModelDBServiceActions] = None
 )

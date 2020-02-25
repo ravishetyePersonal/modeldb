@@ -1,10 +1,10 @@
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.uac.model
 
-object EntitiesEnumEntitiesTypes extends Enumeration {
-  type EntitiesEnumEntitiesTypes = Value
-  val UNKNOWN = Value("UNKNOWN")
-  val ORGANIZATION = Value("ORGANIZATION")
-  val TEAM = Value("TEAM")
-  val USER = Value("USER")
+object EntitiesEnumEntitiesTypes {
+  type EntitiesEnumEntitiesTypes = String
+  val UNKNOWN: EntitiesEnumEntitiesTypes = "UNKNOWN"
+  val ORGANIZATION: EntitiesEnumEntitiesTypes = "ORGANIZATION"
+  val TEAM: EntitiesEnumEntitiesTypes = "TEAM"
+  val USER: EntitiesEnumEntitiesTypes = "USER"
 }

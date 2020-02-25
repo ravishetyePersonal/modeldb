@@ -21,7 +21,7 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbFindHydratedDatasetsByOrganization (
-  findDatasets: Option[ModeldbFindDatasets],
-  name: Option[String],
-  id: Option[String]
+  find_datasets: Option[ModeldbFindDatasets] = None,
+  name: Option[String] = None,
+  id: Option[String] = None
 )

@@ -32,7 +32,7 @@ public class CommitDAORdbImpl implements CommitDAO {
               internalCommit);
       session.saveOrUpdate(commitEntity);
       session.getTransaction().commit();
-      return Response.newBuilder().setCommit(commitEntity.toProtoCommit()).build();
+      return Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
     }
   }
 

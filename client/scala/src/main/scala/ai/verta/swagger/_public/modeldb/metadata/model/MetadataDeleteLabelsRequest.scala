@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.metadata.model
 import ai.verta.swagger._public.modeldb.metadata.model.IDTypeEnumIDType._
 
 case class MetadataDeleteLabelsRequest (
-  id: Option[MetadataIdentificationType],
-  labels: Option[List[String]]
+  id: Option[MetadataIdentificationType] = None,
+  labels: Option[List[String]] = None
 )

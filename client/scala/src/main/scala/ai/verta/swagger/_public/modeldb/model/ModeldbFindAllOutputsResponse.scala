@@ -4,5 +4,5 @@ package ai.verta.swagger._public.modeldb.model
 import ai.verta.swagger._public.modeldb.model.LineageEntryEnumLineageEntryType._
 
 case class ModeldbFindAllOutputsResponse (
-  outputs: Option[List[ModeldbLineageEntryBatch]]
+  outputs: Option[List[ModeldbLineageEntryBatch]] = None
 )

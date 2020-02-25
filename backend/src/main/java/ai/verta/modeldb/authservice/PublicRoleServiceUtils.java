@@ -17,10 +17,12 @@ import ai.verta.uac.ModelResourceEnum.ModelDBServiceResourceTypes;
 import ai.verta.uac.Organization;
 import ai.verta.uac.Role;
 import ai.verta.uac.RoleBinding;
+import ai.verta.uac.RoleScope;
 import ai.verta.uac.UserInfo;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.grpc.Metadata;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +77,7 @@ public class PublicRoleServiceUtils implements RoleService {
   }
 
   @Override
-  public Role getRoleByName(String roleName) {
+  public Role getRoleByName(String roleName, RoleScope roleScope) {
     return null;
   }
 
@@ -88,7 +90,8 @@ public class PublicRoleServiceUtils implements RoleService {
   public List<GetCollaboratorResponse> getResourceCollaborators(
       ModelDBServiceResourceTypes modelDBServiceResourceTypes,
       String resourceId,
-      String resourceOwnerId) {
+      String resourceOwnerId,
+      Metadata requestHeaders) {
     return Collections.emptyList();
   }
 

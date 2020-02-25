@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateProjectAttributes (
-  id: Option[String],
-  attribute: Option[CommonKeyValue]
+  id: Option[String] = None,
+  attribute: Option[CommonKeyValue] = None
 )

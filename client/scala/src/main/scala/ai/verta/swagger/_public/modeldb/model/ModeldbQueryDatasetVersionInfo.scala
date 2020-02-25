@@ -21,10 +21,10 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbQueryDatasetVersionInfo (
-  query: Option[String],
-  queryTemplate: Option[String],
-  queryParameters: Option[List[ModeldbQueryParameter]],
-  dataSourceUri: Option[String],
-  executionTimestamp: Option[String],
-  numRecords: Option[String]
+  query: Option[String] = None,
+  query_template: Option[String] = None,
+  query_parameters: Option[List[ModeldbQueryParameter]] = None,
+  data_source_uri: Option[String] = None,
+  execution_timestamp: Option[String] = None,
+  num_records: Option[String] = None
 )

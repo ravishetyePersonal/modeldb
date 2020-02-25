@@ -9,6 +9,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateDatasetVersionAttributes (
-  id: Option[String],
-  attribute: Option[CommonKeyValue]
+  id: Option[String] = None,
+  attribute: Option[CommonKeyValue] = None
 )

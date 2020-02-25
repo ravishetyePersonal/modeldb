@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.CollaboratorTypeEnumCollaboratorType._
 import ai.verta.swagger._public.uac.model.TernaryEnumTernary._
 
 case class UacRemoveUserResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

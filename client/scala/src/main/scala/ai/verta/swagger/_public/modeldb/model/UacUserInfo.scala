@@ -21,14 +21,14 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class UacUserInfo (
-  userId: Option[String],
-  fullName: Option[String],
-  firstName: Option[String],
-  lastName: Option[String],
-  email: Option[String],
-  idServiceProvider: Option[IdServiceProviderEnumIdServiceProvider],
-  roles: Option[List[String]],
-  imageUrl: Option[String],
-  devKey: Option[String],
-  vertaInfo: Option[UacVertaUserInfo]
+  user_id: Option[String] = None,
+  full_name: Option[String] = None,
+  first_name: Option[String] = None,
+  last_name: Option[String] = None,
+  email: Option[String] = None,
+  id_service_provider: Option[IdServiceProviderEnumIdServiceProvider] = None,
+  roles: Option[List[String]] = None,
+  image_url: Option[String] = None,
+  dev_key: Option[String] = None,
+  verta_info: Option[UacVertaUserInfo] = None
 )

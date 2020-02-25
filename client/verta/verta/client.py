@@ -19,10 +19,10 @@ import tarfile
 import tempfile
 import time
 import warnings
-import yaml
 import zipfile
 
 import requests
+import yaml
 
 try:
     import PIL
@@ -35,11 +35,12 @@ from ._protos.public.modeldb import ProjectService_pb2 as _ProjectService
 from ._protos.public.modeldb import ExperimentService_pb2 as _ExperimentService
 from ._protos.public.modeldb import ExperimentRunService_pb2 as _ExperimentRunService
 
-from . import _dataset
-from . import _utils
 from . import _artifact_utils
-from . import utils
+from . import _dataset
+from . import _repository
+from . import _utils
 from . import deployment
+from . import utils
 
 
 # for ExperimentRun._log_modules()
@@ -215,6 +216,16 @@ class Client(object):
             return None
         else:
             return self.expt.expt_runs
+
+    def _get_personal_workspace(self):
+        response = _utils.make_request(
+            "GET",
+            "{}://{}/api/v1/uac-proxy/uac/getUser".format(self._conn.scheme, self._conn.socket),
+            self._conn, params={'email': self._conn.auth['Grpc-Metadata-email']},
+        )
+        _utils.raise_for_http_error(response)
+
+        return response.json()['verta_info']['username']
 
     def _load_config(self):
         config_file = self._find_config_in_all_dirs()
@@ -449,6 +460,41 @@ class Client(object):
                                      desc, tags, attrs, date_created=date_created)
 
         return expt_run
+
+    def get_or_create_repository(self, name=None, workspace=None, id=None):
+        if name is not None and id is not None:
+            raise ValueError("cannot specify both `name` and `id`")
+        elif id is not None:
+            repo = _repository.Repository._get(self._conn, id_=id)
+            if repo is None:
+                raise ValueError("no Repository found with ID {}".format(id))
+            print("set existing Repository: {}".format(repo.name))
+            return repo
+        elif name is not None:
+            if workspace is None:
+                workspace_str = "personal workspace"
+                workspace = self._get_personal_workspace()
+            else:
+                workspace_str = "workspace {}".format(workspace)
+
+            try:
+                repo = _repository.Repository._create(self._conn, name, workspace)
+            except requests.HTTPError as e:
+                if e.response.status_code == 403:  # cannot create in other workspace
+                    repo = _repository.Repository._get(self._conn, name=name, workspace=workspace)
+                    if repo is None:  # not accessible in other workspace
+                        six.raise_from(e, None)
+                elif e.response.status_code == 409:  # already exists
+                    repo = _repository.Repository._get(self._conn, name=name, workspace=workspace)
+                    if repo is None:  # already exists, but couldn't get it
+                        raise RuntimeError("unable to get Repository from ModelDB;"
+                                           " please notify the Verta development team")
+                else:
+                    six.raise_from(e, None)
+                print("set existing Repository: {} from {}".format(name, workspace_str))
+            return repo
+        else:
+            raise ValueError("must specify either `name` or `id`")
 
     # NOTE: dataset visibility cannot be set via a client
     def set_dataset(self, name=None, type="local",

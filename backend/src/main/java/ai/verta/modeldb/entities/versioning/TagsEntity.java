@@ -23,46 +23,51 @@ public class TagsEntity {
   @Column(name = "commit_hash", nullable = false, columnDefinition = "varchar", length = 64)
   private String commit_hash;
 
+  public TagId getId() {
+    return id;
+  }
+
   public String getCommit_hash() {
     return commit_hash;
   }
-}
 
-@Embeddable
-class TagId implements Serializable {
+  // @Embeddable used for creating the composite key in hibernate
+  @Embeddable
+  public static class TagId implements Serializable {
 
-  @Column(name = "tag", columnDefinition = "varchar")
-  private String tag;
+    @Column(name = "tag", columnDefinition = "varchar")
+    private String tag;
 
-  @Column(name = "repository_id")
-  private Long repository_id;
+    @Column(name = "repository_id")
+    private Long repository_id;
 
-  public TagId(String tag, Long repositoryId) {
-    this.tag = tag;
-    this.repository_id = repositoryId;
-  }
+    public TagId(String tag, Long repositoryId) {
+      this.tag = tag;
+      this.repository_id = repositoryId;
+    }
 
-  private TagId() {}
+    private TagId() {}
 
-  public String getTag() {
-    return tag;
-  }
+    public String getTag() {
+      return tag;
+    }
 
-  public Long getRepository_id() {
-    return repository_id;
-  }
+    public Long getRepository_id() {
+      return repository_id;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof TagId)) return false;
-    TagId that = (TagId) o;
-    return Objects.equals(getTag(), that.getTag())
-        && Objects.equals(getRepository_id(), that.getRepository_id());
-  }
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof TagId)) return false;
+      TagId that = (TagId) o;
+      return Objects.equals(getTag(), that.getTag())
+          && Objects.equals(getRepository_id(), that.getRepository_id());
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getTag(), getRepository_id());
+    @Override
+    public int hashCode() {
+      return Objects.hash(getTag(), getRepository_id());
+    }
   }
 }

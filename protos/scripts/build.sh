@@ -25,17 +25,7 @@ do
 done
 
 echo "Fixing python folders"
-for pythondir in $(find $PYTHON_OUTPUT -type d)
-do
-    touch $pythondir/__init__.py
-    for filename in ${pythondir}/*_pb2*.py; do
-        if [ -e $filename ]
-        then
-            echo sed -i '' 's|^from protos\.|from ...|g' $filename
-            sed -i '' 's|^from protos\.|from ...|g' $filename
-        fi
-    done
-done
+python3 fix_imports.py --python-output-dir $PYTHON_OUTPUT
 
 echo "Fixing swagger definitions"
 for f in $(find $SWAGGER_OUTPUT -type f)

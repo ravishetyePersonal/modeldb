@@ -1,4 +1,3 @@
-
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.uac.api
 
@@ -10,10 +9,8 @@ import ai.verta.swagger.client.Client
 import ai.verta.swagger._public.uac.model._
 
 class TelemetryApi(client: Client, val basePath: String = "/v1") {
-
   def collectTelemetryAsync(body: UacCollectTelemetry)(implicit ec: ExecutionContext): Future[Try[UacCollectTelemetryResponse]] = {
     val __query = Map[String,String](
-      
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
     return client.request[UacCollectTelemetry, UacCollectTelemetryResponse]("POST", basePath + s"/telemetry/collectTelemetry", __query, body)

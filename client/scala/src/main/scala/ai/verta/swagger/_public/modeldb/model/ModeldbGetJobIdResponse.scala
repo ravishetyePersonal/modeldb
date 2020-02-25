@@ -8,5 +8,5 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetJobIdResponse (
-  jobId: Option[String]
+  job_id: Option[String] = None
 )

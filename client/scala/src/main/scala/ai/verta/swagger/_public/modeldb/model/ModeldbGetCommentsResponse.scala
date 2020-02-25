@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.model.IdServiceProviderEnumIdServiceProv
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbGetCommentsResponse (
-  comments: Option[List[ModeldbComment]]
+  comments: Option[List[ModeldbComment]] = None
 )

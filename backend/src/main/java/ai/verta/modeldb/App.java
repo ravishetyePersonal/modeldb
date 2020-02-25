@@ -37,6 +37,9 @@ import ai.verta.modeldb.job.JobServiceImpl;
 import ai.verta.modeldb.lineage.LineageDAO;
 import ai.verta.modeldb.lineage.LineageDAORdbImpl;
 import ai.verta.modeldb.lineage.LineageServiceImpl;
+import ai.verta.modeldb.metadata.MetadataDAO;
+import ai.verta.modeldb.metadata.MetadataDAORdbImpl;
+import ai.verta.modeldb.metadata.MetadataServiceImpl;
 import ai.verta.modeldb.project.ProjectDAO;
 import ai.verta.modeldb.project.ProjectDAORdbImpl;
 import ai.verta.modeldb.project.ProjectServiceImpl;
@@ -349,6 +352,7 @@ public class App implements ApplicationContextAware {
     DatasetDAO datasetDAO = new DatasetDAORdbImpl(authService, roleService);
     LineageDAO lineageDAO = new LineageDAORdbImpl();
     DatasetVersionDAO datasetVersionDAO = new DatasetVersionDAORdbImpl(authService, roleService);
+    MetadataDAO metadataDAO = new MetadataDAORdbImpl();
     LOGGER.info("All DAO initialized");
     // --------------- Finish Initialize DAO --------------------------
     initializeBackendServices(
@@ -362,6 +366,7 @@ public class App implements ApplicationContextAware {
         jobDAO,
         commentDAO,
         lineageDAO,
+        metadataDAO,
         authService,
         roleService);
   }
@@ -377,6 +382,7 @@ public class App implements ApplicationContextAware {
       JobDAO jobDAO,
       CommentDAO commentDAO,
       LineageDAO lineageDAO,
+      MetadataDAO metadataDAO,
       AuthService authService,
       RoleService roleService) {
     App app = App.getInstance();
@@ -439,7 +445,7 @@ public class App implements ApplicationContextAware {
         new VersioningServiceImpl(
             authService,
             roleService,
-            new RepositoryDAORdbImpl(),
+            new RepositoryDAORdbImpl(authService, roleService),
             new CommitDAORdbImpl(),
             new DatasetComponentDAORdbImpl(),
             experimentDAO,
@@ -447,6 +453,8 @@ public class App implements ApplicationContextAware {
             new ModelDBAuthInterceptor(),
             new FileHasher()));
     LOGGER.trace("Versioning serviceImpl initialized");
+    serverBuilder.addService(new MetadataServiceImpl(metadataDAO));
+    LOGGER.trace("Metadata serviceImpl initialized");
     LOGGER.info("All services initialized and resolved dependency before server start");
   }
 

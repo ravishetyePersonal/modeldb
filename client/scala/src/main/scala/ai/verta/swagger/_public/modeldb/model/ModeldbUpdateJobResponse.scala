@@ -7,5 +7,5 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbUpdateJobResponse (
-  job: Option[ModeldbJob]
+  job: Option[ModeldbJob] = None
 )

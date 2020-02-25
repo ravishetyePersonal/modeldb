@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbFindProjectsResponse (
-  projects: Option[List[ModeldbProject]],
-  totalRecords: Option[String]
+  projects: Option[List[ModeldbProject]] = None,
+  total_records: Option[String] = None
 )

@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogHyperparameters (
-  id: Option[String],
-  hyperparameters: Option[List[CommonKeyValue]]
+  id: Option[String] = None,
+  hyperparameters: Option[List[CommonKeyValue]] = None
 )

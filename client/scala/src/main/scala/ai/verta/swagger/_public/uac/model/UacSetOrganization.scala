@@ -5,7 +5,5 @@ import ai.verta.swagger._public.uac.model.CollaboratorTypeEnumCollaboratorType._
 import ai.verta.swagger._public.uac.model.TernaryEnumTernary._
 
 case class UacSetOrganization (
-  organization: Option[UacOrganization],
-  globalCollaboratorType: Option[CollaboratorTypeEnumCollaboratorType],
-  globalCanDeploy: Option[TernaryEnumTernary]
+  organization: Option[UacOrganization] = None
 )

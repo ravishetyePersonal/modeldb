@@ -21,8 +21,8 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbDatasetPartInfo (
-  path: Option[String],
-  size: Option[String],
-  checksum: Option[String],
-  lastModifiedAtSource: Option[String]
+  path: Option[String] = None,
+  size: Option[String] = None,
+  checksum: Option[String] = None,
+  last_modified_at_source: Option[String] = None
 )

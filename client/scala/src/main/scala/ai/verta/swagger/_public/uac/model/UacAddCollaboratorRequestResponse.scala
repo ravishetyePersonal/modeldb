@@ -13,9 +13,9 @@ import ai.verta.swagger._public.uac.model.UacFlagEnum._
 import ai.verta.swagger._public.uac.model.UacShareViaEnum._
 
 case class UacAddCollaboratorRequestResponse (
-  selfAllowedActions: Option[List[UacAction]],
-  status: Option[Boolean],
-  collaboratorUserInfo: Option[UacUserInfo],
-  collaboratorOrganization: Option[UacOrganization],
-  collaboratorTeam: Option[UacTeam]
+  self_allowed_actions: Option[List[UacAction]] = None,
+  status: Option[Boolean] = None,
+  collaborator_user_info: Option[UacUserInfo] = None,
+  collaborator_organization: Option[UacOrganization] = None,
+  collaborator_team: Option[UacTeam] = None
 )

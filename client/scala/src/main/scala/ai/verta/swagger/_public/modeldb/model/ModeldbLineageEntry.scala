@@ -4,6 +4,6 @@ package ai.verta.swagger._public.modeldb.model
 import ai.verta.swagger._public.modeldb.model.LineageEntryEnumLineageEntryType._
 
 case class ModeldbLineageEntry (
-  `type`: Option[LineageEntryEnumLineageEntryType],
-  externalId: Option[String]
+  `type`: Option[LineageEntryEnumLineageEntryType] = None,
+  external_id: Option[String] = None
 )

@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetDatasetVisibilty (
-  id: Option[String],
-  datasetVisibility: Option[DatasetVisibilityEnumDatasetVisibility]
+  id: Option[String] = None,
+  dataset_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None
 )

@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteExperimentTag (
-  id: Option[String],
-  tag: Option[String]
+  id: Option[String] = None,
+  tag: Option[String] = None
 )

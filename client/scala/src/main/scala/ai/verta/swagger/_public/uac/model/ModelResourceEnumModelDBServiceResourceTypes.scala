@@ -1,14 +1,14 @@
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.uac.model
 
-object ModelResourceEnumModelDBServiceResourceTypes extends Enumeration {
-  type ModelResourceEnumModelDBServiceResourceTypes = Value
-  val UNKNOWN = Value("UNKNOWN")
-  val ALL = Value("ALL")
-  val PROJECT = Value("PROJECT")
-  val EXPERIMENT = Value("EXPERIMENT")
-  val EXPERIMENT_RUN = Value("EXPERIMENT_RUN")
-  val DATASET = Value("DATASET")
-  val DATASET_VERSION = Value("DATASET_VERSION")
-  val DASHBOARD = Value("DASHBOARD")
+object ModelResourceEnumModelDBServiceResourceTypes {
+  type ModelResourceEnumModelDBServiceResourceTypes = String
+  val UNKNOWN: ModelResourceEnumModelDBServiceResourceTypes = "UNKNOWN"
+  val ALL: ModelResourceEnumModelDBServiceResourceTypes = "ALL"
+  val PROJECT: ModelResourceEnumModelDBServiceResourceTypes = "PROJECT"
+  val EXPERIMENT: ModelResourceEnumModelDBServiceResourceTypes = "EXPERIMENT"
+  val EXPERIMENT_RUN: ModelResourceEnumModelDBServiceResourceTypes = "EXPERIMENT_RUN"
+  val DATASET: ModelResourceEnumModelDBServiceResourceTypes = "DATASET"
+  val DATASET_VERSION: ModelResourceEnumModelDBServiceResourceTypes = "DATASET_VERSION"
+  val DASHBOARD: ModelResourceEnumModelDBServiceResourceTypes = "DASHBOARD"
 }

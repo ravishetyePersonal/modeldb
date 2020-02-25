@@ -10,7 +10,7 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class CommonKeyValue (
-  key: Option[String],
-  value: Option[Any],
-  valueType: Option[ValueTypeEnumValueType]
+  key: Option[String] = None,
+  value: Option[ProtobufValue] = None,
+  value_type: Option[ValueTypeEnumValueType] = None
 )

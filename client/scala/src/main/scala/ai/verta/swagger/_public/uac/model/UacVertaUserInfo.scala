@@ -5,10 +5,10 @@ import ai.verta.swagger._public.uac.model.IdServiceProviderEnumIdServiceProvider
 import ai.verta.swagger._public.uac.model.UacFlagEnum._
 
 case class UacVertaUserInfo (
-  individualUser: Option[Boolean],
-  username: Option[String],
-  refreshTimestamp: Option[String],
-  lastLoginTimestamp: Option[String],
-  userId: Option[String],
-  publicProfile: Option[UacFlagEnum]
+  individual_user: Option[Boolean] = None,
+  username: Option[String] = None,
+  refresh_timestamp: Option[String] = None,
+  last_login_timestamp: Option[String] = None,
+  user_id: Option[String] = None,
+  publicProfile: Option[UacFlagEnum] = None
 )

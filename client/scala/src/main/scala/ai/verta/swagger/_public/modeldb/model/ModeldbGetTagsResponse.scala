@@ -10,5 +10,5 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetTagsResponse (
-  tags: Option[List[String]]
+  tags: Option[List[String]] = None
 )

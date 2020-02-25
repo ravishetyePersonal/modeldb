@@ -62,16 +62,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-        WorkspaceDTO workspaceDTO =
-            verifyAndGetWorkspaceDTO(
-                RepositoryIdentification.newBuilder()
-                    .setNamedId(
-                        RepositoryNamedIdentification.newBuilder()
-                            .setWorkspaceName(request.getWorkspaceName()))
-                    .build(),
-                false);
-
-        Response response = repositoryDAO.listRepositories(request, workspaceDTO);
+        Response response = repositoryDAO.listRepositories(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -89,9 +80,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId());
-
-        GetRepositoryRequest.Response response = repositoryDAO.getRepository(request, workspaceDTO);
+        GetRepositoryRequest.Response response = repositoryDAO.getRepository(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -111,9 +100,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         if (request.getRepository().getName().isEmpty()) {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false);
 
-        SetRepository.Response response = repositoryDAO.setRepository(request, workspaceDTO, true);
+        SetRepository.Response response = repositoryDAO.setRepository(request, true);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -132,9 +120,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         if (request.getRepository().getName().isEmpty()) {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId());
 
-        SetRepository.Response response = repositoryDAO.setRepository(request, workspaceDTO, false);
+        SetRepository.Response response = repositoryDAO.setRepository(request, false);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -151,9 +138,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getRepositoryId());
-        DeleteRepositoryRequest.Response response =
-            repositoryDAO.deleteRepository(request, workspaceDTO);
+        DeleteRepositoryRequest.Response response = repositoryDAO.deleteRepository(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -257,9 +242,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
               request.getCommit(),
               (session) ->
                   datasetComponentDAO.setBlobs(session, newRequest.getBlobsList(), fileHasher),
-              (session) ->
-                  repositoryDAO.getRepositoryById(
-                      session, request.getRepositoryId(), workspaceDTO));
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
 
       responseObserver.onNext(response);
       responseObserver.onCompleted();
@@ -316,24 +299,65 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   @Override
   public void listTags(
       ListTagsRequest request, StreamObserver<ListTagsRequest.Response> responseObserver) {
-    super.listTags(request, responseObserver);
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        ListTagsRequest.Response response = repositoryDAO.listTags(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(responseObserver, e, ListTagsRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
   public void getTag(
       GetTagRequest request, StreamObserver<GetTagRequest.Response> responseObserver) {
-    super.getTag(request, responseObserver);
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        GetTagRequest.Response response = repositoryDAO.getTag(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(responseObserver, e, GetTagRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
   public void setTag(
       SetTagRequest request, StreamObserver<SetTagRequest.Response> responseObserver) {
-    super.setTag(request, responseObserver);
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        SetTagRequest.Response response = repositoryDAO.setTag(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(responseObserver, e, SetTagRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
   public void deleteTag(
       DeleteTagRequest request, StreamObserver<DeleteTagRequest.Response> responseObserver) {
-    super.deleteTag(request, responseObserver);
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        DeleteTagRequest.Response response = repositoryDAO.deleteTag(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, DeleteTagRequest.Response.getDefaultInstance());
+    }
   }
 }

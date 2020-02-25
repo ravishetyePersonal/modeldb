@@ -10,13 +10,13 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCreateProject (
-  name: Option[String],
-  description: Option[String],
-  attributes: Option[List[CommonKeyValue]],
-  tags: Option[List[String]],
-  readmeText: Option[String],
-  projectVisibility: Option[ModeldbProjectVisibility],
-  artifacts: Option[List[ModeldbArtifact]],
-  workspaceName: Option[String],
-  dateCreated: Option[String]
+  name: Option[String] = None,
+  description: Option[String] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  tags: Option[List[String]] = None,
+  readme_text: Option[String] = None,
+  project_visibility: Option[ModeldbProjectVisibility] = None,
+  artifacts: Option[List[ModeldbArtifact]] = None,
+  workspace_name: Option[String] = None,
+  date_created: Option[String] = None
 )

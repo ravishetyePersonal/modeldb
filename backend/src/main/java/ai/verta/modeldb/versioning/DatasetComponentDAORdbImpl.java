@@ -5,7 +5,6 @@ import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,14 +22,15 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     String type = null;
     Map<String, TreeElem> children = new HashMap<>();
 
-    TreeElem() {
-    }
+    TreeElem() {}
 
     TreeElem push(List<String> pathList, String fullPath, String sha256, String type) {
       path = pathList.get(0);
       if (pathList.size() > 1) {
         children.putIfAbsent(pathList.get(1), new TreeElem());
-        return children.get(pathList.get(1)).push(pathList.subList(1, pathList.size()), fullPath, sha256, type);
+        return children
+            .get(pathList.get(1))
+            .push(pathList.subList(1, pathList.size()), fullPath, sha256, type);
       } else {
         this.sha256 = sha256;
         this.type = type;

@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbSetDatasetWorkspace (
-  id: Option[String],
-  workspaceName: Option[String]
+  id: Option[String] = None,
+  workspace_name: Option[String] = None
 )

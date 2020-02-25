@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetUrlForArtifactResponse (
-  url: Option[String],
-  fields: Option[Map[String,String]]
+  url: Option[String] = None,
+  fields: Option[Map[String,String]] = None
 )

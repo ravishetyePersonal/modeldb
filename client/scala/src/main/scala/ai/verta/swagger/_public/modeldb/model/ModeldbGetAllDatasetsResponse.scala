@@ -11,6 +11,6 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetAllDatasetsResponse (
-  datasets: Option[List[ModeldbDataset]],
-  totalRecords: Option[String]
+  datasets: Option[List[ModeldbDataset]] = None,
+  total_records: Option[String] = None
 )

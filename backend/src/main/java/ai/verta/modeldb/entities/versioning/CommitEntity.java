@@ -102,7 +102,7 @@ public class CommitEntity {
         .build();
   }
 
-  public Commit toProtoCommit() {
+  public Commit toCommitProto() {
     return Commit.newBuilder()
         .addAllParentShas(getParentCommitIds())
         .setDateCreated(this.date_created)

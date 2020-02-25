@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.uac.model.ProtobufNullValue._
 
 case class UacCollectTelemetryResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

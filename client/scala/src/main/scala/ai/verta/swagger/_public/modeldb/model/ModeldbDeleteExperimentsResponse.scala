@@ -8,5 +8,5 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteExperimentsResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

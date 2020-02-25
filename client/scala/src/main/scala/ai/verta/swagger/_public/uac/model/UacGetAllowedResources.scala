@@ -10,6 +10,6 @@ import ai.verta.swagger._public.uac.model.RoleResourceEnumRoleServiceResourceTyp
 import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacGetAllowedResources (
-  entities: Option[List[UacEntities]],
-  actions: Option[List[UacAction]]
+  entities: Option[List[UacEntities]] = None,
+  actions: Option[List[UacAction]] = None
 )

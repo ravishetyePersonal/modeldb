@@ -9,6 +9,7 @@ import shutil
 import utils
 
 import verta
+import verta.dataset
 from verta._dataset import Dataset, DatasetVersion, S3DatasetVersionInfo, FilesystemDatasetVersionInfo
 from verta._protos.public.modeldb import DatasetService_pb2 as _DatasetService
 from verta._protos.public.modeldb import DatasetVersionService_pb2 as _DatasetVersionService
@@ -41,6 +42,64 @@ def bq_query():
 @pytest.fixture(scope='session')
 def bq_location():
     return "US"
+
+
+class TestNewDatasets:
+    def test_s3_bucket(self):
+        # pylint: disable=no-member
+        pytest.importorskip("boto3")
+
+        dataset = verta.dataset.S3("s3://verta-starter")
+        assert len(dataset._msg.components) > 1
+
+        for s3_obj_metadata in (component.path for component in dataset._msg.components):
+            assert s3_obj_metadata.path != ""
+            assert s3_obj_metadata.size != 0
+            assert s3_obj_metadata.last_modified_at_source != 0
+            assert s3_obj_metadata.md5 != ""
+
+    def test_s3_key(self):
+        # pylint: disable=no-member
+        pytest.importorskip("boto3")
+
+        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+
+        assert len(dataset._msg.components) == 1
+
+        s3_obj_metadata = dataset._msg.components[0].path
+        assert s3_obj_metadata.path != ""
+        assert s3_obj_metadata.size != 0
+        assert s3_obj_metadata.last_modified_at_source != 0
+        assert s3_obj_metadata.md5 != ""
+
+    def test_s3_multiple_keys(self):
+        # pylint: disable=no-member
+        pytest.importorskip("boto3")
+
+        dataset = verta.dataset.S3([
+            "s3://verta-starter/census-test.csv",
+            "s3://verta-starter/census-train.csv",
+        ])
+
+        assert len(dataset._msg.components) == 2
+
+        for s3_obj_metadata in (component.path for component in dataset._msg.components):
+            assert s3_obj_metadata.path != ""
+            assert s3_obj_metadata.size != 0
+            assert s3_obj_metadata.last_modified_at_source != 0
+            assert s3_obj_metadata.md5 != ""
+
+    def test_s3_no_duplicates(self):
+        # pylint: disable=no-member
+        pytest.importorskip("boto3")
+
+        multiple_dataset = verta.dataset.S3([
+            "s3://verta-starter",
+            "s3://verta-starter/census-test.csv",
+        ])
+        bucket_dataset = verta.dataset.S3("s3://verta-starter")
+
+        assert len(multiple_dataset._msg.components) == len(bucket_dataset._msg.components)
 
 
 class TestBaseDatasets:

@@ -8,7 +8,7 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteExperimentRunTags (
-  id: Option[String],
-  tags: Option[List[String]],
-  deleteAll: Option[Boolean]
+  id: Option[String] = None,
+  tags: Option[List[String]] = None,
+  delete_all: Option[Boolean] = None
 )

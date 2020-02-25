@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbDeleteProjectArtifact (
-  id: Option[String],
-  key: Option[String]
+  id: Option[String] = None,
+  key: Option[String] = None
 )

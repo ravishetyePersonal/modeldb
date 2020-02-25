@@ -118,14 +118,15 @@ public class DatasetDAORdbImpl implements DatasetDAO {
       DatasetEntity datasetEntity = RdbmsUtils.generateDatasetEntity(dataset);
       session.save(datasetEntity);
 
-      Role ownerRole = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_OWNER);
+      Role ownerRole = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_OWNER, null);
       roleService.createRoleBinding(
           ownerRole,
           new CollaboratorUser(authService, userInfo),
           dataset.getId(),
           ModelDBServiceResourceTypes.DATASET);
       if (dataset.getDatasetVisibility().equals(DatasetVisibility.PUBLIC)) {
-        Role publicReadRole = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_PUBLIC_READ);
+        Role publicReadRole =
+            roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_PUBLIC_READ, null);
         UserInfo unsignedUser = authService.getUnsignedUser();
         roleService.createRoleBinding(
             publicReadRole,
@@ -153,8 +154,8 @@ public class DatasetDAORdbImpl implements DatasetDAO {
       String datasetId,
       DatasetVisibility datasetVisibility) {
     if (workspaceId != null && !workspaceId.isEmpty()) {
-      Role datasetAdmin = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_ADMIN);
-      Role datasetRead = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_READ_ONLY);
+      Role datasetAdmin = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_ADMIN, null);
+      Role datasetRead = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_READ_ONLY, null);
       switch (workspaceType) {
         case ORGANIZATION:
           Organization org = (Organization) roleService.getOrgById(workspaceId);
@@ -878,7 +879,8 @@ public class DatasetDAORdbImpl implements DatasetDAO {
     switch (newVisibility) {
       case ORG_SCOPED_PUBLIC:
         if (datasetWorkspaceType == WorkspaceType.ORGANIZATION_VALUE) {
-          Role datasetRead = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_READ_ONLY);
+          Role datasetRead =
+              roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_READ_ONLY, null);
           roleService.createRoleBinding(
               datasetRead,
               new CollaboratorOrg(workspaceId),
@@ -887,7 +889,8 @@ public class DatasetDAORdbImpl implements DatasetDAO {
         }
         break;
       case PUBLIC:
-        Role publicReadRole = roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_PUBLIC_READ);
+        Role publicReadRole =
+            roleService.getRoleByName(ModelDBConstants.ROLE_DATASET_PUBLIC_READ, null);
         roleService.createRoleBinding(
             publicReadRole,
             new CollaboratorUser(authService, authService.getUnsignedUser()),

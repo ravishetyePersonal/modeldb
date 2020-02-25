@@ -5,5 +5,5 @@ import ai.verta.swagger._public.modeldb.model.IdServiceProviderEnumIdServiceProv
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbDeleteCommentResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

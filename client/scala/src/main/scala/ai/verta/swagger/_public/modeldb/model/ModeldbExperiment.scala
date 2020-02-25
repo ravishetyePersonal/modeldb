@@ -21,15 +21,15 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbExperiment (
-  id: Option[String],
-  projectId: Option[String],
-  name: Option[String],
-  description: Option[String],
-  dateCreated: Option[String],
-  dateUpdated: Option[String],
-  attributes: Option[List[CommonKeyValue]],
-  tags: Option[List[String]],
-  owner: Option[String],
-  codeVersionSnapshot: Option[ModeldbCodeVersion],
-  artifacts: Option[List[ModeldbArtifact]]
+  id: Option[String] = None,
+  project_id: Option[String] = None,
+  name: Option[String] = None,
+  description: Option[String] = None,
+  date_created: Option[String] = None,
+  date_updated: Option[String] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  tags: Option[List[String]] = None,
+  owner: Option[String] = None,
+  code_version_snapshot: Option[ModeldbCodeVersion] = None,
+  artifacts: Option[List[ModeldbArtifact]] = None
 )

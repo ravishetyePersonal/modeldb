@@ -10,5 +10,5 @@ import ai.verta.swagger._public.uac.model.RoleResourceEnumRoleServiceResourceTyp
 import ai.verta.swagger._public.uac.model.ServiceEnumService._
 
 case class UacActions (
-  actions: Option[List[UacAction]]
+  actions: Option[List[UacAction]] = None
 )

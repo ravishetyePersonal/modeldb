@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLastModifiedExperimentRunSummary (
-  name: Option[String],
-  lastUpdatedTime: Option[String]
+  name: Option[String] = None,
+  last_updated_time: Option[String] = None
 )

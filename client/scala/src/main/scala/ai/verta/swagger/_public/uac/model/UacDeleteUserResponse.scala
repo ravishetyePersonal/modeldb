@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.IdServiceProviderEnumIdServiceProvider
 import ai.verta.swagger._public.uac.model.UacFlagEnum._
 
 case class UacDeleteUserResponse (
-  status: Option[Boolean]
+  status: Option[Boolean] = None
 )

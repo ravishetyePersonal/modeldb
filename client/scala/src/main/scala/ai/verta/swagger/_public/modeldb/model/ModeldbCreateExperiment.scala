@@ -8,12 +8,12 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbCreateExperiment (
-  projectId: Option[String],
-  name: Option[String],
-  description: Option[String],
-  dateCreated: Option[String],
-  dateUpdated: Option[String],
-  attributes: Option[List[CommonKeyValue]],
-  tags: Option[List[String]],
-  artifacts: Option[List[ModeldbArtifact]]
+  project_id: Option[String] = None,
+  name: Option[String] = None,
+  description: Option[String] = None,
+  date_created: Option[String] = None,
+  date_updated: Option[String] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  tags: Option[List[String]] = None,
+  artifacts: Option[List[ModeldbArtifact]] = None
 )

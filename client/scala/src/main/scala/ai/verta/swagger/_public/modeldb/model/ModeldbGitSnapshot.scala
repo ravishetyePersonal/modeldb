@@ -10,8 +10,8 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGitSnapshot (
-  filepaths: Option[List[String]],
-  repo: Option[String],
-  hash: Option[String],
-  isDirty: Option[TernaryEnumTernary]
+  filepaths: Option[List[String]] = None,
+  repo: Option[String] = None,
+  hash: Option[String] = None,
+  is_dirty: Option[TernaryEnumTernary] = None
 )

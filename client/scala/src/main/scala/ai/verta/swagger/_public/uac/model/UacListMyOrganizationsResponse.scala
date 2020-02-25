@@ -5,5 +5,5 @@ import ai.verta.swagger._public.uac.model.CollaboratorTypeEnumCollaboratorType._
 import ai.verta.swagger._public.uac.model.TernaryEnumTernary._
 
 case class UacListMyOrganizationsResponse (
-  organizations: Option[List[UacOrganization]]
+  organizations: Option[List[UacOrganization]] = None
 )

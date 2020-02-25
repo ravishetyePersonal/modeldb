@@ -289,7 +289,7 @@ public class ModelDBHibernateUtil {
   }
 
   private static void releaseLiquibaseLock(MetadataSources metaDataSrc)
-      throws LiquibaseException, SQLException {
+      throws LiquibaseException, SQLException, InterruptedException {
     // Get database connection
     try (Connection con =
         metaDataSrc.getServiceRegistry().getService(ConnectionProvider.class).getConnection()) {
@@ -309,12 +309,13 @@ public class ModelDBHibernateUtil {
       ResultSet rs = stmt.executeQuery(sql);
 
       long lastLockAcquireTimestamp = 0L;
+      boolean locked = false;
       // Extract data from result set
       while (rs.next()) {
         // Retrieve by column name
         int id = rs.getInt("id");
-        boolean locked = rs.getBoolean("locked");
-        Timestamp lockGrantedTimeStamp = rs.getTimestamp("lockgranted");
+        locked = rs.getBoolean("locked");
+        Timestamp lockGrantedTimeStamp = rs.getTimestamp("lockgranted", Calendar.getInstance());
         String lockedBy = rs.getString("lockedby");
 
         // Display values
@@ -343,13 +344,22 @@ public class ModelDBHibernateUtil {
         Database database =
             DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcCon);
         LockServiceFactory.getInstance().getLockService(database).forceReleaseLock();
+        locked = false;
         LOGGER.debug("Release database lock executing query from backend");
       }
+
+      if (locked) {
+        Thread.sleep(liquibaseLockThreshold * 1000); // liquibaseLockThreshold = second
+        releaseLiquibaseLock(metaDataSrc);
+      }
+    } catch (InterruptedException e) {
+      LOGGER.error(e.getMessage(), e);
+      throw e;
     }
   }
 
   private static void createTablesLiquibaseMigration(MetadataSources metaDataSrc)
-      throws LiquibaseException, SQLException {
+      throws LiquibaseException, SQLException, InterruptedException {
     // Get database connection
     try (Connection con =
         metaDataSrc.getServiceRegistry().getService(ConnectionProvider.class).getConnection()) {
@@ -436,7 +446,7 @@ public class ModelDBHibernateUtil {
 
   public static boolean tableExists(Connection conn, String tableName) throws SQLException {
     boolean tExists = false;
-    try (ResultSet rs = conn.getMetaData().getTables("modeldb", null, tableName, null)) {
+    try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
       while (rs.next()) {
         String tName = rs.getString("TABLE_NAME");
         if (tName != null && tName.equals(tableName)) {

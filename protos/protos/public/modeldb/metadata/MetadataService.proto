@@ -37,6 +37,7 @@ message AddLabelsRequest {
     repeated string labels = 2;
 
     message Response {
+        bool status = 1;
     }
 }
 
@@ -45,6 +46,7 @@ message DeleteLabelsRequest {
     repeated string labels = 2;
 
     message Response {
+        bool status = 1;
     }
 }
 

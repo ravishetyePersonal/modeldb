@@ -35,6 +35,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import io.grpc.Metadata;
 import io.grpc.StatusRuntimeException;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
@@ -224,12 +225,12 @@ public class CollaboratorServiceImpl extends CollaboratorServiceImplBase {
       String roleName =
           getRoleNameBasedOnRequest(modelDBServiceResourceTypes, request.getCollaboratorType());
       assert roleName != null;
-      Role role = roleService.getRoleByName(roleName);
+      Role role = roleService.getRoleByName(roleName, null);
 
       Role projectDeployRole = null;
       if (modelDBServiceResourceTypes.equals(ModelDBServiceResourceTypes.PROJECT)) {
         if (request.getCanDeploy().equals(Ternary.TRUE)) {
-          projectDeployRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_DEPLOY);
+          projectDeployRole = roleService.getRoleByName(ModelDBConstants.ROLE_PROJECT_DEPLOY, null);
         }
       }
 
@@ -504,11 +505,13 @@ public class CollaboratorServiceImpl extends CollaboratorServiceImplBase {
           getEntityOwnerMap(
               Collections.singletonList(request.getEntityId()),
               ModelDBServiceResourceTypes.PROJECT);
+      Metadata requestHeaders = ModelDBAuthInterceptor.METADATA_INFO.get();
       List<GetCollaboratorResponse> responseData =
           roleService.getResourceCollaborators(
               ModelDBServiceResourceTypes.PROJECT,
               request.getEntityId(),
-              projectOwnersMap.get(request.getEntityId()));
+              projectOwnersMap.get(request.getEntityId()),
+              requestHeaders);
       responseObserver.onNext(
           GetCollaborator.Response.newBuilder().addAllSharedUsers(responseData).build());
       responseObserver.onCompleted();
@@ -589,11 +592,13 @@ public class CollaboratorServiceImpl extends CollaboratorServiceImplBase {
           getEntityOwnerMap(
               Collections.singletonList(request.getEntityId()),
               ModelDBServiceResourceTypes.DATASET);
+      Metadata requestHeaders = ModelDBAuthInterceptor.METADATA_INFO.get();
       List<GetCollaboratorResponse> responseData =
           roleService.getResourceCollaborators(
               ModelDBServiceResourceTypes.DATASET,
               request.getEntityId(),
-              datasetOwnersMap.get(request.getEntityId()));
+              datasetOwnersMap.get(request.getEntityId()),
+              requestHeaders);
       responseObserver.onNext(
           GetCollaborator.Response.newBuilder().addAllSharedUsers(responseData).build());
       responseObserver.onCompleted();

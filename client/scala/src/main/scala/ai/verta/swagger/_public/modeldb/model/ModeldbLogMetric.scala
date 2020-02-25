@@ -8,6 +8,6 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogMetric (
-  id: Option[String],
-  metric: Option[CommonKeyValue]
+  id: Option[String] = None,
+  metric: Option[CommonKeyValue] = None
 )

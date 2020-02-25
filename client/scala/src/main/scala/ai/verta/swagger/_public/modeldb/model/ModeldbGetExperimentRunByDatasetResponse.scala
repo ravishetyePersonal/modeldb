@@ -11,5 +11,5 @@ import ai.verta.swagger._public.modeldb.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetExperimentRunByDatasetResponse (
-  experimentRuns: Option[List[ModeldbExperimentRun]]
+  experiment_runs: Option[List[ModeldbExperimentRun]] = None
 )

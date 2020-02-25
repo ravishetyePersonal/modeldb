@@ -21,19 +21,19 @@ import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 import ai.verta.swagger._public.modeldb.model.UacFlagEnum._
 
 case class ModeldbDatasetVersion (
-  id: Option[String],
-  parentId: Option[String],
-  datasetId: Option[String],
-  timeLogged: Option[String],
-  description: Option[String],
-  tags: Option[List[String]],
-  datasetVersionVisibility: Option[DatasetVisibilityEnumDatasetVisibility],
-  datasetType: Option[DatasetTypeEnumDatasetType],
-  attributes: Option[List[CommonKeyValue]],
-  owner: Option[String],
-  version: Option[String],
-  rawDatasetVersionInfo: Option[ModeldbRawDatasetVersionInfo],
-  pathDatasetVersionInfo: Option[ModeldbPathDatasetVersionInfo],
-  queryDatasetVersionInfo: Option[ModeldbQueryDatasetVersionInfo],
-  timeUpdated: Option[String]
+  id: Option[String] = None,
+  parent_id: Option[String] = None,
+  dataset_id: Option[String] = None,
+  time_logged: Option[String] = None,
+  description: Option[String] = None,
+  tags: Option[List[String]] = None,
+  dataset_version_visibility: Option[DatasetVisibilityEnumDatasetVisibility] = None,
+  dataset_type: Option[DatasetTypeEnumDatasetType] = None,
+  attributes: Option[List[CommonKeyValue]] = None,
+  owner: Option[String] = None,
+  version: Option[String] = None,
+  raw_dataset_version_info: Option[ModeldbRawDatasetVersionInfo] = None,
+  path_dataset_version_info: Option[ModeldbPathDatasetVersionInfo] = None,
+  query_dataset_version_info: Option[ModeldbQueryDatasetVersionInfo] = None,
+  time_updated: Option[String] = None
 )

@@ -10,6 +10,6 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogProjectCodeVersion (
-  id: Option[String],
-  codeVersion: Option[ModeldbCodeVersion]
+  id: Option[String] = None,
+  code_version: Option[ModeldbCodeVersion] = None
 )

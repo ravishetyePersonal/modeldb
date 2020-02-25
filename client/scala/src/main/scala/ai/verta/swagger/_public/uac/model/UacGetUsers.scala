@@ -5,7 +5,7 @@ import ai.verta.swagger._public.uac.model.IdServiceProviderEnumIdServiceProvider
 import ai.verta.swagger._public.uac.model.UacFlagEnum._
 
 case class UacGetUsers (
-  userIds: Option[List[String]],
-  emails: Option[List[String]],
-  usernames: Option[List[String]]
+  user_ids: Option[List[String]] = None,
+  emails: Option[List[String]] = None,
+  usernames: Option[List[String]] = None
 )

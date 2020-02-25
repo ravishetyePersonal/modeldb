@@ -10,10 +10,10 @@ import ai.verta.swagger._public.modeldb.model.ModeldbProjectVisibility._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbArtifact (
-  key: Option[String],
-  path: Option[String],
-  pathOnly: Option[Boolean],
-  artifactType: Option[ArtifactTypeEnumArtifactType],
-  linkedArtifactId: Option[String],
-  filenameExtension: Option[String]
+  key: Option[String] = None,
+  path: Option[String] = None,
+  path_only: Option[Boolean] = None,
+  artifact_type: Option[ArtifactTypeEnumArtifactType] = None,
+  linked_artifact_id: Option[String] = None,
+  filename_extension: Option[String] = None
 )

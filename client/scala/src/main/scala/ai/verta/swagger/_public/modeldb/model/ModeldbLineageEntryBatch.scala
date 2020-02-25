@@ -4,5 +4,5 @@ package ai.verta.swagger._public.modeldb.model
 import ai.verta.swagger._public.modeldb.model.LineageEntryEnumLineageEntryType._
 
 case class ModeldbLineageEntryBatch (
-  items: Option[List[ModeldbLineageEntry]]
+  items: Option[List[ModeldbLineageEntry]] = None
 )

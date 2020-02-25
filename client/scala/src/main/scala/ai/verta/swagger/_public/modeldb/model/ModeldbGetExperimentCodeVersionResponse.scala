@@ -8,5 +8,5 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbGetExperimentCodeVersionResponse (
-  codeVersion: Option[ModeldbCodeVersion]
+  code_version: Option[ModeldbCodeVersion] = None
 )

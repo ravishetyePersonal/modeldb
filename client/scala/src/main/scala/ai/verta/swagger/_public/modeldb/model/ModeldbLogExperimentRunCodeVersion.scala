@@ -8,7 +8,7 @@ import ai.verta.swagger._public.modeldb.model.ValueTypeEnumValueType._
 import ai.verta.swagger._public.modeldb.model.ProtobufNullValue._
 
 case class ModeldbLogExperimentRunCodeVersion (
-  id: Option[String],
-  codeVersion: Option[ModeldbCodeVersion],
-  overwrite: Option[Boolean]
+  id: Option[String] = None,
+  code_version: Option[ModeldbCodeVersion] = None,
+  overwrite: Option[Boolean] = None
 )

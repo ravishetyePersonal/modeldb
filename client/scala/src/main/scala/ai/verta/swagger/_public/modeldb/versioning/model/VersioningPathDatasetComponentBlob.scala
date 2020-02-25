@@ -4,9 +4,9 @@ package ai.verta.swagger._public.modeldb.versioning.model
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 
 case class VersioningPathDatasetComponentBlob (
-  path: Option[String],
-  size: Option[String],
-  lastModifiedAtSource: Option[String],
-  sha256: Option[String],
-  md5: Option[String]
+  path: Option[String] = None,
+  size: Option[String] = None,
+  last_modified_at_source: Option[String] = None,
+  sha256: Option[String] = None,
+  md5: Option[String] = None
 )
