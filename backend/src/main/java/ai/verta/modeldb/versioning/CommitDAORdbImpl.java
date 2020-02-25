@@ -18,8 +18,8 @@ public class CommitDAORdbImpl implements CommitDAO {
       throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
-      InternalCommit internalCommit =
-          InternalCommit.newBuilder()
+      Commit internalCommit =
+          Commit.newBuilder()
               .setDateCreated(new Date().getTime())
               .setAuthor(commit.getAuthor())
               .setMessage(commit.getAuthor())
