@@ -367,6 +367,10 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        if (request.getTag().isEmpty()) {
+          throw new ModelDBException(
+              "Tag not found in the DeleteTagRequest", Code.INVALID_ARGUMENT);
+        }
         DeleteTagRequest.Response response = repositoryDAO.deleteTag(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();

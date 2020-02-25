@@ -284,12 +284,14 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public SetTagRequest.Response setTag(SetTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
       // TODO: Check commit_hash exists in DB
       TagsEntity tagsEntity =
           new TagsEntity(repository.getId(), request.getCommitSha(), request.getTag());
-      session.saveOrUpdate(tagsEntity);
+      session.save(tagsEntity);
+      session.getTransaction().commit();
       return SetTagRequest.Response.newBuilder().build();
     }
   }
@@ -297,6 +299,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public GetTagRequest.Response getTag(GetTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
       Query query = session.createQuery(GET_TAG_HQL);
@@ -304,6 +307,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       query.setParameter("tag", request.getTag());
       TagsEntity tagsEntity = (TagsEntity) query.uniqueResult();
       CommitEntity commitEntity = session.get(CommitEntity.class, tagsEntity.getCommit_hash());
+      session.getTransaction().commit();
       return GetTagRequest.Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
     }
   }
@@ -311,9 +315,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public DeleteTagRequest.Response deleteTag(DeleteTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       session.beginTransaction();
-
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       TagsEntity tagsEntity =
           session.load(
               TagsEntity.class, new TagsEntity.TagId(request.getTag(), repository.getId()));
@@ -326,19 +329,21 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public ListTagsRequest.Response listTags(ListTagsRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
       Query query = session.createQuery(GET_TAGS_HQL);
       query.setParameter("repoId", repository.getId());
       List<TagsEntity> tagsEntities = query.list();
 
       session.getTransaction().commit();
+      List<String> tags =
+          tagsEntities.stream()
+              .map(tagsEntity -> tagsEntity.getId().getTag())
+              .collect(Collectors.toList());
       return ListTagsRequest.Response.newBuilder()
-          .addAllTags(
-              tagsEntities.stream()
-                  .map(tagsEntity -> tagsEntity.getId().getTag())
-                  .collect(Collectors.toList()))
+          .addAllTags(tags)
+          .setTotalRecords(tags.size())
           .build();
     }
   }
