@@ -38,11 +38,11 @@ public class LabelsMappingEntity {
     @Column(name = "label", length = 50)
     private String label;
 
+    @Column(name = "entity_hash", nullable = false, columnDefinition = "varchar", length = 64)
+    private String entity_hash;
+    
     @Column(name = "entity_type")
     private Integer entity_type;
-
-    @Column(name = "entity_hash", nullable = false, columnDefinition = "varchar", length = 32)
-    private String entity_hash;
 
     public LabelMappingId(String entityHash, Integer entityType, String label) {
       this.entity_hash = entityHash;

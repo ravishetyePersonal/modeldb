@@ -76,10 +76,10 @@ public class S3DatasetComponentBlobEntity {
 @Embeddable
 class S3DatasetComponentBlobId implements Serializable {
 
-  @Column(name = "blob_hash", nullable = false, columnDefinition = "varchar", length = 32)
+  @Column(name = "blob_hash", nullable = false, columnDefinition = "varchar", length = 64)
   private String blob_hash;
 
-  @Column(name = "s3_dataset_blob_id", nullable = false, columnDefinition = "varchar", length = 32)
+  @Column(name = "s3_dataset_blob_id", nullable = false, columnDefinition = "varchar", length = 64)
   private String s3_dataset_blob_id;
 
   public S3DatasetComponentBlobId(String blobHash, String pathDatasetBlobId) {
