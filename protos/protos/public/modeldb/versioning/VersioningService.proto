@@ -23,7 +23,7 @@ message Commit {
     // ID of the user who created the commit.
     string author = 4;
 
-    string folder_sha = 5;
+    string commit_sha = 5;
 }
 
 // Data structure used to compute the SHA of a folder

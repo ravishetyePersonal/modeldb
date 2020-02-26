@@ -134,7 +134,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     for (ComponentEntity componentEntity : componentEntities) {
       componentEntity.setBlobHash(elementSha);
       session.saveOrUpdate(componentEntity);
-      session.saveOrUpdate(componentEntity);
     }
     return elementSha;
   }
