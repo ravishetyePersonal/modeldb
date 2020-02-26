@@ -1,10 +1,17 @@
 package ai.verta.client.entities
 
+import java.io._
+import java.time.{Instant, LocalDateTime}
+import java.util.TimeZone
+
 import ai.verta.client.entities.subobjects._
+import ai.verta.client.entities.utils.KVHandler
 import ai.verta.swagger._public.modeldb.model._
 import ai.verta.swagger.client.ClientSet
 
-import scala.concurrent.ExecutionContext
+import scala.collection.mutable
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 import scala.util.{Failure, Success, Try}
 
 class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: ModeldbExperimentRun) extends Taggable {
@@ -122,4 +129,112 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
 
   def getAttribute(key: String)(implicit ec: ExecutionContext) =
     getAttributes(List(key)).map(_.get(key))
+
+  def logObservation(key: String, value: Any, timestamp: LocalDateTime = null)(implicit ec: ExecutionContext) = {
+    val ts = if (timestamp == null) LocalDateTime.now() else timestamp
+
+    val convertedValue = KVHandler.convertValue(value, s"unknown type for observation ${key}")
+    convertedValue.flatMap(newValue => {
+      clientSet.experimentRunService.logObservation(ModeldbLogObservation(
+        id = run.id,
+        observation = Some(ModeldbObservation(
+          attribute = Some(CommonKeyValue(
+            key = Some(key),
+            value = Some(newValue)
+          )),
+          timestamp = Some(ts.atZone(TimeZone.getTimeZone("UTC").toZoneId).toInstant.toEpochMilli.toString)
+        ))
+      ))
+    })
+      .map(_ => {})
+  }
+
+  def getObservation(key: String)(implicit ec: ExecutionContext) = {
+    clientSet.experimentRunService.getObservations(id = run.id.get, observation_key = key)
+      .map(res => {
+        res.observations.map(obs => {
+          obs.map(o => {
+            (
+              LocalDateTime.ofInstant(Instant.ofEpochMilli(o.timestamp.get.toLong), TimeZone.getTimeZone("UTC").toZoneId),
+              KVHandler.convertValue(o.attribute.get.value.get, s"unknown type for observation ${key}").get
+            )
+          })
+        }).getOrElse(Nil)
+      })
+  }
+
+  def getObservations()(implicit ec: ExecutionContext) = {
+    clientSet.experimentRunService.getExperimentRunById(run.id.get)
+      .map(runResp => {
+        val observations = runResp.experiment_run.get.observations
+        val obsMap = new mutable.HashMap[String, List[(LocalDateTime, Any)]]()
+        observations.get.foreach(o => {
+          val ts = LocalDateTime.ofInstant(Instant.ofEpochMilli(o.timestamp.get.toLong), TimeZone.getTimeZone("UTC").toZoneId)
+          val key = o.attribute.get.key.get
+          val value = KVHandler.convertValue(o.attribute.get.value.get, s"unknown type for observation $key")
+          obsMap.update(key, (ts, value) :: obsMap.getOrElse(key, Nil))
+        })
+        obsMap.map(el => {
+          (el._1, el._2.sortBy(_._1.atZone(TimeZone.getTimeZone("UTC").toZoneId).toInstant().toEpochMilli))
+        }).toMap
+      })
+  }
+
+  def logArtifactObj[T <: Serializable](key: String, obj: T)(implicit ec: ExecutionContext) = {
+    val arr = new ByteArrayOutputStream()
+    val stream = new ObjectOutputStream(arr)
+    stream.writeObject(obj)
+    stream.close
+    logArtifact(key, new ByteArrayInputStream(arr.toByteArray))
+  }
+
+  def logArtifact(key: String, stream: InputStream)(implicit ec: ExecutionContext) = {
+    clientSet.experimentRunService.getUrlForArtifact(ModeldbGetUrlForArtifact(
+      id = run.id,
+      key = Some(key),
+      method = Some("PUT"),
+      artifact_type = Some(ArtifactTypeEnumArtifactType.BLOB)
+    ))
+      .map(r => {
+        Await.result(clientSet.client.requestRaw("PUT", r.url.get, null, stream), Duration.Inf)
+      })
+      .map(_ => {})
+  }
+
+  def getArtifactObj[T <: Serializable](key: String)(implicit ec: ExecutionContext) = {
+    getArtifact(key)
+      .map(stream => {
+        val arr = new ByteArrayInputStream(stream.toByteArray)
+        val stream2 = new ObjectInputStream(arr)
+        val obj = stream2.readObject().asInstanceOf[T]
+        stream2.close
+        stream.close
+        obj
+      })
+  }
+
+  def getArtifact(key: String)(implicit ec: ExecutionContext) = {
+    clientSet.experimentRunService.getUrlForArtifact(ModeldbGetUrlForArtifact(
+      id = run.id,
+      key = Some(key),
+      method = Some("GET"),
+      artifact_type = Some(ArtifactTypeEnumArtifactType.BLOB)
+    ))
+      .flatMap(r => {
+        Await.result(
+          clientSet.client.requestRaw("GET", r.url.get, null, null)
+            .map(resp => {
+              resp match {
+                case Success(response) => {
+                  val arr = new ByteArrayOutputStream()
+                  arr.write(response.getBytes, 0, response.length)
+                  Success(arr)
+                }
+                case Failure(x) => Failure(x)
+              }
+            }),
+          Duration.Inf
+        )
+      })
+  }
 }

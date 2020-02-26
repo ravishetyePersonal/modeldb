@@ -5,10 +5,10 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import scala.util.Try
 
-import ai.verta.swagger.client.Client
+import ai.verta.swagger.client.HttpClient
 import ai.verta.swagger.{{package}}.model._
 
-class {{api_name}}Api(client: Client, val basePath: String = "{{base_path}}") {
+class {{api_name}}Api(client: HttpClient, val basePath: String = "{{base_path}}") {
 {{#operations}}
   def {{operation_id}}Async({{#parameters}}{{safe_name}}: {{#type}}{{> type}}{{/type}}{{^last}}, {{/last}}{{/parameters}})(implicit ec: ExecutionContext): Future[Try[{{#success_type}}{{> type}}{{/success_type}}]] = {
     val __query = Map[String,String](

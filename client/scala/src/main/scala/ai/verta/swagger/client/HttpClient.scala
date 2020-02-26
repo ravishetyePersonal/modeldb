@@ -1,5 +1,6 @@
 package ai.verta.swagger.client
 
+import java.io.InputStream
 import java.net.{URI, URLEncoder}
 
 import ai.verta.swagger.client.type_hints.CommonKeyValue
@@ -13,7 +14,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
-class HttpClient(val host: String, val headers: Map[String, String]) extends Client {
+class HttpClient(val host: String, val headers: Map[String, String]) {
   implicit val formats = DefaultFormats.withHints(CommonKeyValue.hints)
   implicit val sttpBackend = AsyncHttpClientFutureBackend()
 
@@ -51,6 +52,29 @@ class HttpClient(val host: String, val headers: Map[String, String]) extends Cli
           val json = parse(successBody)
           val result = json.extract[T2]
           Success(result)
+        }
+      }
+    })
+  }
+
+  def requestRaw(method: String, url: String, query: Map[String, String], body: InputStream)(implicit ec: ExecutionContext) = {
+    val request = if (body != null) basicRequest.body(body) else basicRequest
+    val uriPath = Uri(new URI(url))
+    val request2 = method match {
+      case "GET" => request.get(uriPath)
+      case "POST" => request.post(uriPath)
+      case "PUT" => request.put(uriPath)
+      case "DELETE" => request.delete(uriPath)
+      case _ => throw new IllegalArgumentException(s"unknown method $method")
+    }
+
+    val futureResponse = request2.send()
+
+    futureResponse.map(response => {
+      response.body match {
+        case Left(failureBody) => Failure(HttpException(response.code, failureBody))
+        case Right(successBody) => {
+          Success(successBody)
         }
       }
     })

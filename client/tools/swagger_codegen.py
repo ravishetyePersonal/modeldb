@@ -160,6 +160,7 @@ def create_models(result_dir, result_package, content, templates, file_suffix, c
             f.write('''
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger.%s.model
+case class dummy()
 ''' % result_package)
 
 def create_model(result_dir, result_package, definition_name, definition, enums, templates, file_suffix, case):

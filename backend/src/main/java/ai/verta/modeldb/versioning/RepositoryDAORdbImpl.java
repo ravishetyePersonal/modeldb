@@ -185,7 +185,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       RepositoryEntity repository;
       session.beginTransaction();
       if (create) {
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId());
+        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false);
         ModelDBHibernateUtil.checkIfEntityAlreadyExists(
             session,
             SHORT_NAME,
