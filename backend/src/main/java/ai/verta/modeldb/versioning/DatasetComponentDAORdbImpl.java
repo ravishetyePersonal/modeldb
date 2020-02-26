@@ -6,7 +6,6 @@ import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -96,11 +95,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     for (BlobExpanded blob : blobsList) {
       final DatasetBlob dataset = blob.getBlob().getDataset();
       final String[] split = blob.getPath().split("/");
-      TreeElem treeChild =
-          treeElem.push(
-              Arrays.asList(split),
-              fileHasher.getSha(dataset),
-              TREE);
+      TreeElem treeChild = treeElem.push(Arrays.asList(split), fileHasher.getSha(dataset), TREE);
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {

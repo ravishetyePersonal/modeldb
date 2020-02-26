@@ -284,7 +284,7 @@ public class RepositoryTest {
     SetTagRequest setTagRequest =
         SetTagRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
-            .setCommitSha(commitResponse.getCommit().getFolderSha())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
             .setTag(tagName)
             .build();
 

@@ -25,7 +25,7 @@ public class CommitDAORdbImpl implements CommitDAO {
               .setDateCreated(new Date().getTime())
               .setAuthor(commit.getAuthor())
               .setMessage(commit.getAuthor())
-              .setFolderSha(setBlobs.apply(session))
+              .setCommitSha(setBlobs.apply(session))
               .build();
       CommitEntity commitEntity =
           new CommitEntity(
