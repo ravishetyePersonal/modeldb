@@ -8,6 +8,7 @@ option java_multiple_files = true;
 import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
+import "protos/public/modeldb/versioning/Environment.proto";
 
 // Base commit for the versioning system
 // DO NOT USE TO COMPUTE SHA
@@ -56,7 +57,8 @@ message Folder {
 
 message Blob {
     oneof content {
-        DatasetBlob dataset = 2;
+        DatasetBlob dataset = 2;// Blob of the type dataset
+        EnvironmentBlob environment = 3;
     }
 }
 
