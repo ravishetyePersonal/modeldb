@@ -867,8 +867,11 @@ class _ModelDBEntity(object):
             try:
                 repo_root_dir = _utils.get_git_repo_root_dir()
             except OSError:
-                six.raise_from(OSError("failed to locate Git repository; please check your working directory"),
-                               None)
+                # don't halt execution
+                print("unable to locate git repository; you may be in an unsupported environment")
+                return
+                # six.raise_from(OSError("failed to locate git repository; please check your working directory"),
+                #                None)
             print("Git repository successfully located at {}".format(repo_root_dir))
         elif repo_url is not None or commit_hash is not None:
             raise ValueError("`repo_url` and `commit_hash` can only be set if `use_git` was set to True in the Client")
@@ -932,6 +935,12 @@ class _ModelDBEntity(object):
                 else:
                     msg.code_version.git_snapshot.is_dirty = _CommonCommonService.TernaryEnum.FALSE
         else:  # log code as Artifact
+            if exec_path is None:
+                # don't halt execution
+                print("unable to find code file; you may be in an unsupported environment")
+                return
+                # raise RuntimeError("unable to find code file; you may be in an unsupported environment")
+
             # write ZIP archive
             zipstream = six.BytesIO()
             with zipfile.ZipFile(zipstream, 'w') as zipf:
@@ -3375,7 +3384,13 @@ class ExperimentRun(_ModelDBEntity):
         bytestream = six.BytesIO()
         with zipfile.ZipFile(bytestream, 'w') as zipf:
             for filepath in local_filepaths:
-                zipf.write(filepath, os.path.relpath(filepath, common_dir))
+                arcname = os.path.relpath(filepath, common_dir)  # filepath relative to archive root
+                try:
+                    zipf.write(filepath, arcname)
+                except:
+                    # maybe file has corrupt metadata; try reading then writing contents
+                    with open(filepath, 'rb') as f:
+                        zipf.writestr(arcname, f.read())
 
             # add verta config file for sys.path and chdir
             working_dir = os.path.join(_CUSTOM_MODULES_DIR, os.path.relpath(curr_dir, common_dir))
