@@ -129,7 +129,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, TREE));
     final String elementSha = internalFolderElement.getElementSha();
     for (ComponentEntity componentEntity : componentEntities) {
-      componentEntity.setBlobHash(elementSha);
       session.saveOrUpdate(componentEntity);
     }
     return elementSha;
