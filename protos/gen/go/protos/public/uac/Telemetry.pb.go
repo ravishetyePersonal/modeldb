@@ -145,11 +145,11 @@ var fileDescriptor_0d655f114f77be80 = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // TelemetryServiceClient is the client API for TelemetryService service.
 //
@@ -159,10 +159,10 @@ type TelemetryServiceClient interface {
 }
 
 type telemetryServiceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewTelemetryServiceClient(cc *grpc.ClientConn) TelemetryServiceClient {
+func NewTelemetryServiceClient(cc grpc.ClientConnInterface) TelemetryServiceClient {
 	return &telemetryServiceClient{cc}
 }
 
