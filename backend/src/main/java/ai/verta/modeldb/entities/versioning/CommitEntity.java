@@ -1,7 +1,6 @@
 package ai.verta.modeldb.entities.versioning;
 
 import ai.verta.modeldb.versioning.Commit;
-import ai.verta.modeldb.versioning.InternalCommit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,10 +20,8 @@ public class CommitEntity {
   public CommitEntity() {}
 
   public CommitEntity(
-      RepositoryEntity repositoryEntity,
-      List<CommitEntity> parentCommits,
-      InternalCommit internalCommit) {
-    this.commit_hash = internalCommit.getFolderSha();
+      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit) {
+    this.commit_hash = internalCommit.getCommitSha();
     this.date_created = internalCommit.getDateCreated();
     this.message = internalCommit.getMessage();
     this.repository.add(repositoryEntity);
@@ -92,18 +89,9 @@ public class CommitEntity {
     return parent_commits.stream().map(CommitEntity::getCommit_hash).collect(Collectors.toList());
   }
 
-  public InternalCommit toProto() {
-    return InternalCommit.newBuilder()
-        .setFolderSha(this.commit_hash)
-        .addAllParentShas(getParentCommitIds())
-        .setDateCreated(this.date_created)
-        .setMessage(this.message)
-        .setAuthor(this.author)
-        .build();
-  }
-
   public Commit toCommitProto() {
     return Commit.newBuilder()
+        .setCommitSha(this.commit_hash)
         .addAllParentShas(getParentCommitIds())
         .setDateCreated(this.date_created)
         .setMessage(this.message)
