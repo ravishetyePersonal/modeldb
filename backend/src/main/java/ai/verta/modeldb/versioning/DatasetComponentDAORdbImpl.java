@@ -1,12 +1,13 @@
 package ai.verta.modeldb.versioning;
 
+import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
 
@@ -96,18 +98,14 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     for (BlobExpanded blob : blobsList) {
       final DatasetBlob dataset = blob.getBlob().getDataset();
       final String[] split = blob.getPath().split("/");
-      TreeElem treeChild =
-          treeElem.push(
-              Arrays.asList(split),
-              fileHasher.getSha(dataset),
-              TREE);
+      TreeElem treeChild = treeElem.push(Arrays.asList(split), fileHasher.getSha(dataset), TREE);
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
             final String sha256 = componentBlob.getPath().getSha256();
             S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
                 new S3DatasetComponentBlobEntity(
-                    UUID.randomUUID().toString(), sha256, componentBlob.getPath());
+                    UUID.randomUUID().toString(), sha256, componentBlob);
             componentEntities.add(s3DatasetComponentBlobEntity);
             treeChild.push(
                 Arrays.asList(split[split.length - 1], componentBlob.getPath().getPath()),
@@ -139,5 +137,51 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       session.saveOrUpdate(componentEntity);
     }
     return elementSha;
+  }
+
+  @Override
+  public GetCommitBlobRequest.Response getCommitBlob(
+      RepositoryFunction repositoryFunction, String commitHash, String path)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      repositoryFunction.apply(session);
+
+      String s3ComponentQueryHQL =
+          "From "
+              + S3DatasetComponentBlobEntity.class.getSimpleName()
+              + " s3 WHERE s3.id.blob_hash = :commitHash AND s3.path = :path";
+
+      Query s3ComponentQuery = session.createQuery(s3ComponentQueryHQL);
+      s3ComponentQuery.setParameter("commitHash", commitHash);
+      s3ComponentQuery.setParameter("path", path);
+      S3DatasetComponentBlobEntity datasetComponentBlobEntity =
+          (S3DatasetComponentBlobEntity) s3ComponentQuery.uniqueResult();
+
+      DatasetBlob.Builder datasetBlobBuilder = DatasetBlob.newBuilder();
+      if (datasetComponentBlobEntity != null) {
+        datasetBlobBuilder.setS3(
+            S3DatasetBlob.newBuilder().addComponents(datasetComponentBlobEntity.toProto()).build());
+      } else {
+        String pathComponentQueryHQL =
+            "From "
+                + PathDatasetComponentBlobEntity.class.getSimpleName()
+                + " p WHERE p.id.blob_hash = :commitHash AND p.path = :path";
+
+        Query pathComponentQuery = session.createQuery(pathComponentQueryHQL);
+        pathComponentQuery.setParameter("commitHash", commitHash);
+        pathComponentQuery.setParameter("path", path);
+        PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
+            (PathDatasetComponentBlobEntity) pathComponentQuery.uniqueResult();
+        datasetBlobBuilder.setPath(
+            PathDatasetBlob.newBuilder()
+                .addComponents(pathDatasetComponentBlobEntity.toProto())
+                .build());
+      }
+
+      session.getTransaction().commit();
+      Blob blob = Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
+      return GetCommitBlobRequest.Response.newBuilder().setBlob(blob).build();
+    }
   }
 }

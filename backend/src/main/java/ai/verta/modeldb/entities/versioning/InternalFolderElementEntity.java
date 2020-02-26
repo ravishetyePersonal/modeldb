@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "folder_element")
 public class InternalFolderElementEntity {
-  public InternalFolderElementEntity() {}
+  private InternalFolderElementEntity() {}
 
   public InternalFolderElementEntity(
       InternalFolderElement internalFolderElement, String folderHash, String elementType) {

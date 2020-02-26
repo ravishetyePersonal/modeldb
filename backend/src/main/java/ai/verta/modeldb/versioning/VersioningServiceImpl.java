@@ -242,7 +242,26 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   public void getCommitBlob(
       GetCommitBlobRequest request,
       StreamObserver<GetCommitBlobRequest.Response> responseObserver) {
-    super.getCommitBlob(request, responseObserver);
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      if (request.getCommitSha().isEmpty()) {
+        throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
+      } else if (request.getPath().isEmpty()) {
+        throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
+      }
+
+      GetCommitBlobRequest.Response response =
+          datasetComponentDAO.getCommitBlob(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request.getCommitSha(),
+              request.getPath());
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, GetCommitBlobRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override

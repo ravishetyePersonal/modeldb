@@ -17,6 +17,7 @@ import ai.verta.modeldb.versioning.CreateCommitRequest;
 import ai.verta.modeldb.versioning.DatasetBlob;
 import ai.verta.modeldb.versioning.DeleteRepositoryRequest;
 import ai.verta.modeldb.versioning.DeleteTagRequest;
+import ai.verta.modeldb.versioning.GetCommitBlobRequest;
 import ai.verta.modeldb.versioning.GetRepositoryRequest;
 import ai.verta.modeldb.versioning.GetTagRequest;
 import ai.verta.modeldb.versioning.ListTagsRequest;
@@ -336,5 +337,86 @@ public class RepositoryTest {
     Assert.assertTrue(deleteResult.getStatus());
 
     LOGGER.info("Add tag test end................................");
+  }
+
+  @Test
+  public void getCommitBlobTest() {
+    LOGGER.info("Get commit blob test start................................");
+
+    VersioningServiceBlockingStub versioningServiceBlockingStub =
+        VersioningServiceGrpc.newBlockingStub(channel);
+
+    SetRepository setRepository =
+        SetRepository.newBuilder()
+            .setId(
+                RepositoryIdentification.newBuilder()
+                    .setNamedId(
+                        RepositoryNamedIdentification.newBuilder().setName("Repo-1").build())
+                    .build())
+            .setRepository(Repository.newBuilder().setName("Repo-1"))
+            .build();
+    SetRepository.Response result = versioningServiceBlockingStub.createRepository(setRepository);
+    long id = result.getRepository().getId();
+
+    String path = "/protos/proto/public/versioning/versioning.proto";
+    Blob blob =
+        Blob.newBuilder()
+            .setDataset(
+                DatasetBlob.newBuilder()
+                    .setPath(
+                        PathDatasetBlob.newBuilder()
+                            .addComponents(
+                                PathDatasetComponentBlob.newBuilder()
+                                    .setPath(path)
+                                    .setSize(2)
+                                    .setLastModifiedAtSource(
+                                        Calendar.getInstance().getTimeInMillis())
+                                    .build())
+                            .build())
+                    .build())
+            .build();
+    CreateCommitRequest createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .build())
+            .addBlobs(
+                BlobExpanded.newBuilder()
+                    .setBlob(blob)
+                    .setPath("https://github.com/VertaAI/modeldb")
+                    .build())
+            .build();
+
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+
+    GetCommitBlobRequest getCommitBlobRequest =
+        GetCommitBlobRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getFolderSha())
+            .setPath(path)
+            .build();
+    GetCommitBlobRequest.Response getCommitBlobResponse =
+        versioningServiceBlockingStub.getCommitBlob(getCommitBlobRequest);
+    assertEquals(
+        "Blob path not match with expected blob path",
+        path,
+        getCommitBlobResponse.getBlob().getDataset().getPath().getComponents(0).getPath());
+
+    // TODO: Add Delete Commit code here
+
+    DeleteRepositoryRequest deleteRepository =
+        DeleteRepositoryRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id))
+            .build();
+    DeleteRepositoryRequest.Response deleteResult =
+        versioningServiceBlockingStub.deleteRepository(deleteRepository);
+    Assert.assertTrue(deleteResult.getStatus());
+
+    LOGGER.info("Get commit blob test end................................");
   }
 }
