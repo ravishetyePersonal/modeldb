@@ -21,30 +21,29 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
 
   static class TreeElem {
     String path;
-    String fullPath;
     String sha256 = null;
     String type = null;
     Map<String, TreeElem> children = new HashMap<>();
 
     TreeElem() {}
 
-    TreeElem push(List<String> pathList, String fullPath, String sha256, String type) {
+    TreeElem push(List<String> pathList, String sha256, String type) {
       path = pathList.get(0);
       if (pathList.size() > 1) {
         children.putIfAbsent(pathList.get(1), new TreeElem());
+        this.type = TREE;
         return children
             .get(pathList.get(1))
-            .push(pathList.subList(1, pathList.size()), fullPath, sha256, type);
+            .push(pathList.subList(1, pathList.size()), sha256, type);
       } else {
         this.sha256 = sha256;
         this.type = type;
-        this.fullPath = fullPath;
         return this;
       }
     }
 
     String getPath() {
-      return fullPath == null ? "" : fullPath;
+      return path != null ? path : "";
     }
 
     String getSha256() {
@@ -99,7 +98,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       TreeElem treeChild =
           treeElem.push(
               Arrays.asList(blob.getPath().split("/")),
-              blob.getPath(),
               fileHasher.getSha(dataset),
               TREE);
       switch (dataset.getContentCase()) {
@@ -112,7 +110,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             componentEntities.add(s3DatasetComponentBlobEntity);
             treeChild.push(
                 Collections.singletonList(componentBlob.getPath().getPath()),
-                componentBlob.getPath().getPath(),
                 componentBlob.getPath().getSha256(),
                 componentBlob.getClass().getSimpleName());
           }
@@ -126,7 +123,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             componentEntities.add(pathDatasetComponentBlobEntity);
             treeChild.push(
                 Collections.singletonList(componentBlob.getPath()),
-                componentBlob.getPath(),
                 componentBlob.getSha256(),
                 componentBlob.getClass().getSimpleName());
           }
