@@ -95,9 +95,10 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     List<ComponentEntity> componentEntities = new LinkedList<>();
     for (BlobExpanded blob : blobsList) {
       final DatasetBlob dataset = blob.getBlob().getDataset();
+      final String[] split = blob.getPath().split("/");
       TreeElem treeChild =
           treeElem.push(
-              Arrays.asList(blob.getPath().split("/")),
+              Arrays.asList(split),
               fileHasher.getSha(dataset),
               TREE);
       switch (dataset.getContentCase()) {
@@ -109,7 +110,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                     UUID.randomUUID().toString(), sha256, componentBlob.getPath());
             componentEntities.add(s3DatasetComponentBlobEntity);
             treeChild.push(
-                Collections.singletonList(componentBlob.getPath().getPath()),
+                Arrays.asList(split[split.length - 1], componentBlob.getPath().getPath()),
                 componentBlob.getPath().getSha256(),
                 componentBlob.getClass().getSimpleName());
           }
@@ -122,7 +123,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                     UUID.randomUUID().toString(), sha256, componentBlob);
             componentEntities.add(pathDatasetComponentBlobEntity);
             treeChild.push(
-                Collections.singletonList(componentBlob.getPath()),
+                Arrays.asList(split[split.length - 1], componentBlob.getPath()),
                 componentBlob.getSha256(),
                 componentBlob.getClass().getSimpleName());
           }
