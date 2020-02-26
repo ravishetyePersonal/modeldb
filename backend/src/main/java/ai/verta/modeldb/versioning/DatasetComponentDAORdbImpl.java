@@ -1,10 +1,12 @@
 package ai.verta.modeldb.versioning;
 
+import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +16,8 @@ import java.util.UUID;
 import org.hibernate.Session;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
+
+  public static final String TREE = "TREE";
 
   static class TreeElem {
     String path;
@@ -64,7 +68,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         for (TreeElem elem : children.values()) {
           InternalFolderElement build = elem.saveFolders(session, fileHasher);
           elems.add(build);
-          if (elem.getType().equals("Folder")) {
+          if (elem.getType().equals(TREE)) {
             internalFolder.addSubFolders(build);
           } else {
             internalFolder.addBlobs(build);
@@ -89,6 +93,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException {
     TreeElem treeElem = new TreeElem();
+    List<ComponentEntity> componentEntities = new LinkedList<>();
     for (BlobExpanded blob : blobsList) {
       final DatasetBlob dataset = blob.getBlob().getDataset();
       TreeElem treeChild =
@@ -96,7 +101,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
               Arrays.asList(blob.getPath().split("/")),
               blob.getPath(),
               fileHasher.getSha(dataset),
-              "TREE");
+              TREE);
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
@@ -104,10 +109,9 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
                 new S3DatasetComponentBlobEntity(
                     UUID.randomUUID().toString(), sha256, componentBlob.getPath());
-            session.saveOrUpdate(s3DatasetComponentBlobEntity);
-            List<String> paths = Arrays.asList(componentBlob.getPath().getPath().split("/"));
+            componentEntities.add(s3DatasetComponentBlobEntity);
             treeChild.push(
-                paths.subList(paths.size() - 2, paths.size()),
+                Collections.singletonList(componentBlob.getPath().getPath()),
                 componentBlob.getPath().getPath(),
                 componentBlob.getPath().getSha256(),
                 componentBlob.getClass().getSimpleName());
@@ -119,10 +123,9 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
                 new PathDatasetComponentBlobEntity(
                     UUID.randomUUID().toString(), sha256, componentBlob);
-            session.saveOrUpdate(pathDatasetComponentBlobEntity);
-            List<String> paths = Arrays.asList(componentBlob.getPath().split("/"));
+            componentEntities.add(pathDatasetComponentBlobEntity);
             treeChild.push(
-                paths.subList(paths.size() - 2, paths.size()),
+                Collections.singletonList(componentBlob.getPath()),
                 componentBlob.getPath(),
                 componentBlob.getSha256(),
                 componentBlob.getClass().getSimpleName());
@@ -131,7 +134,13 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       }
     }
     final InternalFolderElement internalFolderElement = treeElem.saveFolders(session, fileHasher);
-    session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, "TREE"));
-    return internalFolderElement.getElementSha();
+    session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, TREE));
+    final String elementSha = internalFolderElement.getElementSha();
+    for (ComponentEntity componentEntity : componentEntities) {
+      componentEntity.setBlobHash(elementSha);
+      session.saveOrUpdate(componentEntity);
+      session.saveOrUpdate(componentEntity);
+    }
+    return elementSha;
   }
 }

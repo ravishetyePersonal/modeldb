@@ -1,5 +1,6 @@
 package ai.verta.modeldb.entities.dataset;
 
+import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "path_dataset_component_blob")
-public class PathDatasetComponentBlobEntity {
+public class PathDatasetComponentBlobEntity implements ComponentEntity {
   public PathDatasetComponentBlobEntity() {}
 
   public PathDatasetComponentBlobEntity(
@@ -73,6 +74,11 @@ public class PathDatasetComponentBlobEntity {
         .setMd5(this.md5)
         .build();
   }
+
+  @Override
+  public void setBlobHash(String blobHash) {
+    id.setBlob_hash(blobHash);
+  }
 }
 
 @Embeddable
@@ -115,5 +121,9 @@ class PathDatasetComponentBlobId implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(getBlob_hash(), getPath_dataset_blob_id());
+  }
+
+  public void setBlob_hash(String blob_hash) {
+    this.blob_hash = blob_hash;
   }
 }
