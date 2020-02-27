@@ -117,7 +117,7 @@ public class ModelDBHibernateUtil {
     TagsEntity.class,
     PathDatasetComponentBlobEntity.class,
     S3DatasetComponentBlobEntity.class,
-    InternalFolderElementEntity.class
+    InternalFolderElementEntity.class,
   };
 
   private ModelDBHibernateUtil() {}

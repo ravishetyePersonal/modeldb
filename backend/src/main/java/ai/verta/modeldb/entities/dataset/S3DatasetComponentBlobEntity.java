@@ -77,6 +77,11 @@ public class S3DatasetComponentBlobEntity implements ComponentEntity {
   public void setBlobHash(String blobHash) {
     id.setBlob_hash(blobHash);
   }
+
+  @Override
+  public void setBaseBlobHash(String folderHash) {
+    id.setS3_dataset_blob_id(folderHash);
+  }
 }
 
 @Embeddable
@@ -119,5 +124,9 @@ class S3DatasetComponentBlobId implements Serializable {
 
   public void setBlob_hash(String blob_hash) {
     this.blob_hash = blob_hash;
+  }
+
+  public void setS3_dataset_blob_id(String s3_dataset_blob_id) {
+    this.s3_dataset_blob_id = s3_dataset_blob_id;
   }
 }
