@@ -35,16 +35,19 @@ try:
 except ImportError:  # Jupyter not installed
     pass
 else:
-    from IPython.display import Javascript, display
-    try:  # Python 3
-        from notebook.notebookapp import list_running_servers
-    except ImportError:  # Python 2
-        import warnings
-        from IPython.utils.shimmodule import ShimWarning
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=ShimWarning)
-            from IPython.html.notebookapp import list_running_servers
-        del warnings, ShimWarning  # remove ad hoc imports from scope
+    try:
+        from IPython.display import Javascript, display
+        try:  # Python 3
+            from notebook.notebookapp import list_running_servers
+        except ImportError:  # Python 2
+            import warnings
+            from IPython.utils.shimmodule import ShimWarning
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=ShimWarning)
+                from IPython.html.notebookapp import list_running_servers
+            del warnings, ShimWarning  # remove ad hoc imports from scope
+    except ImportError:  # abnormally nonstandard installation of Jupyter
+        pass
 
 
 _GRPC_PREFIX = "Grpc-Metadata-"

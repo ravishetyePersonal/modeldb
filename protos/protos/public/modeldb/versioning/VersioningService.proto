@@ -8,6 +8,7 @@ option java_multiple_files = true;
 import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
+import "protos/public/modeldb/versioning/Environment.proto";
 
 // Base commit for the versioning system
 // DO NOT USE TO COMPUTE SHA
@@ -56,19 +57,22 @@ message Folder {
 
 message Blob {
     oneof content {
-        DatasetBlob dataset = 2;
+        DatasetBlob dataset = 2;// Blob of the type dataset
+        EnvironmentBlob environment = 3;
     }
 }
 
 message BlobExpanded {
-    // Expand with the path seen so far through the folders to get to this blob
-    string path = 1;
+    // List of folder names, with the last element being the name of the blob
+    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
+    repeated string location = 1;
     Blob blob = 2;
 }
 
 message BlobDiff {
-    // Expand with the path seen so far through the folders to get to this blob
-    string path = 1;
+    // List of folder names, with the last element being the name of the blob
+    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
+    repeated string location = 1;
     oneof content {
         DatasetDiff dataset = 2;
     }
@@ -144,7 +148,9 @@ message ListCommitsRequest {
 
     string commit_base = 3; // If empty, consider commits from the beginning
     string commit_head = 4; // If empty, consider commits from the base to the latest
-    string path_prefix = 5;
+    // List of folder names (with the last element potentially representing the blob name)
+    // This will be used to limit the search to scope just this location, like `git log /my/path` would do
+    repeated string location_prefix = 5;
 
     message Response {
         repeated Commit commits = 1;
@@ -184,7 +190,9 @@ message ListCommitBlobsRequest {
     RepositoryIdentification repository_id = 1;
     Pagination pagination = 2;
     string commit_sha = 3;
-    string path_prefix = 4;
+    // List of folder names (with the last element potentially representing the blob name)
+    // This will be used to limit the search to scope just this location, like `git log /my/path` would do
+    repeated string location_prefix = 4;
 
     message Response {
         repeated BlobExpanded blobs = 1;
@@ -195,7 +203,9 @@ message ListCommitBlobsRequest {
 message GetCommitBlobRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
-    string path = 3;
+    // List of folder names, with the last element being the name of the blob
+    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
+    repeated string location = 3;
 
     message Response {
         Blob blob = 1;
@@ -205,7 +215,9 @@ message GetCommitBlobRequest {
 message GetCommitFolderRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
-    string path = 3;
+    // List of folder names
+    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
+    repeated string location = 3;
 
     message Response {
         Folder folder = 1;
@@ -217,7 +229,9 @@ message ComputeRepositoryDiffRequest {
     RepositoryIdentification repository_id = 1;
     string commit_a = 2;
     string commit_b = 3;
-    string path_prefix = 4;
+    // List of folder names (with the last element potentially representing the blob name)
+    // This will be used to limit the search to scope just this location, like `git log /my/path` would do
+    repeated string location_prefix = 4;
 
     message Response {
         repeated BlobDiff diffs = 1;
