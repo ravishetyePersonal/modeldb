@@ -2,31 +2,41 @@ package ai.verta.modeldb.versioning;
 
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
+import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status.Code;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 public class CommitDAORdbImpl implements CommitDAO {
+  private static final Logger LOGGER = LogManager.getLogger(CommitDAORdbImpl.class);
   public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
+      final String rootSha = setBlobs.apply(session);
+      final String commitSha = generateCommitSHA(rootSha, commit);
+      org.hibernate.query.Query query = session
+          .createQuery("Update " + InternalFolderElementEntity.class.getSimpleName() +
+              " set folder_hash='" + commitSha + "' where folder_hash='" + rootSha + "'");
+      int result = query.executeUpdate();
+      LOGGER.debug("Update folder to commit result: " + result);
       Commit internalCommit =
           Commit.newBuilder()
               .setDateCreated(new Date().getTime()) // TODO: add a client override flag
               .setAuthor(commit.getAuthor())
               .setMessage(commit.getAuthor())
-              .setCommitSha(generateCommitSHA(setBlobs.apply(session), commit))
+              .setCommitSha(commitSha)
               .build();
       CommitEntity commitEntity =
           new CommitEntity(
