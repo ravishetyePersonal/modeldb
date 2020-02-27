@@ -80,7 +80,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             internalFolder.addBlobs(build);
           }
         }
-        final InternalFolderElement build =
+        final InternalFolderElement treeBuild =
             InternalFolderElement.newBuilder()
                 .setElementName(getPath())
                 .setElementSha(fileHasher.getSha(internalFolder.build()))
@@ -90,10 +90,10 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           final TreeElem next = iter.next();
           session.saveOrUpdate(
               new ConnectionBuilder(
-                      elem, build.getElementSha(), next.getType(), next.getComponentEntity())
+                      elem, treeBuild.getElementSha(), next.getType(), next.getComponentEntity())
                   .build());
         }
-        return build;
+        return treeBuild;
       }
     }
 
@@ -131,9 +131,11 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     List<ComponentEntity> componentEntities = new LinkedList<>();
     TreeElem rootTree = new TreeElem();
     for (BlobExpanded blob : blobsList) {
+      TreeElem treeElem =
+          rootTree.children.getOrDefault(blob.getLocationList().get(0), new TreeElem());
       switch (blob.getBlob().getContentCase()) {
         case DATASET:
-          processDataset(session, blob, rootTree, fileHasher, getBlobType(blob), componentEntities);
+          processDataset(session, blob, treeElem, fileHasher, getBlobType(blob), componentEntities);
           break;
         case ENVIRONMENT:
           throw new NotYetImplementedException(
@@ -143,6 +145,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           throw new IllegalStateException(
               "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
       }
+      rootTree.children.putIfAbsent(treeElem.path, treeElem);
     }
     final InternalFolderElement internalFolderElement = rootTree.saveFolders(session, fileHasher);
     return internalFolderElement.getElementSha();
