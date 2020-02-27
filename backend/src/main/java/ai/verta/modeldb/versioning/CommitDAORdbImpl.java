@@ -1,5 +1,6 @@
 package ai.verta.modeldb.versioning;
 
+import ai.verta.modeldb.App;
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
@@ -26,7 +27,11 @@ public class CommitDAORdbImpl implements CommitDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
       final String rootSha = setBlobs.apply(session);
-      final String commitSha = generateCommitSHA(rootSha, commit);
+      long timeCreated = new Date().getTime();
+      if (App.getInstance().getStoreClientCreationTimestamp() && commit.getDateCreated() != 0L) {
+        timeCreated = commit.getDateCreated();
+      }
+      final String commitSha = generateCommitSHA(rootSha, commit, timeCreated);
       org.hibernate.query.Query query =
           session.createQuery(
               "Update "
@@ -40,7 +45,7 @@ public class CommitDAORdbImpl implements CommitDAO {
       LOGGER.debug("Update folder to commit result: " + result);
       Commit internalCommit =
           Commit.newBuilder()
-              .setDateCreated(new Date().getTime()) // TODO: add a client override flag
+              .setDateCreated(timeCreated)
               .setAuthor(commit.getAuthor())
               .setMessage(commit.getMessage())
               .setCommitSha(commitSha)
@@ -56,19 +61,20 @@ public class CommitDAORdbImpl implements CommitDAO {
     }
   }
 
-  private String generateCommitSHA(String blobSHA, Commit commit) throws NoSuchAlgorithmException {
+  private String generateCommitSHA(String blobSHA, Commit commit, long timeCreated)
+      throws NoSuchAlgorithmException {
 
     StringBuilder sb = new StringBuilder();
     if (!commit.getParentShasList().isEmpty()) {
       List<String> parentSHAs = commit.getParentShasList();
       parentSHAs = parentSHAs.stream().sorted().collect(Collectors.toList());
       sb.append("parent:");
-      parentSHAs.forEach(pSHA -> sb.append(pSHA)); // TODO  EL/AJ to verify /optimize
+      parentSHAs.forEach(pSHA -> sb.append(pSHA));
     }
     sb.append(":message:")
         .append(commit.getMessage())
         .append(":date_created:")
-        .append(commit.getDateCreated())
+        .append(timeCreated)
         .append(":author:")
         .append(commit.getAuthor())
         .append(":rootHash:")
