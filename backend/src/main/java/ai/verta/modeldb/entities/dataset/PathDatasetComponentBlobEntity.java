@@ -79,6 +79,11 @@ public class PathDatasetComponentBlobEntity implements ComponentEntity {
   public void setBlobHash(String blobHash) {
     id.setBlob_hash(blobHash);
   }
+
+  @Override
+  public void setBaseBlobHash(String folderHash) {
+    id.setPath_dataset_blob_id(folderHash);
+  }
 }
 
 @Embeddable
@@ -125,5 +130,9 @@ class PathDatasetComponentBlobId implements Serializable {
 
   public void setBlob_hash(String blob_hash) {
     this.blob_hash = blob_hash;
+  }
+
+  public void setPath_dataset_blob_id(String path_dataset_blob_id) {
+    this.path_dataset_blob_id = path_dataset_blob_id;
   }
 }

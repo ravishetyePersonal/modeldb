@@ -1,10 +1,9 @@
 package ai.verta.modeldb.versioning;
 
 import ai.verta.modeldb.ModelDBException;
+import com.google.protobuf.ProtocolStringList;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
-import com.google.protobuf.ProtocolStringList;
 import org.hibernate.Session;
 
 interface DatasetComponentDAO {

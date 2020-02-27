@@ -20,15 +20,22 @@ import org.hibernate.Session;
 
 public class CommitDAORdbImpl implements CommitDAO {
   private static final Logger LOGGER = LogManager.getLogger(CommitDAORdbImpl.class);
+
   public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
       final String rootSha = setBlobs.apply(session);
       final String commitSha = generateCommitSHA(rootSha, commit);
-      org.hibernate.query.Query query = session
-          .createQuery("Update " + InternalFolderElementEntity.class.getSimpleName() +
-              " set folder_hash='" + commitSha + "' where folder_hash='" + rootSha + "'");
+      org.hibernate.query.Query query =
+          session.createQuery(
+              "Update "
+                  + InternalFolderElementEntity.class.getSimpleName()
+                  + " set folder_hash='"
+                  + commitSha
+                  + "' where folder_hash='"
+                  + rootSha
+                  + "'");
       int result = query.executeUpdate();
       LOGGER.debug("Update folder to commit result: " + result);
       Commit internalCommit =

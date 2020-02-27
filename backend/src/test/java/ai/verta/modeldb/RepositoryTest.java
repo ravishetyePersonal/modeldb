@@ -41,7 +41,6 @@ import io.grpc.testing.GrpcCleanupRule;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -391,11 +390,7 @@ public class RepositoryTest {
                     .setMessage("this is the test commit message")
                     .setDateCreated(Calendar.getInstance().getTimeInMillis())
                     .build())
-            .addBlobs(
-                BlobExpanded.newBuilder()
-                    .setBlob(blob)
-                    .addAllLocation(location)
-                    .build())
+            .addBlobs(BlobExpanded.newBuilder().setBlob(blob).addAllLocation(location).build())
             .build();
 
     CreateCommitRequest.Response commitResponse =
