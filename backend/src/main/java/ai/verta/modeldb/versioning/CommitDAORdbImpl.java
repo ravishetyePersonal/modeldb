@@ -44,7 +44,7 @@ public class CommitDAORdbImpl implements CommitDAO {
     StringBuilder sb = new StringBuilder();
     if (!commit.getParentShasList().isEmpty()) {
       List<String> parentSHAs = commit.getParentShasList();
-      Collections.sort(parentSHAs); // TODO  EL/AJ to verify /optimize
+      parentSHAs = parentSHAs.stream().sorted().collect(Collectors.toList());
       sb.append("parent:");
       parentSHAs.forEach(pSHA -> sb.append(pSHA)); // TODO  EL/AJ to verify /optimize
     }
