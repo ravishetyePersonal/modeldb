@@ -185,7 +185,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       }
       CreateCommitRequest.Builder newRequest = CreateCommitRequest.newBuilder();
       for (BlobExpanded blob : request.getBlobsList()) {
-        if (blob.getPath().isEmpty()) {
+        if (blob.getLocationList().isEmpty()) {
           throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
         }
         final DatasetBlob dataset = blob.getBlob().getDataset();

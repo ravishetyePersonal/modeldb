@@ -4,6 +4,7 @@ import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import com.google.protobuf.ProtocolStringList;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,8 +95,8 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     List<ComponentEntity> componentEntities = new LinkedList<>();
     for (BlobExpanded blob : blobsList) {
       final DatasetBlob dataset = blob.getBlob().getDataset();
-      final String[] split = blob.getPath().split("/");
-      TreeElem treeChild = treeElem.push(Arrays.asList(split), fileHasher.getSha(dataset), TREE);
+      ProtocolStringList locationList = blob.getLocationList();
+      TreeElem treeChild = treeElem.push(locationList, fileHasher.getSha(dataset), TREE);
       switch (dataset.getContentCase()) {
         case S3:
           for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
@@ -105,7 +106,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                     UUID.randomUUID().toString(), sha256, componentBlob.getPath());
             componentEntities.add(s3DatasetComponentBlobEntity);
             treeChild.push(
-                Arrays.asList(split[split.length - 1], componentBlob.getPath().getPath()),
+                Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
                 componentBlob.getPath().getSha256(),
                 componentBlob.getClass().getSimpleName());
           }
@@ -118,7 +119,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                     UUID.randomUUID().toString(), sha256, componentBlob);
             componentEntities.add(pathDatasetComponentBlobEntity);
             treeChild.push(
-                Arrays.asList(split[split.length - 1], componentBlob.getPath()),
+                Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
                 componentBlob.getSha256(),
                 componentBlob.getClass().getSimpleName());
           }

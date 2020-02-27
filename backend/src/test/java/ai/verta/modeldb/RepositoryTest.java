@@ -273,7 +273,7 @@ public class RepositoryTest {
                                             .build())
                                     .build())
                             .build())
-                    .setPath("/public")
+                    .addLocation("public")
                     .build())
             .build();
 
