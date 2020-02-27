@@ -39,7 +39,10 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -274,7 +277,7 @@ public class RepositoryTest {
                                             .build())
                                     .build())
                             .build())
-                    .setPath("/public")
+                    .addLocation("public")
                     .build())
             .build();
 
@@ -359,6 +362,10 @@ public class RepositoryTest {
     long id = result.getRepository().getId();
 
     String path = "/protos/proto/public/versioning/versioning.proto";
+    List<String> location = new ArrayList<>();
+    location.add("root");
+    location.add("environment");
+    location.add("train");
     Blob blob =
         Blob.newBuilder()
             .setDataset(
@@ -387,7 +394,7 @@ public class RepositoryTest {
             .addBlobs(
                 BlobExpanded.newBuilder()
                     .setBlob(blob)
-                    .setPath("https://github.com/VertaAI/modeldb")
+                    .addAllLocation(location)
                     .build())
             .build();
 
@@ -397,8 +404,8 @@ public class RepositoryTest {
     GetCommitBlobRequest getCommitBlobRequest =
         GetCommitBlobRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
-            .setCommitSha(commitResponse.getCommit().getFolderSha())
-            .setPath(path)
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .addAllLocation(location)
             .build();
     GetCommitBlobRequest.Response getCommitBlobResponse =
         versioningServiceBlockingStub.getCommitBlob(getCommitBlobRequest);
