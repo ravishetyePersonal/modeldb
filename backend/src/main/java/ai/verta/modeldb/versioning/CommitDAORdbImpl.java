@@ -8,6 +8,7 @@ import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status.Code;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -22,10 +23,10 @@ public class CommitDAORdbImpl implements CommitDAO {
       session.beginTransaction();
       Commit internalCommit =
           Commit.newBuilder()
-              .setDateCreated(new Date().getTime())
+              .setDateCreated(new Date().getTime()) // TODO: add a client override flag
               .setAuthor(commit.getAuthor())
               .setMessage(commit.getAuthor())
-              .setCommitSha(setBlobs.apply(session))
+              .setCommitSha(generateCommitSHA(setBlobs.apply(session), commit))
               .build();
       CommitEntity commitEntity =
           new CommitEntity(
@@ -36,6 +37,27 @@ public class CommitDAORdbImpl implements CommitDAO {
       session.getTransaction().commit();
       return Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
     }
+  }
+
+  private String generateCommitSHA(String blobSHA, Commit commit) throws NoSuchAlgorithmException {
+
+    StringBuilder sb = new StringBuilder();
+    if (!commit.getParentShasList().isEmpty()) {
+      List<String> parentSHAs = commit.getParentShasList();
+      Collections.sort(parentSHAs); // TODO  EL/AJ to verify /optimize
+      sb.append("parent:");
+      parentSHAs.forEach(pSHA -> sb.append(pSHA)); // TODO  EL/AJ to verify /optimize
+    }
+    sb.append(":message:")
+        .append(commit.getMessage())
+        .append(":date_created:")
+        .append(commit.getDateCreated())
+        .append(":author:")
+        .append(commit.getAuthor())
+        .append(":rootHash:")
+        .append(blobSHA);
+
+    return FileHasher.getSha(sb.toString());
   }
 
   private List<CommitEntity> getCommits(Session session, ProtocolStringList parentShasList)

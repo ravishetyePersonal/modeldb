@@ -14,4 +14,10 @@ public class FileHasher {
     byte[] hash = digest.digest(payload.getBytes(StandardCharsets.UTF_8));
     return new String(new Hex().encode(hash));
   }
+
+  public static String getSha(String payload) throws NoSuchAlgorithmException {
+    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    byte[] hash = digest.digest(payload.getBytes(StandardCharsets.UTF_8));
+    return new String(new Hex().encode(hash));
+  }
 }

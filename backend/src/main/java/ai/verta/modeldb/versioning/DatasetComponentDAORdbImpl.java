@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.hibernate.Session;
+import org.hibernate.cfg.NotYetImplementedException;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
 
@@ -31,7 +32,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       path = pathList.get(0);
       if (pathList.size() > 1) {
         children.putIfAbsent(pathList.get(1), new TreeElem());
-        this.type = TREE;
+        if (this.type == null) this.type = TREE;
         return children
             .get(pathList.get(1))
             .push(pathList.subList(1, pathList.size()), sha256, type);
@@ -88,50 +89,126 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
+  /** returns the sha */
   @Override
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException {
-    TreeElem treeElem = new TreeElem();
     List<ComponentEntity> componentEntities = new LinkedList<>();
+    TreeElem rootTree = new TreeElem();
     for (BlobExpanded blob : blobsList) {
-      final DatasetBlob dataset = blob.getBlob().getDataset();
-      ProtocolStringList locationList = blob.getLocationList();
-      TreeElem treeChild = treeElem.push(locationList, fileHasher.getSha(dataset), TREE);
-      switch (dataset.getContentCase()) {
-        case S3:
-          for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
-            final String sha256 = componentBlob.getPath().getSha256();
-            S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
-                new S3DatasetComponentBlobEntity(
-                    UUID.randomUUID().toString(), sha256, componentBlob.getPath());
-            componentEntities.add(s3DatasetComponentBlobEntity);
-            treeChild.push(
-                Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
-                componentBlob.getPath().getSha256(),
-                componentBlob.getClass().getSimpleName());
-          }
+      TreeElem treeElem = new TreeElem();
+      switch (blob.getBlob().getContentCase()) {
+        case DATASET:
+          processDataset(session, blob, treeElem, fileHasher, getBlobType(blob), componentEntities);
           break;
-        case PATH:
-          for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
-            final String sha256 = componentBlob.getSha256();
-            PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
-                new PathDatasetComponentBlobEntity(
-                    UUID.randomUUID().toString(), sha256, componentBlob);
-            componentEntities.add(pathDatasetComponentBlobEntity);
-            treeChild.push(
-                Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
-                componentBlob.getSha256(),
-                componentBlob.getClass().getSimpleName());
-          }
-          break;
+        case ENVIRONMENT:
+          throw new NotYetImplementedException(
+              "not supported yet"); // TODO EL/AJ to throw right exceptions
+        case CONTENT_NOT_SET:
+        default:
+          throw new IllegalStateException(
+              "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
       }
+
+      rootTree.children.putIfAbsent(treeElem.path, treeElem);
     }
-    final InternalFolderElement internalFolderElement = treeElem.saveFolders(session, fileHasher);
-    session.saveOrUpdate(new InternalFolderElementEntity(internalFolderElement, null, TREE));
+    final InternalFolderElement internalFolderElement = rootTree.saveFolders(session, fileHasher);
     final String elementSha = internalFolderElement.getElementSha();
     for (ComponentEntity componentEntity : componentEntities) {
       session.saveOrUpdate(componentEntity);
     }
     return elementSha;
+  }
+
+  private String getBlobType(BlobExpanded blob) {
+    switch (blob.getBlob().getContentCase()) {
+      case DATASET:
+        switch (blob.getBlob().getDataset().getContentCase()) {
+          case PATH:
+            return PathDatasetBlob.class.getSimpleName();
+          case S3:
+            return S3DatasetBlob.class.getSimpleName();
+          case CONTENT_NOT_SET:
+          default:
+            throw new IllegalStateException(
+                "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
+        }
+      case ENVIRONMENT:
+        throw new NotYetImplementedException(
+            "not supported yet"); // TODO EL/AJ to throw right exceptions
+      case CONTENT_NOT_SET:
+      default:
+        throw new IllegalStateException(
+            "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
+    }
+  }
+
+  private void processDataset(
+      Session session,
+      BlobExpanded blob,
+      TreeElem treeElem,
+      FileHasher fileHasher,
+      String blobType,
+      List<ComponentEntity> componentEntities)
+      throws NoSuchAlgorithmException {
+    final DatasetBlob dataset = blob.getBlob().getDataset();
+    final List<String> locationList = blob.getLocationList();
+    TreeElem treeChild =
+        treeElem.push(
+            locationList, fileHasher.getSha(dataset), blobType); // need to ensure dataset is sorted
+    switch (dataset.getContentCase()) {
+      case S3:
+        for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
+          final String sha256 = computeSHA(componentBlob);
+          S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
+              new S3DatasetComponentBlobEntity(
+                  UUID.randomUUID().toString(),
+                  sha256,
+                  componentBlob.getPath()); // why is UUID required?
+          componentEntities.add(s3DatasetComponentBlobEntity);
+          treeChild.push(
+              Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
+              computeSHA(componentBlob.getPath()),
+              componentBlob.getClass().getSimpleName());
+        }
+        break;
+      case PATH:
+        for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
+          final String sha256 = computeSHA(componentBlob);
+          PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
+              new PathDatasetComponentBlobEntity(
+                  UUID.randomUUID().toString(), sha256, componentBlob);
+          componentEntities.add(pathDatasetComponentBlobEntity);
+          treeChild.push(
+              Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
+              computeSHA(componentBlob),
+              componentBlob.getClass().getSimpleName());
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  private String computeSHA(S3DatasetComponentBlob s3componentBlob)
+      throws NoSuchAlgorithmException {
+    StringBuilder sb = new StringBuilder();
+    sb.append(":path:").append(computeSHA(s3componentBlob.getPath()));
+    return FileHasher.getSha(sb.toString());
+  }
+
+  private String computeSHA(PathDatasetComponentBlob path) throws NoSuchAlgorithmException {
+    StringBuilder sb = new StringBuilder();
+    sb.append("path:")
+        .append(path.getPath())
+        .append(":size:")
+        .append(path.getSize())
+        .append(":last_modified:")
+        .append(path.getLastModifiedAtSource())
+        .append(":sha256:")
+        .append(path.getSha256())
+        .append(":md5:")
+        .append(path.getMd5());
+    return FileHasher.getSha(sb.toString());
   }
 }
