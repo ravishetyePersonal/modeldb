@@ -3,7 +3,6 @@ package ai.verta.modeldb.versioning;
 import ai.verta.modeldb.App;
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
-import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
@@ -48,7 +47,8 @@ public class CommitDAORdbImpl implements CommitDAO {
           new CommitEntity(
               getRepository.apply(session),
               getCommits(session, commit.getParentShasList()),
-              internalCommit, rootSha);
+              internalCommit,
+              rootSha);
       session.saveOrUpdate(commitEntity);
       session.getTransaction().commit();
       return Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
@@ -78,7 +78,6 @@ public class CommitDAORdbImpl implements CommitDAO {
   }
 
   /**
-   * 
    * @param session
    * @param ShasList : a list of sha for which the function returns commits
    * @return

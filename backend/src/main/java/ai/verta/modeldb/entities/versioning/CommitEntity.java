@@ -20,7 +20,9 @@ public class CommitEntity {
   public CommitEntity() {}
 
   public CommitEntity(
-      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit,
+      RepositoryEntity repositoryEntity,
+      List<CommitEntity> parentCommits,
+      Commit internalCommit,
       String rootSha) {
     this.commit_hash = internalCommit.getCommitSha();
     this.date_created = internalCommit.getDateCreated();
