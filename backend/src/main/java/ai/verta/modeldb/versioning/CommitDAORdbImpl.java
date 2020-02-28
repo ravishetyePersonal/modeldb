@@ -12,14 +12,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 public class CommitDAORdbImpl implements CommitDAO {
-  private static final Logger LOGGER = LogManager.getLogger(CommitDAORdbImpl.class);
+  public static final String CANT_FIND_FOLDER = "Can't find folder";
 
   /**
    * commit : details of the commit and the blobs to be added setBlobs : recursively creates trees
@@ -52,6 +51,60 @@ public class CommitDAORdbImpl implements CommitDAO {
       session.saveOrUpdate(commitEntity);
       session.getTransaction().commit();
       return Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
+    }
+  }
+
+  @Override
+  public ListCommitsRequest.Response listCommits(
+      ListCommitsRequest request, RepositoryFunction getRepository) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      RepositoryEntity repository = getRepository.apply(session);
+
+      StringBuilder commitQueryBuilder =
+          new StringBuilder(
+              "SELECT cm FROM "
+                  + CommitEntity.class.getSimpleName()
+                  + " cm LEFT JOIN cm.repository repo WHERE repo.id = :repoId ");
+      if (!request.getCommitBase().isEmpty()) {
+        CommitEntity baseCommitEntity =
+            Optional.ofNullable(session.get(CommitEntity.class, request.getCommitBase()))
+                .orElseThrow(
+                    () ->
+                        new ModelDBException(
+                            "Couldn't find base commit by sha : " + request.getCommitBase(),
+                            Code.NOT_FOUND));
+        Long baseTime = baseCommitEntity.getDate_created();
+        commitQueryBuilder.append(" AND cm.date_created >= " + baseTime);
+      }
+
+      if (!request.getCommitHead().isEmpty()) {
+        CommitEntity headCommitEntity =
+            Optional.ofNullable(session.get(CommitEntity.class, request.getCommitHead()))
+                .orElseThrow(
+                    () ->
+                        new ModelDBException(
+                            "Couldn't find head commit by sha : " + request.getCommitHead(),
+                            Code.NOT_FOUND));
+        Long headTime = headCommitEntity.getDate_created();
+        commitQueryBuilder.append(" AND cm.date_created <= " + headTime);
+      }
+
+      Query<CommitEntity> commitEntityQuery =
+          session.createQuery(
+              commitQueryBuilder.append(" ORDER BY cm.date_created ASC").toString());
+      commitEntityQuery.setParameter("repoId", repository.getId());
+      if (request.hasPagination()) {
+        int pageLimit = request.getPagination().getPageLimit();
+        final int startPosition = (request.getPagination().getPageNumber() - 1) * pageLimit;
+        commitEntityQuery.setFirstResult(startPosition);
+        commitEntityQuery.setMaxResults(pageLimit);
+      }
+
+      List<Commit> commits =
+          commitEntityQuery.list().stream()
+              .map(CommitEntity::toCommitProto)
+              .collect(Collectors.toList());
+      return ListCommitsRequest.Response.newBuilder().addAllCommits(commits).build();
     }
   }
 

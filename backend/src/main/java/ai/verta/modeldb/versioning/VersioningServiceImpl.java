@@ -150,7 +150,19 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   @Override
   public void listCommits(
       ListCommitsRequest request, StreamObserver<ListCommitsRequest.Response> responseObserver) {
-    super.listCommits(request, responseObserver);
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      ListCommitsRequest.Response response =
+          commitDAO.listCommits(
+              request,
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ListCommitsRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
@@ -252,6 +264,12 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         throw new ModelDBException("Blob unknown type", Code.INVALID_ARGUMENT);
     }
     return newDataset;
+  }
+
+  @Override
+  public void deleteCommit(
+      DeleteCommitRequest request, StreamObserver<DeleteCommitRequest.Response> responseObserver) {
+    super.deleteCommit(request, responseObserver);
   }
 
   @Override
