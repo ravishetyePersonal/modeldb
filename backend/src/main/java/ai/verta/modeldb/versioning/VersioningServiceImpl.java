@@ -54,6 +54,12 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        if (request.hasPagination()) {
+          if (request.getPagination().getPageLimit() < 1 &&
+              request.getPagination().getPageLimit() > 100) {
+            throw new ModelDBException("Page limit is invalid", Code.INVALID_ARGUMENT);
+          }
+        }
         Response response = repositoryDAO.listRepositories(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();

@@ -254,8 +254,10 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               workspaceDTO.getWorkspaceType(),
               false);
       int pageLimit = request.getPagination().getPageLimit();
-      query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);
-      query.setMaxResults(pageLimit);
+      if (request.hasPagination()) {
+        query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);
+        query.setMaxResults(pageLimit);
+      }
       List list = query.list();
       ListRepositoriesRequest.Response.Builder builder =
           ListRepositoriesRequest.Response.newBuilder();
