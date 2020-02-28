@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package ai.verta.modeldb.versioning;
+
+option java_multiple_files = true;
+
+message ConfigBlob {
+    repeated HyperparameterSetConfigBlob hyperparameter_set = 1;
+    repeated HyperparameterConfigBlob hyperparameters = 2;
+}
+
+message HyperparameterConfigBlob {
+    string name = 1;
+    HyperparameterValuesConfigBlob value = 2;
+}
+
+message HyperparameterValuesConfigBlob {
+    oneof value {
+        int64 int_value = 1;
+        float float_value = 2;
+        string string_value = 3;
+    }
+}
+
+message HyperparameterSetConfigBlob {
+    string name = 1;
+    oneof value {
+        ContinuousHyperparameterSetConfigBlob continuous = 2;
+        DiscreteHyperparameterSetConfigBlob discrete = 3;
+    }
+}
+
+message ContinuousHyperparameterSetConfigBlob {
+    HyperparameterValuesConfigBlob interval_begin = 2;
+    HyperparameterValuesConfigBlob interval_end = 3;
+    HyperparameterValuesConfigBlob interval_step = 4;
+}
+
+message DiscreteHyperparameterSetConfigBlob {
+    repeated HyperparameterValuesConfigBlob values = 4;
+}

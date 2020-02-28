@@ -8,6 +8,7 @@ option java_multiple_files = true;
 import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
 import "protos/public/modeldb/versioning/Code.proto";
+import "protos/public/modeldb/versioning/Config.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
 import "protos/public/modeldb/versioning/Environment.proto";
 
@@ -61,6 +62,7 @@ message Blob {
         DatasetBlob dataset = 2;// Blob of the type dataset
         EnvironmentBlob environment = 3;
         CodeBlob code = 4;
+        ConfigBlob config = 5;
     }
 }
 
