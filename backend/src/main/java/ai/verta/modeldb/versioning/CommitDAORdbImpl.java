@@ -22,6 +22,11 @@ import org.hibernate.Session;
 public class CommitDAORdbImpl implements CommitDAO {
   private static final Logger LOGGER = LogManager.getLogger(CommitDAORdbImpl.class);
 
+  /**
+   * commit : details of the commit and the blobs to be added setBlobs : recursively creates trees
+   * and blobs in top down fashion and generates SHAs in bottom up fashion getRepository : fetches
+   * the repository the commit is made on
+   */
   public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {

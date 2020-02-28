@@ -124,7 +124,10 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
-  /** returns the sha */
+  /**
+   * Goes through each BlobExpanded creating TREE/BLOB node top down and computing SHA bottom up
+   * there is a rootSHA which holds one TREE node of each BlobExpanded
+   */
   @Override
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException {
@@ -174,6 +177,16 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
+  /**
+   * @param session
+   * @param blob : a commit is a collection of multiple BlobExpanded
+   * @param treeElem : Each blob or folder need to be converted to a tree element. the process is
+   *     bootstrapped with an empty tree for each BlobExpanded
+   * @param fileHasher
+   * @param blobType
+   * @param componentEntities
+   * @throws NoSuchAlgorithmException
+   */
   private void processDataset(
       Session session,
       BlobExpanded blob,
@@ -184,6 +197,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       throws NoSuchAlgorithmException {
     final DatasetBlob dataset = blob.getBlob().getDataset();
     final List<String> locationList = blob.getLocationList();
+
     TreeElem treeChild =
         treeElem.push(
             locationList,
