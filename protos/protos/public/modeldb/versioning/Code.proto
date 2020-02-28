@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package ai.verta.modeldb.versioning;
+
+option java_multiple_files = true;
+
+import "protos/public/modeldb/versioning/Dataset.proto";
+
+message CodeBlob {
+    oneof content {
+        GitCodeBlob git = 1;
+        NotebookCodeBlob notebook = 2;
+    }
+}
+
+message GitCodeBlob {
+    string repo = 1;
+    string hash = 2;
+    string branch = 3;
+    string tag = 4;
+    bool is_dirty = 5;
+}
+
+message NotebookCodeBlob {
+    PathDatasetBlob path = 1;
+    GitCodeBlob git_repo = 2;
+}
