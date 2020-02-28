@@ -92,6 +92,10 @@ public class CommitEntity {
     return parent_commits;
   }
 
+  public String getRootSha() {
+    return rootSha;
+  }
+
   private List<String> getParentCommitIds() {
     return parent_commits.stream().map(CommitEntity::getCommit_hash).collect(Collectors.toList());
   }

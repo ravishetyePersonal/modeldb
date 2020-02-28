@@ -17,7 +17,7 @@ import ai.verta.modeldb.versioning.CreateCommitRequest;
 import ai.verta.modeldb.versioning.DatasetBlob;
 import ai.verta.modeldb.versioning.DeleteRepositoryRequest;
 import ai.verta.modeldb.versioning.DeleteTagRequest;
-import ai.verta.modeldb.versioning.GetCommitBlobRequest;
+import ai.verta.modeldb.versioning.GetCommitComponentRequest;
 import ai.verta.modeldb.versioning.GetRepositoryRequest;
 import ai.verta.modeldb.versioning.GetTagRequest;
 import ai.verta.modeldb.versioning.ListTagsRequest;
@@ -362,7 +362,7 @@ public class RepositoryTest {
 
     String path = "/protos/proto/public/versioning/versioning.proto";
     List<String> location = new ArrayList<>();
-    location.add("root");
+    location.add("modeldb");
     location.add("environment");
     location.add("train");
     Blob blob =
@@ -396,18 +396,33 @@ public class RepositoryTest {
     CreateCommitRequest.Response commitResponse =
         versioningServiceBlockingStub.createCommit(createCommitRequest);
 
-    GetCommitBlobRequest getCommitBlobRequest =
-        GetCommitBlobRequest.newBuilder()
+    GetCommitComponentRequest getCommitBlobRequest =
+        GetCommitComponentRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
             .setCommitSha(commitResponse.getCommit().getCommitSha())
             .addAllLocation(location)
             .build();
-    GetCommitBlobRequest.Response getCommitBlobResponse =
-        versioningServiceBlockingStub.getCommitBlob(getCommitBlobRequest);
+    GetCommitComponentRequest.Response getCommitBlobResponse =
+        versioningServiceBlockingStub.getCommitComponent(getCommitBlobRequest);
     assertEquals(
         "Blob path not match with expected blob path",
         path,
         getCommitBlobResponse.getBlob().getDataset().getPath().getComponents(0).getPath());
+
+    location.add("xyz");
+    getCommitBlobRequest =
+        GetCommitComponentRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .addAllLocation(location)
+            .build();
+    try {
+      versioningServiceBlockingStub.getCommitComponent(getCommitBlobRequest);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
+      e.printStackTrace();
+    }
 
     // TODO: Add Delete Commit code here
 

@@ -4,6 +4,7 @@ import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import com.google.protobuf.ProtocolStringList;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.hibernate.Session;
@@ -267,84 +269,41 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     return FileHasher.getSha(sb.toString());
   }
 
-  private List<String> getTreeShaList(
-      Session session, String commitHash, ProtocolStringList locationList) throws ModelDBException {
-    String folderQueryHQL =
-        "From "
-            + InternalFolderElementEntity.class.getSimpleName()
-            + " ife WHERE ife.element_name in (:locations) AND ife.element_type = :type AND ife.folder_hash = :commitHash";
-    Query<InternalFolderElementEntity> fetchTreeQuery = session.createQuery(folderQueryHQL);
-    fetchTreeQuery.setParameterList("locations", locationList);
-    fetchTreeQuery.setParameter("type", TREE);
-    fetchTreeQuery.setParameter("commitHash", commitHash);
-    List<InternalFolderElementEntity> folderElementEntities = fetchTreeQuery.list();
-
-    if (folderElementEntities == null || folderElementEntities.isEmpty()) {
-      throw new ModelDBException("Provided location not found", Status.Code.NOT_FOUND);
-    }
-
-    return folderElementEntities.stream()
-        .map(InternalFolderElementEntity::getElement_sha)
-        .collect(Collectors.toList());
-  }
-
-  private List<String> getDatasetBlobShaList(Session session, List<String> folderShaList)
+  private Blob getBlob(Session session, InternalFolderElementEntity folderElementEntity)
       throws ModelDBException {
-    String blobQueryHQL =
-        "From "
-            + InternalFolderElementEntity.class.getSimpleName()
-            + " ife WHERE ife.folder_hash in (:folderHashList)";
-    Query<InternalFolderElementEntity> fetchBlobQuery = session.createQuery(blobQueryHQL);
-    fetchBlobQuery.setParameterList("folderHashList", folderShaList);
-    List<InternalFolderElementEntity> blobElementEntities = fetchBlobQuery.list();
+    DatasetBlob.Builder datasetBlobBuilder = DatasetBlob.newBuilder();
+    switch (folderElementEntity.getElement_type()) {
+      case "S3DatasetBlob":
+        String s3ComponentQueryHQL =
+            "From "
+                + S3DatasetComponentBlobEntity.class.getSimpleName()
+                + " s3 WHERE s3.id.s3_dataset_blob_id = :blobShas";
 
-    if (blobElementEntities == null || blobElementEntities.isEmpty()) {
-      throw new ModelDBException("Dataset blob not found", Status.Code.NOT_FOUND);
-    }
+        Query<S3DatasetComponentBlobEntity> s3ComponentQuery =
+            session.createQuery(s3ComponentQueryHQL);
+        s3ComponentQuery.setParameter("blobShas", folderElementEntity.getElement_sha());
+        List<S3DatasetComponentBlobEntity> datasetComponentBlobEntities = s3ComponentQuery.list();
 
-    return blobElementEntities.stream()
-        .map(InternalFolderElementEntity::getElement_sha)
-        .collect(Collectors.toList());
-  }
-
-  @Override
-  public GetCommitComponentRequest.Response getCommitComponent(
-      RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
-      throws ModelDBException {
-    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      session.beginTransaction();
-      repositoryFunction.apply(session);
-
-      List<String> folderShaList = getTreeShaList(session, commitHash, locationList);
-      List<String> blobShaList = getDatasetBlobShaList(session, folderShaList);
-
-      String s3ComponentQueryHQL =
-          "From "
-              + S3DatasetComponentBlobEntity.class.getSimpleName()
-              + " s3 WHERE s3.id.s3_dataset_blob_id in (:blobShas)";
-
-      Query<S3DatasetComponentBlobEntity> s3ComponentQuery =
-          session.createQuery(s3ComponentQueryHQL);
-      s3ComponentQuery.setParameterList("blobShas", blobShaList);
-      List<S3DatasetComponentBlobEntity> datasetComponentBlobEntities = s3ComponentQuery.list();
-
-      DatasetBlob.Builder datasetBlobBuilder = DatasetBlob.newBuilder();
-      if (datasetComponentBlobEntities != null && datasetComponentBlobEntities.size() > 0) {
-        List<S3DatasetComponentBlob> componentBlobs =
-            datasetComponentBlobEntities.stream()
-                .map(S3DatasetComponentBlobEntity::toProto)
-                .collect(Collectors.toList());
-        datasetBlobBuilder.setS3(
-            S3DatasetBlob.newBuilder().addAllComponents(componentBlobs).build());
-      } else {
+        if (datasetComponentBlobEntities != null && datasetComponentBlobEntities.size() > 0) {
+          List<S3DatasetComponentBlob> componentBlobs =
+              datasetComponentBlobEntities.stream()
+                  .map(S3DatasetComponentBlobEntity::toProto)
+                  .collect(Collectors.toList());
+          datasetBlobBuilder.setS3(
+              S3DatasetBlob.newBuilder().addAllComponents(componentBlobs).build());
+          return Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
+        } else {
+          throw new ModelDBException("Blob not found", Status.Code.NOT_FOUND);
+        }
+      case "PathDatasetBlob":
         String pathComponentQueryHQL =
             "From "
                 + PathDatasetComponentBlobEntity.class.getSimpleName()
-                + " p WHERE p.id.path_dataset_blob_id in (:blobShas)";
+                + " p WHERE p.id.path_dataset_blob_id = :blobShas";
 
         Query<PathDatasetComponentBlobEntity> pathComponentQuery =
             session.createQuery(pathComponentQueryHQL);
-        pathComponentQuery.setParameterList("blobShas", blobShaList);
+        pathComponentQuery.setParameter("blobShas", folderElementEntity.getElement_sha());
         List<PathDatasetComponentBlobEntity> pathDatasetComponentBlobEntities =
             pathComponentQuery.list();
 
@@ -356,12 +315,107 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
                   .collect(Collectors.toList());
           datasetBlobBuilder.setPath(
               PathDatasetBlob.newBuilder().addAllComponents(componentBlobs).build());
+          return Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
+        } else {
+          throw new ModelDBException("Blob not found", Status.Code.NOT_FOUND);
         }
+      case "PythonEnvironmentBlob":
+      case "DockerEnvironmentBlob":
+        throw new ModelDBException("Not Implemented", Status.Code.UNIMPLEMENTED);
+      default:
+        throw new ModelDBException(
+            "Unknown blob type found " + folderElementEntity.getElement_type(),
+            Status.Code.UNKNOWN);
+    }
+  }
+
+  private Folder getFolder(Session session, String commitSha, String folderSha) throws Throwable {
+    Optional result =
+        session
+            .createQuery(
+                "From "
+                    + InternalFolderElementEntity.class.getSimpleName()
+                    + " where folder_hash = '"
+                    + folderSha
+                    + "'")
+            .list().stream()
+            .map(
+                d -> {
+                  InternalFolderElementEntity entity = (InternalFolderElementEntity) d;
+                  Folder.Builder folder = Folder.newBuilder();
+                  FolderElement.Builder folderElement =
+                      FolderElement.newBuilder()
+                          .setElementName(entity.getElement_name())
+                          .setCreatedByCommit(commitSha);
+
+                  if (entity.getElement_type().equals(TREE)) {
+                    folder.addSubFolders(folderElement);
+                  } else {
+                    folder.addBlobs(folderElement);
+                  }
+                  return folder.build();
+                })
+            .reduce((a, b) -> ((Folder) a).toBuilder().mergeFrom((Folder) b).build());
+
+    return (Folder)
+        result.orElseThrow(
+            () -> new ModelDBException("No such folder found", Status.Code.NOT_FOUND));
+  }
+
+  @Override
+  public GetCommitComponentRequest.Response getCommitComponent(
+      RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      repositoryFunction.apply(session);
+
+      CommitEntity commit = session.get(CommitEntity.class, commitHash);
+      if (commit == null) {
+        throw new ModelDBException("No such commit", Status.Code.NOT_FOUND);
       }
 
-      session.getTransaction().commit();
-      Blob blob = Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
-      return GetCommitComponentRequest.Response.newBuilder().setBlob(blob).build();
+      String folderHash = commit.getRootSha();
+      for (int index = 0; index < locationList.size(); index++) {
+        String folderLocation = locationList.get(index);
+        String folderQueryHQL =
+            "From "
+                + InternalFolderElementEntity.class.getSimpleName()
+                + " parentIfe WHERE parentIfe.element_name = :location AND parentIfe.folder_hash = :folderHash";
+        Query<InternalFolderElementEntity> fetchTreeQuery = session.createQuery(folderQueryHQL);
+        fetchTreeQuery.setParameter("location", folderLocation);
+        fetchTreeQuery.setParameter("folderHash", folderHash);
+        InternalFolderElementEntity elementEntity = fetchTreeQuery.uniqueResult();
+
+        if (elementEntity == null) {
+          throw new ModelDBException(
+              "No such folder found : " + folderLocation, Status.Code.NOT_FOUND);
+        }
+        if (elementEntity.getElement_type().equals(TREE)) {
+          folderHash = elementEntity.getElement_sha();
+          if (index == locationList.size() - 1) {
+            Folder folder = getFolder(session, commit.getCommit_hash(), folderHash);
+            session.getTransaction().commit();
+            return GetCommitComponentRequest.Response.newBuilder().setFolder(folder).build();
+          }
+        } else {
+          if (index == locationList.size() - 1) {
+            Blob blob = getBlob(session, elementEntity);
+            session.getTransaction().commit();
+            return GetCommitComponentRequest.Response.newBuilder().setBlob(blob).build();
+          } else {
+            throw new ModelDBException(
+                "No such folder found : " + locationList.get(index + 1), Status.Code.NOT_FOUND);
+          }
+        }
+      }
+    } catch (Throwable throwable) {
+      if (throwable instanceof ModelDBException) {
+        throw (ModelDBException) throwable;
+      }
+      throw new ModelDBException("Unknown error", Status.Code.INTERNAL);
     }
+    throw new ModelDBException(
+        "Unexpected logic issue found when fetching blobs", Status.Code.UNKNOWN);
   }
 }
