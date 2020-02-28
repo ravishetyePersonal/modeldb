@@ -11,7 +11,7 @@ interface DatasetComponentDAO {
   String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException;
 
-  GetCommitBlobRequest.Response getCommitBlob(
+  GetCommitComponentRequest.Response getCommitComponent(
       RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
       throws NoSuchAlgorithmException, ModelDBException;
 }

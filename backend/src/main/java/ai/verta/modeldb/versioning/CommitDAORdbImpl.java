@@ -42,7 +42,7 @@ public class CommitDAORdbImpl implements CommitDAO {
           Commit.newBuilder()
               .setDateCreated(new Date().getTime()) // TODO: add a client override flag
               .setAuthor(commit.getAuthor())
-              .setMessage(commit.getAuthor())
+              .setMessage(commit.getMessage())
               .setCommitSha(commitSha)
               .build();
       CommitEntity commitEntity =

@@ -262,9 +262,9 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   }
 
   @Override
-  public void getCommitBlob(
-      GetCommitBlobRequest request,
-      StreamObserver<GetCommitBlobRequest.Response> responseObserver) {
+  public void getCommitComponent(
+      GetCommitComponentRequest request,
+      StreamObserver<GetCommitComponentRequest.Response> responseObserver) {
     QPSCountResource.inc();
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
@@ -274,8 +274,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         throw new ModelDBException("Blob location should not be empty", Code.INVALID_ARGUMENT);
       }
 
-      GetCommitBlobRequest.Response response =
-          datasetComponentDAO.getCommitBlob(
+      GetCommitComponentRequest.Response response =
+          datasetComponentDAO.getCommitComponent(
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
               request.getCommitSha(),
               request.getLocationList());
@@ -283,15 +283,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       responseObserver.onCompleted();
     } catch (Exception e) {
       ModelDBUtils.observeError(
-          responseObserver, e, GetCommitBlobRequest.Response.getDefaultInstance());
+          responseObserver, e, GetCommitComponentRequest.Response.getDefaultInstance());
     }
-  }
-
-  @Override
-  public void getCommitFolder(
-      GetCommitFolderRequest request,
-      StreamObserver<GetCommitFolderRequest.Response> responseObserver) {
-    super.getCommitFolder(request, responseObserver);
   }
 
   private Builder getPathInfo(PathDatasetComponentBlob path)

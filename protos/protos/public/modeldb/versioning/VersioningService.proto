@@ -200,27 +200,19 @@ message ListCommitBlobsRequest {
     }
 }
 
-message GetCommitBlobRequest {
+message GetCommitComponentRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
-    // List of folder names, with the last element being the name of the blob
+    // List of folder names, with the last element being the name of the blob or tree
+    // the last element determines if the response to be returned is Folder or Blob
     // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
     repeated string location = 3;
 
     message Response {
-        Blob blob = 1;
-    }
-}
-
-message GetCommitFolderRequest {
-    RepositoryIdentification repository_id = 1;
-    string commit_sha = 2;
-    // List of folder names
-    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
-    repeated string location = 3;
-
-    message Response {
-        Folder folder = 1;
+        oneof component {
+            Folder folder = 1;
+            Blob blob = 2;
+        }
     }
 }
 
@@ -371,20 +363,11 @@ service VersioningService {
         };
     }
 
-    rpc GetCommitBlob(GetCommitBlobRequest) returns (GetCommitBlobRequest.Response) {
+    rpc GetCommitComponent(GetCommitComponentRequest) returns (GetCommitComponentRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs/path"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/path"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs/path"
-            }
-        };
-    }
-
-    rpc GetCommitFolder(GetCommitFolderRequest) returns (GetCommitFolderRequest.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/folders/path"
-            additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/folders/path"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/path"
             }
         };
     }
