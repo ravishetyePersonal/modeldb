@@ -20,12 +20,14 @@ public class CommitEntity {
   public CommitEntity() {}
 
   public CommitEntity(
-      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit) {
+      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit,
+      String rootSha) {
     this.commit_hash = internalCommit.getCommitSha();
     this.date_created = internalCommit.getDateCreated();
     this.message = internalCommit.getMessage();
     this.repository.add(repositoryEntity);
     this.author = internalCommit.getAuthor();
+    this.rootSha = rootSha;
 
     if (parentCommits != null) {
       this.parent_commits.addAll(parentCommits);
@@ -44,6 +46,9 @@ public class CommitEntity {
 
   @Column(name = "author", columnDefinition = "varchar", length = 50)
   private String author;
+
+  @Column(name = "root_sha", columnDefinition = "varchar", length = 64)
+  private String rootSha;
 
   // Repo fork
   @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.ALL)

@@ -37,17 +37,6 @@ public class CommitDAORdbImpl implements CommitDAO {
         timeCreated = commit.getDateCreated();
       }
       final String commitSha = generateCommitSHA(rootSha, commit, timeCreated);
-      org.hibernate.query.Query query =
-          session.createQuery(
-              "Update "
-                  + InternalFolderElementEntity.class.getSimpleName()
-                  + " set folder_hash='"
-                  + commitSha
-                  + "' where folder_hash='"
-                  + rootSha
-                  + "'");
-      int result = query.executeUpdate();
-      LOGGER.debug("Update folder to commit result: " + result);
       Commit internalCommit =
           Commit.newBuilder()
               .setDateCreated(timeCreated)
@@ -59,7 +48,7 @@ public class CommitDAORdbImpl implements CommitDAO {
           new CommitEntity(
               getRepository.apply(session),
               getCommits(session, commit.getParentShasList()),
-              internalCommit);
+              internalCommit, rootSha);
       session.saveOrUpdate(commitEntity);
       session.getTransaction().commit();
       return Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
