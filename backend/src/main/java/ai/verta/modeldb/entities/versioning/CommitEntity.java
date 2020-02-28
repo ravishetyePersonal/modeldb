@@ -20,7 +20,9 @@ public class CommitEntity {
   public CommitEntity() {}
 
   public CommitEntity(
-      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit,
+      RepositoryEntity repositoryEntity,
+      List<CommitEntity> parentCommits,
+      Commit internalCommit,
       String rootSha) {
     this.commit_hash = internalCommit.getCommitSha();
     this.date_created = internalCommit.getDateCreated();
@@ -50,6 +52,10 @@ public class CommitEntity {
   @Column(name = "root_sha", columnDefinition = "varchar", length = 64)
   private String rootSha;
 
+  public String getRootSha() {
+    return rootSha;
+  }
+
   // Repo fork
   @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.ALL)
   @JoinTable(
@@ -65,6 +71,9 @@ public class CommitEntity {
       joinColumns = @JoinColumn(name = "child_hash"),
       inverseJoinColumns = @JoinColumn(name = "parent_hash"))
   private Set<CommitEntity> parent_commits = new HashSet<>();
+
+  @ManyToMany(mappedBy = "parent_commits")
+  private Set<CommitEntity> child_commits = new HashSet<>();
 
   public String getCommit_hash() {
     return commit_hash;
@@ -88,6 +97,10 @@ public class CommitEntity {
 
   public Set<CommitEntity> getParent_commits() {
     return parent_commits;
+  }
+
+  public Set<CommitEntity> getChild_commits() {
+    return child_commits;
   }
 
   private List<String> getParentCommitIds() {

@@ -4,11 +4,15 @@ import ai.verta.modeldb.dto.WorkspaceDTO;
 import ai.verta.modeldb.versioning.Repository;
 import ai.verta.modeldb.versioning.SetRepository;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -44,6 +48,10 @@ public class RepositoryEntity {
   @Column(name = "workspace_type", columnDefinition = "varchar")
   private Integer workspace_type;
 
+  @OrderBy("date_created")
+  @ManyToMany(mappedBy = "repository")
+  private Set<CommitEntity> commits = new HashSet<>();
+
   public Long getId() {
     return id;
   }
@@ -62,6 +70,10 @@ public class RepositoryEntity {
 
   public String getWorkspace_id() {
     return workspace_id;
+  }
+
+  public Set<CommitEntity> getCommits() {
+    return commits;
   }
 
   public Integer getWorkspace_type() {
