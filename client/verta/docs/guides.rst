@@ -31,9 +31,10 @@ Guides
 
     Runthrough <guides/runthrough>
     Package Installation <guides/installation>
+    Web App <guides/webapp>
     Workflow Logging <guides/workflow>
+    Examples <guides/examples>
     Data Versioning <guides/dataset>
     Class Models <guides/class>
     Workspaces <guides/workspaces>
     Querying <guides/querying>
-    Examples <guides/examples>
