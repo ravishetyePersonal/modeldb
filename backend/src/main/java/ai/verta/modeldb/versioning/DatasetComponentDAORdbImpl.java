@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.hibernate.Session;
 import org.hibernate.cfg.NotYetImplementedException;
@@ -139,14 +138,13 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   @Override
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException {
-    List<ComponentEntity> componentEntities = new LinkedList<>();
     TreeElem rootTree = new TreeElem();
     for (BlobExpanded blob : blobsList) {
       TreeElem treeElem =
           rootTree.children.getOrDefault(blob.getLocationList().get(0), new TreeElem());
       switch (blob.getBlob().getContentCase()) {
         case DATASET:
-          processDataset(session, blob, treeElem, fileHasher, getBlobType(blob), componentEntities);
+          processDataset(blob, treeElem, fileHasher, getBlobType(blob));
           break;
         case ENVIRONMENT:
           throw new NotYetImplementedException(
@@ -186,22 +184,15 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   }
 
   /**
-   * @param session
    * @param blob : a commit is a collection of multiple BlobExpanded
    * @param treeElem : Each blob or folder need to be converted to a tree element. the process is
    *     bootstrapped with an empty tree for each BlobExpanded
    * @param fileHasher
    * @param blobType
-   * @param componentEntities
    * @throws NoSuchAlgorithmException
    */
   private void processDataset(
-      Session session,
-      BlobExpanded blob,
-      TreeElem treeElem,
-      FileHasher fileHasher,
-      String blobType,
-      List<ComponentEntity> componentEntities)
+      BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher, String blobType)
       throws NoSuchAlgorithmException {
     final DatasetBlob dataset = blob.getBlob().getDataset();
     final List<String> locationList = blob.getLocationList();
@@ -217,9 +208,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
           final String sha256 = computeSHA(componentBlob);
           S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
-              new S3DatasetComponentBlobEntity(
-                  UUID.randomUUID().toString(), sha256, componentBlob); // why is UUID required?
-          componentEntities.add(s3DatasetComponentBlobEntity);
+              new S3DatasetComponentBlobEntity(sha256, componentBlob); // why is UUID required?
           treeChild.push(
               Arrays.asList(
                   locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
@@ -232,9 +221,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
           final String sha256 = computeSHA(componentBlob);
           PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
-              new PathDatasetComponentBlobEntity(
-                  UUID.randomUUID().toString(), sha256, componentBlob);
-          componentEntities.add(pathDatasetComponentBlobEntity);
+              new PathDatasetComponentBlobEntity(sha256, componentBlob);
           treeChild.push(
               Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
               computeSHA(componentBlob),

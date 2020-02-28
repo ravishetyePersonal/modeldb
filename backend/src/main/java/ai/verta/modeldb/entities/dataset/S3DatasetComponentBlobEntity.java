@@ -17,10 +17,10 @@ public class S3DatasetComponentBlobEntity implements ComponentEntity {
   public S3DatasetComponentBlobEntity() {}
 
   public S3DatasetComponentBlobEntity(
-      String s3DatasetBlobId, String blobHash, S3DatasetComponentBlob s3DatasetComponentBlob) {
+      String blobHash, S3DatasetComponentBlob s3DatasetComponentBlob) {
 
     PathDatasetComponentBlob pathDatasetComponentBlob = s3DatasetComponentBlob.getPath();
-    this.id = new S3DatasetComponentBlobId(blobHash, s3DatasetBlobId);
+    this.id = new S3DatasetComponentBlobId(blobHash);
     this.path = pathDatasetComponentBlob.getPath();
     this.size = pathDatasetComponentBlob.getSize();
     this.last_modified_at_source = pathDatasetComponentBlob.getLastModifiedAtSource();
@@ -98,9 +98,8 @@ class S3DatasetComponentBlobId implements Serializable {
   @Column(name = "s3_dataset_blob_id", nullable = false, columnDefinition = "varchar", length = 64)
   private String s3_dataset_blob_id;
 
-  public S3DatasetComponentBlobId(String blobHash, String pathDatasetBlobId) {
+  public S3DatasetComponentBlobId(String blobHash) {
     this.blob_hash = blobHash;
-    this.s3_dataset_blob_id = pathDatasetBlobId;
   }
 
   private S3DatasetComponentBlobId() {}
