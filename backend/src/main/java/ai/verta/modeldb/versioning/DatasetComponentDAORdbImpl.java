@@ -6,6 +6,7 @@ import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
@@ -18,11 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.query.Query;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
+  private static final Logger LOGGER = LogManager.getLogger(DatasetComponentDAORdbImpl.class);
 
   public static final String TREE = "TREE";
 
@@ -208,7 +212,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
           final String sha256 = computeSHA(componentBlob);
           S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
-              new S3DatasetComponentBlobEntity(sha256, componentBlob); // why is UUID required?
+              new S3DatasetComponentBlobEntity(sha256, componentBlob);
           treeChild.push(
               Arrays.asList(
                   locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
@@ -349,17 +353,23 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             () -> new ModelDBException("No such folder found", Status.Code.NOT_FOUND));
   }
 
+  // TODO : check if there is a way to optimize on the calls to data base.
+  // We should fetch data  in a single query.
   @Override
   public GetCommitComponentRequest.Response getCommitComponent(
       RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
       throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
-      repositoryFunction.apply(session);
-
+      RepositoryEntity repository = repositoryFunction.apply(session);
       CommitEntity commit = session.get(CommitEntity.class, commitHash);
+
       if (commit == null) {
         throw new ModelDBException("No such commit", Status.Code.NOT_FOUND);
+      }
+
+      if (!VersioningUtils.commitRepositoryMappingExists(session, commitHash, repository.getId())) {
+        throw new ModelDBException("No such commit found in the repository", Status.Code.NOT_FOUND);
       }
 
       String folderHash = commit.getRootSha();
@@ -375,6 +385,11 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         InternalFolderElementEntity elementEntity = fetchTreeQuery.uniqueResult();
 
         if (elementEntity == null) {
+          LOGGER.warn(
+              "No such folder found : {}. Failed at index {} looking for {}",
+              folderLocation,
+              index,
+              folderLocation);
           throw new ModelDBException(
               "No such folder found : " + folderLocation, Status.Code.NOT_FOUND);
         }

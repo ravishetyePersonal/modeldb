@@ -52,10 +52,6 @@ public class CommitEntity {
   @Column(name = "root_sha", columnDefinition = "varchar", length = 64)
   private String rootSha;
 
-  public String getRootSha() {
-    return rootSha;
-  }
-
   // Repo fork
   @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.ALL)
   @JoinTable(
@@ -102,7 +98,7 @@ public class CommitEntity {
   public String getRootSha() {
     return rootSha;
   }
- 
+
   public Set<CommitEntity> getChild_commits() {
     return child_commits;
   }
