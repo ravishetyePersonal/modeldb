@@ -77,15 +77,22 @@ public class CommitDAORdbImpl implements CommitDAO {
     return FileHasher.getSha(sb.toString());
   }
 
-  private List<CommitEntity> getCommits(Session session, ProtocolStringList parentShasList)
+  /**
+   * 
+   * @param session
+   * @param ShasList : a list of sha for which the function returns commits
+   * @return
+   * @throws ModelDBException : if any of the input sha are not identified as a commit
+   */
+  private List<CommitEntity> getCommits(Session session, ProtocolStringList ShasList)
       throws ModelDBException {
     List<CommitEntity> result =
-        parentShasList.stream()
+        ShasList.stream()
             .map(sha -> session.get(CommitEntity.class, sha))
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-    if (result.size() != parentShasList.size()) {
-      throw new ModelDBException("Cannot find parent commits", Code.INVALID_ARGUMENT);
+    if (result.size() != ShasList.size()) {
+      throw new ModelDBException("Cannot find commits", Code.INVALID_ARGUMENT);
     }
     return result;
   }
