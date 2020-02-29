@@ -275,7 +275,22 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   @Override
   public void deleteCommit(
       DeleteCommitRequest request, StreamObserver<DeleteCommitRequest.Response> responseObserver) {
-    super.deleteCommit(request, responseObserver);
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        DeleteCommitRequest.Response response =
+            commitDAO.deleteCommit(
+                request.getCommitSha(),
+                (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      ModelDBUtils.observeError(
+          responseObserver, e, DeleteCommitRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override

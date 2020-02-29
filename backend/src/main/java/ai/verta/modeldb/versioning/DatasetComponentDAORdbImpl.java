@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.query.Query;
 
 public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
@@ -138,25 +137,28 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   /**
    * Goes through each BlobExpanded creating TREE/BLOB node top down and computing SHA bottom up
    * there is a rootSHA which holds one TREE node of each BlobExpanded
+   *
+   * @throws ModelDBException
    */
   @Override
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
-      throws NoSuchAlgorithmException {
+      throws NoSuchAlgorithmException, ModelDBException {
     TreeElem rootTree = new TreeElem();
     for (BlobExpanded blob : blobsList) {
       TreeElem treeElem =
           rootTree.children.getOrDefault(blob.getLocationList().get(0), new TreeElem());
+      Status statusMessage;
       switch (blob.getBlob().getContentCase()) {
         case DATASET:
           processDataset(blob, treeElem, fileHasher, getBlobType(blob));
           break;
         case ENVIRONMENT:
-          throw new NotYetImplementedException(
-              "not supported yet"); // TODO EL/AJ to throw right exceptions
+          throw new ModelDBException(
+              "Not supported yet " + blob.getBlob().getContentCase(), Status.Code.UNIMPLEMENTED);
         case CONTENT_NOT_SET:
         default:
-          throw new IllegalStateException(
-              "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
+          throw new ModelDBException(
+              "Unknown blob type found " + blob.getBlob().getContentCase(), Status.Code.UNKNOWN);
       }
       rootTree.children.putIfAbsent(treeElem.path, treeElem);
     }
@@ -164,7 +166,8 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     return internalFolderElement.getElementSha();
   }
 
-  private String getBlobType(BlobExpanded blob) {
+  private String getBlobType(BlobExpanded blob) throws ModelDBException {
+    Status statusMessage;
     switch (blob.getBlob().getContentCase()) {
       case DATASET:
         switch (blob.getBlob().getDataset().getContentCase()) {
@@ -174,16 +177,17 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
             return S3DatasetBlob.class.getSimpleName();
           case CONTENT_NOT_SET:
           default:
-            throw new IllegalStateException(
-                "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
+            throw new ModelDBException(
+                "Unknown dataset type found " + blob.getBlob().getDataset().getContentCase(),
+                Status.Code.UNKNOWN);
         }
       case ENVIRONMENT:
-        throw new NotYetImplementedException(
-            "not supported yet"); // TODO EL/AJ to throw right exceptions
+        throw new ModelDBException(
+            "Not supported yet " + blob.getBlob().getContentCase(), Status.Code.UNIMPLEMENTED);
       case CONTENT_NOT_SET:
       default:
-        throw new IllegalStateException(
-            "unexpected Dataset type"); // TODO EL/AJ to throw right exceptions
+        throw new ModelDBException(
+            "Unknown blob type found " + blob.getBlob().getContentCase(), Status.Code.UNKNOWN);
     }
   }
 

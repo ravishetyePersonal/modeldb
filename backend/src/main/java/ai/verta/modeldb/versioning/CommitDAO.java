@@ -13,8 +13,6 @@ interface CommitDAO {
 
   Commit getCommit(String commitHash, RepositoryFunction getRepository) throws ModelDBException;
 
-  //  GetCommitBlobRequest.Response getCommitBlob(GetCommitBlobRequest request);
-  //
-  //  GetCommitFolderRequest.Response getCommitFolder(
-  //      GetCommitFolderRequest request, ProtocolStringList split) throws ModelDBException;
+  DeleteCommitRequest.Response deleteCommit(String commitHash, RepositoryFunction getRepository)
+      throws ModelDBException;
 }

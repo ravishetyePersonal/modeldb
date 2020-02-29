@@ -53,7 +53,7 @@ public class CommitEntity {
   private String rootSha;
 
   // Repo fork
-  @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.ALL)
+  @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.PERSIST)
   @JoinTable(
       name = "repository_commit",
       joinColumns = @JoinColumn(name = "commit_hash"),
@@ -61,7 +61,7 @@ public class CommitEntity {
   private Set<RepositoryEntity> repository = new HashSet<>();
 
   // merge commit have multiple parents
-  @ManyToMany(targetEntity = CommitEntity.class, cascade = CascadeType.ALL)
+  @ManyToMany(targetEntity = CommitEntity.class, cascade = CascadeType.PERSIST)
   @JoinTable(
       name = "commit_parent",
       joinColumns = @JoinColumn(name = "child_hash"),

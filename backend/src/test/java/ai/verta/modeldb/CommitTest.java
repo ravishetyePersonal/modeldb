@@ -1,5 +1,8 @@
 package ai.verta.modeldb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.AuthServiceUtils;
 import ai.verta.modeldb.authservice.PublicAuthServiceUtils;
@@ -12,7 +15,9 @@ import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.Commit;
 import ai.verta.modeldb.versioning.CreateCommitRequest;
 import ai.verta.modeldb.versioning.DatasetBlob;
+import ai.verta.modeldb.versioning.DeleteCommitRequest;
 import ai.verta.modeldb.versioning.DeleteRepositoryRequest;
+import ai.verta.modeldb.versioning.GetCommitRequest;
 import ai.verta.modeldb.versioning.ListCommitsRequest;
 import ai.verta.modeldb.versioning.PathDatasetBlob;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
@@ -25,6 +30,8 @@ import ai.verta.modeldb.versioning.VersioningServiceGrpc;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceBlockingStub;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
@@ -184,6 +191,58 @@ public class CommitTest {
   }
 
   @Test
+  public void deleteCommitTest() {
+    LOGGER.info("Delete of commit test start................................");
+
+    VersioningServiceBlockingStub versioningServiceBlockingStub =
+        VersioningServiceGrpc.newBlockingStub(channel);
+
+    SetRepository setRepository =
+        SetRepository.newBuilder()
+            .setId(
+                RepositoryIdentification.newBuilder()
+                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName("name").build())
+                    .build())
+            .setRepository(Repository.newBuilder().setName("name"))
+            .build();
+    Response result = versioningServiceBlockingStub.createRepository(setRepository);
+    long id = result.getRepository().getId();
+    CreateCommitRequest createCommitRequest = getCreateCommitRequest(id, 111);
+
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+
+    DeleteCommitRequest deleteCommitRequest =
+        DeleteCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .build();
+    versioningServiceBlockingStub.deleteCommit(deleteCommitRequest);
+
+    GetCommitRequest getCommitRequest =
+        GetCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .build();
+    try {
+      versioningServiceBlockingStub.getCommit(getCommitRequest);
+      fail();
+    } catch (StatusRuntimeException ex) {
+      Status status = Status.fromThrowable(ex);
+      LOGGER.warn("Error Code : " + status.getCode() + " Description : " + status.getDescription());
+      assertEquals(Status.NOT_FOUND.getCode(), status.getCode());
+    }
+
+    DeleteRepositoryRequest deleteRepository =
+        DeleteRepositoryRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id))
+            .build();
+    DeleteRepositoryRequest.Response deleteResult =
+        versioningServiceBlockingStub.deleteRepository(deleteRepository);
+    Assert.assertTrue(deleteResult.getStatus());
+    LOGGER.info("Delete of commit test end................................");
+  }
+
   public void listCommitsTest() {
     LOGGER.info("List of commits test start................................");
 

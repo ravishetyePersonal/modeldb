@@ -9,7 +9,7 @@ import org.hibernate.Session;
 interface DatasetComponentDAO {
 
   String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
-      throws NoSuchAlgorithmException;
+      throws NoSuchAlgorithmException, ModelDBException;
 
   GetCommitComponentRequest.Response getCommitComponent(
       RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)

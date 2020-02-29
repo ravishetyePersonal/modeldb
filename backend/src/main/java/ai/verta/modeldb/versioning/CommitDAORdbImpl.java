@@ -169,4 +169,36 @@ public class CommitDAORdbImpl implements CommitDAO {
       return commitEntity.toCommitProto();
     }
   }
+
+  @Override
+  public DeleteCommitRequest.Response deleteCommit(
+      String commitHash, RepositoryFunction getRepository) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repositoryEntity = getRepository.apply(session);
+      boolean exists =
+          VersioningUtils.commitRepositoryMappingExists(
+              session, commitHash, repositoryEntity.getId());
+      if (!exists) {
+        throw new ModelDBException(
+            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+      }
+
+      Query deleteQuery =
+          session.createQuery(
+              "From "
+                  + CommitEntity.class.getSimpleName()
+                  + " c WHERE c.commit_hash = :commitHash");
+      deleteQuery.setParameter("commitHash", commitHash);
+      CommitEntity commitEntity = (CommitEntity) deleteQuery.uniqueResult();
+      if (commitEntity.getRepository().size() == 1) {
+        session.delete(commitEntity);
+      } else {
+        commitEntity.getRepository().remove(repositoryEntity);
+        session.update(commitEntity);
+      }
+      session.getTransaction().commit();
+      return DeleteCommitRequest.Response.newBuilder().build();
+    }
+  }
 }
