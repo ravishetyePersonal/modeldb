@@ -10,7 +10,19 @@
   Verta currently officially supports Python 2.7 & 3.5–3.7. For more information, read the
   `installation guide <installation.html>`_.
 
-2. Integrate the Verta package into your workflow.
+2. Log in to the `Verta Web App <https://app.verta.ai>`__.
+
+  .. image:: /_static/images/web-app-login.png
+     :width: 50%
+
+  Visit your `profile page <https://app.verta.ai/profile>`__ to find your developer key.
+
+  .. image:: /_static/images/web-app-profile.png
+      :width: 50%
+
+  Note that your developer key is unique to you. As with a password, don't share it with others!
+
+3. Integrate the Verta package into your workflow.
 
   a. Connect to the Verta back end:
 
@@ -18,8 +30,6 @@
 
         from verta import Client
         client = Client(host, email, dev_key)
-
-    For more information, read `our platform documentation <https://verta.readme.io/docs>`_.
 
   b. Log things that matter to you:
 
@@ -40,4 +50,4 @@
     For more information, read the `workflow guide <workflow.html>`_ and the `API reference
     <../reference/api.html>`_.
 
-3. Now that we've logged a few runs, head to the `Verta Web App <https://app.verta.ai>`_ to view them!
+3. Now that we've logged a few runs, head to the `Verta Web App <https://app.verta.ai>`__ to view them!
