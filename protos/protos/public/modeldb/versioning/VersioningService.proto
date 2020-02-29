@@ -207,7 +207,7 @@ message ListCommitBlobsRequest {
 message GetCommitComponentRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
-    // List of folder names, with the last element being the name of the blob
+    // List of folder names, with the last element being the name of the blob or tree
     // the last element determines if the response to be returned is Folder or Blob
     // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
     repeated string location = 3;

@@ -285,6 +285,32 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     super.listCommitBlobs(request, responseObserver);
   }
 
+  @Override
+  public void getCommitComponent(
+      GetCommitComponentRequest request,
+      StreamObserver<GetCommitComponentRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      if (request.getCommitSha().isEmpty()) {
+        throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
+      } else if (request.getLocationList().isEmpty()) {
+        throw new ModelDBException("Blob location should not be empty", Code.INVALID_ARGUMENT);
+      }
+
+      GetCommitComponentRequest.Response response =
+          datasetComponentDAO.getCommitComponent(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request.getCommitSha(),
+              request.getLocationList());
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, GetCommitComponentRequest.Response.getDefaultInstance());
+    }
+  }
+
   private Builder getPathInfo(PathDatasetComponentBlob path)
       throws ModelDBException, NoSuchAlgorithmException {
     // TODO: md5
