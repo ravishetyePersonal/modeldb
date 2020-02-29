@@ -415,6 +415,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       if (throwable instanceof ModelDBException) {
         throw (ModelDBException) throwable;
       }
+      LOGGER.warn(throwable);
       throw new ModelDBException("Unknown error", Status.Code.INTERNAL);
     }
     throw new ModelDBException(

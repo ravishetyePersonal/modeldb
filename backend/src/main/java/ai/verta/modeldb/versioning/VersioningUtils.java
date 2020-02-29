@@ -5,7 +5,7 @@ import org.hibernate.query.Query;
 
 public class VersioningUtils {
   private static final String COMMIT_BELONGS_TO_REPO_QUERY =
-      "SELECT count(*) FROM repository_commit rc WHERE rc.commit_hash = :commitHash AND rc.repository_id = :repoId";
+      "SELECT count(*) FROM CommitEntity c Join c.repository r WHERE c.commit_hash =  :commitHash AND r.id = :repositoryId";
 
   /**
    * Checks the database and returns if a commitHash belongs to a repository
@@ -19,7 +19,7 @@ public class VersioningUtils {
       Session session, String commitHash, Long repositoryId) {
     Query query = session.createQuery(COMMIT_BELONGS_TO_REPO_QUERY);
     query.setParameter("commitHash", commitHash);
-    query.setParameter("repoId", repositoryId);
+    query.setParameter("repositoryId", repositoryId);
     Long count = (Long) query.getSingleResult();
     return count > 0;
   }

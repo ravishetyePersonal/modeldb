@@ -164,6 +164,7 @@ public class CommitDAORdbImpl implements CommitDAO {
       }
 
       CommitEntity commitEntity = session.load(CommitEntity.class, commitHash);
+
       session.getTransaction().commit();
       return commitEntity.toCommitProto();
     }
