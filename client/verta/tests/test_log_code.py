@@ -39,8 +39,10 @@ class TestLogGit:
             mdb_entity._conf.use_git = True
 
             with utils.chdir('/'):  # assuming the tester's root isn't a git repo
-                with pytest.raises(OSError):
-                    mdb_entity.log_code()
+                mdb_entity.log_code()
+
+            with pytest.raises(RuntimeError):
+                mdb_entity.get_code()
 
     @pytest.mark.skipif(not IN_GIT_REPO, reason="not in git repo")
     def test_log_git_provide_path(self, client):

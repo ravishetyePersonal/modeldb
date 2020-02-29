@@ -131,7 +131,6 @@ public class CommitDAORdbImpl implements CommitDAO {
   }
 
   /**
-   * 
    * @param session
    * @param ShasList : a list of sha for which the function returns commits
    * @return

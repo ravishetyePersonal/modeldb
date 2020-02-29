@@ -11,11 +11,13 @@ from .. import dataset
 
 
 class Commit(object):
-    def __init__(self, conn, repo_id, parent_ids=None):
+    def __init__(self, conn, repo_id, parent_ids=None, id_=None):
         self._conn = conn
 
         self._repo_id = repo_id
         self._parent_ids = parent_ids or []
+
+        self.id = id_
 
         self._blobs = dict()
 
@@ -40,7 +42,7 @@ class Commit(object):
 
         for path, blob in six.viewitems(self._blobs):
             blob_msg = _VersioningService.BlobExpanded()
-            blob_msg.path = path
+            blob_msg.location.extend(path_to_location(path))  # pylint: disable=no-member
             if isinstance(blob, dataset.S3):  # TODO: move logic to root blob base class
                 blob_msg.blob.dataset.s3.CopyFrom(blob._msg)  # pylint: disable=no-member
             else:
@@ -70,7 +72,8 @@ class Commit(object):
             self._raise_lookup_error(path)
 
     def save(self):
-        data = _utils.proto_to_json(self._to_create_msg())
+        msg = self._to_create_msg()
+        data = _utils.proto_to_json(msg)
         endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits".format(
             self._conn.scheme,
             self._conn.socket,
@@ -78,3 +81,29 @@ class Commit(object):
         )
         response = _utils.make_request("POST", endpoint, self._conn, json=data)
         _utils.raise_for_http_error(response)
+
+        response_msg = _utils.json_to_proto(response.json(), msg.Response)
+        self.id = response_msg.commit.commit_sha
+
+    def tag(self, tag):
+        if self.id is None:
+            raise RuntimeError("Commit must be saved before it can be tagged")
+
+        data = self.id
+        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/tags/{}".format(
+            self._conn.scheme,
+            self._conn.socket,
+            self._repo_id,
+            tag,
+        )
+        response = _utils.make_request("PUT", endpoint, self._conn, json=data)
+        _utils.raise_for_http_error(response)
+
+
+def path_to_location(path):
+    """Messages take a `repeated string` of path components."""
+    if path.startswith('/'):
+        # `path` is already meant to be relative to repo root
+        path = path[1:]
+
+    return path.split('/')

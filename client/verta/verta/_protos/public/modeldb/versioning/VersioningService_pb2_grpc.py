@@ -64,15 +64,10 @@ class VersioningServiceStub(object):
         request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.SerializeToString,
         response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.Response.FromString,
         )
-    self.GetCommitBlob = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/GetCommitBlob',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.Response.FromString,
-        )
-    self.GetCommitFolder = channel.unary_unary(
-        '/ai.verta.modeldb.versioning.VersioningService/GetCommitFolder',
-        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.SerializeToString,
-        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.Response.FromString,
+    self.GetCommitComponent = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetCommitComponent',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitComponentRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitComponentRequest.Response.FromString,
         )
     self.ComputeRepositoryDiff = channel.unary_unary(
         '/ai.verta.modeldb.versioning.VersioningService/ComputeRepositoryDiff',
@@ -175,14 +170,7 @@ class VersioningServiceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetCommitBlob(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
-  def GetCommitFolder(self, request, context):
+  def GetCommitComponent(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -277,15 +265,10 @@ def add_VersioningServiceServicer_to_server(servicer, server):
           request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.FromString,
           response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListCommitBlobsRequest.Response.SerializeToString,
       ),
-      'GetCommitBlob': grpc.unary_unary_rpc_method_handler(
-          servicer.GetCommitBlob,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitBlobRequest.Response.SerializeToString,
-      ),
-      'GetCommitFolder': grpc.unary_unary_rpc_method_handler(
-          servicer.GetCommitFolder,
-          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.FromString,
-          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitFolderRequest.Response.SerializeToString,
+      'GetCommitComponent': grpc.unary_unary_rpc_method_handler(
+          servicer.GetCommitComponent,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitComponentRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetCommitComponentRequest.Response.SerializeToString,
       ),
       'ComputeRepositoryDiff': grpc.unary_unary_rpc_method_handler(
           servicer.ComputeRepositoryDiff,

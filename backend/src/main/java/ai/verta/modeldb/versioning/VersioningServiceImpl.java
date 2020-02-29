@@ -61,6 +61,12 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try {
       try (RequestLatencyResource latencyResource =
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        if (request.hasPagination()) {
+          if (request.getPagination().getPageLimit() < 1
+              && request.getPagination().getPageLimit() > 100) {
+            throw new ModelDBException("Page limit is invalid", Code.INVALID_ARGUMENT);
+          }
+        }
         Response response = repositoryDAO.listRepositories(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -277,20 +283,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       ListCommitBlobsRequest request,
       StreamObserver<ListCommitBlobsRequest.Response> responseObserver) {
     super.listCommitBlobs(request, responseObserver);
-  }
-
-  @Override
-  public void getCommitBlob(
-      GetCommitBlobRequest request,
-      StreamObserver<GetCommitBlobRequest.Response> responseObserver) {
-    super.getCommitBlob(request, responseObserver);
-  }
-
-  @Override
-  public void getCommitFolder(
-      GetCommitFolderRequest request,
-      StreamObserver<GetCommitFolderRequest.Response> responseObserver) {
-    super.getCommitFolder(request, responseObserver);
   }
 
   private Builder getPathInfo(PathDatasetComponentBlob path)

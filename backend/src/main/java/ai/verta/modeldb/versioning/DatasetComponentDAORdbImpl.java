@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.hibernate.Session;
 import org.hibernate.cfg.NotYetImplementedException;
 
@@ -185,10 +184,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
    * @throws NoSuchAlgorithmException
    */
   private void processDataset(
-      BlobExpanded blob,
-      TreeElem treeElem,
-      FileHasher fileHasher,
-      String blobType)
+      BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher, String blobType)
       throws NoSuchAlgorithmException {
     final DatasetBlob dataset = blob.getBlob().getDataset();
     final List<String> locationList = blob.getLocationList();
@@ -205,8 +201,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           final String sha256 = computeSHA(componentBlob);
           S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
               new S3DatasetComponentBlobEntity(
-                  sha256,
-                  componentBlob.getPath()); // why is UUID required?
+                  sha256, componentBlob.getPath()); // why is UUID required?
           treeChild.push(
               Arrays.asList(
                   locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),

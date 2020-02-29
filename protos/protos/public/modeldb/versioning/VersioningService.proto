@@ -7,6 +7,8 @@ option java_multiple_files = true;
 
 import "google/api/annotations.proto";
 import "protos/public/modeldb/CommonService.proto";
+import "protos/public/modeldb/versioning/Code.proto";
+import "protos/public/modeldb/versioning/Config.proto";
 import "protos/public/modeldb/versioning/Dataset.proto";
 import "protos/public/modeldb/versioning/Environment.proto";
 
@@ -59,6 +61,8 @@ message Blob {
     oneof content {
         DatasetBlob dataset = 2;// Blob of the type dataset
         EnvironmentBlob environment = 3;
+        CodeBlob code = 4;
+        ConfigBlob config = 5;
     }
 }
 
@@ -200,27 +204,19 @@ message ListCommitBlobsRequest {
     }
 }
 
-message GetCommitBlobRequest {
+message GetCommitComponentRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
     // List of folder names, with the last element being the name of the blob
+    // the last element determines if the response to be returned is Folder or Blob
     // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
     repeated string location = 3;
 
     message Response {
-        Blob blob = 1;
-    }
-}
-
-message GetCommitFolderRequest {
-    RepositoryIdentification repository_id = 1;
-    string commit_sha = 2;
-    // List of folder names
-    // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
-    repeated string location = 3;
-
-    message Response {
-        Folder folder = 1;
+        oneof component {
+            Folder folder = 1;
+            Blob blob = 2;
+        }
     }
 }
 
@@ -371,20 +367,11 @@ service VersioningService {
         };
     }
 
-    rpc GetCommitBlob(GetCommitBlobRequest) returns (GetCommitBlobRequest.Response) {
+    rpc GetCommitComponent(GetCommitComponentRequest) returns (GetCommitComponentRequest.Response) {
         option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/blobs/path"
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/path"
             additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/blobs/path"
-            }
-        };
-    }
-
-    rpc GetCommitFolder(GetCommitFolderRequest) returns (GetCommitFolderRequest.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/commits/{commit_sha}/folders/path"
-            additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/folders/path"
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/commits/{commit_sha}/path"
             }
         };
     }

@@ -16,8 +16,7 @@ public class PathDatasetComponentBlobEntity implements ComponentEntity {
   public PathDatasetComponentBlobEntity() {}
 
   public PathDatasetComponentBlobEntity(
-      String blobHash,
-      PathDatasetComponentBlob pathDatasetComponentBlob) {
+      String blobHash, PathDatasetComponentBlob pathDatasetComponentBlob) {
 
     this.id = new PathDatasetComponentBlobId(blobHash);
     this.path = pathDatasetComponentBlob.getPath();
