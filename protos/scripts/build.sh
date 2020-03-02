@@ -16,7 +16,7 @@ do
     python3 -m grpc_tools.protoc $PYTHON_GRPC_FLAGS $GATEWAY_FLAGS $protodir/*.proto
 
     echo "Building $protodir for golang"
-    protoc $GATEWAY_FLAGS \
+    python3 -m grpc_tools.protoc $GATEWAY_FLAGS \
 		--go_out=plugins=grpc,paths=source_relative:$GO_OUTPUT \
 		--grpc-gateway_out=logtostderr=true,paths=source_relative,allow_delete_body=true:$GO_OUTPUT \
 		--swagger_out=logtostderr=true,allow_delete_body=true:$SWAGGER_OUTPUT \
@@ -34,4 +34,4 @@ do
     cat /tmp/foo.txt | jq '.basePath = "/v1"' > $f
 done
 
-cp -R $PYTHON_OUTPUT/protos/ ../../client/verta/verta/_protos
+cp -R $PYTHON_OUTPUT/protos/* ../../client/verta/verta/_protos
