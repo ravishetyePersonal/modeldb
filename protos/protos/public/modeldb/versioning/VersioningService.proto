@@ -90,6 +90,8 @@ message Repository {
 
     string workspace_id = 5;
     WorkspaceTypeEnum.WorkspaceType workspace_type = 6;
+
+    string owner = 10;
 }
 
 // For pagination
