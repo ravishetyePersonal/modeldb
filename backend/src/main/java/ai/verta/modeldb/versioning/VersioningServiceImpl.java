@@ -17,6 +17,7 @@ import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -201,13 +202,13 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       if (request.getBlobsCount() == 0) {
         throw new ModelDBException("Blob list should not be empty", Code.INVALID_ARGUMENT);
       }
-      CreateCommitRequest.Builder newRequest = clearCommitDetails(request);
+      validateBlobs(request);
 
       CreateCommitRequest.Response response =
           commitDAO.setCommit(
               request.getCommit(),
               (session) ->
-                  datasetComponentDAO.setBlobs(session, newRequest.getBlobsList(), fileHasher),
+                  datasetComponentDAO.setBlobs(session, request.getBlobsList(), fileHasher),
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
 
       responseObserver.onNext(response);
@@ -218,58 +219,82 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  // returns a builder without the commit Details like message and author
-  private CreateCommitRequest.Builder clearCommitDetails(CreateCommitRequest request)
-      throws ModelDBException, NoSuchAlgorithmException {
-    CreateCommitRequest.Builder newRequest = CreateCommitRequest.newBuilder();
-    for (BlobExpanded blob : request.getBlobsList()) {
-      if (blob.getLocationList().isEmpty()) {
+  private void validateBlobs(CreateCommitRequest request)
+      throws ModelDBException {
+    for (BlobExpanded blobExpanded : request.getBlobsList()) {
+      if (blobExpanded.getLocationList().isEmpty()) {
         throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
       }
-      switch (blob.getBlob().getContentCase()) {
+      final Blob blob = blobExpanded.getBlob();
+      switch (blob.getContentCase()) {
         case DATASET:
-          final DatasetBlob dataset = blob.getBlob().getDataset();
-          final DatasetBlob.Builder newDataset = validateDataset(dataset);
-          newRequest.addBlobs(blob.toBuilder().setBlob(Blob.newBuilder().setDataset(newDataset)));
+          validateDataset(blob.getDataset());
           break;
         case ENVIRONMENT:
-          // Coming Soon.
+          validateEnvironment(blob.getEnvironment());
           break;
         case CONTENT_NOT_SET:
         default:
           break;
       }
     }
-    return newRequest;
   }
-  // Not sure if this is required, Validate paths
-  // TODO EL to add comment on what this function is suppose to do
-  private DatasetBlob.Builder validateDataset(final DatasetBlob dataset)
-      throws ModelDBException, NoSuchAlgorithmException {
-    final DatasetBlob.Builder newDataset = DatasetBlob.newBuilder();
 
+  private void validateDataset(final DatasetBlob dataset)
+      throws ModelDBException {
     switch (dataset.getContentCase()) {
       case S3:
-        S3DatasetBlob.Builder newS3BlobBuilder = S3DatasetBlob.newBuilder();
         for (S3DatasetComponentBlob component : dataset.getS3().getComponentsList()) {
           if (!component.hasPath()) {
             throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
           }
-          newS3BlobBuilder.addComponents(component.toBuilder().setPath(component.getPath()));
         }
-        newDataset.setS3(newS3BlobBuilder);
         break;
       case PATH:
-        PathDatasetBlob.Builder newPathBlobBuilder = PathDatasetBlob.newBuilder();
-        for (PathDatasetComponentBlob component : dataset.getPath().getComponentsList()) {
-          newPathBlobBuilder.addComponents(component);
-        }
-        newDataset.setPath(newPathBlobBuilder);
         break;
       default:
         throw new ModelDBException("Blob unknown type", Code.INVALID_ARGUMENT);
     }
-    return newDataset;
+  }
+
+  private void validateEnvironment(EnvironmentBlob environment) throws ModelDBException {
+    for (EnvironmentVariablesBlob blob : environment.getEnvironmentVariablesList()) {
+      validateEnvironmentVariableName(blob.getName());
+    }
+    switch (environment.getContentCase()) {
+      case DOCKER:
+        if (environment.getDocker().getRepository().isEmpty()) {
+          throw new ModelDBException("Environment repository path should not be empty",
+              Code.INVALID_ARGUMENT);
+        }
+        break;
+      case PYTHON:
+        final PythonEnvironmentBlob python = environment.getPython();
+        for (PythonRequirementEnvironmentBlob requirement : python
+            .getRequirementsList()) {
+          if (requirement.getLibrary().isEmpty()) {
+            throw new ModelDBException("Requirement library name should not be empty");
+          }
+        }
+        for (PythonRequirementEnvironmentBlob constraint : python
+            .getConstraintsList()) {
+          if (constraint.getLibrary().isEmpty()) {
+            throw new ModelDBException("Constraint library name should not be empty");
+          }
+        }
+        break;
+    }
+  }
+
+  private static final String PATTERN =
+      "[a-zA-Z0-9_-]+";
+  private void validateEnvironmentVariableName(String name) throws ModelDBException {
+    if (!Pattern.compile(PATTERN).matcher(name).matches()) {
+      throw new ModelDBException(
+          "Environment variable name: " + name
+              + " should be not empty, should contain only alphanumeric or underscore",
+          Code.INVALID_ARGUMENT);
+    }
   }
 
   @Override

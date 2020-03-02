@@ -144,21 +144,21 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   public String setBlobs(Session session, List<BlobExpanded> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException, ModelDBException {
     TreeElem rootTree = new TreeElem();
-    for (BlobExpanded blob : blobsList) {
+    for (BlobExpanded blobExpanded : blobsList) {
       TreeElem treeElem =
-          rootTree.children.getOrDefault(blob.getLocationList().get(0), new TreeElem());
-      Status statusMessage;
-      switch (blob.getBlob().getContentCase()) {
+          rootTree.children.getOrDefault(blobExpanded.getLocationList().get(0), new TreeElem());
+      final Blob blob = blobExpanded.getBlob();
+      switch (blob.getContentCase()) {
         case DATASET:
-          processDataset(blob, treeElem, fileHasher, getBlobType(blob));
+          processDataset(blobExpanded, treeElem, fileHasher, getBlobType(blobExpanded));
           break;
         case ENVIRONMENT:
-          throw new ModelDBException(
-              "Not supported yet " + blob.getBlob().getContentCase(), Status.Code.UNIMPLEMENTED);
+          processEnvironment(blobExpanded, treeElem, fileHasher, getBlobType(blobExpanded));
+          break;
         case CONTENT_NOT_SET:
         default:
           throw new ModelDBException(
-              "Unknown blob type found " + blob.getBlob().getContentCase(), Status.Code.UNKNOWN);
+              "Unknown blob type found " + blob.getContentCase(), Status.Code.UNKNOWN);
       }
       rootTree.children.putIfAbsent(treeElem.path, treeElem);
     }
@@ -166,11 +166,11 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     return internalFolderElement.getElementSha();
   }
 
-  private String getBlobType(BlobExpanded blob) throws ModelDBException {
-    Status statusMessage;
-    switch (blob.getBlob().getContentCase()) {
+  private String getBlobType(BlobExpanded blobExpanded) throws ModelDBException {
+    final Blob blob = blobExpanded.getBlob();
+    switch (blob.getContentCase()) {
       case DATASET:
-        switch (blob.getBlob().getDataset().getContentCase()) {
+        switch (blob.getDataset().getContentCase()) {
           case PATH:
             return PathDatasetBlob.class.getSimpleName();
           case S3:
@@ -178,16 +178,25 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           case CONTENT_NOT_SET:
           default:
             throw new ModelDBException(
-                "Unknown dataset type found " + blob.getBlob().getDataset().getContentCase(),
+                "Unknown dataset type found " + blob.getDataset().getContentCase(),
                 Status.Code.UNKNOWN);
         }
       case ENVIRONMENT:
-        throw new ModelDBException(
-            "Not supported yet " + blob.getBlob().getContentCase(), Status.Code.UNIMPLEMENTED);
+        switch (blob.getEnvironment().getContentCase()) {
+          case PYTHON:
+            return PythonEnvironmentBlob.class.getSimpleName();
+          case DOCKER:
+            return DockerEnvironmentBlob.class.getSimpleName();
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException(
+                "Unknown dataset type found " + blob.getEnvironment().getContentCase(),
+                Status.Code.UNKNOWN);
+        }
       case CONTENT_NOT_SET:
       default:
         throw new ModelDBException(
-            "Unknown blob type found " + blob.getBlob().getContentCase(), Status.Code.UNKNOWN);
+            "Unknown blob type found " + blob.getContentCase(), Status.Code.UNKNOWN);
     }
   }
 
@@ -203,6 +212,49 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher, String blobType)
       throws NoSuchAlgorithmException {
     final DatasetBlob dataset = blob.getBlob().getDataset();
+    final List<String> locationList = blob.getLocationList();
+
+    TreeElem treeChild =
+        treeElem.push(
+            locationList,
+            fileHasher.getSha(dataset),
+            blobType,
+            null); // need to ensure dataset is sorted
+    switch (dataset.getContentCase()) {
+      case S3:
+        for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
+          final String sha256 = computeSHA(componentBlob);
+          S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
+              new S3DatasetComponentBlobEntity(sha256, componentBlob);
+          treeChild.push(
+              Arrays.asList(
+                  locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
+              computeSHA(componentBlob.getPath()),
+              componentBlob.getClass().getSimpleName(),
+              s3DatasetComponentBlobEntity);
+        }
+        break;
+      case PATH:
+        for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
+          final String sha256 = computeSHA(componentBlob);
+          PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
+              new PathDatasetComponentBlobEntity(sha256, componentBlob);
+          treeChild.push(
+              Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
+              computeSHA(componentBlob),
+              componentBlob.getClass().getSimpleName(),
+              pathDatasetComponentBlobEntity);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  private void processEnvironment(
+      BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher, String blobType)
+      throws NoSuchAlgorithmException {
+    final EnvironmentBlob environment = blob.getBlob().getEnvironment();
     final List<String> locationList = blob.getLocationList();
 
     TreeElem treeChild =
