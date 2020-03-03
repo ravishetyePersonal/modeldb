@@ -176,7 +176,28 @@
 			</column>
 		</createTable>
 	</changeSet>
-
+	<changeSet author="lezhevg" id="create-python_environment_requirements">
+		<createTable tableName="python_environment_requirements_blob">
+			<column name="python_environment_blob_hash" type="varchar(64)">
+				<constraints foreignKeyName="fk_python_environment_blob"
+					primaryKey="true" nullable="false"
+					referencedTableName="python_environment_blob"
+					referencedColumnNames="blob_hash" />
+			</column>
+			<column name="library" type="varchar(255)">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="constraint" type="varchar(255)">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="major" type="int4" />
+			<column name="minor" type="int4" />
+			<column name="patch" type="int4" />
+			<column name="req_or_constraint" type="boolean">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
 	<changeSet author="raviS"
 		id="create-environment_command_line">
 		<createTable tableName="environment_command_line">
