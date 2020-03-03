@@ -488,46 +488,6 @@ service VersioningService {
         };
     };
 
-    // CRUD for Branches
-    rpc ListBranches(ListBranchesRequest) returns (ListBranchesRequest.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches"
-            additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/branches"
-            }
-        };
-    };
-
-    rpc GetBranch(GetBranchRequest) returns (GetBranchRequest.Response) {
-        option (google.api.http) = {
-            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
-            additional_bindings {
-                get: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
-            }
-        };
-    };
-
-    // Unlike tags, branches can be updated. The API must verify that the new commit is a child of the current branch.
-    rpc SetBranch(SetBranchRequest) returns (SetBranchRequest.Response) {
-        option (google.api.http) = {
-            put: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
-            body: "commit_sha"
-            additional_bindings {
-                put: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
-                body: "commit_sha"
-            }
-        };
-    }
-
-    rpc DeleteBranch(DeleteBranchRequest) returns (DeleteBranchRequest.Response) {
-        option (google.api.http) = {
-            delete: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
-            additional_bindings {
-                delete: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
-            }
-        };
-    }
-
     // CRUD for tags
     rpc ListTags(ListTagsRequest) returns (ListTagsRequest.Response) {
         option (google.api.http) = {
