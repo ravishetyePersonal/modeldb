@@ -201,4 +201,9 @@
           referencedColumnNames="commit_hash"
           referencedTableName="commit"/>
     </changeSet>
+    <changeSet id="add-repository-owner" author="lezhevg">
+        <addColumn tableName="repository">
+            <column name="owner" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,5 +1,7 @@
 package ai.verta.modeldb;
 
+import static ai.verta.modeldb.utils.TestConstants.RESOURCE_OWNER_ID;
+
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.AuthServiceUtils;
 import ai.verta.modeldb.authservice.PublicAuthServiceUtils;
@@ -200,6 +202,7 @@ public class RepositoryTest {
     GetRepositoryRequest.Response getByNameResult =
         versioningServiceBlockingStub.getRepository(getRepositoryRequest);
     Assert.assertTrue(getByNameResult.hasRepository());
+    Assert.assertEquals(RESOURCE_OWNER_ID, getByNameResult.getRepository().getOwner());
 
     DeleteRepositoryRequest deleteRepository =
         DeleteRepositoryRequest.newBuilder()

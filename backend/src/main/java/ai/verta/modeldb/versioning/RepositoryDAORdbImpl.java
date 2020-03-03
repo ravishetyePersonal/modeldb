@@ -196,7 +196,11 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             workspaceDTO.getWorkspaceId(),
             workspaceDTO.getWorkspaceType(),
             LOGGER);
-        repository = new RepositoryEntity(request.getRepository().getName(), workspaceDTO);
+        repository =
+            new RepositoryEntity(
+                request.getRepository().getName(),
+                workspaceDTO,
+                request.getRepository().getOwner());
       } else {
         repository = getRepositoryById(session, request.getId());
         ModelDBHibernateUtil.checkIfEntityAlreadyExists(
