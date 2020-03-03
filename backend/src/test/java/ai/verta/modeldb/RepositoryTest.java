@@ -316,12 +316,39 @@ public class RepositoryTest {
     assertTrue(
         "Expected tag not found in the response", listTagsResponse.getTagsList().contains(tagName));
 
+    setTagRequest =
+        SetTagRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setTag(tagName)
+            .build();
+
+    try {
+      versioningServiceBlockingStub.setTag(setTagRequest);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
+    }
+
     DeleteTagRequest deleteTagRequest =
         DeleteTagRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
             .setTag(tagName)
             .build();
     versioningServiceBlockingStub.deleteTag(deleteTagRequest);
+
+    deleteTagRequest =
+        DeleteTagRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setTag(tagName)
+            .build();
+    try {
+      versioningServiceBlockingStub.deleteTag(deleteTagRequest);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
+    }
+
     listTagsRequest =
         ListTagsRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())

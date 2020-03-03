@@ -176,7 +176,6 @@ public class CommitTest {
 
     Commit commit =
         Commit.newBuilder()
-            .setAuthor(authClientInterceptor.getClient1Email())
             .setMessage("this is the test commit message")
             .setDateCreated(commitTime)
             .build();
@@ -243,6 +242,7 @@ public class CommitTest {
     LOGGER.info("Delete of commit test end................................");
   }
 
+  @Test
   public void listCommitsTest() {
     LOGGER.info("List of commits test start................................");
 
@@ -327,14 +327,12 @@ public class CommitTest {
         commitList.get(2),
         listCommitsResponse.getCommits(1));
 
-    // TODO: DeleteCommit not implemented yet
-    /*DeleteCommitRequest deleteCommitRequest =
+    DeleteCommitRequest deleteCommitRequest =
         DeleteCommitRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
-            .setCommitSha(commitResponse.getCommit().getFolderSha())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
             .build();
-    DeleteCommitRequest.Response deleteCommitResponse =
-        versioningServiceBlockingStub.deleteCommit(deleteCommitRequest);*/
+    versioningServiceBlockingStub.deleteCommit(deleteCommitRequest);
 
     DeleteRepositoryRequest deleteRepository =
         DeleteRepositoryRequest.newBuilder()

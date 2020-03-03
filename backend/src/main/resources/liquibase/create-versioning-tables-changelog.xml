@@ -213,4 +213,18 @@
           referencedColumnNames="folder_sha"
           referencedTableName="folder_element"/>
     </changeSet>
+    <changeSet id="recreate_folder_element_table" author="lezhevg">
+        <dropTable tableName="folder_element"/>
+        <createTable tableName="folder_element">
+            <column name="folder_hash" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="element_sha" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="element_name" type="varchar(200)"/>
+            <column name="element_type" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

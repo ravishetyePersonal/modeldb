@@ -25,7 +25,8 @@ public class CommitDAORdbImpl implements CommitDAO {
    * and blobs in top down fashion and generates SHAs in bottom up fashion getRepository : fetches
    * the repository the commit is made on
    */
-  public Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
+  public Response setCommit(
+      String author, Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
@@ -38,7 +39,7 @@ public class CommitDAORdbImpl implements CommitDAO {
       Commit internalCommit =
           Commit.newBuilder()
               .setDateCreated(timeCreated)
-              .setAuthor(commit.getAuthor())
+              .setAuthor(author)
               .setMessage(commit.getMessage())
               .setCommitSha(commitSha)
               .build();

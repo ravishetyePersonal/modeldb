@@ -14,6 +14,7 @@ import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -174,7 +175,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             ModelDBConstants.WORKSPACE_ID,
             workspaceDTO.getWorkspaceId(),
             workspaceDTO.getWorkspaceType(),
-            true);
+            true,
+            null);
     return Optional.ofNullable((RepositoryEntity) query.uniqueResult());
   }
 
@@ -253,7 +255,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              Collections.singletonList(ModelDBConstants.DATE_UPDATED));
       int pageLimit = request.getPagination().getPageLimit();
       if (request.hasPagination()) {
         query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);
@@ -272,7 +275,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              null);
       list.forEach((o) -> builder.addRepositories(((RepositoryEntity) o).toProto()));
       final Long value = (Long) query.uniqueResult();
       builder.setTotalRecords(value);
@@ -289,9 +293,23 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
-      // TODO: Check commit_hash exists in DB
-      TagsEntity tagsEntity =
-          new TagsEntity(repository.getId(), request.getCommitSha(), request.getTag());
+      boolean exists =
+          VersioningUtils.commitRepositoryMappingExists(
+              session, request.getCommitSha(), repository.getId());
+      if (!exists) {
+        throw new ModelDBException(
+            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+      }
+
+      Query query = session.createQuery(GET_TAG_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("tag", request.getTag());
+      TagsEntity tagsEntity = (TagsEntity) query.uniqueResult();
+      if (tagsEntity != null) {
+        throw new ModelDBException("Tag '" + request.getTag() + "' already exists", Code.NOT_FOUND);
+      }
+
+      tagsEntity = new TagsEntity(repository.getId(), request.getCommitSha(), request.getTag());
       session.save(tagsEntity);
       session.getTransaction().commit();
       return SetTagRequest.Response.newBuilder().build();
@@ -308,6 +326,10 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       query.setParameter("repositoryId", repository.getId());
       query.setParameter("tag", request.getTag());
       TagsEntity tagsEntity = (TagsEntity) query.uniqueResult();
+      if (tagsEntity == null) {
+        throw new ModelDBException("Tag not found", Code.NOT_FOUND);
+      }
+
       CommitEntity commitEntity = session.get(CommitEntity.class, tagsEntity.getCommit_hash());
       session.getTransaction().commit();
       return GetTagRequest.Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
@@ -320,8 +342,10 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       TagsEntity tagsEntity =
-          session.load(
-              TagsEntity.class, new TagsEntity.TagId(request.getTag(), repository.getId()));
+          session.get(TagsEntity.class, new TagsEntity.TagId(request.getTag(), repository.getId()));
+      if (tagsEntity == null) {
+        throw new ModelDBException("Tag not found", Code.NOT_FOUND);
+      }
       session.delete(tagsEntity);
       session.getTransaction().commit();
       return DeleteTagRequest.Response.newBuilder().build();
@@ -337,6 +361,10 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       Query query = session.createQuery(GET_TAGS_HQL);
       query.setParameter("repoId", repository.getId());
       List<TagsEntity> tagsEntities = query.list();
+
+      if (tagsEntities == null || tagsEntities.isEmpty()) {
+        return ListTagsRequest.Response.newBuilder().setTotalRecords(0).build();
+      }
 
       session.getTransaction().commit();
       List<String> tags =
