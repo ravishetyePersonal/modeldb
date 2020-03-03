@@ -153,7 +153,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
           processDataset(blobExpanded, treeElem, fileHasher, getBlobType(blobExpanded));
           break;
         case ENVIRONMENT:
-          processEnvironment(blobExpanded, treeElem, fileHasher, getBlobType(blobExpanded));
+          processEnvironment(session, blobExpanded, treeElem, fileHasher, getBlobType(blobExpanded));
           break;
         case CONTENT_NOT_SET:
         default:
@@ -252,19 +252,15 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
   }
 
   private void processEnvironment(
-      BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher, String blobType)
+      Session session, BlobExpanded blob, TreeElem treeElem, FileHasher fileHasher,
+      String blobType)
       throws NoSuchAlgorithmException {
     final EnvironmentBlob environment = blob.getBlob().getEnvironment();
     final List<String> locationList = blob.getLocationList();
 
-    TreeElem treeChild =
-        treeElem.push(
-            locationList,
-            fileHasher.getSha(dataset),
-            blobType,
-            null); // need to ensure dataset is sorted
-    switch (dataset.getContentCase()) {
-      case S3:
+    switch (environment.getContentCase()) {
+      case PYTHON:
+        environment.getPython().get
         for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
           final String sha256 = computeSHA(componentBlob);
           S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
@@ -277,7 +273,7 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
               s3DatasetComponentBlobEntity);
         }
         break;
-      case PATH:
+      case DOCKER:
         for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
           final String sha256 = computeSHA(componentBlob);
           PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
@@ -292,6 +288,12 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       default:
         break;
     }
+    TreeElem treeChild =
+        treeElem.push(
+            locationList,
+            fileHasher.getSha(environment),
+            blobType,
+            null); // need to ensure dataset is sorted
   }
 
   private String computeSHA(S3DatasetComponentBlob s3componentBlob)
