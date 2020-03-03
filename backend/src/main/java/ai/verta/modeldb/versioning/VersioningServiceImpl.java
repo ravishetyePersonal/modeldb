@@ -13,6 +13,7 @@ import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob.Builder;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBase;
 import ai.verta.uac.UserInfo;
+import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
@@ -378,37 +379,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     QPSCountResource.inc();
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-      List<BlobDiff> blobDiffList = new ArrayList<>();
-
-      Commit internalCommitA =
-          commitDAO.getCommit(
-              request.getCommitA(),
-              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
-
-      Commit internalCommitB =
-          commitDAO.getCommit(
-              request.getCommitB(),
-              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
-
-      /*InternalFolderElementEntity internalFolderElementEntity = datasetComponentDAO.getBlob();
-
-      internalCommitA.getFolderSha();
-
-
-
-      PathDatasetComponentBlob pathDatasetComponentBlob = PathDatasetComponentBlob.newBuilder().setPath().setSha256().build();
-      PathDatasetBlob pathDatasetBlob = PathDatasetBlob.newBuilder().addAllComponents().build();
-
-
-      PathDatasetDiff pathDatasetDiff = PathDatasetDiff.newBuilder().setA().setB().setDeleted().setAdded().build();
-      DatasetDiff datasetDiff = DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-
-      BlobDiff blobDiff = BlobDiff.newBuilder().setDataset(datasetDiff).build();
-
-
-      ComputeRepositoryDiffRequest.Response response = ComputeRepositoryDiffRequest.Response.newBuilder().addAllDiffs(blobDiffList).build();
-      responseObserver.onNext(response);*/
-      responseObserver.onCompleted();
+      throw new ModelDBException(
+          "Not supported yet " + modelDBAuthInterceptor.getMethodName(), Status.Code.UNIMPLEMENTED);
     } catch (Exception e) {
       ModelDBUtils.observeError(
           responseObserver, e, ComputeRepositoryDiffRequest.Response.getDefaultInstance());
