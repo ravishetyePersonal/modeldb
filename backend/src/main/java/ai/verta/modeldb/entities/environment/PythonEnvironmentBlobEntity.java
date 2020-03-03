@@ -23,5 +23,37 @@ public class PythonEnvironmentBlobEntity {
 
   @Column(name = "patch")
   private Integer patch;
+
+  public String getBlob_hash() {
+    return blob_hash;
+  }
+
+  public void setBlob_hash(String blob_hash) {
+    this.blob_hash = blob_hash;
+  }
+
+  public Integer getMajor() {
+    return major;
+  }
+
+  public void setMajor(Integer major) {
+    this.major = major;
+  }
+
+  public Integer getMinor() {
+    return minor;
+  }
+
+  public void setMinor(Integer minor) {
+    this.minor = minor;
+  }
+
+  public Integer getPatch() {
+    return patch;
+  }
+
+  public void setPatch(Integer patch) {
+    this.patch = patch;
+  }
 }
 

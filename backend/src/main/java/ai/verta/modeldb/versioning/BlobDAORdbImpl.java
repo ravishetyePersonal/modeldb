@@ -4,6 +4,9 @@ import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.ComponentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentRequirementBlobEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
@@ -24,10 +27,11 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
-  private static final Logger LOGGER = LogManager.getLogger(DatasetComponentDAORdbImpl.class);
+public class BlobDAORdbImpl implements DatasetComponentDAO {
+  private static final Logger LOGGER = LogManager.getLogger(BlobDAORdbImpl.class);
 
   public static final String TREE = "TREE";
+  private static final Integer PYTHON_ENV_TYPE = 1;
 
   static class TreeElem {
     String path;
@@ -256,38 +260,34 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       String blobType)
       throws NoSuchAlgorithmException {
     final EnvironmentBlob environment = blob.getBlob().getEnvironment();
-    final List<String> locationList = blob.getLocationList();
+    EnvironmentBlobEntity environmentBlobEntity = new EnvironmentBlobEntity();
+    String blobHash = computeSHA(environment);
 
     switch (environment.getContentCase()) {
       case PYTHON:
-        environment.getPython().get
-        for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
-          final String sha256 = computeSHA(componentBlob);
-          S3DatasetComponentBlobEntity s3DatasetComponentBlobEntity =
-              new S3DatasetComponentBlobEntity(sha256, componentBlob);
-          treeChild.push(
-              Arrays.asList(
-                  locationList.get(locationList.size() - 1), componentBlob.getPath().getPath()),
-              computeSHA(componentBlob.getPath()),
-              componentBlob.getClass().getSimpleName(),
-              s3DatasetComponentBlobEntity);
+        PythonEnvironmentBlob python = environment.getPython();
+        environmentBlobEntity.setBlob_hash(FileHasher.getSha((blobHash + computeSHA(python))));
+        environmentBlobEntity.setEnvironment_type(PYTHON_ENV_TYPE);
+        PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity = new PythonEnvironmentBlobEntity();
+        pythonEnvironmentBlobEntity.setBlob_hash(environmentBlobEntity.getBlob_hash());
+        final VersionEnvironmentBlob version = python.getVersion();
+        pythonEnvironmentBlobEntity.setMajor(version.getMajor());
+        pythonEnvironmentBlobEntity.setMinor(version.getMinor());
+        pythonEnvironmentBlobEntity.setPatch(version.getPatch());
+        for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob : python
+            .getRequirementsList()) {
+          PythonEnvironmentRequirementBlobEntity pythonEnvironmentRequirementBlobEntity =
+              new PythonEnvironmentRequirementBlobEntity();
+
         }
         break;
       case DOCKER:
-        for (PathDatasetComponentBlob componentBlob : dataset.getPath().getComponentsList()) {
-          final String sha256 = computeSHA(componentBlob);
-          PathDatasetComponentBlobEntity pathDatasetComponentBlobEntity =
-              new PathDatasetComponentBlobEntity(sha256, componentBlob);
-          treeChild.push(
-              Arrays.asList(locationList.get(locationList.size() - 1), componentBlob.getPath()),
-              computeSHA(componentBlob),
-              componentBlob.getClass().getSimpleName(),
-              pathDatasetComponentBlobEntity);
-        }
         break;
       default:
         break;
     }
+    //environment.getEnvironmentVariablesList()
+    final List<String> locationList = blob.getLocationList();
     TreeElem treeChild =
         treeElem.push(
             locationList,
@@ -316,6 +316,57 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
         .append(":md5:")
         .append(path.getMd5());
     return FileHasher.getSha(sb.toString());
+  }
+
+  private String computeSHA(EnvironmentBlob blob) throws NoSuchAlgorithmException {
+    StringBuilder sb = new StringBuilder();
+    sb.append("env:");
+    for (EnvironmentVariablesBlob environmentVariablesBlob : blob.getEnvironmentVariablesList()) {
+      sb.append("name:").append(environmentVariablesBlob.getName()).append("value:")
+          .append(environmentVariablesBlob.getValue());
+    }
+    sb.append("command_line:");
+    for (String commandLine : blob.getCommandLineList()) {
+      sb.append("command:").append(commandLine);
+    }
+    return FileHasher.getSha(sb.toString());
+  }
+
+  private String computeSHA(PythonEnvironmentBlob blob) throws NoSuchAlgorithmException {
+    StringBuilder sb = new StringBuilder();
+    final VersionEnvironmentBlob version = blob.getVersion();
+    sb.append("python:");
+    appendVersion(sb, version);
+    sb.append("requirements:");
+    for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob : blob
+        .getRequirementsList()) {
+      sb.append("library:").append(pythonRequirementEnvironmentBlob.getLibrary())
+          .append("constraint:")
+          .append(pythonRequirementEnvironmentBlob.getConstraint());
+      appendVersion(sb, pythonRequirementEnvironmentBlob.getVersion());
+    }
+    sb.append("constraints:");
+    for (PythonRequirementEnvironmentBlob pythonConstraintEnvironmentBlob : blob
+        .getConstraintsList()) {
+      sb.append("library:").append(pythonConstraintEnvironmentBlob.getLibrary())
+          .append("constraint:")
+          .append(pythonConstraintEnvironmentBlob.getConstraint());
+      appendVersion(sb, pythonConstraintEnvironmentBlob.getVersion());
+    }
+    return FileHasher.getSha(sb.toString());
+  }
+
+  private String computeSHA(DockerEnvironmentBlob blob) throws NoSuchAlgorithmException {
+    StringBuilder sb = new StringBuilder();
+    sb.append("docker:repository").append(blob.getRepository()).append("sha:")
+        .append(blob.getSha()).append("tag:").append(blob.getTag());
+    return FileHasher.getSha(sb.toString());
+
+  }
+
+  private void appendVersion(StringBuilder sb, VersionEnvironmentBlob version) {
+    sb.append("version:").append("major:").append(version.getMajor()).append("minor")
+            .append(version.getMinor()).append("patch").append(version.getPatch());
   }
 
   private Blob getBlob(Session session, InternalFolderElementEntity folderElementEntity)

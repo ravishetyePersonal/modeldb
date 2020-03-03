@@ -30,5 +30,38 @@ public class EnvironmentBlobEntity {
   @JoinColumn(name = "docker_environment_blob_hash")
   private DockerEnvironmentBlobEntity dockerEnvironmentBlobEntity;
 
+  public String getBlob_hash() {
+    return blob_hash;
+  }
+
+  public void setBlob_hash(String blob_hash) {
+    this.blob_hash = blob_hash;
+  }
+
+  public Integer getEnvironment_type() {
+    return environment_type;
+  }
+
+  public void setEnvironment_type(Integer environment_type) {
+    this.environment_type = environment_type;
+  }
+
+  public PythonEnvironmentBlobEntity getPythonEnvironmentBlobEntity() {
+    return pythonEnvironmentBlobEntity;
+  }
+
+  public void setPythonEnvironmentBlobEntity(
+      PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity) {
+    this.pythonEnvironmentBlobEntity = pythonEnvironmentBlobEntity;
+  }
+
+  public DockerEnvironmentBlobEntity getDockerEnvironmentBlobEntity() {
+    return dockerEnvironmentBlobEntity;
+  }
+
+  public void setDockerEnvironmentBlobEntity(
+      DockerEnvironmentBlobEntity dockerEnvironmentBlobEntity) {
+    this.dockerEnvironmentBlobEntity = dockerEnvironmentBlobEntity;
+  }
 }
 
