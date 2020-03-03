@@ -14,6 +14,7 @@ import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -174,7 +175,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             ModelDBConstants.WORKSPACE_ID,
             workspaceDTO.getWorkspaceId(),
             workspaceDTO.getWorkspaceType(),
-            true);
+            true,
+            null);
     return Optional.ofNullable((RepositoryEntity) query.uniqueResult());
   }
 
@@ -253,7 +255,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              Collections.singletonList(ModelDBConstants.DATE_UPDATED));
       int pageLimit = request.getPagination().getPageLimit();
       if (request.hasPagination()) {
         query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);
@@ -272,7 +275,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              null);
       list.forEach((o) -> builder.addRepositories(((RepositoryEntity) o).toProto()));
       final Long value = (Long) query.uniqueResult();
       builder.setTotalRecords(value);

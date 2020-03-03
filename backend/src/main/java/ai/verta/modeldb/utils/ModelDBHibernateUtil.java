@@ -34,6 +34,7 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.entities.versioning.TagsEntity;
+import com.google.common.base.Joiner;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.health.v1.HealthCheckResponse;
@@ -46,6 +47,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import liquibase.Contexts;
@@ -479,7 +481,8 @@ public class ModelDBHibernateUtil {
             workspaceColumnName,
             workspaceId,
             workspaceType,
-            true);
+            true,
+            null);
     Long count = (Long) query.uniqueResult();
 
     if (count > 0) {
@@ -503,7 +506,8 @@ public class ModelDBHibernateUtil {
       String workspaceColumnName,
       String workspaceId,
       WorkspaceType workspaceType,
-      boolean shouldSetName) {
+      boolean shouldSetName,
+      List<String> ordering) {
     StringBuilder stringQueryBuilder = new StringBuilder(command);
     if (!workspaceId.isEmpty()) {
       if (shouldSetName) {
@@ -523,6 +527,11 @@ public class ModelDBHibernateUtil {
           .append(ModelDBConstants.WORKSPACE_TYPE);
     }
 
+    if (ordering != null && !ordering.isEmpty()) {
+      stringQueryBuilder.append(" order by ");
+      Joiner joiner = Joiner.on(",");
+      stringQueryBuilder.append(joiner.join(ordering));
+    }
     Query query = session.createQuery(stringQueryBuilder.toString());
     if (shouldSetName) {
       query.setParameter(fieldName, name);
