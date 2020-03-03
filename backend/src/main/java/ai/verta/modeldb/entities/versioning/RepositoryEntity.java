@@ -2,6 +2,7 @@ package ai.verta.modeldb.entities.versioning;
 
 import ai.verta.modeldb.dto.WorkspaceDTO;
 import ai.verta.modeldb.versioning.Repository;
+import ai.verta.modeldb.versioning.Repository.Builder;
 import ai.verta.modeldb.versioning.SetRepository;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,12 +21,13 @@ import javax.persistence.Table;
 public class RepositoryEntity {
   public RepositoryEntity() {}
 
-  public RepositoryEntity(String name, WorkspaceDTO workspaceDTO) {
+  public RepositoryEntity(String name, WorkspaceDTO workspaceDTO, String owner) {
     this.name = name;
     this.date_created = new Date().getTime();
     this.date_updated = new Date().getTime();
     this.workspace_id = workspaceDTO.getWorkspaceId();
     this.workspace_type = workspaceDTO.getWorkspaceType().getNumber();
+    this.owner = owner;
   }
 
   @Id
@@ -51,6 +53,9 @@ public class RepositoryEntity {
   @OrderBy("date_created")
   @ManyToMany(mappedBy = "repository")
   private Set<CommitEntity> commits = new HashSet<>();
+
+  @Column(name = "owner")
+  private String owner;
 
   public Long getId() {
     return id;
@@ -81,14 +86,17 @@ public class RepositoryEntity {
   }
 
   public Repository toProto() {
-    return Repository.newBuilder()
+    final Builder builder = Repository.newBuilder()
         .setId(this.id)
         .setName(this.name)
         .setDateCreated(this.date_created)
         .setDateUpdated(this.date_updated)
         .setWorkspaceId(this.workspace_id)
-        .setWorkspaceTypeValue(this.workspace_type)
-        .build();
+        .setWorkspaceTypeValue(this.workspace_type);
+    if (owner != null) {
+      builder.setOwner(owner);
+    }
+    return builder.build();
   }
 
   public void update(SetRepository request) {

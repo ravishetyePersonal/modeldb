@@ -74,6 +74,31 @@ class VersioningServiceStub(object):
         request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.SerializeToString,
         response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.Response.FromString,
         )
+    self.ListBranches = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListBranches',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchesRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchesRequest.Response.FromString,
+        )
+    self.GetBranch = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/GetBranch',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetBranchRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetBranchRequest.Response.FromString,
+        )
+    self.SetBranch = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/SetBranch',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetBranchRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetBranchRequest.Response.FromString,
+        )
+    self.DeleteBranch = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/DeleteBranch',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteBranchRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteBranchRequest.Response.FromString,
+        )
+    self.ListBranchCommits = channel.unary_unary(
+        '/ai.verta.modeldb.versioning.VersioningService/ListBranchCommits',
+        request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchCommitsRequest.SerializeToString,
+        response_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchCommitsRequest.Response.FromString,
+        )
     self.ListTags = channel.unary_unary(
         '/ai.verta.modeldb.versioning.VersioningService/ListTags',
         request_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListTagsRequest.SerializeToString,
@@ -184,6 +209,41 @@ class VersioningServiceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def ListBranches(self, request, context):
+    """CRUD for Branches
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetBranch(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SetBranch(self, request, context):
+    """Unlike tags, branches can be updated. The API must verify that the new commit is a child of the current branch.
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def DeleteBranch(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def ListBranchCommits(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
   def ListTags(self, request, context):
     """CRUD for tags
     """
@@ -199,8 +259,8 @@ class VersioningServiceServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def SetTag(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """Can't update a tag. If someone tries to set one that exists, we should error.
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
@@ -274,6 +334,31 @@ def add_VersioningServiceServicer_to_server(servicer, server):
           servicer.ComputeRepositoryDiff,
           request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.FromString,
           response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ComputeRepositoryDiffRequest.Response.SerializeToString,
+      ),
+      'ListBranches': grpc.unary_unary_rpc_method_handler(
+          servicer.ListBranches,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchesRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchesRequest.Response.SerializeToString,
+      ),
+      'GetBranch': grpc.unary_unary_rpc_method_handler(
+          servicer.GetBranch,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetBranchRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.GetBranchRequest.Response.SerializeToString,
+      ),
+      'SetBranch': grpc.unary_unary_rpc_method_handler(
+          servicer.SetBranch,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetBranchRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.SetBranchRequest.Response.SerializeToString,
+      ),
+      'DeleteBranch': grpc.unary_unary_rpc_method_handler(
+          servicer.DeleteBranch,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteBranchRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.DeleteBranchRequest.Response.SerializeToString,
+      ),
+      'ListBranchCommits': grpc.unary_unary_rpc_method_handler(
+          servicer.ListBranchCommits,
+          request_deserializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchCommitsRequest.FromString,
+          response_serializer=protos_dot_public_dot_modeldb_dot_versioning_dot_VersioningService__pb2.ListBranchCommitsRequest.Response.SerializeToString,
       ),
       'ListTags': grpc.unary_unary_rpc_method_handler(
           servicer.ListTags,

@@ -9,6 +9,8 @@ import ai.verta.modeldb.KeyValueQuery;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.OperatorEnum;
+import ai.verta.modeldb.UpdateProjectName;
+import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.collaborator.CollaboratorBase;
@@ -430,5 +432,25 @@ public class ModelDBUtils {
     }
     ErrorCountResource.inc(statusRuntimeException);
     responseObserver.onError(statusRuntimeException);
+  }
+
+  /**
+   If so throws an error if the workspace type is USER and the workspaceId and userID do not match.
+   Is a NO-OP if userinfo is null.
+   */
+  public static void checkPersonalWorkspace(UserInfo userInfo, WorkspaceType workspaceType,
+      String workspaceId, String resourceNameString) {
+    if (userInfo != null
+        && workspaceType == WorkspaceType.USER
+        && !workspaceId.equals(userInfo.getVertaInfo().getUserId())) {
+      Status status =
+          Status.newBuilder()
+              .setCode(Code.PERMISSION_DENIED_VALUE)
+              .setMessage("Creation of " + resourceNameString
+                  + " in other user's workspace is not permitted")
+              .addDetails(Any.pack(UpdateProjectName.Response.getDefaultInstance()))
+              .build();
+      throw StatusProto.toStatusRuntimeException(status);
+    }
   }
 }

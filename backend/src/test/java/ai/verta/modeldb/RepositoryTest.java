@@ -2,6 +2,7 @@ package ai.verta.modeldb;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static ai.verta.modeldb.utils.TestConstants.RESOURCE_OWNER_ID;
 
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.AuthServiceUtils;
@@ -64,7 +65,8 @@ import org.junit.runners.MethodSorters;
 public class RepositoryTest {
 
   private static final Logger LOGGER = LogManager.getLogger(RepositoryTest.class);
-  public static final String NAME_2 = "name2";
+  private static final String NAME = "repository_name";
+  private static final String NAME_2 = "repository_name2";
   /**
    * This rule manages automatic graceful shutdown for the registered servers and channels at the
    * end of test.
@@ -168,12 +170,28 @@ public class RepositoryTest {
         SetRepository.newBuilder()
             .setId(
                 RepositoryIdentification.newBuilder()
-                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName("name").build())
+                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME).build())
                     .build())
-            .setRepository(Repository.newBuilder().setName("name"))
+            .setRepository(Repository.newBuilder().setName(NAME))
             .build();
     Response result = versioningServiceBlockingStub.createRepository(setRepository);
     long id = result.getRepository().getId();
+    try {
+      setRepository =
+          SetRepository.newBuilder()
+              .setId(
+                  RepositoryIdentification.newBuilder()
+                      .setNamedId(RepositoryNamedIdentification.newBuilder()
+                          .setWorkspaceName("test1verta_gmail_com").setName(NAME_2).build())
+                      .build())
+              .setRepository(Repository.newBuilder().setName(NAME))
+              .build();
+      versioningServiceBlockingStub.createRepository(setRepository);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.PERMISSION_DENIED, e.getStatus().getCode());
+      e.printStackTrace();
+    }
 
     // check id
     GetRepositoryRequest getRepositoryRequest =
@@ -188,7 +206,7 @@ public class RepositoryTest {
         SetRepository.newBuilder()
             .setId(
                 RepositoryIdentification.newBuilder()
-                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName("name").build())
+                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME).build())
                     .build())
             .setRepository(Repository.newBuilder().setName(NAME_2))
             .build();
@@ -202,7 +220,7 @@ public class RepositoryTest {
           GetRepositoryRequest.newBuilder()
               .setId(
                   RepositoryIdentification.newBuilder()
-                      .setNamedId(RepositoryNamedIdentification.newBuilder().setName("name")))
+                      .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME)))
               .build();
       versioningServiceBlockingStub.getRepository(getRepositoryRequest);
       Assert.fail();
@@ -220,6 +238,7 @@ public class RepositoryTest {
     GetRepositoryRequest.Response getByNameResult =
         versioningServiceBlockingStub.getRepository(getRepositoryRequest);
     Assert.assertTrue(getByNameResult.hasRepository());
+    Assert.assertEquals(RESOURCE_OWNER_ID, getByNameResult.getRepository().getOwner());
 
     DeleteRepositoryRequest deleteRepository =
         DeleteRepositoryRequest.newBuilder()

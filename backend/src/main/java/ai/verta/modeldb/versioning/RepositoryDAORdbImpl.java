@@ -10,6 +10,7 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.entities.versioning.TagsEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
+import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
@@ -107,7 +108,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   }
 
   private WorkspaceDTO verifyAndGetWorkspaceDTO(
-      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
+      RepositoryIdentification id, boolean shouldCheckNamed, boolean create) throws ModelDBException {
     WorkspaceDTO workspaceDTO = null;
     String message = null;
     if (id.hasNamedId()) {
@@ -121,8 +122,15 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       try {
         workspaceDTO =
             roleService.getWorkspaceDTOByWorkspaceName(userInfo, named.getWorkspaceName());
+        if (create) {
+          ModelDBUtils
+              .checkPersonalWorkspace(userInfo, workspaceDTO.getWorkspaceType(),
+                  workspaceDTO.getWorkspaceId(), "repository");
+        }
       } catch (StatusRuntimeException e) {
-        throw new ModelDBException("Error getting workspace", e.getStatus().getCode());
+        LOGGER.warn(e);
+        throw new ModelDBException("Error getting workspace: " + e.getStatus().getDescription(),
+            e.getStatus().getCode());
       }
       if (named.getName().isEmpty() && shouldCheckNamed) {
         message = "Repository name should not be empty";
@@ -135,9 +143,9 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     return workspaceDTO;
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id)
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id, boolean shouldCheckNamed)
       throws ModelDBException {
-    return verifyAndGetWorkspaceDTO(id, true);
+    return verifyAndGetWorkspaceDTO(id, shouldCheckNamed, false);
   }
 
   @Override
@@ -145,7 +153,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       throws ModelDBException {
     RepositoryEntity repository;
     if (id.hasNamedId()) {
-      WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(id);
+      WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(id, true);
       repository =
           getRepositoryByName(session, id.getNamedId().getName(), workspaceDTO)
               .orElseThrow(
@@ -187,7 +195,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       RepositoryEntity repository;
       session.beginTransaction();
       if (create) {
-        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false);
+        WorkspaceDTO workspaceDTO = verifyAndGetWorkspaceDTO(request.getId(), false, true);
         ModelDBHibernateUtil.checkIfEntityAlreadyExists(
             session,
             SHORT_NAME,
@@ -199,7 +207,11 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             workspaceDTO.getWorkspaceId(),
             workspaceDTO.getWorkspaceType(),
             LOGGER);
-        repository = new RepositoryEntity(request.getRepository().getName(), workspaceDTO);
+        repository =
+            new RepositoryEntity(
+                request.getRepository().getName(),
+                workspaceDTO,
+                request.getRepository().getOwner());
       } else {
         repository = getRepositoryById(session, request.getId());
         ModelDBHibernateUtil.checkIfEntityAlreadyExists(

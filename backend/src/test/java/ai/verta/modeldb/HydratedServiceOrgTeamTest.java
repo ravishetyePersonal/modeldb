@@ -1,6 +1,7 @@
 package ai.verta.modeldb;
 
 import static ai.verta.modeldb.CollaboratorTest.addCollaboratorRequestProjectInterceptor;
+import static ai.verta.modeldb.utils.TestConstants.RESOURCE_OWNER_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -63,7 +64,6 @@ public class HydratedServiceOrgTeamTest {
 
   private static final Logger LOGGER =
       LogManager.getLogger(HydratedServiceOrgTeamTest.class.getName());
-  public static final String RESOURCE_OWNER_ID = "998";
   /**
    * This rule manages automatic graceful shutdown for the registered servers and channels at the
    * end of test.

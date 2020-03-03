@@ -107,7 +107,14 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
 
-        SetRepository.Response response = repositoryDAO.setRepository(request, true);
+        UserInfo userInfo = authService.getCurrentLoginUserInfo();
+        SetRepository.Builder requestBuilder = request.toBuilder();
+        if (userInfo != null) {
+          String vertaId = authService.getVertaIdFromUserInfo(userInfo);
+          requestBuilder.setRepository(request.getRepository().toBuilder().setOwner(vertaId));
+        }
+        SetRepository.Response response =
+            repositoryDAO.setRepository(requestBuilder.build(), true);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }

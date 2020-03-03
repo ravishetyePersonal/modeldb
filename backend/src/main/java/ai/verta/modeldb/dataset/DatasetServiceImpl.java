@@ -127,17 +127,9 @@ public class DatasetServiceImpl extends DatasetServiceImplBase {
       UserInfo userInfo = authService.getCurrentLoginUserInfo();
 
       Dataset dataset = getDatasetFromRequest(request, userInfo);
-      if (userInfo != null
-          && dataset.getWorkspaceType() == WorkspaceType.USER
-          && dataset.getWorkspaceId() != userInfo.getVertaInfo().getUserId()) {
-        Status status =
-            Status.newBuilder()
-                .setCode(Code.PERMISSION_DENIED_VALUE)
-                .setMessage("Creation of project in other user's workspace is not permitted")
-                .addDetails(Any.pack(UpdateProjectName.Response.getDefaultInstance()))
-                .build();
-        throw StatusProto.toStatusRuntimeException(status);
-      }
+      ModelDBUtils
+          .checkPersonalWorkspace(userInfo, dataset.getWorkspaceType(), dataset.getWorkspaceId(),
+              "dataset");
       Dataset createdDataset = datasetDAO.createDataset(dataset, userInfo);
 
       responseObserver.onNext(
