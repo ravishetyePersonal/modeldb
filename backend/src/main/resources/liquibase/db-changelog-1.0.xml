@@ -134,4 +134,5 @@
     </changeSet>
 
 	<include file="src/main/resources/liquibase/create-versioning-tables-changelog.xml"/>
+	<include file="src/main/resources/liquibase/create-versioning-tables-changelog2.xml"/>
 </databaseChangeLog>
