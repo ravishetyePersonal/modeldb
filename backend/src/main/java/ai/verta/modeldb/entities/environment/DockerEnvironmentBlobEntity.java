@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "docker_environment_blob")
-public class DockerEnvironmentBlobEntity implements ComponentEntity {
+public class DockerEnvironmentBlobEntity {
 
   public DockerEnvironmentBlobEntity() {}
 
@@ -24,14 +24,5 @@ public class DockerEnvironmentBlobEntity implements ComponentEntity {
 
   @Column(name = "sha")
   private String sha;
-
-  @Override
-  public void setBlobHash(String elementSha) {
-    blob_hash = elementSha;
-  }
-
-  @Override
-  public void setBaseBlobHash(String folderHash) {
-  }
 }
 

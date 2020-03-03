@@ -1,6 +1,7 @@
 package ai.verta.modeldb.entities.environment;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,5 +26,24 @@ public class EnvironmentVariablesEntity implements Serializable {
 
   @Column(name = "variable_value")
   private String variable_value;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    EnvironmentVariablesEntity that = (EnvironmentVariablesEntity) o;
+    return Objects.equals(environmentBlobEntity, that.environmentBlobEntity) &&
+        Objects.equals(variable_name, that.variable_name) &&
+        Objects.equals(variable_value, that.variable_value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(environmentBlobEntity, variable_name, variable_value);
+  }
 }
 

@@ -1,6 +1,7 @@
 package ai.verta.modeldb.entities.environment;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,5 +26,24 @@ public class EnvironmentCommandLineEntity implements Serializable {
 
   @Column(name = "command", columnDefinition = "TEXT")
   private String command;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    EnvironmentCommandLineEntity that = (EnvironmentCommandLineEntity) o;
+    return Objects.equals(environmentBlobEntity, that.environmentBlobEntity) &&
+        Objects.equals(command_seq_number, that.command_seq_number) &&
+        Objects.equals(command, that.command);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(environmentBlobEntity, command_seq_number, command);
+  }
 }
 
