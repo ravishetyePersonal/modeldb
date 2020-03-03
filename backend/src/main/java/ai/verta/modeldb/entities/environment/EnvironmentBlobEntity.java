@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "environment_blob")
-public class EnvironmentBlobEntity implements ComponentEntity {
+public class EnvironmentBlobEntity {
 
   public EnvironmentBlobEntity() {}
 
@@ -30,13 +30,5 @@ public class EnvironmentBlobEntity implements ComponentEntity {
   @JoinColumn(name = "docker_environment_blob_hash")
   private DockerEnvironmentBlobEntity dockerEnvironmentBlobEntity;
 
-  @Override
-  public void setBlobHash(String elementSha) {
-    blob_hash = elementSha;
-  }
-
-  @Override
-  public void setBaseBlobHash(String folderHash) {
-  }
 }
 

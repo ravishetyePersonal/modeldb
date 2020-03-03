@@ -1,6 +1,5 @@
 package ai.verta.modeldb.entities.environment;
 
-import ai.verta.modeldb.entities.ComponentEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "python_environment_blob")
-public class PythonEnvironmentBlobEntity implements ComponentEntity {
+public class PythonEnvironmentBlobEntity {
 
   public PythonEnvironmentBlobEntity() {}
 
@@ -24,14 +23,5 @@ public class PythonEnvironmentBlobEntity implements ComponentEntity {
 
   @Column(name = "patch")
   private Integer patch;
-
-  @Override
-  public void setBlobHash(String elementSha) {
-    blob_hash = elementSha;
-  }
-
-  @Override
-  public void setBaseBlobHash(String folderHash) {
-  }
 }
 
