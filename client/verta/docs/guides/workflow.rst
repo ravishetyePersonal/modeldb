@@ -36,7 +36,7 @@ Web App.
 Your email and developer key can also be set using the environment variables ``$VERTA_EMAIL`` and
 ``$VERTA_DEV_KEY``, so you don't have to explicitly type them into your workflow.
 
-You can learn more about these in `our platform documentation <https://verta.readme.io/docs>`_.
+You can learn more about these in `our platform documentation <webapp.html>`__.
 
 |
 
