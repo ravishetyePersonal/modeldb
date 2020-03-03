@@ -64,7 +64,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
         if (request.hasPagination()) {
           if (request.getPagination().getPageLimit() < 1
-              && request.getPagination().getPageLimit() > 100) {
+              || request.getPagination().getPageLimit() > 100) {
             throw new ModelDBException("Page limit is invalid", Code.INVALID_ARGUMENT);
           }
         }
@@ -300,7 +300,26 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   public void listCommitBlobs(
       ListCommitBlobsRequest request,
       StreamObserver<ListCommitBlobsRequest.Response> responseObserver) {
-    super.listCommitBlobs(request, responseObserver);
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      if (request.getCommitSha().isEmpty()) {
+        throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
+      } else if (request.getLocationPrefixList().isEmpty()) {
+        throw new ModelDBException("location prefix should not be empty", Code.INVALID_ARGUMENT);
+      }
+
+      ListCommitBlobsRequest.Response response =
+          datasetComponentDAO.getCommitBlobsList(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request.getCommitSha(),
+              request.getLocationPrefixList());
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ListCommitBlobsRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override

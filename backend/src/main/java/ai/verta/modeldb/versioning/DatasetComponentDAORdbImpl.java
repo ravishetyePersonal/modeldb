@@ -11,13 +11,17 @@ import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -424,5 +428,120 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
     }
     throw new ModelDBException(
         "Unexpected logic issue found when fetching blobs", Status.Code.UNKNOWN);
+  }
+
+  /**
+   * get the Folder Element pointed to by the parentFolderHash and elementName
+   *
+   * @param session
+   * @param parentFolderHash : folder hash of the parent
+   * @param elementName : element name of the element to be fetched
+   * @return {@link InternalFolderElementEntity}
+   */
+  private InternalFolderElementEntity getFolderElement(
+      Session session, String parentFolderHash, String elementName) {
+    String folderQueryHQL =
+        "From "
+            + InternalFolderElementEntity.class.getSimpleName()
+            + " parentIfe WHERE parentIfe.folder_hash = :folderHash AND parentIfe.element_name = :elementName";
+    Query<InternalFolderElementEntity> fetchTreeQuery = session.createQuery(folderQueryHQL);
+    fetchTreeQuery.setParameter("folderHash", parentFolderHash);
+    fetchTreeQuery.setParameter("elementName", elementName);
+    return fetchTreeQuery.uniqueResult();
+  }
+
+  boolean childContains(Set<?> list, Set<?> sublist) {
+    return Collections.indexOfSubList(new LinkedList<>(list), new LinkedList<>(sublist)) != -1;
+  }
+
+  private List<BlobExpanded> getChildFolderBlobList(
+      Session session,
+      ProtocolStringList requestedLocation,
+      Set<String> parentLocation,
+      String parentFolderHash)
+      throws ModelDBException {
+    String folderQueryHQL =
+        "From "
+            + InternalFolderElementEntity.class.getSimpleName()
+            + " parentIfe WHERE parentIfe.folder_hash = :folderHash";
+    Query<InternalFolderElementEntity> fetchTreeQuery = session.createQuery(folderQueryHQL);
+    fetchTreeQuery.setParameter("folderHash", parentFolderHash);
+    List<InternalFolderElementEntity> childElementFolders = fetchTreeQuery.list();
+
+    List<BlobExpanded> childBlobExpanded = new ArrayList<>();
+    for (InternalFolderElementEntity childElementFolder : childElementFolders) {
+      if (childElementFolder.getElement_type().equals(TREE)) {
+        Set<String> childLocation = new LinkedHashSet<>(parentLocation);
+        childLocation.add(childElementFolder.getElement_name());
+        if (childContains(new LinkedHashSet<>(requestedLocation), childLocation)
+            || childLocation.containsAll(requestedLocation)) {
+          childBlobExpanded.addAll(
+              getChildFolderBlobList(
+                  session, requestedLocation, childLocation, childElementFolder.getElement_sha()));
+        }
+      } else {
+        if (parentLocation.containsAll(requestedLocation)) {
+          Blob blob = getBlob(session, childElementFolder);
+          BlobExpanded blobExpanded =
+              BlobExpanded.newBuilder()
+                  .addAllLocation(parentLocation)
+                  .addLocation(childElementFolder.getElement_name())
+                  .setBlob(blob)
+                  .build();
+          childBlobExpanded.add(blobExpanded);
+        }
+      }
+    }
+    return childBlobExpanded;
+  }
+
+  @Override
+  public ListCommitBlobsRequest.Response getCommitBlobsList(
+      RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+
+      CommitEntity commit = session.get(CommitEntity.class, commitHash);
+      if (commit == null) {
+        throw new ModelDBException("No such commit", Status.Code.NOT_FOUND);
+      }
+
+      RepositoryEntity repository = repositoryFunction.apply(session);
+      if (!VersioningUtils.commitRepositoryMappingExists(session, commitHash, repository.getId())) {
+        throw new ModelDBException("No such commit found in the repository", Status.Code.NOT_FOUND);
+      }
+
+      String folderHash = commit.getRootSha();
+
+      InternalFolderElementEntity parentFolderElement =
+          getFolderElement(session, folderHash, locationList.get(0));
+      if (parentFolderElement == null) {
+        throw new ModelDBException(
+            "No such folder found : " + locationList.get(0), Status.Code.NOT_FOUND);
+      }
+
+      if (!parentFolderElement.getElement_type().equals(TREE)) {
+        Blob blob = getBlob(session, parentFolderElement);
+        BlobExpanded blobExpanded =
+            BlobExpanded.newBuilder()
+                .addLocation(parentFolderElement.getElement_name())
+                .setBlob(blob)
+                .build();
+        return ListCommitBlobsRequest.Response.newBuilder().addBlobs(blobExpanded).build();
+      } else {
+        Set<String> location = new LinkedHashSet<>();
+        List<BlobExpanded> locationBlobList =
+            getChildFolderBlobList(session, locationList, location, folderHash);
+        session.getTransaction().commit();
+        return ListCommitBlobsRequest.Response.newBuilder().addAllBlobs(locationBlobList).build();
+      }
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+      if (throwable instanceof ModelDBException) {
+        throw (ModelDBException) throwable;
+      }
+      throw new ModelDBException("Unknown error", Status.Code.INTERNAL);
+    }
   }
 }
