@@ -5,7 +5,8 @@ import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import java.security.NoSuchAlgorithmException;
 
 interface CommitDAO {
-  Response setCommit(Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
+  Response setCommit(
+      String author, Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException;
 
   ListCommitsRequest.Response listCommits(
