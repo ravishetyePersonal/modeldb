@@ -95,7 +95,7 @@
 	</changeSet>
 	<changeSet author="raviS"
 		id="create-hyperparameter_discrete_set_element_mapping">
-		<createTable tableName="hyperparameter_set_config_blob">
+		<createTable tableName="hyperparameter_discrete_set_element_mapping">
 			<column name="set_hash" type="varchar(64)">
 				<constraints
 					foreignKeyName="fk_hyperparameter_set_config_blob"
@@ -176,28 +176,55 @@
 			</column>
 		</createTable>
 	</changeSet>
-
+	<changeSet author="lezhevg" id="create-python_environment_requirements">
+		<createTable tableName="python_environment_requirements_blob">
+			<column name="python_environment_blob_hash" type="varchar(64)">
+				<constraints foreignKeyName="fk_python_environment_blob"
+					primaryKey="true" nullable="false"
+					referencedTableName="python_environment_blob"
+					referencedColumnNames="blob_hash" />
+			</column>
+			<column name="library" type="varchar(255)">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="constraint" type="varchar(255)">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="major" type="int4" />
+			<column name="minor" type="int4" />
+			<column name="patch" type="int4" />
+			<column name="req_or_constraint" type="boolean">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
 	<changeSet author="raviS"
 		id="create-environment_command_line">
 		<createTable tableName="environment_command_line">
 			<column name="environment_blob_hash" type="varchar(64)">
 				<constraints foreignKeyName="fk_environment_blob_hash"
+					primaryKey="true" nullable="false"
 					referencedTableName="environment_blob"
-					referencedColumnNames="blob_hash" />
+					referencedColumnNames="blob_hash"/>
 			</column>
-			<column name="command_seq_number" type="integer" />
-			<column name="command" type="text" />
+			<column name="command_seq_number" type="integer">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="command" type="text"/>
 		</createTable>
 	</changeSet>
 	<changeSet author="raviS" id="create-environment_variables">
 		<createTable tableName="environment_variables">
 			<column name="environment_blob_hash" type="varchar(64)">
 				<constraints foreignKeyName="fk_environment_blob"
+					primaryKey="true" nullable="false"
 					referencedTableName="environment_blob"
-					referencedColumnNames="blob_hash" />
+					referencedColumnNames="blob_hash"/>
 			</column>
-			<column name="variable_name" type="varchar(255)" />
-			<column name="variable_value" type="varchar(255)" />
+			<column name="variable_name" type="varchar(255)">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="variable_value" type="varchar(255)"/>
 		</createTable>
 	</changeSet>
 </databaseChangeLog>
