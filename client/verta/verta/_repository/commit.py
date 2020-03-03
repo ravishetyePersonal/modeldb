@@ -52,6 +52,61 @@ class Commit(object):
 
         return msg
 
+    def walk(self):
+        """
+        Generates folder names and blob names in this commit by walking through its folder tree.
+
+        Similar to the Python standard library's ``os.walk()``, the yielded `folder_names` can be
+        modified in-place to remove subfolders from upcoming iterations or alter the order in which
+        they are to be visited.
+
+        Note that, also similar to ``os.walk()``, `folder_names` and `blob_names` are simply the
+        *names* of those entities, and *not* their full paths.
+
+        Yields
+        ------
+        folder_path : str
+            Path to current folder.
+        folder_names : list of str
+            Names of subfolders in `folder_path`.
+        blob_names : list of str
+            Names of blobs in `folder_path`.
+
+        """
+        if self.id is None:
+            raise RuntimeError("Commit must be saved before it can be walked")
+
+        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits/{}/path".format(
+            self._conn.scheme,
+            self._conn.socket,
+            self._repo_id,
+            self.id,
+        )
+
+        locations = [()]
+        while locations:
+            location = locations.pop()
+
+            msg = _VersioningService.GetCommitComponentRequest()
+            msg.location.extend(location)  # pylint: disable=no-member
+            data = _utils.proto_to_json(msg)
+            response = _utils.make_request("GET", endpoint, self._conn, params=data)
+            _utils.raise_for_http_error(response)
+
+            response_msg = _utils.json_to_proto(response.json(), msg.Response)
+            folder_msg = response_msg.folder
+
+            folder_path = '/'.join(location)
+            folder_names = list(sorted(element.element_name for element in folder_msg.sub_folders))
+            blob_names = list(sorted(element.element_name for element in folder_msg.blobs))
+            yield (folder_path, folder_names, blob_names)
+
+            locations.extend(
+                location + (folder_name,)
+                for folder_name
+                in reversed(folder_names)  # maintains order, because locations are popped from end
+            )
+
     def update(self, path, blob):
         if not isinstance(blob, dataset.S3):  # NOTE: needs to be the root blob base class
             raise TypeError("unsupported type {}".format(type(blob)))
