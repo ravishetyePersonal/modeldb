@@ -263,6 +263,26 @@ def experiment_run(client):
 
 
 @pytest.fixture
+def repository(client):
+    name = verta._utils.generate_default_name()
+    repo = client.get_or_create_repository(name)
+
+    yield repo
+
+    utils.delete_repository(repo.id, client._conn)
+
+
+@pytest.fixture
+def commit(repository):
+    commit = repository.new_commit()
+
+    yield commit
+
+    if commit.id is not None:
+        utils.delete_commit(repository.id, commit.id, repository._conn)
+
+
+@pytest.fixture
 def created_datasets(client):
     """Container to track and clean up Datasets created during tests."""
     created_datasets = []
