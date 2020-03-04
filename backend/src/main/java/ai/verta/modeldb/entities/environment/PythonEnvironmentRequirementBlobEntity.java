@@ -37,6 +37,9 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   @Column(name = "patch")
   private Integer patch;
 
+  @Column(name = "suffix", columnDefinition = "varchar", length = 50)
+  private String suffix;
+
   @Id
   @Column(name = "req_or_constraint", nullable = false)
   private Boolean req_or_constraint;
