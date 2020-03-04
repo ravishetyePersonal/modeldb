@@ -131,6 +131,7 @@
 			<column name="major" type="int4" />
 			<column name="minor" type="int4" />
 			<column name="patch" type="int4" />
+			<column name="suffix" type="varchar(50)" />
 		</createTable>
 	</changeSet>
 	<changeSet author="raviS" id="create-docker_environment_blob">
@@ -178,6 +179,7 @@
 			<column name="major" type="int4" />
 			<column name="minor" type="int4" />
 			<column name="patch" type="int4" />
+			<column name="suffix" type="varchar(50)" />
 			<column name="req_or_constraint" type="boolean">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
