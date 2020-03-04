@@ -382,6 +382,11 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       }
 
       String folderHash = commit.getRootSha();
+      if (locationList.isEmpty()) { // getting root
+        Folder folder = getFolder(session, commit.getCommit_hash(), folderHash);
+        session.getTransaction().commit();
+        return GetCommitComponentRequest.Response.newBuilder().setFolder(folder).build();
+      }
       for (int index = 0; index < locationList.size(); index++) {
         String folderLocation = locationList.get(index);
         String folderQueryHQL =
@@ -550,7 +555,6 @@ public class DatasetComponentDAORdbImpl implements DatasetComponentDAO {
       if (!VersioningUtils.commitRepositoryMappingExists(session, commitHash, repository.getId())) {
         throw new ModelDBException("No such commit found in the repository", Status.Code.NOT_FOUND);
       }
-
       Set<BlobExpanded> locationBlobList =
           getCommitBlobList(session, commit.getRootSha(), locationList);
       return ListCommitBlobsRequest.Response.newBuilder().addAllBlobs(locationBlobList).build();

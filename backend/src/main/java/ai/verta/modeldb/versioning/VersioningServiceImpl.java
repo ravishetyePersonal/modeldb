@@ -308,8 +308,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       if (request.getCommitSha().isEmpty()) {
         throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
-      } else if (request.getLocationPrefixList().isEmpty()) {
-        throw new ModelDBException("location prefix should not be empty", Code.INVALID_ARGUMENT);
       }
 
       ListCommitBlobsRequest.Response response =
@@ -334,8 +332,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       if (request.getCommitSha().isEmpty()) {
         throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
-      } else if (request.getLocationList().isEmpty()) {
-        throw new ModelDBException("Blob location should not be empty", Code.INVALID_ARGUMENT);
       }
 
       GetCommitComponentRequest.Response response =
