@@ -24,6 +24,9 @@ public class PythonEnvironmentBlobEntity {
   @Column(name = "patch")
   private Integer patch;
 
+  @Column(name = "suffix", columnDefinition = "varchar", length = 50)
+  private String suffix;
+
   public String getBlob_hash() {
     return blob_hash;
   }
