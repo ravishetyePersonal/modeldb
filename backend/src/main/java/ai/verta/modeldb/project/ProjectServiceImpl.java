@@ -52,7 +52,6 @@ import ai.verta.modeldb.UpdateProjectAttributes;
 import ai.verta.modeldb.UpdateProjectDescription;
 import ai.verta.modeldb.UpdateProjectName;
 import ai.verta.modeldb.VerifyConnectionResponse;
-import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.artifactStore.ArtifactStoreDAO;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
@@ -195,17 +194,8 @@ public class ProjectServiceImpl extends ProjectServiceImplBase {
       UserInfo userInfo = authService.getCurrentLoginUserInfo();
       Project project = getProjectFromRequest(request, userInfo);
 
-      if (userInfo != null
-          && project.getWorkspaceType() == WorkspaceType.USER
-          && project.getWorkspaceId() != userInfo.getVertaInfo().getUserId()) {
-        Status status =
-            Status.newBuilder()
-                .setCode(Code.PERMISSION_DENIED_VALUE)
-                .setMessage("Creation of project in other user's workspace is not permitted")
-                .addDetails(Any.pack(UpdateProjectName.Response.getDefaultInstance()))
-                .build();
-        throw StatusProto.toStatusRuntimeException(status);
-      }
+      ModelDBUtils.checkPersonalWorkspace(
+          userInfo, project.getWorkspaceType(), project.getWorkspaceId(), "project");
       project = projectDAO.insertProject(project, userInfo);
 
       responseObserver.onNext(CreateProject.Response.newBuilder().setProject(project).build());

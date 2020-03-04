@@ -17,7 +17,6 @@ import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +66,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         if (request.hasPagination()) {
 
           if (request.getPagination().getPageLimit() < 1
-              && request.getPagination().getPageLimit() > 100) {
+              || request.getPagination().getPageLimit() > 100) {
             throw new ModelDBException("Page limit is invalid", Code.INVALID_ARGUMENT);
           }
         }
@@ -110,7 +109,13 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           throw new ModelDBException("Repository name is empty", Code.INVALID_ARGUMENT);
         }
 
-        SetRepository.Response response = repositoryDAO.setRepository(request, true);
+        UserInfo userInfo = authService.getCurrentLoginUserInfo();
+        SetRepository.Builder requestBuilder = request.toBuilder();
+        if (userInfo != null) {
+          String vertaId = authService.getVertaIdFromUserInfo(userInfo);
+          requestBuilder.setRepository(request.getRepository().toBuilder().setOwner(vertaId));
+        }
+        SetRepository.Response response = repositoryDAO.setRepository(requestBuilder.build(), true);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -255,7 +260,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      e.printStackTrace();
       ModelDBUtils.observeError(
           responseObserver, e, DeleteCommitRequest.Response.getDefaultInstance());
     }
@@ -265,7 +269,26 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   public void listCommitBlobs(
       ListCommitBlobsRequest request,
       StreamObserver<ListCommitBlobsRequest.Response> responseObserver) {
-    super.listCommitBlobs(request, responseObserver);
+    QPSCountResource.inc();
+    try (RequestLatencyResource latencyResource =
+        new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+      if (request.getCommitSha().isEmpty()) {
+        throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
+      } else if (request.getLocationPrefixList().isEmpty()) {
+        throw new ModelDBException("location prefix should not be empty", Code.INVALID_ARGUMENT);
+      }
+
+      ListCommitBlobsRequest.Response response =
+          datasetComponentDAO.getCommitBlobsList(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request.getCommitSha(),
+              request.getLocationPrefixList());
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ListCommitBlobsRequest.Response.getDefaultInstance());
+    }
   }
 
   @Override
@@ -317,36 +340,11 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     QPSCountResource.inc();
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-      List<BlobDiff> blobDiffList = new ArrayList<>();
-
-      Commit internalCommitA =
-          commitDAO.getCommit(
-              request.getCommitA(),
-              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
-
-      Commit internalCommitB =
-          commitDAO.getCommit(
-              request.getCommitB(),
-              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
-
-      /*InternalFolderElementEntity internalFolderElementEntity = datasetComponentDAO.getBlob();
-
-      internalCommitA.getFolderSha();
-
-
-
-      PathDatasetComponentBlob pathDatasetComponentBlob = PathDatasetComponentBlob.newBuilder().setPath().setSha256().build();
-      PathDatasetBlob pathDatasetBlob = PathDatasetBlob.newBuilder().addAllComponents().build();
-
-
-      PathDatasetDiff pathDatasetDiff = PathDatasetDiff.newBuilder().setA().setB().setDeleted().setAdded().build();
-      DatasetDiff datasetDiff = DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-
-      BlobDiff blobDiff = BlobDiff.newBuilder().setDataset(datasetDiff).build();
-
-
-      ComputeRepositoryDiffRequest.Response response = ComputeRepositoryDiffRequest.Response.newBuilder().addAllDiffs(blobDiffList).build();
-      responseObserver.onNext(response);*/
+      ComputeRepositoryDiffRequest.Response response =
+          datasetComponentDAO.computeRepositoryDiff(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request);
+      responseObserver.onNext(response);
       responseObserver.onCompleted();
     } catch (Exception e) {
       ModelDBUtils.observeError(

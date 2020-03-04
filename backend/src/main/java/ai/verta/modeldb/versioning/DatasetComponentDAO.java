@@ -15,4 +15,12 @@ interface DatasetComponentDAO {
   GetCommitComponentRequest.Response getCommitComponent(
       RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
       throws NoSuchAlgorithmException, ModelDBException;
+
+  ListCommitBlobsRequest.Response getCommitBlobsList(
+      RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
+      throws NoSuchAlgorithmException, ModelDBException;
+
+  ComputeRepositoryDiffRequest.Response computeRepositoryDiff(
+      RepositoryFunction repositoryFunction, ComputeRepositoryDiffRequest request)
+      throws ModelDBException;
 }
