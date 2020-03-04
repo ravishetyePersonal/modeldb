@@ -12,13 +12,14 @@ import ai.verta.modeldb.utils.ModelDBUtils;
 import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob.Builder;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBase;
+import ai.verta.modeldb.versioning.blob.BlobContainer;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -204,7 +205,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       if (request.getBlobsCount() == 0) {
         throw new ModelDBException("Blob list should not be empty", Code.INVALID_ARGUMENT);
       }
-      validateBlobs(request);
+      List<BlobContainer> blobContainers = validateBlobs(request);
       UserInfo currentLoginUserInfo = authService.getCurrentLoginUserInfo();
 
       CreateCommitRequest.Response response =
@@ -212,7 +213,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
               authService.getVertaIdFromUserInfo(currentLoginUserInfo),
               request.getCommit(),
               (session) ->
-                  datasetComponentDAO.setBlobs(session, request.getBlobsList(), fileHasher),
+                  datasetComponentDAO.setBlobs(session, blobContainers, fileHasher),
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
 
       responseObserver.onNext(response);
@@ -223,82 +224,20 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  private void validateBlobs(CreateCommitRequest request)
+  private List<BlobContainer> validateBlobs(CreateCommitRequest request)
       throws ModelDBException {
+    List<BlobContainer> blobContainers = new LinkedList<>();
     for (BlobExpanded blobExpanded : request.getBlobsList()) {
       if (blobExpanded.getLocationList().isEmpty()) {
         throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
       }
-      final Blob blob = blobExpanded.getBlob();
-      switch (blob.getContentCase()) {
-        case DATASET:
-          validateDataset(blob.getDataset());
-          break;
-        case ENVIRONMENT:
-          validateEnvironment(blob.getEnvironment());
-          break;
-        case CONTENT_NOT_SET:
-        default:
-          break;
+      final BlobContainer blobContainer = BlobContainer.create(blobExpanded);
+      if (blobContainer != null) {
+        blobContainer.validate();
+        blobContainers.add(blobContainer);
       }
     }
-  }
-
-  private void validateDataset(final DatasetBlob dataset)
-      throws ModelDBException {
-    switch (dataset.getContentCase()) {
-      case S3:
-        for (S3DatasetComponentBlob component : dataset.getS3().getComponentsList()) {
-          if (!component.hasPath()) {
-            throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
-          }
-        }
-        break;
-      case PATH:
-        break;
-      default:
-        throw new ModelDBException("Blob unknown type", Code.INVALID_ARGUMENT);
-    }
-  }
-
-  private void validateEnvironment(EnvironmentBlob environment) throws ModelDBException {
-    for (EnvironmentVariablesBlob blob : environment.getEnvironmentVariablesList()) {
-      validateEnvironmentVariableName(blob.getName());
-    }
-    switch (environment.getContentCase()) {
-      case DOCKER:
-        if (environment.getDocker().getRepository().isEmpty()) {
-          throw new ModelDBException("Environment repository path should not be empty",
-              Code.INVALID_ARGUMENT);
-        }
-        break;
-      case PYTHON:
-        final PythonEnvironmentBlob python = environment.getPython();
-        for (PythonRequirementEnvironmentBlob requirement : python
-            .getRequirementsList()) {
-          if (requirement.getLibrary().isEmpty()) {
-            throw new ModelDBException("Requirement library name should not be empty");
-          }
-        }
-        for (PythonRequirementEnvironmentBlob constraint : python
-            .getConstraintsList()) {
-          if (constraint.getLibrary().isEmpty()) {
-            throw new ModelDBException("Constraint library name should not be empty");
-          }
-        }
-        break;
-    }
-  }
-
-  private static final String PATTERN =
-      "[a-zA-Z0-9_-]+";
-  private void validateEnvironmentVariableName(String name) throws ModelDBException {
-    if (!Pattern.compile(PATTERN).matcher(name).matches()) {
-      throw new ModelDBException(
-          "Environment variable name: " + name
-              + " should be not empty, should contain only alphanumeric or underscore",
-          Code.INVALID_ARGUMENT);
-    }
+    return blobContainers;
   }
 
   @Override

@@ -1,5 +1,7 @@
 package ai.verta.modeldb.entities.environment;
 
+import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
+import ai.verta.modeldb.versioning.VersionEnvironmentBlob;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -16,6 +18,20 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
 
   public PythonEnvironmentRequirementBlobEntity() {}
 
+  public PythonEnvironmentRequirementBlobEntity(
+      PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob,
+      PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity, boolean isRequirement) {
+    library = pythonRequirementEnvironmentBlob.getLibrary();
+    constraint = pythonRequirementEnvironmentBlob.getConstraint();
+    final VersionEnvironmentBlob version = pythonRequirementEnvironmentBlob.getVersion();
+    major = version.getMajor();
+    minor = version.getMinor();
+    patch = version.getPatch();
+    this.pythonEnvironmentBlobEntity = pythonEnvironmentBlobEntity;
+    this.isRequirement = isRequirement;
+  }
+
+  @Id
   @OneToOne(targetEntity = PythonEnvironmentBlobEntity.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "python_environment_blob_hash")
   private PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity;
@@ -25,7 +41,7 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   private String library;
 
   @Id
-  @Column(name = "constraint")
+  @Column(name = "python_constraint")
   private String constraint;
 
   @Column(name = "major")
@@ -42,7 +58,7 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
 
   @Id
   @Column(name = "req_or_constraint", nullable = false)
-  private Boolean req_or_constraint;
+  private Boolean isRequirement;
 
   @Override
   public boolean equals(Object o) {
@@ -59,13 +75,13 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
         Objects.equals(major, that.major) &&
         Objects.equals(minor, that.minor) &&
         Objects.equals(patch, that.patch) &&
-        Objects.equals(req_or_constraint, that.req_or_constraint);
+        Objects.equals(isRequirement, that.isRequirement);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(pythonEnvironmentBlobEntity, library, constraint, major, minor, patch,
-        req_or_constraint);
+        isRequirement);
   }
 }
 
