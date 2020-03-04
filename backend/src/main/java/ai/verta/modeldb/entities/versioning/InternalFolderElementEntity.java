@@ -21,6 +21,14 @@ public class InternalFolderElementEntity implements Serializable {
     this.element_name = internalFolderElement.getElementName();
   }
 
+  public InternalFolderElementEntity(
+      String folderHash, String elementSha, String elementType, String elementName) {
+    this.folder_hash = folderHash;
+    this.element_sha = elementSha;
+    this.element_type = elementType;
+    this.element_name = elementName;
+  }
+
   @Id
   @Column(name = "folder_hash", nullable = false)
   private String folder_hash;

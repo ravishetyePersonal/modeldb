@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,7 +16,7 @@ public class EnvironmentCommandLineEntity implements Serializable {
   public EnvironmentCommandLineEntity() {}
 
   @Id
-  @OneToOne(targetEntity = EnvironmentBlobEntity.class, cascade = CascadeType.ALL)
+  @ManyToOne(targetEntity = EnvironmentBlobEntity.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "environment_blob_hash")
   private EnvironmentBlobEntity environmentBlobEntity;
 
@@ -26,6 +26,11 @@ public class EnvironmentCommandLineEntity implements Serializable {
 
   @Column(name = "command", columnDefinition = "TEXT")
   private String command;
+
+  public EnvironmentCommandLineEntity(int i, String command) {
+    command_seq_number = i;
+    this.command = command;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -44,6 +49,15 @@ public class EnvironmentCommandLineEntity implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(environmentBlobEntity, command_seq_number, command);
+  }
+
+  public void setEnvironmentBlobEntity(
+      EnvironmentBlobEntity environmentBlobEntity) {
+    this.environmentBlobEntity = environmentBlobEntity;
+  }
+
+  public String getCommand() {
+    return command;
   }
 }
 

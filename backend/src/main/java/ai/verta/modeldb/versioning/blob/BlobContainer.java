@@ -1,8 +1,12 @@
 package ai.verta.modeldb.versioning.blob;
 
 import ai.verta.modeldb.ModelDBException;
+import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
+import ai.verta.modeldb.versioning.BlobDAORdbImpl;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.FileHasher;
+import ai.verta.modeldb.versioning.PathDatasetBlob;
+import ai.verta.modeldb.versioning.S3DatasetBlob;
 import ai.verta.modeldb.versioning.TreeElem;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;

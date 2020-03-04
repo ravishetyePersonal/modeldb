@@ -107,8 +107,12 @@ public class TreeElem {
 
     public Object build() {
       if (componentEntity != null) {
-        componentEntity.setBaseBlobHash(baseBlobHash);
-        return componentEntity;
+        if (componentEntity.hasComponents()) {
+          componentEntity.setBaseBlobHash(baseBlobHash);
+          return componentEntity;
+        } else {
+          return new InternalFolderElementEntity(baseBlobHash, componentEntity.getElementSha(), type, componentEntity.getElementName());
+        }
       }
       return new InternalFolderElementEntity(elem, baseBlobHash, type);
     }

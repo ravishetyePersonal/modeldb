@@ -1,8 +1,12 @@
 package ai.verta.modeldb.entities.environment;
 
+import ai.verta.modeldb.versioning.VersionEnvironmentBlob;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -57,6 +61,18 @@ public class PythonEnvironmentBlobEntity {
 
   public void setPatch(Integer patch) {
     this.patch = patch;
+  }
+
+  @OneToMany(mappedBy = "pythonEnvironmentBlobEntity")
+  private Set<PythonEnvironmentRequirementBlobEntity> pythonEnvironmentRequirementBlobEntity = new HashSet<>();
+
+  public VersionEnvironmentBlob getVersion() {
+    return VersionEnvironmentBlob.newBuilder().setMajor(major).setMinor(minor)
+        .setPatch(patch).build();
+  }
+
+  public Set<PythonEnvironmentRequirementBlobEntity> getPythonEnvironmentRequirementBlobEntity() {
+    return pythonEnvironmentRequirementBlobEntity;
   }
 }
 

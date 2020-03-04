@@ -8,6 +8,7 @@ import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.blob.BlobContainer;
+import ai.verta.modeldb.versioning.blob.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
 import java.security.NoSuchAlgorithmException;
@@ -53,62 +54,7 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
 
   private Blob getBlob(Session session, InternalFolderElementEntity folderElementEntity)
       throws ModelDBException {
-    DatasetBlob.Builder datasetBlobBuilder = DatasetBlob.newBuilder();
-    switch (folderElementEntity.getElement_type()) {
-      case "S3DatasetBlob":
-        String s3ComponentQueryHQL =
-            "From "
-                + S3DatasetComponentBlobEntity.class.getSimpleName()
-                + " s3 WHERE s3.id.s3_dataset_blob_id = :blobShas";
-
-        Query<S3DatasetComponentBlobEntity> s3ComponentQuery =
-            session.createQuery(s3ComponentQueryHQL);
-        s3ComponentQuery.setParameter("blobShas", folderElementEntity.getElement_sha());
-        List<S3DatasetComponentBlobEntity> datasetComponentBlobEntities = s3ComponentQuery.list();
-
-        if (datasetComponentBlobEntities != null && datasetComponentBlobEntities.size() > 0) {
-          List<S3DatasetComponentBlob> componentBlobs =
-              datasetComponentBlobEntities.stream()
-                  .map(S3DatasetComponentBlobEntity::toProto)
-                  .collect(Collectors.toList());
-          datasetBlobBuilder.setS3(
-              S3DatasetBlob.newBuilder().addAllComponents(componentBlobs).build());
-          return Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
-        } else {
-          throw new ModelDBException("Blob not found", Status.Code.NOT_FOUND);
-        }
-      case "PathDatasetBlob":
-        String pathComponentQueryHQL =
-            "From "
-                + PathDatasetComponentBlobEntity.class.getSimpleName()
-                + " p WHERE p.id.path_dataset_blob_id = :blobShas";
-
-        Query<PathDatasetComponentBlobEntity> pathComponentQuery =
-            session.createQuery(pathComponentQueryHQL);
-        pathComponentQuery.setParameter("blobShas", folderElementEntity.getElement_sha());
-        List<PathDatasetComponentBlobEntity> pathDatasetComponentBlobEntities =
-            pathComponentQuery.list();
-
-        if (pathDatasetComponentBlobEntities != null
-            && pathDatasetComponentBlobEntities.size() > 0) {
-          List<PathDatasetComponentBlob> componentBlobs =
-              pathDatasetComponentBlobEntities.stream()
-                  .map(PathDatasetComponentBlobEntity::toProto)
-                  .collect(Collectors.toList());
-          datasetBlobBuilder.setPath(
-              PathDatasetBlob.newBuilder().addAllComponents(componentBlobs).build());
-          return Blob.newBuilder().setDataset(datasetBlobBuilder.build()).build();
-        } else {
-          throw new ModelDBException("Blob not found", Status.Code.NOT_FOUND);
-        }
-      case "PythonEnvironmentBlob":
-      case "DockerEnvironmentBlob":
-        throw new ModelDBException("Not Implemented", Status.Code.UNIMPLEMENTED);
-      default:
-        throw new ModelDBException(
-            "Unknown blob type found " + folderElementEntity.getElement_type(),
-            Status.Code.UNKNOWN);
-    }
+    return BlobFactory.create(folderElementEntity).getBlob(session);
   }
 
   private Folder getFolder(Session session, String commitSha, String folderSha) throws Throwable {

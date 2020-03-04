@@ -1,5 +1,6 @@
 package ai.verta.modeldb.entities.environment;
 
+import ai.verta.modeldb.versioning.PythonEnvironmentBlob.Builder;
 import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
 import ai.verta.modeldb.versioning.VersionEnvironmentBlob;
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -32,7 +33,7 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   }
 
   @Id
-  @OneToOne(targetEntity = PythonEnvironmentBlobEntity.class, cascade = CascadeType.ALL)
+  @ManyToOne(targetEntity = PythonEnvironmentBlobEntity.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "python_environment_blob_hash")
   private PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity;
 
@@ -82,6 +83,38 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   public int hashCode() {
     return Objects.hash(pythonEnvironmentBlobEntity, library, constraint, major, minor, patch,
         isRequirement);
+  }
+
+  public String getLibrary() {
+    return library;
+  }
+
+  public String getConstraint() {
+    return constraint;
+  }
+
+  public String getSuffix() {
+    return suffix;
+  }
+
+  public VersionEnvironmentBlob getVersion() {
+    return VersionEnvironmentBlob.newBuilder().setMajor(major).setMinor(minor)
+        .setPatch(patch).build();
+  }
+
+  public Boolean isRequirement() {
+    return isRequirement;
+  }
+
+  public void toProto(Builder pythonEnvironmentBlobBuilder) {
+    final PythonRequirementEnvironmentBlob.Builder builderForValue = PythonRequirementEnvironmentBlob
+        .newBuilder().setVersion(getVersion());
+    builderForValue.setLibrary(library).setConstraint(constraint);
+    if (isRequirement()) {
+      pythonEnvironmentBlobBuilder.addRequirements(builderForValue);
+    } else {
+      pythonEnvironmentBlobBuilder.addConstraints(builderForValue);
+    }
   }
 }
 

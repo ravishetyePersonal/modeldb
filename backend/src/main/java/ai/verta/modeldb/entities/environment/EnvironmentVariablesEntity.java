@@ -1,5 +1,6 @@
 package ai.verta.modeldb.entities.environment;
 
+import ai.verta.modeldb.versioning.EnvironmentVariablesBlob;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -7,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -15,8 +16,14 @@ import javax.persistence.Table;
 public class EnvironmentVariablesEntity implements Serializable {
   public EnvironmentVariablesEntity() {}
 
+  public EnvironmentVariablesEntity(
+      EnvironmentVariablesBlob environmentVariablesBlob) {
+    variable_name = environmentVariablesBlob.getName();
+    variable_value = environmentVariablesBlob.getValue();
+  }
+
   @Id
-  @OneToOne(targetEntity = EnvironmentBlobEntity.class, cascade = CascadeType.ALL)
+  @ManyToOne(targetEntity = EnvironmentBlobEntity.class, cascade = CascadeType.ALL)
   @JoinColumn(name = "environment_blob_hash")
   private EnvironmentBlobEntity environmentBlobEntity;
 
@@ -44,6 +51,16 @@ public class EnvironmentVariablesEntity implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(environmentBlobEntity, variable_name, variable_value);
+  }
+
+  public void setEnvironmentBlobEntity(
+      EnvironmentBlobEntity environmentBlobEntity) {
+    this.environmentBlobEntity = environmentBlobEntity;
+  }
+
+  public EnvironmentVariablesBlob toProto() {
+    return EnvironmentVariablesBlob.newBuilder().setName(variable_name)
+        .setValue(variable_value).build();
   }
 }
 
