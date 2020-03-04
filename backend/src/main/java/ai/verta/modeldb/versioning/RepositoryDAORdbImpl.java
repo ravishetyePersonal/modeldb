@@ -108,7 +108,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   }
 
   private WorkspaceDTO verifyAndGetWorkspaceDTO(
-      RepositoryIdentification id, boolean shouldCheckNamed, boolean create) throws ModelDBException {
+      RepositoryIdentification id, boolean shouldCheckNamed, boolean create)
+      throws ModelDBException {
     WorkspaceDTO workspaceDTO = null;
     String message = null;
     if (id.hasNamedId()) {
@@ -123,14 +124,16 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
         workspaceDTO =
             roleService.getWorkspaceDTOByWorkspaceName(userInfo, named.getWorkspaceName());
         if (create) {
-          ModelDBUtils
-              .checkPersonalWorkspace(userInfo, workspaceDTO.getWorkspaceType(),
-                  workspaceDTO.getWorkspaceId(), "repository");
+          ModelDBUtils.checkPersonalWorkspace(
+              userInfo,
+              workspaceDTO.getWorkspaceType(),
+              workspaceDTO.getWorkspaceId(),
+              "repository");
         }
       } catch (StatusRuntimeException e) {
         LOGGER.warn(e);
-        throw new ModelDBException("Error getting workspace: " + e.getStatus().getDescription(),
-            e.getStatus().getCode());
+        throw new ModelDBException(
+            "Error getting workspace: " + e.getStatus().getDescription(), e.getStatus().getCode());
       }
       if (named.getName().isEmpty() && shouldCheckNamed) {
         message = "Repository name should not be empty";
@@ -143,8 +146,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     return workspaceDTO;
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id, boolean shouldCheckNamed)
-      throws ModelDBException {
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(
+      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
     return verifyAndGetWorkspaceDTO(id, shouldCheckNamed, false);
   }
 

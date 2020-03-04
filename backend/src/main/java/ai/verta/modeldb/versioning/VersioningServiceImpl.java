@@ -13,12 +13,9 @@ import ai.verta.modeldb.versioning.ListRepositoriesRequest.Response;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob.Builder;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceImplBase;
 import ai.verta.uac.UserInfo;
-import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.stub.StreamObserver;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -114,8 +111,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           String vertaId = authService.getVertaIdFromUserInfo(userInfo);
           requestBuilder.setRepository(request.getRepository().toBuilder().setOwner(vertaId));
         }
-        SetRepository.Response response =
-            repositoryDAO.setRepository(requestBuilder.build(), true);
+        SetRepository.Response response = repositoryDAO.setRepository(requestBuilder.build(), true);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
       }
@@ -298,7 +294,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         responseObserver.onCompleted();
       }
     } catch (Exception e) {
-      e.printStackTrace();
       ModelDBUtils.observeError(
           responseObserver, e, DeleteCommitRequest.Response.getDefaultInstance());
     }
@@ -379,8 +374,12 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     QPSCountResource.inc();
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
-      throw new ModelDBException(
-          "Not supported yet " + modelDBAuthInterceptor.getMethodName(), Status.Code.UNIMPLEMENTED);
+      ComputeRepositoryDiffRequest.Response response =
+          datasetComponentDAO.computeRepositoryDiff(
+              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
+              request);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
     } catch (Exception e) {
       ModelDBUtils.observeError(
           responseObserver, e, ComputeRepositoryDiffRequest.Response.getDefaultInstance());

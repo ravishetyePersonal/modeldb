@@ -86,13 +86,14 @@ public class RepositoryEntity {
   }
 
   public Repository toProto() {
-    final Builder builder = Repository.newBuilder()
-        .setId(this.id)
-        .setName(this.name)
-        .setDateCreated(this.date_created)
-        .setDateUpdated(this.date_updated)
-        .setWorkspaceId(this.workspace_id)
-        .setWorkspaceTypeValue(this.workspace_type);
+    final Builder builder =
+        Repository.newBuilder()
+            .setId(this.id)
+            .setName(this.name)
+            .setDateCreated(this.date_created)
+            .setDateUpdated(this.date_updated)
+            .setWorkspaceId(this.workspace_id)
+            .setWorkspaceTypeValue(this.workspace_type);
     if (owner != null) {
       builder.setOwner(owner);
     }

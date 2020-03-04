@@ -435,19 +435,24 @@ public class ModelDBUtils {
   }
 
   /**
-   If so throws an error if the workspace type is USER and the workspaceId and userID do not match.
-   Is a NO-OP if userinfo is null.
+   * If so throws an error if the workspace type is USER and the workspaceId and userID do not
+   * match. Is a NO-OP if userinfo is null.
    */
-  public static void checkPersonalWorkspace(UserInfo userInfo, WorkspaceType workspaceType,
-      String workspaceId, String resourceNameString) {
+  public static void checkPersonalWorkspace(
+      UserInfo userInfo,
+      WorkspaceType workspaceType,
+      String workspaceId,
+      String resourceNameString) {
     if (userInfo != null
         && workspaceType == WorkspaceType.USER
         && !workspaceId.equals(userInfo.getVertaInfo().getUserId())) {
       Status status =
           Status.newBuilder()
               .setCode(Code.PERMISSION_DENIED_VALUE)
-              .setMessage("Creation of " + resourceNameString
-                  + " in other user's workspace is not permitted")
+              .setMessage(
+                  "Creation of "
+                      + resourceNameString
+                      + " in other user's workspace is not permitted")
               .addDetails(Any.pack(UpdateProjectName.Response.getDefaultInstance()))
               .build();
       throw StatusProto.toStatusRuntimeException(status);

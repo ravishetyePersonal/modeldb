@@ -194,9 +194,8 @@ public class ProjectServiceImpl extends ProjectServiceImplBase {
       UserInfo userInfo = authService.getCurrentLoginUserInfo();
       Project project = getProjectFromRequest(request, userInfo);
 
-      ModelDBUtils
-          .checkPersonalWorkspace(userInfo, project.getWorkspaceType(), project.getWorkspaceId(),
-              "project");
+      ModelDBUtils.checkPersonalWorkspace(
+          userInfo, project.getWorkspaceType(), project.getWorkspaceId(), "project");
       project = projectDAO.insertProject(project, userInfo);
 
       responseObserver.onNext(CreateProject.Response.newBuilder().setProject(project).build());
