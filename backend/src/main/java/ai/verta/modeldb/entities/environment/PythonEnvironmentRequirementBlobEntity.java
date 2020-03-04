@@ -25,7 +25,7 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   private String library;
 
   @Id
-  @Column(name = "constraint")
+  @Column(name = "python_constraint")
   private String constraint;
 
   @Column(name = "major")
@@ -68,4 +68,3 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
         req_or_constraint);
   }
 }
-
