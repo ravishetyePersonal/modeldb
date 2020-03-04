@@ -201,6 +201,11 @@
           referencedColumnNames="commit_hash"
           referencedTableName="commit"/>
     </changeSet>
+    <changeSet id="add-repository-owner" author="lezhevg">
+        <addColumn tableName="repository">
+            <column name="owner" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
     <changeSet author="rshetye" id="commit_root_sha_mapping">
         <addColumn tableName="commit">
             <column name="root_sha" type="varchar(64)"/>

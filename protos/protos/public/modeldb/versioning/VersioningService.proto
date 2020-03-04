@@ -90,6 +90,8 @@ message Repository {
 
     string workspace_id = 5;
     WorkspaceTypeEnum.WorkspaceType workspace_type = 6;
+
+    string owner = 10;
 }
 
 // For pagination
@@ -231,6 +233,57 @@ message ComputeRepositoryDiffRequest {
 
     message Response {
         repeated BlobDiff diffs = 1;
+    }
+}
+
+message ListBranchCommitsRequest {
+    RepositoryIdentification repository_id = 1;
+    Pagination pagination = 2;
+    string branch = 3;
+    // List of folder names (with the last element potentially representing the blob name)
+    // This will be used to limit the search to scope just this location, like `git log /my/path` would do
+    repeated string location_prefix = 4;
+
+    message Response {
+        repeated Commit commits = 1;
+        int64 total_records = 2;
+    }
+}
+
+// CRUD for branches
+// Branches, like in git, are unique
+message ListBranchesRequest {
+    RepositoryIdentification repository_id = 1;
+
+    message Response {
+        repeated string branches = 1;
+        int64 total_records = 2;
+    }
+}
+
+message GetBranchRequest {
+    RepositoryIdentification repository_id = 1;
+    string branch = 2;
+
+    message Response {
+        Commit commit = 1;
+    }
+}
+
+message SetBranchRequest {
+    RepositoryIdentification repository_id = 1;
+    string branch = 2;
+    string commit_sha = 3;
+
+    message Response{
+    }
+}
+
+message DeleteBranchRequest {
+    RepositoryIdentification repository_id = 1;
+    string branch = 2;
+
+    message Response{
     }
 }
 
@@ -386,6 +439,55 @@ service VersioningService {
         };
     }
 
+    // CRUD for Branches
+    rpc ListBranches(ListBranchesRequest) returns (ListBranchesRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/branches"
+            }
+        };
+    };
+
+    rpc GetBranch(GetBranchRequest) returns (GetBranchRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
+            }
+        };
+    };
+
+    // Unlike tags, branches can be updated. The API must verify that the new commit is a child of the current branch.
+    rpc SetBranch(SetBranchRequest) returns (SetBranchRequest.Response) {
+        option (google.api.http) = {
+            put: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
+            body: "commit_sha"
+            additional_bindings {
+                put: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
+                body: "commit_sha"
+            }
+        };
+    }
+
+    rpc DeleteBranch(DeleteBranchRequest) returns (DeleteBranchRequest.Response) {
+        option (google.api.http) = {
+            delete: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}"
+            additional_bindings {
+                delete: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}"
+            }
+        };
+    }
+
+    rpc ListBranchCommits(ListBranchCommitsRequest) returns (ListBranchCommitsRequest.Response) {
+        option (google.api.http) = {
+            get: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/branches/{branch}/commits"
+            additional_bindings {
+                get: "/v1/versioning/repositories/{repository_id.repo_id}/branches/{branch}/commits"
+            }
+        };
+    };
+
     // CRUD for tags
     rpc ListTags(ListTagsRequest) returns (ListTagsRequest.Response) {
         option (google.api.http) = {
@@ -405,6 +507,7 @@ service VersioningService {
         };
     };
 
+    // Can't update a tag. If someone tries to set one that exists, we should error.
     rpc SetTag(SetTagRequest) returns (SetTagRequest.Response) {
         option (google.api.http) = {
             put: "/v1/versioning/workspaces/{repository_id.named_id.workspace_name}/repositories/{repository_id.named_id.name}/tags/{tag}"

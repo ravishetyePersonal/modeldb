@@ -92,7 +92,7 @@ public class CommitDAORdbImpl implements CommitDAO {
 
       Query<CommitEntity> commitEntityQuery =
           session.createQuery(
-              commitQueryBuilder.append(" ORDER BY cm.date_created ASC").toString());
+              commitQueryBuilder.append(" ORDER BY cm.date_created DESC").toString());
       commitEntityQuery.setParameter("repoId", repository.getId());
       if (request.hasPagination()) {
         int pageLimit = request.getPagination().getPageLimit();
