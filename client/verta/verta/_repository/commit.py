@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 
+import collections
+
 from ..external import six
 
 from .._protos.public.modeldb.versioning import VersioningService_pb2 as _VersioningService
@@ -15,25 +17,82 @@ class Commit(object):
         self._conn = conn
 
         self._repo_id = repo_id
-        self._parent_ids = parent_ids or []
+        self._parent_ids = list(collections.OrderedDict.fromkeys(parent_ids or []))  # remove duplicates while maintaining order
 
         self.id = id_
 
         self._blobs = dict()
 
+        # until Commits can be created from blob diffs, load in blobs
+        if self.id is not None:
+            self._update_blobs_from_commit(self.id)
+        else:
+            for parent_id in self._parent_ids:
+                # parents will be read in first-to-last, possibly overwriting previous blobs
+                self._update_blobs_from_commit(parent_id)
+
     def __repr__(self):
-        header = "Commit containing:"
+        if self.id is None:
+            header = "unsaved Commit containing:"
+        else:
+            header = "Commit {} containing:".format(self.id)
         contents = '\n'.join((
             "{} ({})".format(path, blob.__class__.__name__)
             for path, blob
             in sorted(six.viewitems(self._blobs))
         ))
-        return '\n'.join((header, contents or "<no contents>"))
+        if not contents:
+            contents = "<no contents>"
+        return '\n'.join((header, contents))
+
+    @classmethod
+    def _from_id(cls, conn, repo_id, id_):
+        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits/{}".format(
+            conn.scheme,
+            conn.socket,
+            repo_id,
+            id_,
+        )
+        response = _utils.make_request("GET", endpoint, conn)
+        _utils.raise_for_http_error(response)
+
+        response_msg = _utils.json_to_proto(response.json(),
+                                            _VersioningService.GetCommitRequest.Response)
+        commit_msg = response_msg.commit
+        return cls(conn, repo_id, commit_msg.parent_shas, commit_msg.commit_sha)
 
     @staticmethod
     def _raise_lookup_error(path):
         e = LookupError("Commit does not contain path \"{}\"".format(path))
         six.raise_from(e, None)
+
+    def _update_blobs_from_commit(self, id_):
+        """Fetches commit `id_`'s blobs and stores them as objects in `self._blobs`."""
+        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits/{}/blobs".format(
+            self._conn.scheme,
+            self._conn.socket,
+            self._repo_id,
+            id_,
+        )
+        response = _utils.make_request("GET", endpoint, self._conn)
+        _utils.raise_for_http_error(response)
+
+        response_msg = _utils.json_to_proto(response.json(),
+                                            _VersioningService.ListCommitBlobsRequest.Response)
+        self._blobs.update({
+            '/'.join(blob_msg.location): blob_msg_to_object(blob_msg.blob)
+            for blob_msg
+            in response_msg.blobs
+        })
+
+    def _become_child(self):
+        """
+        This method is for when `self` had been saved and is then modified, meaning that
+        this commit object has become a child of the commit that had been saved.
+
+        """
+        self._parent_ids = [self.id]
+        self.id = None
 
     def _to_create_msg(self):
         msg = _VersioningService.CreateCommitRequest()
@@ -111,16 +170,21 @@ class Commit(object):
         if not isinstance(blob, dataset.S3):  # NOTE: needs to be the root blob base class
             raise TypeError("unsupported type {}".format(type(blob)))
 
+        if self.id is not None:
+            self._become_child()
+
         self._blobs[path] = blob
 
     def get(self, path):
         try:
             return self._blobs[path]
         except KeyError:
-            # TODO: if `self` was saved commit, query back end for `path`
             self._raise_lookup_error(path)
 
     def remove(self, path):
+        if self.id is not None:
+            self._become_child()
+
         try:
             del self._blobs[path]
         except KeyError:
@@ -153,6 +217,25 @@ class Commit(object):
         )
         response = _utils.make_request("PUT", endpoint, self._conn, json=data)
         _utils.raise_for_http_error(response)
+
+
+def blob_msg_to_object(blob_msg):
+    content_type = blob_msg.WhichOneof('content')
+    if content_type == 'dataset':
+        dataset_type = blob_msg.dataset.WhichOneof('content')
+        if dataset_type == 's3':
+            obj = dataset.S3(paths=[])
+            obj._msg.CopyFrom(blob_msg.dataset.s3)
+        elif dataset_type == 'path':
+            raise NotImplementedError
+        else:
+            raise NotImplementedError("found unexpected dataset type {};"
+                                      " please notify the Verta development team".format(dataset_type))
+    else:
+        raise NotImplementedError("found unexpected content type {};"
+                                  " please notify the Verta development team".format(content_type))
+
+    return obj
 
 
 def path_to_location(path):

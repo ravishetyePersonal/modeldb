@@ -78,3 +78,71 @@ class TestCommit:
         next(walk)  # a/b
         with pytest.raises(StopIteration):
             next(walk)  # a/c removed
+
+    def test_get_commit_by_tag(self, repository):
+        pytest.importorskip("boto3")
+
+        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        path = "path/to/bananas"
+
+        commit = repository.new_commit()
+        try:
+            commit.update(path, dataset)
+            commit.save()
+            commit.tag("banana")
+
+            assert commit.id == repository.get_commit(tag="banana").id
+        finally:
+            utils.delete_commit(repository.id, commit.id, repository._conn)
+
+    def test_get_commit_by_id(self, repository):
+        pytest.importorskip("boto3")
+
+        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        path = "path/to/bananas"
+
+        commit = repository.new_commit()
+        try:
+            commit.update(path, dataset)
+            commit.save()
+
+            assert commit.id == repository.get_commit(id=commit.id).id
+        finally:
+            utils.delete_commit(repository.id, commit.id, repository._conn)
+
+    def test_become_child(self, commit):
+        pytest.importorskip("boto3")
+
+        dataset1 = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        dataset2 = verta.dataset.S3("s3://verta-starter/census-train.csv")
+        path1 = "path/to/bananas"
+        path2 = "path/to/still-bananas"
+
+        commit.update(path1, dataset1)
+        commit.save()
+        original_id = commit.id
+
+        commit.update(path2, dataset2)
+        assert commit.id is None
+        assert original_id in commit._parent_ids
+        assert commit.get(path1)
+
+        commit.save()
+        assert commit.id != original_id
+
+    def test_set_parent(self, repository):
+        pytest.importorskip("boto3")
+
+        dataset1 = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        path1 = "path/to/bananas"
+
+        commit1 = repository.new_commit()
+        try:
+            commit1.update(path1, dataset1)
+            commit1.save()
+
+            commit2 = repository.new_commit(parents=[commit1])
+            assert commit1.id in commit2._parent_ids
+            assert commit2.get(path1)
+        finally:
+            utils.delete_commit(repository.id, commit1.id, repository._conn)
