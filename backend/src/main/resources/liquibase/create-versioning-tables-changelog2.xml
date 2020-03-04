@@ -51,21 +51,6 @@
 		</createTable>
 	</changeSet>
 	<changeSet author="raviS"
-		id="create-hyperparameter_element_config_blob">
-		<createTable
-			tableName="hyperparameter_element_config_blob">
-			<column name="blob_hash" type="varchar(64)">
-				<constraints primaryKey="true" nullable="false" />
-			</column>
-			<column name="name" type="varchar(255)" />
-			<column name="commit_hash" type="varchar(64)" />
-			<column name="value_type" type="int4" />
-			<column name="int_value" type="BIGINT" />
-			<column name="float_value" type="double" />
-			<column name="string_value" type="varchar(255)" />
-		</createTable>
-	</changeSet>
-	<changeSet author="raviS"
 		id="create-hyperparameter_set_config_blob">
 		<createTable tableName="hyperparameter_set_config_blob">
 			<column name="blob_hash" type="varchar(64)">
