@@ -232,4 +232,26 @@
             <column name="element_type" type="varchar(50)"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="branch_create_table" author="anandJ">
+        <createTable tableName="branch">
+            <column name="branch" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_branch"/>
+            </column>
+            <column name="commit_hash" type="varchar(64)"/>
+            <column name="repository_id" type="int8">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_branch"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="commit_hash"
+                                 baseTableName="branch"
+                                 constraintName="fk_commit_hash_branchs"
+                                 referencedColumnNames="commit_hash"
+                                 referencedTableName="commit"/>
+        <addForeignKeyConstraint baseColumnNames="repository_id"
+                                 baseTableName="branch"
+                                 constraintName="fk_repository_id_branchs"
+                                 referencedColumnNames="id"
+                                 referencedTableName="repository"/>
+    </changeSet>
 </databaseChangeLog>

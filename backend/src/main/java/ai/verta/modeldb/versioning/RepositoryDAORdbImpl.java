@@ -6,6 +6,7 @@ import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.dto.WorkspaceDTO;
+import ai.verta.modeldb.entities.versioning.BranchEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.entities.versioning.TagsEntity;
@@ -16,8 +17,11 @@ import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,6 +92,25 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .toString();
   private static final String GET_TAGS_HQL =
       new StringBuilder("From TagsEntity te where te.id.")
+          .append(ModelDBConstants.REPOSITORY_ID)
+          .append(" = :repoId ")
+          .toString();
+  private static final String CHECK_BRANCH_IN_REPOSITORY_HQL =
+      new StringBuilder("From ")
+          .append(BranchEntity.class.getSimpleName())
+          .append(" br ")
+          .append(" where ")
+          .append(" br.id.")
+          .append(ModelDBConstants.REPOSITORY_ID)
+          .append(" = :repositoryId ")
+          .append(" AND br.id.")
+          .append(ModelDBConstants.BRANCH)
+          .append(" = :branch ")
+          .toString();
+  private static final String GET_REPOSITORY_BRANCHES_HQL =
+      new StringBuilder("From ")
+          .append(BranchEntity.class.getSimpleName())
+          .append(" br where br.id.")
           .append(ModelDBConstants.REPOSITORY_ID)
           .append(" = :repoId ")
           .toString();
@@ -389,6 +412,149 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       return ListTagsRequest.Response.newBuilder()
           .addAllTags(tags)
           .setTotalRecords(tags.size())
+          .build();
+    }
+  }
+
+  @Override
+  public SetBranchRequest.Response setBranch(SetBranchRequest request) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      boolean exists =
+          VersioningUtils.commitRepositoryMappingExists(
+              session, request.getCommitSha(), repository.getId());
+      if (!exists) {
+        throw new ModelDBException(
+            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+      }
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity != null) {
+        if (branchEntity.getCommit_hash().equals(request.getCommitSha()))
+          return SetBranchRequest.Response.newBuilder().build();
+        session.delete(branchEntity);
+      }
+
+      branchEntity =
+          new BranchEntity(repository.getId(), request.getCommitSha(), request.getBranch());
+      session.save(branchEntity);
+      session.getTransaction().commit();
+      return SetBranchRequest.Response.newBuilder().build();
+    }
+  }
+
+  @Override
+  public GetBranchRequest.Response getBranch(GetBranchRequest request) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+
+      CommitEntity commitEntity = session.get(CommitEntity.class, branchEntity.getCommit_hash());
+      session.getTransaction().commit();
+      return GetBranchRequest.Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
+    }
+  }
+
+  @Override
+  public DeleteBranchRequest.Response deleteBranch(DeleteBranchRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+      BranchEntity branchEntity =
+          session.get(
+              BranchEntity.class,
+              new BranchEntity.BranchId(request.getBranch(), repository.getId()));
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+      session.delete(branchEntity);
+      session.getTransaction().commit();
+      return DeleteBranchRequest.Response.newBuilder().build();
+    }
+  }
+
+  @Override
+  public ListBranchesRequest.Response listBranches(ListBranchesRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(GET_REPOSITORY_BRANCHES_HQL);
+      query.setParameter("repoId", repository.getId());
+      List<BranchEntity> branchEntities = query.list();
+
+      if (branchEntities == null || branchEntities.isEmpty()) {
+        return ListBranchesRequest.Response.newBuilder().setTotalRecords(0).build();
+      }
+
+      session.getTransaction().commit();
+      List<String> branches =
+          branchEntities.stream()
+              .map(branchEntity -> branchEntity.getId().getBranch())
+              .collect(Collectors.toList());
+      return ListBranchesRequest.Response.newBuilder()
+          .addAllBranches(branches)
+          .setTotalRecords(branches.size())
+          .build();
+    }
+  }
+
+  @Override
+  public ListBranchCommitsRequest.Response listBranchCommits(ListBranchCommitsRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+      // list of commits to be used in the in clause in the final query
+      Set<String> commitSHAs = new HashSet<String>();
+      // List of commits to be traversed
+      List<String> childCommitSHAs = new LinkedList<String>();
+      childCommitSHAs.add(branchEntity.getCommit_hash());
+      String getParentCommitsQuery = "SELECT parent_hash FROM commit_parent WHERE child_hash = \"";
+
+      while (!childCommitSHAs.isEmpty()) {
+        String childCommit = childCommitSHAs.remove(0);
+        commitSHAs.add(childCommit);
+        Query sqlQuery = session.createSQLQuery(getParentCommitsQuery + childCommit + "\"");
+        List<String> parentCommitSHAs = sqlQuery.list();
+        childCommitSHAs.addAll(parentCommitSHAs);
+      }
+
+      String getChildCommits =
+          "FROM "
+              + CommitEntity.class.getSimpleName()
+              + " c WHERE c.commit_hash IN (:childCommitSHAs)  ORDER BY c.date_created DESC";
+      query = session.createQuery(getChildCommits);
+      query.setParameterList("childCommitSHAs", commitSHAs);
+      List<CommitEntity> commits = query.list();
+
+      return ListBranchCommitsRequest.Response.newBuilder()
+          .addAllCommits(
+              commits.stream().map(CommitEntity::toCommitProto).collect(Collectors.toList()))
+          .setTotalRecords(commits.size())
           .build();
     }
   }
