@@ -27,11 +27,7 @@
 					referencedTableName="git_code_blob"
 					referencedColumnNames="blob_hash" />
 			</column>
-			<column name="path_dataset_blob_hash" type="varchar(64)">
-				<constraints foreignKeyName="fk_path_dataset_blob"
-					referencedTableName="path_dataset_component_blob"
-					referencedColumnNames="blob_hash" />
-			</column>
+			<column name="path_dataset_blob_hash" type="varchar(64)" />
 		</createTable>
 	</changeSet>
 
