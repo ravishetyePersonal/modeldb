@@ -9,15 +9,17 @@ from .._protos.public.modeldb.versioning import Dataset_pb2 as _DatasetService
 
 from .. import _utils
 
+from . import _dataset
 
-class S3(object):
+
+class S3(_dataset._Dataset):
     _S3_PATH = "s3://{}/{}"
 
     def __init__(self, paths):
         if isinstance(paths, six.string_types):
             paths = [paths]
 
-        self._msg = _DatasetService.S3DatasetBlob()
+        super(S3, self).__init__()
 
         obj_paths_to_metadata = dict()  # prevent duplicate objects
         for path in paths:
@@ -29,7 +31,7 @@ class S3(object):
             })
 
         s3_metadata = six.viewvalues(obj_paths_to_metadata)
-        self._msg.components.extend(s3_metadata)  # pylint: disable=no-member
+        self._msg.s3.components.extend(s3_metadata)  # pylint: disable=no-member
 
     @staticmethod
     def _parse_s3_url(path):

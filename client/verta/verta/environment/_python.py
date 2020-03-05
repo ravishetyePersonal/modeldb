@@ -9,7 +9,7 @@ from .._protos.public.modeldb.versioning import Environment_pb2 as _EnvironmentS
 from . import _environment
 
 
-class Python(_environment.Environment):
+class Python(_environment._Environment):
     def __init__(self, env_vars=None):
         """
 

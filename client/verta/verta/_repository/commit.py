@@ -10,6 +10,8 @@ from .._protos.public.modeldb.versioning import VersioningService_pb2 as _Versio
 
 from .. import _utils
 from .. import dataset
+from .. import environment
+from . import blob as blob_module
 
 
 class Commit(object):
@@ -102,8 +104,11 @@ class Commit(object):
         for path, blob in six.viewitems(self._blobs):
             blob_msg = _VersioningService.BlobExpanded()
             blob_msg.location.extend(path_to_location(path))  # pylint: disable=no-member
-            if isinstance(blob, dataset.S3):  # TODO: move logic to root blob base class
-                blob_msg.blob.dataset.s3.CopyFrom(blob._msg)  # pylint: disable=no-member
+            # TODO: move typecheck & CopyFrom to root blob base class
+            if isinstance(blob, dataset._Dataset):
+                blob_msg.blob.dataset.CopyFrom(blob._msg)  # pylint: disable=no-member
+            elif isinstance(blob, environment._Environment):
+                blob_msg.blob.environment.CopyFrom(blob._msg)  # pylint: disable=no-member
             else:
                 raise RuntimeError("Commit contains an unexpected item {};"
                                    " please notify the Verta development team".format(type(blob)))
@@ -167,7 +172,7 @@ class Commit(object):
             )
 
     def update(self, path, blob):
-        if not isinstance(blob, dataset.S3):  # NOTE: needs to be the root blob base class
+        if not isinstance(blob, blob_module.Blob):
             raise TypeError("unsupported type {}".format(type(blob)))
 
         if self.id is not None:
@@ -220,21 +225,31 @@ class Commit(object):
 
 
 def blob_msg_to_object(blob_msg):
+    # TODO: make this more concise
     content_type = blob_msg.WhichOneof('content')
     if content_type == 'dataset':
         dataset_type = blob_msg.dataset.WhichOneof('content')
         if dataset_type == 's3':
             obj = dataset.S3(paths=[])
-            obj._msg.CopyFrom(blob_msg.dataset.s3)
         elif dataset_type == 'path':
             raise NotImplementedError
         else:
             raise NotImplementedError("found unexpected dataset type {};"
                                       " please notify the Verta development team".format(dataset_type))
+    elif content_type == 'environment':
+        environment_type = blob_msg.environment.WhichOneof('content')
+        if environment_type == 'python':
+            obj = environment.Python()
+        elif environment_type == 'docker':
+            raise NotImplementedError
+        else:
+            raise NotImplementedError("found unexpected environment type {};"
+                                      " please notify the Verta development team".format(dataset_type))
     else:
         raise NotImplementedError("found unexpected content type {};"
                                   " please notify the Verta development team".format(content_type))
 
+    obj._msg.CopyFrom(getattr(blob_msg, content_type))
     return obj
 
 
