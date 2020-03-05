@@ -51,7 +51,7 @@ public class DatasetContainer extends BlobContainer {
    */
   @Override
   public void process(Session session, TreeElem rootTree, FileHasher fileHasher)
-      throws NoSuchAlgorithmException {
+      throws NoSuchAlgorithmException, ModelDBException {
     final List<String> locationList = getLocationList();
     String blobType = getBlobType();
 
@@ -88,17 +88,18 @@ public class DatasetContainer extends BlobContainer {
         }
         break;
       default:
-        break;
+        throw new ModelDBException("Blob unknown type", Code.INTERNAL);
     }
   }
 
-  private String getBlobType() {
+  private String getBlobType() throws ModelDBException {
     switch (dataset.getContentCase()) {
       case PATH:
         return PathDatasetBlob.class.getSimpleName();
       case S3:
-      default:
         return S3DatasetBlob.class.getSimpleName();
+      default:
+        throw new ModelDBException("Blob unknown type", Code.INTERNAL);
     }
   }
 
