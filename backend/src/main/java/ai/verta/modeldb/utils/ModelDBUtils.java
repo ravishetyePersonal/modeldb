@@ -411,7 +411,7 @@ public class ModelDBUtils {
       statusRuntimeException = e;
     } else {
       if (e instanceof ModelDBException) {
-        LOGGER.warn("Exception occured:", e);
+        LOGGER.warn("Exception occured: {}", e.getMessage());
         ModelDBException ModelDBException = (ModelDBException) e;
         status =
             Status.newBuilder()
