@@ -14,7 +14,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 /**
- * contains proto object and saves it to the database
+ * contains proto object and saves it to a tree and the database
  */
 public abstract class BlobContainer {
 
