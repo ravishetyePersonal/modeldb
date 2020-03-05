@@ -84,12 +84,14 @@
 			<column name="set_hash" type="varchar(64)">
 				<constraints
 					foreignKeyName="fk_hyperparameter_set_config_blob"
+					primaryKey="true"
 					referencedTableName="hyperparameter_set_config_blob"
 					referencedColumnNames="blob_hash" />
 			</column>
 			<column name="element_hash" type="varchar(64)">
 				<constraints
 					foreignKeyName="fk_hyperparameter_element_config_blob"
+					primaryKey="true"
 					referencedTableName="hyperparameter_element_config_blob"
 					referencedColumnNames="blob_hash" />
 			</column>
