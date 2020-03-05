@@ -27,8 +27,8 @@ public class EnvironmentCommandLineEntity implements Serializable {
   @Column(name = "command", columnDefinition = "TEXT")
   private String command;
 
-  public EnvironmentCommandLineEntity(int i, String command) {
-    command_seq_number = i;
+  public EnvironmentCommandLineEntity(int commandSeqNumber, String command) {
+    command_seq_number = commandSeqNumber;
     this.command = command;
   }
 

@@ -11,7 +11,7 @@ import org.hibernate.Session;
  */
 public abstract class BlobFactory {
 
-  static final String S_3_DATASET_BLOB = "S3DatasetBlob";
+  static final String S3_DATASET_BLOB = "S3DatasetBlob";
   static final String PATH_DATASET_BLOB = "PathDatasetBlob";
   private static final String PYTHON_ENVIRONMENT_BLOB = "PythonEnvironmentBlob";
   private static final String DOCKER_ENVIRONMENT_BLOB = "DockerEnvironmentBlob";
@@ -26,7 +26,7 @@ public abstract class BlobFactory {
   public static BlobFactory create(InternalFolderElementEntity folderElementEntity)
       throws ModelDBException {
     switch (folderElementEntity.getElement_type()) {
-      case S_3_DATASET_BLOB:
+      case S3_DATASET_BLOB:
       case PATH_DATASET_BLOB:
         return new DatasetBlobFactory(folderElementEntity);
       case PYTHON_ENVIRONMENT_BLOB:

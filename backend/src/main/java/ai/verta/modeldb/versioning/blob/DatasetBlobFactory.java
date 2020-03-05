@@ -26,7 +26,7 @@ public class DatasetBlobFactory extends BlobFactory {
   public Blob getBlob(Session session) throws ModelDBException {
     DatasetBlob.Builder datasetBlobBuilder = DatasetBlob.newBuilder();
     switch (getElementType()) {
-      case S_3_DATASET_BLOB:
+      case S3_DATASET_BLOB:
         String s3ComponentQueryHQL =
             "From "
                 + S3DatasetComponentBlobEntity.class.getSimpleName()

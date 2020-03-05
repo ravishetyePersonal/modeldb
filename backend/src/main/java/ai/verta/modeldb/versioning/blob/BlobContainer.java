@@ -8,6 +8,7 @@ import ai.verta.modeldb.versioning.FileHasher;
 import ai.verta.modeldb.versioning.PathDatasetBlob;
 import ai.verta.modeldb.versioning.S3DatasetBlob;
 import ai.verta.modeldb.versioning.TreeElem;
+import io.grpc.Status.Code;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,7 @@ public abstract class BlobContainer {
     this.blobExpanded = blobExpanded;
   }
 
-  public static BlobContainer create(BlobExpanded blobExpanded) {
+  public static BlobContainer create(BlobExpanded blobExpanded) throws ModelDBException {
     switch (blobExpanded.getBlob().getContentCase()) {
       case DATASET:
         return new DatasetContainer(blobExpanded);
@@ -34,13 +35,14 @@ public abstract class BlobContainer {
       default:
         break;
     }
-    return null;
+    throw new ModelDBException("Unknown blob type", Code.INVALID_ARGUMENT);
   }
 
   public abstract void validate() throws ModelDBException;
 
   public List<String> getLocationList() {
     List<String> result = new LinkedList<>();
+    //empty dir represents root folder
     result.add("");
     result.addAll(blobExpanded.getLocationList());
     return result;
