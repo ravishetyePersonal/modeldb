@@ -30,6 +30,7 @@ import ai.verta.modeldb.entities.UserCommentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.metadata.LabelsMappingEntity;
+import ai.verta.modeldb.entities.versioning.BranchEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
@@ -120,6 +121,7 @@ public class ModelDBHibernateUtil {
     PathDatasetComponentBlobEntity.class,
     S3DatasetComponentBlobEntity.class,
     InternalFolderElementEntity.class,
+    BranchEntity.class
   };
 
   private ModelDBHibernateUtil() {}
