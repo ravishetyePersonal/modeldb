@@ -274,8 +274,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       if (request.getCommitSha().isEmpty()) {
         throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
-      } else if (request.getLocationPrefixList().isEmpty()) {
-        throw new ModelDBException("location prefix should not be empty", Code.INVALID_ARGUMENT);
       }
 
       ListCommitBlobsRequest.Response response =
@@ -300,8 +298,6 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       if (request.getCommitSha().isEmpty()) {
         throw new ModelDBException("Commit SHA should not be empty", Code.INVALID_ARGUMENT);
-      } else if (request.getLocationList().isEmpty()) {
-        throw new ModelDBException("Blob location should not be empty", Code.INVALID_ARGUMENT);
       }
 
       GetCommitComponentRequest.Response response =
@@ -349,6 +345,96 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     } catch (Exception e) {
       ModelDBUtils.observeError(
           responseObserver, e, ComputeRepositoryDiffRequest.Response.getDefaultInstance());
+    }
+  }
+
+  @Override
+  public void listBranches(
+      ListBranchesRequest request, StreamObserver<ListBranchesRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        ListBranchesRequest.Response response = repositoryDAO.listBranches(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ListBranchesRequest.Response.getDefaultInstance());
+    }
+  }
+
+  @Override
+  public void getBranch(
+      GetBranchRequest request, StreamObserver<GetBranchRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        GetBranchRequest.Response response = repositoryDAO.getBranch(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, GetBranchRequest.Response.getDefaultInstance());
+    }
+  }
+
+  @Override
+  public void setBranch(
+      SetBranchRequest request, StreamObserver<SetBranchRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        SetBranchRequest.Response response = repositoryDAO.setBranch(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, SetBranchRequest.Response.getDefaultInstance());
+    }
+  }
+
+  @Override
+  public void deleteBranch(
+      DeleteBranchRequest request, StreamObserver<DeleteBranchRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        if (request.getBranch().isEmpty()) {
+          throw new ModelDBException(
+              "Branch not found in the DeleteBranchRequest", Code.INVALID_ARGUMENT);
+        }
+        DeleteBranchRequest.Response response = repositoryDAO.deleteBranch(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, DeleteBranchRequest.Response.getDefaultInstance());
+    }
+  }
+
+  @Override
+  public void listBranchCommits(
+      ListBranchCommitsRequest request,
+      StreamObserver<ListBranchCommitsRequest.Response> responseObserver) {
+    QPSCountResource.inc();
+    try {
+      try (RequestLatencyResource latencyResource =
+          new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
+        ListBranchCommitsRequest.Response response = repositoryDAO.listBranchCommits(request);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+      }
+    } catch (Exception e) {
+      ModelDBUtils.observeError(
+          responseObserver, e, ListBranchCommitsRequest.Response.getDefaultInstance());
     }
   }
 

@@ -27,4 +27,15 @@ interface RepositoryDAO {
   GetTagRequest.Response getTag(GetTagRequest request) throws ModelDBException;
 
   DeleteTagRequest.Response deleteTag(DeleteTagRequest request) throws ModelDBException;
+
+  SetBranchRequest.Response setBranch(SetBranchRequest request) throws ModelDBException;
+
+  GetBranchRequest.Response getBranch(GetBranchRequest request) throws ModelDBException;
+
+  DeleteBranchRequest.Response deleteBranch(DeleteBranchRequest request) throws ModelDBException;
+
+  ListBranchesRequest.Response listBranches(ListBranchesRequest request) throws ModelDBException;
+
+  ListBranchCommitsRequest.Response listBranchCommits(ListBranchCommitsRequest request)
+      throws ModelDBException;
 }
