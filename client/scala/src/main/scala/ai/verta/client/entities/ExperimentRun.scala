@@ -133,7 +133,7 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
   def logObservation(key: String, value: Any, timestamp: LocalDateTime = null)(implicit ec: ExecutionContext) = {
     val ts = if (timestamp == null) LocalDateTime.now() else timestamp
 
-    val convertedValue = KVHandler.convertValue(value, s"unknown type for observation ${key}")
+    val convertedValue = KVHandler.convertFromAny(value, s"unknown type for observation ${key}: ${value.toString} (${value.getClass.toString})")
     convertedValue.flatMap(newValue => {
       clientSet.experimentRunService.logObservation(ModeldbLogObservation(
         id = run.id,
@@ -156,7 +156,7 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
           obs.map(o => {
             (
               LocalDateTime.ofInstant(Instant.ofEpochMilli(o.timestamp.get.toLong), TimeZone.getTimeZone("UTC").toZoneId),
-              KVHandler.convertValue(o.attribute.get.value.get, s"unknown type for observation ${key}").get
+              KVHandler.convertToAny(o.attribute.get.value.get, s"unknown type for observation ${key}: ${o.attribute.get.value.get.toString} (${o.attribute.get.value.get.getClass.toString})").get
             )
           })
         }).getOrElse(Nil)
@@ -171,7 +171,7 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
         observations.get.foreach(o => {
           val ts = LocalDateTime.ofInstant(Instant.ofEpochMilli(o.timestamp.get.toLong), TimeZone.getTimeZone("UTC").toZoneId)
           val key = o.attribute.get.key.get
-          val value = KVHandler.convertValue(o.attribute.get.value.get, s"unknown type for observation $key")
+          val value = KVHandler.convertToAny(o.attribute.get.value.get, s"unknown type for observation $key: ${o.attribute.get.value.get.toString} (${o.attribute.get.value.get.getClass.toString})")
           obsMap.update(key, (ts, value) :: obsMap.getOrElse(key, Nil))
         })
         obsMap.map(el => {

@@ -6,6 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import ai.verta.swagger.client.HttpClient
+import ai.verta.swagger.client.objects._
 import ai.verta.swagger._public.modeldb.versioning.model._
 
 class DatasetApi(client: HttpClient, val basePath: String = "/v1") {

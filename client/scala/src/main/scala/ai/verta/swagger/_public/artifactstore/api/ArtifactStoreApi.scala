@@ -6,6 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import ai.verta.swagger.client.HttpClient
+import ai.verta.swagger.client.objects._
 import ai.verta.swagger._public.artifactstore.model._
 
 class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
@@ -13,7 +14,7 @@ class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[ArtifactstoreDeleteArtifact, ArtifactstoreDeleteArtifactResponse]("POST", basePath + s"/artifact/deleteArtifact", __query, body)
+    return client.request[ArtifactstoreDeleteArtifact, ArtifactstoreDeleteArtifactResponse]("POST", basePath + s"/artifact/deleteArtifact", __query, body, ArtifactstoreDeleteArtifactResponse.fromJson)
   }
 
   def deleteArtifact(body: ArtifactstoreDeleteArtifact)(implicit ec: ExecutionContext): Try[ArtifactstoreDeleteArtifactResponse] = Await.result(deleteArtifactAsync(body), Duration.Inf)
@@ -22,8 +23,8 @@ class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
       "key" -> client.toQuery(key)
     )
-    val body: Any = null
-    return client.request[Any, ArtifactstoreGetArtifactResponse]("GET", basePath + s"/artifact/getArtifact", __query, body)
+    val body: String = null
+    return client.request[String, ArtifactstoreGetArtifactResponse]("GET", basePath + s"/artifact/getArtifact", __query, body, ArtifactstoreGetArtifactResponse.fromJson)
   }
 
   def getArtifact(key: String)(implicit ec: ExecutionContext): Try[ArtifactstoreGetArtifactResponse] = Await.result(getArtifactAsync(key), Duration.Inf)
@@ -32,7 +33,7 @@ class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[ArtifactstoreStoreArtifact, ArtifactstoreStoreArtifactResponse]("POST", basePath + s"/artifact/storeArtifact", __query, body)
+    return client.request[ArtifactstoreStoreArtifact, ArtifactstoreStoreArtifactResponse]("POST", basePath + s"/artifact/storeArtifact", __query, body, ArtifactstoreStoreArtifactResponse.fromJson)
   }
 
   def storeArtifact(body: ArtifactstoreStoreArtifact)(implicit ec: ExecutionContext): Try[ArtifactstoreStoreArtifactResponse] = Await.result(storeArtifactAsync(body), Duration.Inf)
@@ -41,7 +42,7 @@ class ArtifactStoreApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[ArtifactstoreStoreArtifactWithStream, ArtifactstoreStoreArtifactWithStreamResponse]("POST", basePath + s"/artifact/storeArtifactWithStream", __query, body)
+    return client.request[ArtifactstoreStoreArtifactWithStream, ArtifactstoreStoreArtifactWithStreamResponse]("POST", basePath + s"/artifact/storeArtifactWithStream", __query, body, ArtifactstoreStoreArtifactWithStreamResponse.fromJson)
   }
 
   def storeArtifactWithStream(body: ArtifactstoreStoreArtifactWithStream)(implicit ec: ExecutionContext): Try[ArtifactstoreStoreArtifactWithStreamResponse] = Await.result(storeArtifactWithStreamAsync(body), Duration.Inf)

@@ -23,7 +23,7 @@ class Metrics(clientSet: ClientSet, ec: ExecutionContext, run: ExperimentRun) ex
       id = run.run.id,
       metric = Some(CommonKeyValue(
         key = Some(kv._1),
-        value = Some(KVHandler.convertValue(kv._2, s"unknown type for metric ${kv._1}").get)
+        value = Some(KVHandler.convertFromAny(kv._2, s"unknown type for metric ${kv._1}: ${kv._2.toString} (${kv._2.getClass.toString})").get)
       ))
     ))
       .get

@@ -23,7 +23,7 @@ class Hyperparameters(clientSet: ClientSet, ec: ExecutionContext, run: Experimen
       id = run.run.id,
       hyperparameter = Some(CommonKeyValue(
         key = Some(kv._1),
-        value = Some(KVHandler.convertValue(kv._2, s"unknown type for hyperparameter ${kv._1}").get)
+        value = Some(KVHandler.convertFromAny(kv._2, s"unknown type for hyperparameter ${kv._1}: ${kv._2.toString} (${kv._2.getClass.toString})").get)
       ))
     ))
       .get

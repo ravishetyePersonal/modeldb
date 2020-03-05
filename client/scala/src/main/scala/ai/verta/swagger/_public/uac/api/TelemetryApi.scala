@@ -6,6 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import ai.verta.swagger.client.HttpClient
+import ai.verta.swagger.client.objects._
 import ai.verta.swagger._public.uac.model._
 
 class TelemetryApi(client: HttpClient, val basePath: String = "/v1") {
@@ -13,7 +14,7 @@ class TelemetryApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacCollectTelemetry, UacCollectTelemetryResponse]("POST", basePath + s"/telemetry/collectTelemetry", __query, body)
+    return client.request[UacCollectTelemetry, UacCollectTelemetryResponse]("POST", basePath + s"/telemetry/collectTelemetry", __query, body, UacCollectTelemetryResponse.fromJson)
   }
 
   def collectTelemetry(body: UacCollectTelemetry)(implicit ec: ExecutionContext): Try[UacCollectTelemetryResponse] = Await.result(collectTelemetryAsync(body), Duration.Inf)

@@ -6,6 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import ai.verta.swagger.client.HttpClient
+import ai.verta.swagger.client.objects._
 import ai.verta.swagger._public.uac.model._
 
 class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
@@ -13,7 +14,7 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacCreateUser, UacCreateUserResponse]("POST", basePath + s"/uac/createUser", __query, body)
+    return client.request[UacCreateUser, UacCreateUserResponse]("POST", basePath + s"/uac/createUser", __query, body, UacCreateUserResponse.fromJson)
   }
 
   def createUser(body: UacCreateUser)(implicit ec: ExecutionContext): Try[UacCreateUserResponse] = Await.result(createUserAsync(body), Duration.Inf)
@@ -22,7 +23,7 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacDeleteUser, UacDeleteUserResponse]("POST", basePath + s"/uac/deleteUser", __query, body)
+    return client.request[UacDeleteUser, UacDeleteUserResponse]("POST", basePath + s"/uac/deleteUser", __query, body, UacDeleteUserResponse.fromJson)
   }
 
   def deleteUser(body: UacDeleteUser)(implicit ec: ExecutionContext): Try[UacDeleteUserResponse] = Await.result(deleteUserAsync(body), Duration.Inf)
@@ -30,8 +31,8 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
   def getCurrentUserAsync()(implicit ec: ExecutionContext): Future[Try[UacUserInfo]] = {
     val __query = Map[String,String](
     )
-    val body: Any = null
-    return client.request[Any, UacUserInfo]("GET", basePath + s"/uac/getCurrentUser", __query, body)
+    val body: String = null
+    return client.request[String, UacUserInfo]("GET", basePath + s"/uac/getCurrentUser", __query, body, UacUserInfo.fromJson)
   }
 
   def getCurrentUser()(implicit ec: ExecutionContext): Try[UacUserInfo] = Await.result(getCurrentUserAsync(), Duration.Inf)
@@ -42,8 +43,8 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
       "email" -> client.toQuery(email),
       "username" -> client.toQuery(username)
     )
-    val body: Any = null
-    return client.request[Any, UacUserInfo]("GET", basePath + s"/uac/getUser", __query, body)
+    val body: String = null
+    return client.request[String, UacUserInfo]("GET", basePath + s"/uac/getUser", __query, body, UacUserInfo.fromJson)
   }
 
   def getUser(user_id: String, email: String, username: String)(implicit ec: ExecutionContext): Try[UacUserInfo] = Await.result(getUserAsync(user_id, email, username), Duration.Inf)
@@ -52,7 +53,7 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacGetUsers, UacGetUsersResponse]("POST", basePath + s"/uac/getUsers", __query, body)
+    return client.request[UacGetUsers, UacGetUsersResponse]("POST", basePath + s"/uac/getUsers", __query, body, UacGetUsersResponse.fromJson)
   }
 
   def getUsers(body: UacGetUsers)(implicit ec: ExecutionContext): Try[UacGetUsersResponse] = Await.result(getUsersAsync(body), Duration.Inf)
@@ -61,7 +62,7 @@ class UACServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacUpdateUser, UacUpdateUserResponse]("POST", basePath + s"/uac/updateUser", __query, body)
+    return client.request[UacUpdateUser, UacUpdateUserResponse]("POST", basePath + s"/uac/updateUser", __query, body, UacUpdateUserResponse.fromJson)
   }
 
   def updateUser(body: UacUpdateUser)(implicit ec: ExecutionContext): Try[UacUpdateUserResponse] = Await.result(updateUserAsync(body), Duration.Inf)

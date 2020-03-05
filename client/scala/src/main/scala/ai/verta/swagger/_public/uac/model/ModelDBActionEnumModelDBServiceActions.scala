@@ -1,6 +1,10 @@
 // THIS FILE IS AUTO-GENERATED. DO NOT EDIT
 package ai.verta.swagger._public.uac.model
 
+import scala.util.Try
+
+import net.liftweb.json._
+
 object ModelDBActionEnumModelDBServiceActions {
   type ModelDBActionEnumModelDBServiceActions = String
   val UNKNOWN: ModelDBActionEnumModelDBServiceActions = "UNKNOWN"
@@ -11,4 +15,11 @@ object ModelDBActionEnumModelDBServiceActions {
   val DELETE: ModelDBActionEnumModelDBServiceActions = "DELETE"
   val DEPLOY: ModelDBActionEnumModelDBServiceActions = "DEPLOY"
   val PUBLIC_READ: ModelDBActionEnumModelDBServiceActions = "PUBLIC_READ"
+
+  def toJson(obj: ModelDBActionEnumModelDBServiceActions): JString = JString(obj)
+
+  def fromJson(v: JValue): ModelDBActionEnumModelDBServiceActions = v match {
+    case JString(s) => s // TODO: check if the value is valid
+    case _ => throw new IllegalArgumentException(s"unknown type ${v.getClass.toString}")
+  }
 }

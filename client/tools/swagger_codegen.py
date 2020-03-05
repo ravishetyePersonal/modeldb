@@ -236,12 +236,14 @@ def resolve_type(typedef):
     elif typedef['type'] == 'number':
         if typedef['format'] == 'double':
             return create_typedef(double=True, is_basic=True)
+        elif typedef['format'] == 'float':
+            return create_typedef(double=True, is_basic=True)
         else:
             raise ValueError(typedef['format'])
     elif typedef['type'] == 'array':
         return create_typedef(is_list=True, list_type=resolve_type(typedef['items']))
     elif typedef['type'] == 'object' and len(typedef) == 1:
-        return create_typedef(any=True)
+        return create_typedef(generic=True)
     elif typedef['type'] == 'object' and 'additionalProperties' in typedef and 'properties' not in typedef:
         return create_typedef(is_map=True, map_key_type=resolve_type({'type': 'string'}), map_val_type=resolve_type(typedef['additionalProperties']))
     else:

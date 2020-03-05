@@ -6,6 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import ai.verta.swagger.client.HttpClient
+import ai.verta.swagger.client.objects._
 import ai.verta.swagger._public.uac.model._
 
 class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
@@ -13,7 +14,7 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacDeleteRole, UacDeleteRoleResponse]("POST", basePath + s"/role/deleteRole", __query, body)
+    return client.request[UacDeleteRole, UacDeleteRoleResponse]("POST", basePath + s"/role/deleteRole", __query, body, UacDeleteRoleResponse.fromJson)
   }
 
   def deleteRole(body: UacDeleteRole)(implicit ec: ExecutionContext): Try[UacDeleteRoleResponse] = Await.result(deleteRoleAsync(body), Duration.Inf)
@@ -22,7 +23,7 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacDeleteRoleBinding, UacDeleteRoleBindingResponse]("POST", basePath + s"/role/deleteRoleBinding", __query, body)
+    return client.request[UacDeleteRoleBinding, UacDeleteRoleBindingResponse]("POST", basePath + s"/role/deleteRoleBinding", __query, body, UacDeleteRoleBindingResponse.fromJson)
   }
 
   def deleteRoleBinding(body: UacDeleteRoleBinding)(implicit ec: ExecutionContext): Try[UacDeleteRoleBindingResponse] = Await.result(deleteRoleBindingAsync(body), Duration.Inf)
@@ -31,8 +32,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
       "id" -> client.toQuery(id)
     )
-    val body: Any = null
-    return client.request[Any, UacGetRoleBindingByIdResponse]("GET", basePath + s"/role/getRoleBindingById", __query, body)
+    val body: String = null
+    return client.request[String, UacGetRoleBindingByIdResponse]("GET", basePath + s"/role/getRoleBindingById", __query, body, UacGetRoleBindingByIdResponse.fromJson)
   }
 
   def getBindingRoleById(id: String)(implicit ec: ExecutionContext): Try[UacGetRoleBindingByIdResponse] = Await.result(getBindingRoleByIdAsync(id), Duration.Inf)
@@ -43,8 +44,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
       "scope.org_id" -> client.toQuery(scope_org_id),
       "scope.team_id" -> client.toQuery(scope_team_id)
     )
-    val body: Any = null
-    return client.request[Any, UacGetRoleBindingByNameResponse]("GET", basePath + s"/role/getRoleBindingByName", __query, body)
+    val body: String = null
+    return client.request[String, UacGetRoleBindingByNameResponse]("GET", basePath + s"/role/getRoleBindingByName", __query, body, UacGetRoleBindingByNameResponse.fromJson)
   }
 
   def getRoleBindingByName(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacGetRoleBindingByNameResponse] = Await.result(getRoleBindingByNameAsync(name, scope_org_id, scope_team_id), Duration.Inf)
@@ -53,8 +54,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
       "id" -> client.toQuery(id)
     )
-    val body: Any = null
-    return client.request[Any, UacGetRoleByIdResponse]("GET", basePath + s"/role/getRoleById", __query, body)
+    val body: String = null
+    return client.request[String, UacGetRoleByIdResponse]("GET", basePath + s"/role/getRoleById", __query, body, UacGetRoleByIdResponse.fromJson)
   }
 
   def getRoleById(id: String)(implicit ec: ExecutionContext): Try[UacGetRoleByIdResponse] = Await.result(getRoleByIdAsync(id), Duration.Inf)
@@ -65,8 +66,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
       "scope.org_id" -> client.toQuery(scope_org_id),
       "scope.team_id" -> client.toQuery(scope_team_id)
     )
-    val body: Any = null
-    return client.request[Any, UacGetRoleByNameResponse]("GET", basePath + s"/role/getRoleByName", __query, body)
+    val body: String = null
+    return client.request[String, UacGetRoleByNameResponse]("GET", basePath + s"/role/getRoleByName", __query, body, UacGetRoleByNameResponse.fromJson)
   }
 
   def getRoleByName(name: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacGetRoleByNameResponse] = Await.result(getRoleByNameAsync(name, scope_org_id, scope_team_id), Duration.Inf)
@@ -77,8 +78,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
       "scope.org_id" -> client.toQuery(scope_org_id),
       "scope.team_id" -> client.toQuery(scope_team_id)
     )
-    val body: Any = null
-    return client.request[Any, UacListRoleBindingsResponse]("GET", basePath + s"/role/listRoleBindings", __query, body)
+    val body: String = null
+    return client.request[String, UacListRoleBindingsResponse]("GET", basePath + s"/role/listRoleBindings", __query, body, UacListRoleBindingsResponse.fromJson)
   }
 
   def listRoleBindings(entity_id: String, scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacListRoleBindingsResponse] = Await.result(listRoleBindingsAsync(entity_id, scope_org_id, scope_team_id), Duration.Inf)
@@ -88,8 +89,8 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
       "scope.org_id" -> client.toQuery(scope_org_id),
       "scope.team_id" -> client.toQuery(scope_team_id)
     )
-    val body: Any = null
-    return client.request[Any, UacListRolesResponse]("GET", basePath + s"/role/listRoles", __query, body)
+    val body: String = null
+    return client.request[String, UacListRolesResponse]("GET", basePath + s"/role/listRoles", __query, body, UacListRolesResponse.fromJson)
   }
 
   def listRoles(scope_org_id: String, scope_team_id: String)(implicit ec: ExecutionContext): Try[UacListRolesResponse] = Await.result(listRolesAsync(scope_org_id, scope_team_id), Duration.Inf)
@@ -98,7 +99,7 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacSetRole, UacSetRoleResponse]("POST", basePath + s"/role/setRole", __query, body)
+    return client.request[UacSetRole, UacSetRoleResponse]("POST", basePath + s"/role/setRole", __query, body, UacSetRoleResponse.fromJson)
   }
 
   def setRole(body: UacSetRole)(implicit ec: ExecutionContext): Try[UacSetRoleResponse] = Await.result(setRoleAsync(body), Duration.Inf)
@@ -107,7 +108,7 @@ class RoleServiceApi(client: HttpClient, val basePath: String = "/v1") {
     val __query = Map[String,String](
     )
     if (body == null) throw new Exception("Missing required parameter \"body\"")
-    return client.request[UacSetRoleBinding, UacSetRoleBindingResponse]("POST", basePath + s"/role/setRoleBinding", __query, body)
+    return client.request[UacSetRoleBinding, UacSetRoleBindingResponse]("POST", basePath + s"/role/setRoleBinding", __query, body, UacSetRoleBindingResponse.fromJson)
   }
 
   def setRoleBinding(body: UacSetRoleBinding)(implicit ec: ExecutionContext): Try[UacSetRoleBindingResponse] = Await.result(setRoleBindingAsync(body), Duration.Inf)

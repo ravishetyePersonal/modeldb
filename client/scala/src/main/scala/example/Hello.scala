@@ -9,13 +9,13 @@ object Hello extends App {
 
   val client = new Client(ClientConnection.fromEnvironment())
   try {
-    client.getOrCreateProject("scala test")
+    println(client.getOrCreateProject("scala test")
       .flatMap(_.getOrCreateExperiment("experiment"))
       .flatMap(_.getOrCreateExperimentRun())
       .map(run => {
         run.hyperparameters += (("foo", 2), ("bar", "baz"))
       })
-      .get
+      .get)
   } finally {
     client.close()
   }
