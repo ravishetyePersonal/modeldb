@@ -175,7 +175,7 @@
 			<column name="library" type="varchar(255)">
 				<constraints primaryKey="true"/>
 			</column>
-			<column name="constraint" type="varchar(255)">
+			<column name="python_constraint" type="varchar(255)">
 				<constraints primaryKey="true"/>
 			</column>
 			<column name="major" type="int4" />
