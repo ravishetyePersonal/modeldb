@@ -1,6 +1,6 @@
 package ai.verta.modeldb.entities.dataset;
 
-import ai.verta.modeldb.entities.ComponentEntity;
+import ai.verta.modeldb.entities.BlobTreeInformation;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
 import ai.verta.modeldb.versioning.S3DatasetComponentBlob;
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "s3_dataset_component_blob")
-public class S3DatasetComponentBlobEntity implements ComponentEntity {
+public class S3DatasetComponentBlobEntity implements BlobTreeInformation {
   public S3DatasetComponentBlobEntity() {}
 
   public S3DatasetComponentBlobEntity(
@@ -76,11 +76,6 @@ public class S3DatasetComponentBlobEntity implements ComponentEntity {
                 .setMd5(this.md5)
                 .build())
         .build();
-  }
-
-  @Override
-  public void setBlobHash(String blobHash) {
-    id.setBlob_hash(blobHash);
   }
 
   @Override

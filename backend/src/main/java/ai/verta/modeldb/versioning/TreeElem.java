@@ -1,6 +1,6 @@
 package ai.verta.modeldb.versioning;
 
-import ai.verta.modeldb.entities.ComponentEntity;
+import ai.verta.modeldb.entities.BlobTreeInformation;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -14,24 +14,24 @@ public class TreeElem {
   String path;
   String blobHash = null;
   String type = null;
-  ComponentEntity componentEntity;
+  BlobTreeInformation blobTreeInformation;
   Map<String, TreeElem> children = new HashMap<>();
 
   TreeElem() {}
 
   public TreeElem push(
-      List<String> pathList, String blobHash, String type, ComponentEntity componentEntity) {
+      List<String> pathList, String blobHash, String type, BlobTreeInformation blobTreeInformation) {
     path = pathList.get(0);
     if (pathList.size() > 1) {
       children.putIfAbsent(pathList.get(1), new TreeElem());
       if (this.type == null) this.type = BlobDAORdbImpl.TREE;
       return children
           .get(pathList.get(1))
-          .push(pathList.subList(1, pathList.size()), blobHash, type, componentEntity);
+          .push(pathList.subList(1, pathList.size()), blobHash, type, blobTreeInformation);
     } else {
       this.blobHash = blobHash;
       this.type = type;
-      this.componentEntity = componentEntity;
+      this.blobTreeInformation = blobTreeInformation;
       return this;
     }
   }
@@ -48,8 +48,8 @@ public class TreeElem {
     return type;
   }
 
-  public ComponentEntity getComponentEntity() {
-    return componentEntity;
+  public BlobTreeInformation getBlobTreeInformation() {
+    return blobTreeInformation;
   }
 
   InternalFolderElement saveFolders(Session session, FileHasher fileHasher)
@@ -81,7 +81,7 @@ public class TreeElem {
         final TreeElem next = iter.next();
         session.saveOrUpdate(
             new ConnectionBuilder(
-                    elem, treeBuild.getElementSha(), next.getType(), next.getComponentEntity())
+                    elem, treeBuild.getElementSha(), next.getType(), next.getBlobTreeInformation())
                 .build());
       }
       return treeBuild;
@@ -92,26 +92,27 @@ public class TreeElem {
     private final InternalFolderElement elem;
     private final String baseBlobHash;
     private final String type;
-    private final ComponentEntity componentEntity;
+    private final BlobTreeInformation blobTreeInformation;
 
     public ConnectionBuilder(
         InternalFolderElement elem,
         String folderHash,
         String type,
-        ComponentEntity componentEntity) {
+        BlobTreeInformation blobTreeInformation) {
       this.elem = elem;
       this.baseBlobHash = folderHash;
       this.type = type;
-      this.componentEntity = componentEntity;
+      this.blobTreeInformation = blobTreeInformation;
     }
 
     public Object build() {
-      if (componentEntity != null) {
-        if (componentEntity.hasComponents()) {
-          componentEntity.setBaseBlobHash(baseBlobHash);
-          return componentEntity;
+      if (blobTreeInformation != null) {
+        if (blobTreeInformation.hasComponents()) {
+          blobTreeInformation.setBaseBlobHash(baseBlobHash);
+          return blobTreeInformation;
         } else {
-          return new InternalFolderElementEntity(baseBlobHash, componentEntity.getElementSha(), type, componentEntity.getElementName());
+          return new InternalFolderElementEntity(baseBlobHash, blobTreeInformation.getElementSha(), type, blobTreeInformation
+              .getElementName());
         }
       }
       return new InternalFolderElementEntity(elem, baseBlobHash, type);

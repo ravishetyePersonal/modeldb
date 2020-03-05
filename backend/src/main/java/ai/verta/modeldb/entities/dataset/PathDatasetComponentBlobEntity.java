@@ -1,6 +1,6 @@
 package ai.verta.modeldb.entities.dataset;
 
-import ai.verta.modeldb.entities.ComponentEntity;
+import ai.verta.modeldb.entities.BlobTreeInformation;
 import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "path_dataset_component_blob")
-public class PathDatasetComponentBlobEntity implements ComponentEntity {
+public class PathDatasetComponentBlobEntity implements BlobTreeInformation {
   public PathDatasetComponentBlobEntity() {}
 
   public PathDatasetComponentBlobEntity(
@@ -71,11 +71,6 @@ public class PathDatasetComponentBlobEntity implements ComponentEntity {
         .setSha256(this.sha256)
         .setMd5(this.md5)
         .build();
-  }
-
-  @Override
-  public void setBlobHash(String blobHash) {
-    id.setBlob_hash(blobHash);
   }
 
   @Override

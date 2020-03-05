@@ -1,7 +1,7 @@
 package ai.verta.modeldb.versioning.blob;
 
 import ai.verta.modeldb.ModelDBException;
-import ai.verta.modeldb.entities.ComponentEntity;
+import ai.verta.modeldb.entities.BlobTreeInformation;
 import ai.verta.modeldb.entities.environment.DockerEnvironmentBlobEntity;
 import ai.verta.modeldb.entities.environment.EnvironmentBlobEntity;
 import ai.verta.modeldb.entities.environment.EnvironmentCommandLineEntity;
@@ -186,10 +186,7 @@ public class EnvironmentContainer extends BlobContainer {
         locationList,
         environmentBlobEntity.getBlob_hash(),
         blobType,
-        new ComponentEntity() {
-          @Override
-          public void setBlobHash(String elementSha) {
-          }
+        new BlobTreeInformation() {
 
           @Override
           public void setBaseBlobHash(String folderHash) {
