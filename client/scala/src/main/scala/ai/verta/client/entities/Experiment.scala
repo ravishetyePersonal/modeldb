@@ -10,7 +10,7 @@ import ai.verta.swagger.client.ClientSet
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class Experiment(clientSet: ClientSet, val proj: Project, val expt: ModeldbExperiment) extends Taggable {
+class Experiment(val clientSet: ClientSet, val proj: Project, val expt: ModeldbExperiment) extends Taggable {
   def getOrCreateExperimentRun(name: String = "")(implicit ec: ExecutionContext) = {
     val internalName = if (name == "") LocalDateTime.now.format(DateTimeFormatter.ofPattern("YYYY/MM/dd HH:mm:ss.SSSS")) else name
 

@@ -66,8 +66,8 @@ class HttpClient(val host: String, val headers: Map[String, String]) {
     })
   }
 
-  def requestRaw(method: String, url: String, query: Map[String, String], body: InputStream)(implicit ec: ExecutionContext) = {
-    val request = if (body != null) basicRequest.body(body) else basicRequest
+  def requestRaw(method: String, url: String, query: Map[String, String], localHeaders: Map[String, String], body: InputStream)(implicit ec: ExecutionContext) = {
+    val request = (if (body != null) basicRequest.body(body) else basicRequest).response(asByteArray)
     val uriPath = Uri(new URI(url))
     val request2 = method match {
       case "GET" => request.get(uriPath)
@@ -77,7 +77,7 @@ class HttpClient(val host: String, val headers: Map[String, String]) {
       case _ => throw new IllegalArgumentException(s"unknown method $method")
     }
 
-    val futureResponse = request2.send()
+    val futureResponse = (if (localHeaders != null && localHeaders.nonEmpty) request2.headers(localHeaders) else request2).send()
 
     futureResponse.map(response => {
       response.body match {

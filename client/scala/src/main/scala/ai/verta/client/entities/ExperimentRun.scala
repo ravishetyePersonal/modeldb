@@ -1,6 +1,7 @@
 package ai.verta.client.entities
 
 import java.io._
+import java.security.MessageDigest
 import java.time.{Instant, LocalDateTime}
 import java.util.TimeZone
 
@@ -14,7 +15,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 import scala.util.{Failure, Success, Try}
 
-class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: ModeldbExperimentRun) extends Taggable {
+class ExperimentRun(val clientSet: ClientSet, val expt: Experiment, val run: ModeldbExperimentRun) extends Taggable {
   def tags()(implicit ec: ExecutionContext) = new Tags(clientSet, ec, this)
 
   override def getTags()(implicit ec: ExecutionContext): Try[List[String]] = {
@@ -188,30 +189,67 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
     logArtifact(key, new ByteArrayInputStream(arr.toByteArray))
   }
 
+  private def streamHash(stream: InputStream)(implicit ec: ExecutionContext): (Array[Byte], Int) = {
+    // TODO: make into a future
+    val len = 1024 * 1024
+    val bytes = Array.fill[Byte](len)(0)
+    var offset = 0
+    val hasher = MessageDigest.getInstance("SHA-256")
+    var break = false
+    while (!break) {
+      val bytesRead = stream.read(bytes, offset, len)
+      if (bytesRead == 0)
+        break = true
+      else {
+        hasher.update(bytes.slice(0, bytesRead))
+        offset += bytesRead
+        if (bytesRead < len)
+          break = true
+      }
+    }
+
+    stream.reset()
+    return (hasher.digest(), offset)
+  }
+
   def logArtifact(key: String, stream: InputStream)(implicit ec: ExecutionContext) = {
-    clientSet.experimentRunService.getUrlForArtifact(ModeldbGetUrlForArtifact(
+    val hashResult = streamHash(stream)
+    val artifactHash = hashResult._1
+    val artifactPath = artifactHash + "/" + key
+
+    clientSet.experimentRunService.logArtifact(ModeldbLogArtifact(
       id = run.id,
-      key = Some(key),
-      method = Some("PUT"),
-      artifact_type = Some(ArtifactTypeEnumArtifactType.BLOB)
+      artifact = Some(ModeldbArtifact(
+        key = Some(key),
+        path = Some(artifactPath),
+        path_only = Some(false),
+        artifact_type = Some(ArtifactTypeEnumArtifactType.BLOB),
+        filename_extension = None
+      ))
     ))
-      .map(r => {
-        Await.result(clientSet.client.requestRaw("PUT", r.url.get, null, stream), Duration.Inf)
+      .flatMap(_ => {
+        clientSet.experimentRunService.getUrlForArtifact(ModeldbGetUrlForArtifact(
+          id = run.id,
+          key = Some(key),
+          method = Some("PUT"),
+          artifact_type = Some(ArtifactTypeEnumArtifactType.BLOB)
+        ))
+      })
+      .flatMap(r => {
+        Await.result(clientSet.client.requestRaw("PUT", r.url.get, null, Map("Content-Length" -> hashResult._2.toString), stream), Duration.Inf)
       })
       .map(_ => {})
   }
 
-  def getArtifactObj[T <: Serializable](key: String)(implicit ec: ExecutionContext) = {
+  def getArtifactObj(key: String)(implicit ec: ExecutionContext) =
     getArtifact(key)
       .map(stream => {
-        val arr = new ByteArrayInputStream(stream.toByteArray)
-        val stream2 = new ObjectInputStream(arr)
-        val obj = stream2.readObject().asInstanceOf[T]
+        val stream2 = new ObjectInputStream(stream)
+        val obj = stream2.readObject()
         stream2.close
         stream.close
         obj
       })
-  }
 
   def getArtifact(key: String)(implicit ec: ExecutionContext) = {
     clientSet.experimentRunService.getUrlForArtifact(ModeldbGetUrlForArtifact(
@@ -222,12 +260,11 @@ class ExperimentRun(clientSet: ClientSet, val expt: Experiment, val run: Modeldb
     ))
       .flatMap(r => {
         Await.result(
-          clientSet.client.requestRaw("GET", r.url.get, null, null)
+          clientSet.client.requestRaw("GET", r.url.get, null, null, null)
             .map(resp => {
               resp match {
                 case Success(response) => {
-                  val arr = new ByteArrayOutputStream()
-                  arr.write(response.getBytes, 0, response.length)
+                  val arr = new ByteArrayInputStream(response)
                   Success(arr)
                 }
                 case Failure(x) => Failure(x)

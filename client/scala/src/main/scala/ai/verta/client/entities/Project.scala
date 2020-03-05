@@ -7,7 +7,7 @@ import ai.verta.swagger.client.ClientSet
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-class Project(clientSet: ClientSet, val proj: ModeldbProject) extends Taggable {
+class Project(val clientSet: ClientSet, val proj: ModeldbProject) extends Taggable {
   def getOrCreateExperiment(name: String)(implicit ec: ExecutionContext) = {
     GetOrCreateEntity.getOrCreate[Experiment](
       get = () => {
