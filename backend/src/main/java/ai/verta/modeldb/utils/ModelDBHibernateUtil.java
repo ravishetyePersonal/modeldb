@@ -29,6 +29,12 @@ import ai.verta.modeldb.entities.TagsMapping;
 import ai.verta.modeldb.entities.UserCommentEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.environment.DockerEnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentCommandLineEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentVariablesEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentRequirementBlobEntity;
 import ai.verta.modeldb.entities.metadata.LabelsMappingEntity;
 import ai.verta.modeldb.entities.versioning.BranchEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
@@ -121,6 +127,12 @@ public class ModelDBHibernateUtil {
     PathDatasetComponentBlobEntity.class,
     S3DatasetComponentBlobEntity.class,
     InternalFolderElementEntity.class,
+    EnvironmentBlobEntity.class,
+    DockerEnvironmentBlobEntity.class,
+    PythonEnvironmentBlobEntity.class,
+    PythonEnvironmentRequirementBlobEntity.class,
+    EnvironmentCommandLineEntity.class,
+    EnvironmentVariablesEntity.class,
     BranchEntity.class
   };
 
