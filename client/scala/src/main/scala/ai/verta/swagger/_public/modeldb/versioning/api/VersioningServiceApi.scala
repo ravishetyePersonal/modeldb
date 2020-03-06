@@ -303,12 +303,11 @@ class VersioningServiceApi(client: HttpClient, val basePath: String = "/v1") {
 
   def GetTag2(repository_id_repo_id: String, tag: String, repository_id_named_id_name: String, repository_id_named_id_workspace_name: String)(implicit ec: ExecutionContext): Try[VersioningGetTagRequestResponse] = Await.result(GetTag2Async(repository_id_repo_id, tag, repository_id_named_id_name, repository_id_named_id_workspace_name), Duration.Inf)
 
-  def ListBranchCommitsAsync(repository_id_named_id_workspace_name: String, repository_id_named_id_name: String, branch: String, repository_id_repo_id: String, pagination_page_number: BigInt, pagination_page_limit: BigInt, location_prefix: List[String])(implicit ec: ExecutionContext): Future[Try[VersioningListBranchCommitsRequestResponse]] = {
+  def ListBranchCommitsAsync(repository_id_named_id_workspace_name: String, repository_id_named_id_name: String, branch: String, repository_id_repo_id: String, pagination_page_number: BigInt, pagination_page_limit: BigInt)(implicit ec: ExecutionContext): Future[Try[VersioningListBranchCommitsRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.repo_id" -> client.toQuery(repository_id_repo_id),
       "pagination.page_number" -> client.toQuery(pagination_page_number),
-      "pagination.page_limit" -> client.toQuery(pagination_page_limit),
-      "location_prefix" -> client.toQuery(location_prefix)
+      "pagination.page_limit" -> client.toQuery(pagination_page_limit)
     )
     if (repository_id_named_id_workspace_name == null) throw new Exception("Missing required parameter \"repository_id_named_id_workspace_name\"")
     if (repository_id_named_id_name == null) throw new Exception("Missing required parameter \"repository_id_named_id_name\"")
@@ -317,15 +316,14 @@ class VersioningServiceApi(client: HttpClient, val basePath: String = "/v1") {
     return client.request[String, VersioningListBranchCommitsRequestResponse]("GET", basePath + s"/versioning/workspaces/$repository_id_named_id_workspace_name/repositories/$repository_id_named_id_name/branches/$branch/commits", __query, body, VersioningListBranchCommitsRequestResponse.fromJson)
   }
 
-  def ListBranchCommits(repository_id_named_id_workspace_name: String, repository_id_named_id_name: String, branch: String, repository_id_repo_id: String, pagination_page_number: BigInt, pagination_page_limit: BigInt, location_prefix: List[String])(implicit ec: ExecutionContext): Try[VersioningListBranchCommitsRequestResponse] = Await.result(ListBranchCommitsAsync(repository_id_named_id_workspace_name, repository_id_named_id_name, branch, repository_id_repo_id, pagination_page_number, pagination_page_limit, location_prefix), Duration.Inf)
+  def ListBranchCommits(repository_id_named_id_workspace_name: String, repository_id_named_id_name: String, branch: String, repository_id_repo_id: String, pagination_page_number: BigInt, pagination_page_limit: BigInt)(implicit ec: ExecutionContext): Try[VersioningListBranchCommitsRequestResponse] = Await.result(ListBranchCommitsAsync(repository_id_named_id_workspace_name, repository_id_named_id_name, branch, repository_id_repo_id, pagination_page_number, pagination_page_limit), Duration.Inf)
 
-  def ListBranchCommits2Async(repository_id_repo_id: String, branch: String, repository_id_named_id_name: String, repository_id_named_id_workspace_name: String, pagination_page_number: BigInt, pagination_page_limit: BigInt, location_prefix: List[String])(implicit ec: ExecutionContext): Future[Try[VersioningListBranchCommitsRequestResponse]] = {
+  def ListBranchCommits2Async(repository_id_repo_id: String, branch: String, repository_id_named_id_name: String, repository_id_named_id_workspace_name: String, pagination_page_number: BigInt, pagination_page_limit: BigInt)(implicit ec: ExecutionContext): Future[Try[VersioningListBranchCommitsRequestResponse]] = {
     val __query = Map[String,String](
       "repository_id.named_id.name" -> client.toQuery(repository_id_named_id_name),
       "repository_id.named_id.workspace_name" -> client.toQuery(repository_id_named_id_workspace_name),
       "pagination.page_number" -> client.toQuery(pagination_page_number),
-      "pagination.page_limit" -> client.toQuery(pagination_page_limit),
-      "location_prefix" -> client.toQuery(location_prefix)
+      "pagination.page_limit" -> client.toQuery(pagination_page_limit)
     )
     if (repository_id_repo_id == null) throw new Exception("Missing required parameter \"repository_id_repo_id\"")
     if (branch == null) throw new Exception("Missing required parameter \"branch\"")
@@ -333,7 +331,7 @@ class VersioningServiceApi(client: HttpClient, val basePath: String = "/v1") {
     return client.request[String, VersioningListBranchCommitsRequestResponse]("GET", basePath + s"/versioning/repositories/$repository_id_repo_id/branches/$branch/commits", __query, body, VersioningListBranchCommitsRequestResponse.fromJson)
   }
 
-  def ListBranchCommits2(repository_id_repo_id: String, branch: String, repository_id_named_id_name: String, repository_id_named_id_workspace_name: String, pagination_page_number: BigInt, pagination_page_limit: BigInt, location_prefix: List[String])(implicit ec: ExecutionContext): Try[VersioningListBranchCommitsRequestResponse] = Await.result(ListBranchCommits2Async(repository_id_repo_id, branch, repository_id_named_id_name, repository_id_named_id_workspace_name, pagination_page_number, pagination_page_limit, location_prefix), Duration.Inf)
+  def ListBranchCommits2(repository_id_repo_id: String, branch: String, repository_id_named_id_name: String, repository_id_named_id_workspace_name: String, pagination_page_number: BigInt, pagination_page_limit: BigInt)(implicit ec: ExecutionContext): Try[VersioningListBranchCommitsRequestResponse] = Await.result(ListBranchCommits2Async(repository_id_repo_id, branch, repository_id_named_id_name, repository_id_named_id_workspace_name, pagination_page_number, pagination_page_limit), Duration.Inf)
 
   def ListBranchesAsync(repository_id_named_id_workspace_name: String, repository_id_named_id_name: String, repository_id_repo_id: String)(implicit ec: ExecutionContext): Future[Try[VersioningListBranchesRequestResponse]] = {
     val __query = Map[String,String](

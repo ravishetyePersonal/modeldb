@@ -7,6 +7,7 @@ import net.liftweb.json._
 
 object DiffStatusEnumDiffStatus {
   type DiffStatusEnumDiffStatus = String
+  val UNKNOWN: DiffStatusEnumDiffStatus = "UNKNOWN"
   val ADDED: DiffStatusEnumDiffStatus = "ADDED"
   val DELETED: DiffStatusEnumDiffStatus = "DELETED"
   val MODIFIED: DiffStatusEnumDiffStatus = "MODIFIED"
