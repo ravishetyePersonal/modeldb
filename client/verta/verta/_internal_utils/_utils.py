@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from .external import six
-from .external.six.moves.urllib.parse import urljoin  # pylint: disable=import-error, no-name-in-module
+from ..external import six
+from ..external.six.moves.urllib.parse import urljoin  # pylint: disable=import-error, no-name-in-module
 
 import datetime
 import glob
@@ -23,7 +23,7 @@ from urllib3.util.retry import Retry
 from google.protobuf import json_format
 from google.protobuf.struct_pb2 import Value, ListValue, Struct, NULL_VALUE
 
-from ._protos.public.modeldb import CommonService_pb2 as _CommonService
+from .._protos.public.modeldb import CommonService_pb2 as _CommonService
 
 try:
     import pandas as pd
@@ -224,7 +224,7 @@ def make_request(method, url, conn, **kwargs):
         HTTP method.
     url : str
         URL.
-    conn : verta._utils.Connection
+    conn : Connection
         Connection authentication and configuration.
     **kwargs
         Parameters to requests.request().

@@ -10,6 +10,7 @@ import utils
 
 import verta
 import verta.dataset
+from verta._internal_utils import _utils
 from verta._dataset import Dataset, DatasetVersion, S3DatasetVersionInfo, FilesystemDatasetVersionInfo
 from verta._protos.public.modeldb import DatasetService_pb2 as _DatasetService
 from verta._protos.public.modeldb import DatasetVersionService_pb2 as _DatasetVersionService
@@ -212,7 +213,7 @@ class TestClientDatasetFunctions:
         assert dataset.name == same_dataset.name
 
     def test_find_datasets_client_api(self, client, created_datasets):
-        tags = ["test1-{}".format(verta._utils.now()), "test2-{}".format(verta._utils.now())]
+        tags = ["test1-{}".format(_utils.now()), "test2-{}".format(_utils.now())]
         dataset1 = client.set_dataset(type="big query", tags=tags)
         created_datasets.append(dataset1)
         assert dataset1.dataset_type == _DatasetService.DatasetTypeEnum.QUERY

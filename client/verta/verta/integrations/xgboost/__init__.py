@@ -4,7 +4,7 @@ from ...external import six
 
 import xgboost as xgb
 
-from ... import _utils
+from ..._internal_utils import _utils
 
 
 def verta_callback(run):

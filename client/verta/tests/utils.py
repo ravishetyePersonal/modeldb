@@ -5,7 +5,7 @@ from string import printable
 
 import requests
 
-import verta._utils
+from verta._internal_utils import _utils
 
 from hypothesis import strategies as st
 
@@ -75,7 +75,7 @@ def st_json(draw, max_size=6):
 
 @st.composite
 def st_keys(draw):
-    return draw(st.text(sorted(verta._utils._VALID_FLAT_KEY_CHARS), min_size=1))
+    return draw(st.text(sorted(_utils._VALID_FLAT_KEY_CHARS), min_size=1))
 
 
 @st.composite

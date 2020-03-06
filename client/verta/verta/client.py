@@ -35,10 +35,12 @@ from ._protos.public.modeldb import ProjectService_pb2 as _ProjectService
 from ._protos.public.modeldb import ExperimentService_pb2 as _ExperimentService
 from ._protos.public.modeldb import ExperimentRunService_pb2 as _ExperimentRunService
 
-from . import _artifact_utils
+from ._internal_utils import _artifact_utils
+from ._internal_utils import _pip_requirements_utils
+from ._internal_utils import _utils
+
 from . import _dataset
 from . import _repository
-from . import _utils
 from . import deployment
 from . import utils
 
@@ -3266,23 +3268,14 @@ class ExperimentRun(_ModelDBEntity):
         """
         if isinstance(requirements, six.string_types):
             with open(requirements, 'r') as f:
-                requirements = f.readlines()
-
-            # clean
-            requirements = [req.strip() for req in requirements]
-            requirements = [req for req in requirements if not req.startswith('#')]  # comment line
-            requirements = [req for req in requirements if req]  # empty line
+                requirements = _pip_requirements_utils.read_reqs_file_lines(f)
         elif (isinstance(requirements, list)
               and all(isinstance(req, six.string_types) for req in requirements)):
             requirements = copy.copy(requirements)
-
-            # replace importable module names with PyPI package names in case of user error
-            for i, req in enumerate(requirements):
-                requirements[i] = _artifact_utils.IMPORT_TO_PYPI.get(req, req)
         else:
             raise TypeError("`requirements` must be either str or list of str, not {}".format(type(requirements)))
 
-        requirements = _artifact_utils.process_requirements(requirements)
+        requirements = _pip_requirements_utils.process_requirements(requirements)
 
         if self._conf.debug:
             print("[DEBUG] requirements are:")

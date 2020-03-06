@@ -9,6 +9,7 @@ import string
 
 import verta
 from verta import Client
+from verta._internal_utils import _utils
 
 import hypothesis
 import pytest
@@ -264,7 +265,7 @@ def experiment_run(client):
 
 @pytest.fixture
 def repository(client):
-    name = verta._utils.generate_default_name()
+    name = _utils.generate_default_name()
     repo = client.get_or_create_repository(name)
 
     yield repo

@@ -11,7 +11,7 @@ import warnings
 
 import requests
 
-from . import _utils
+from ._internal_utils import _utils
 
 
 class DeployedModel:

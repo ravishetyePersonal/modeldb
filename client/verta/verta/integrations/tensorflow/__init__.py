@@ -18,7 +18,7 @@ try:
 except ImportError:  # tensorflow<2.0
     from tensorflow.train import SessionRunHook
 
-from ... import _utils
+from ..._internal_utils import _utils
 
 
 def _parse_summary_proto_str(proto_str):

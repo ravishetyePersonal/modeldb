@@ -16,7 +16,7 @@ try:
 except ImportError:  # TensorFlow not installed
     tf = None
 
-from . import _utils
+from ._internal_utils import _utils
 
 
 class ModelAPI(object):

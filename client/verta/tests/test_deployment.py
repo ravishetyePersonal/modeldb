@@ -15,6 +15,7 @@ import zipfile
 import requests
 
 import verta
+from verta._internal_utils import _utils
 
 
 @pytest.fixture
@@ -45,7 +46,7 @@ def model_for_deployment(strs):
 def model_packaging():
     """Additional items added to model API in log_model()."""
     return {
-        'python_version': verta._utils.get_python_version(),
+        'python_version': _utils.get_python_version(),
         'type': "sklearn",
         'deserialization': "cloudpickle",
     }
@@ -108,7 +109,7 @@ class TestLogModel:
         custom_module_filenames = {"__init__.py", "_verta_config.py"}
         for parent_dir, dirnames, filenames in os.walk(custom_modules_dir):
             # skip venvs
-            #     This logic is from verta._utils.find_filepaths().
+            #     This logic is from _utils.find_filepaths().
             exec_path_glob = os.path.join(parent_dir, "{}", "bin", "python*")
             dirnames[:] = [dirname for dirname in dirnames if not glob.glob(exec_path_glob.format(dirname))]
 
@@ -131,7 +132,7 @@ class TestLogModel:
 
             for parent_dir, dirnames, filenames in os.walk(path):
                 # skip venvs
-                #     This logic is from verta._utils.find_filepaths().
+                #     This logic is from _utils.find_filepaths().
                 exec_path_glob = os.path.join(parent_dir, "{}", "bin", "python*")
                 dirnames[:] = [dirname for dirname in dirnames if not glob.glob(exec_path_glob.format(dirname))]
 
@@ -722,7 +723,7 @@ class TestDeploy:
         experiment_run.log_requirements(['scikit-learn'])
 
         # delete model
-        verta._utils.make_request(
+        _utils.make_request(
             "DELETE",
             "{}://{}/api/v1/modeldb/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
                                                               experiment_run._conn.socket),
@@ -744,7 +745,7 @@ class TestDeploy:
         experiment_run.log_requirements(['scikit-learn'])
 
         # delete model API
-        verta._utils.make_request(
+        _utils.make_request(
             "DELETE",
             "{}://{}/api/v1/modeldb/experiment-run/deleteArtifact".format(experiment_run._conn.scheme,
                                                               experiment_run._conn.socket),

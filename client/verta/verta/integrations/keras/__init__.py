@@ -8,7 +8,7 @@ try:
 except ImportError:  # TensorFlow not installed
     import keras
 
-from ... import _utils
+from ..._internal_utils import _utils
 
 
 class VertaCallback(keras.callbacks.Callback):

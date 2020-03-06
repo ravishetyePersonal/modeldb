@@ -8,7 +8,7 @@ from ..external import six
 
 from .._protos.public.modeldb.versioning import VersioningService_pb2 as _VersioningService
 
-from .. import _utils
+from .._internal_utils import _utils
 from .. import dataset
 from .. import environment
 from . import blob as blob_module

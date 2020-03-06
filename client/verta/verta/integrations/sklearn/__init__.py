@@ -39,7 +39,7 @@ from sklearn import (
 
 from ...external import gorilla
 
-from ... import _utils
+from ..._internal_utils import _utils
 
 
 classes = [

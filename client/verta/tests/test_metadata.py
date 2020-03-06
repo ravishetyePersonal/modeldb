@@ -3,6 +3,7 @@ import six
 import string
 
 import verta
+from verta._internal_utils import _utils
 
 import pytest
 import utils
@@ -43,7 +44,7 @@ class TestTags:
 
 class TestHyperparameters:
     def test_keys(self, experiment_run):
-        keys = (c for c in string.printable if c not in verta._utils._VALID_FLAT_KEY_CHARS)
+        keys = (c for c in string.printable if c not in _utils._VALID_FLAT_KEY_CHARS)
         for key in keys:
             with pytest.raises(ValueError):
                 experiment_run.log_hyperparameter(key, 'key test')
@@ -118,7 +119,7 @@ class TestHyperparameters:
 
 class TestAttributes:
     def test_keys(self, experiment_run):
-        keys = (c for c in string.printable if c not in verta._utils._VALID_FLAT_KEY_CHARS)
+        keys = (c for c in string.printable if c not in _utils._VALID_FLAT_KEY_CHARS)
         for key in keys:
             with pytest.raises(ValueError):
                 experiment_run.log_attribute(key, 'key test')
@@ -188,7 +189,7 @@ class TestAttributes:
 
 class TestMetrics:
     def test_keys(self, experiment_run):
-        keys = (c for c in string.printable if c not in verta._utils._VALID_FLAT_KEY_CHARS)
+        keys = (c for c in string.printable if c not in _utils._VALID_FLAT_KEY_CHARS)
         for key in keys:
             with pytest.raises(ValueError):
                 experiment_run.log_metric(key, 'key test')
@@ -263,7 +264,7 @@ class TestMetrics:
 
 class TestObservations:
     def test_keys(self, experiment_run):
-        keys = (c for c in string.printable if c not in verta._utils._VALID_FLAT_KEY_CHARS)
+        keys = (c for c in string.printable if c not in _utils._VALID_FLAT_KEY_CHARS)
         for key in keys:
             with pytest.raises(ValueError):
                 experiment_run.log_observation(key, 'key test')

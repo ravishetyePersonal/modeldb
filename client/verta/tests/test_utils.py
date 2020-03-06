@@ -3,6 +3,7 @@
 import six
 
 import verta
+from verta._internal_utils import _utils
 
 import pytest
 import utils
@@ -12,17 +13,17 @@ class TestToBuiltin:
     def test_string(self):
         val = "banana"
 
-        assert verta._utils.to_builtin(val) == "banana"
+        assert _utils.to_builtin(val) == "banana"
 
     def test_unicode(self):
         val = u"banana"
 
-        assert verta._utils.to_builtin(val) == "banana"
+        assert _utils.to_builtin(val) == "banana"
 
     def test_bytes(self):
         val = b"banana"
 
-        assert verta._utils.to_builtin(val) == "banana"
+        assert _utils.to_builtin(val) == "banana"
 
     def test_numpy_numbers(self):
         np = pytest.importorskip("numpy")
@@ -36,10 +37,10 @@ class TestToBuiltin:
         )
 
         for val in ints:
-            assert type(verta._utils.to_builtin(val)) in six.integer_types
+            assert type(_utils.to_builtin(val)) in six.integer_types
 
         for val in floats:
-            assert type(verta._utils.to_builtin(val)) is float
+            assert type(_utils.to_builtin(val)) is float
 
     def test_ndarray(self):
         np = pytest.importorskip("numpy")
@@ -48,19 +49,19 @@ class TestToBuiltin:
         float_array = np.random.uniform(-36, 36, size=(12, 24))
         str_array = np.array([list("banana"), list("coconut"), list("date")])
 
-        builtin_int_array = verta._utils.to_builtin(int_array)
+        builtin_int_array = _utils.to_builtin(int_array)
         assert type(builtin_int_array) is list
         assert all(type(val) in six.integer_types
                    for row in builtin_int_array
                    for val in row)
 
-        builtin_float_array = verta._utils.to_builtin(float_array)
+        builtin_float_array = _utils.to_builtin(float_array)
         assert type(builtin_float_array) is list
         assert all(type(val) is float
                    for row in builtin_float_array
                    for val in row)
 
-        builtin_str_array = verta._utils.to_builtin(str_array)
+        builtin_str_array = _utils.to_builtin(str_array)
         assert type(builtin_str_array) is list
         assert all(type(val) is str
                    for row in builtin_str_array
@@ -73,15 +74,15 @@ class TestToBuiltin:
         float_series = pd.Series([1.0, 2.0, 3.0])
         str_series = pd.Series(["one", "two", "thr"])
 
-        builtin_int_series = verta._utils.to_builtin(int_series)
+        builtin_int_series = _utils.to_builtin(int_series)
         assert type(builtin_int_series) is list
         assert all(type(val) in six.integer_types for val in builtin_int_series)
 
-        builtin_float_series = verta._utils.to_builtin(float_series)
+        builtin_float_series = _utils.to_builtin(float_series)
         assert type(builtin_float_series) is list
         assert all(type(val) is float for val in builtin_float_series)
 
-        builtin_str_series = verta._utils.to_builtin(str_series)
+        builtin_str_series = _utils.to_builtin(str_series)
         assert type(builtin_str_series) is list
         assert all(type(val) is str for val in builtin_str_series)
 
@@ -99,19 +100,19 @@ class TestToBuiltin:
                                   ["two", "two", "two"],
                                   ["thr", "thr", "thr"]])
 
-        builtin_int_frame = verta._utils.to_builtin(int_frame)
+        builtin_int_frame = _utils.to_builtin(int_frame)
         assert type(builtin_int_frame) is list
         assert all(type(val) in six.integer_types
                    for row in builtin_int_frame
                    for val in row)
 
-        builtin_float_frame = verta._utils.to_builtin(float_frame)
+        builtin_float_frame = _utils.to_builtin(float_frame)
         assert type(builtin_float_frame) is list
         assert all(type(val) is float
                    for row in builtin_float_frame
                    for val in row)
 
-        builtin_str_frame = verta._utils.to_builtin(str_frame)
+        builtin_str_frame = _utils.to_builtin(str_frame)
         assert type(builtin_str_frame) is list
         assert all(type(val) is str
                    for row in builtin_str_frame
@@ -126,7 +127,7 @@ class TestToBuiltin:
             b"date": np.array(list("banana")),
         }
 
-        builtin_val = verta._utils.to_builtin(val)
+        builtin_val = _utils.to_builtin(val)
 
         assert set(builtin_val.keys()) == {"banana", "coconut", "date"}
         assert builtin_val['banana'] == [1, 2, 3]
@@ -144,14 +145,14 @@ class TestToBuiltin:
         assert not any(type(val) is float for val in float_list)
         assert not any(type(val) is str for val in str_list)
 
-        builtin_int_list = verta._utils.to_builtin(int_list)
+        builtin_int_list = _utils.to_builtin(int_list)
         assert type(builtin_int_list) is list
         assert all(type(val) in six.integer_types for val in builtin_int_list)
 
-        builtin_float_list = verta._utils.to_builtin(float_list)
+        builtin_float_list = _utils.to_builtin(float_list)
         assert type(builtin_float_list) is list
         assert all(type(val) is float for val in builtin_float_list)
 
-        builtin_str_list = verta._utils.to_builtin(str_list)
+        builtin_str_list = _utils.to_builtin(str_list)
         assert type(builtin_str_list) is list
         assert all(type(val) is str for val in builtin_str_list)
