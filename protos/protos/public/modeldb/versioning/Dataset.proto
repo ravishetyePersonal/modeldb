@@ -41,14 +41,16 @@ message DatasetDiff {
 }
 
 message PathDatasetDiff {
-    bool deleted = 1;
-    bool added = 2;
-
-    //things are modified when they have same path but different metadata.
-    PathDatasetBlob A = 3;
-    PathDatasetBlob B = 4;
+    // Things are modified when they have same path but different metadata.
+    // Components only present in A
+    repeated PathDatasetComponentBlob A = 3;
+    // Components only present in B
+    repeated PathDatasetComponentBlob B = 4;
 }
 
 message S3DatasetDiff {
-    PathDatasetDiff path = 1;
+    // Components only present in A
+    repeated S3DatasetComponentBlob A = 3;
+    // Components only present in B
+    repeated S3DatasetComponentBlob B = 4;
 }

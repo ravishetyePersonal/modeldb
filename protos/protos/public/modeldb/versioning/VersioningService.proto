@@ -73,12 +73,23 @@ message BlobExpanded {
     Blob blob = 2;
 }
 
+message DiffStatusEnum {
+    enum DiffStatus {
+        ADDED = 0;
+        DELETED = 1;
+        MODIFIED = 2;
+    }
+}
+
 message BlobDiff {
     // List of folder names, with the last element being the name of the blob
     // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
     repeated string location = 1;
+    DiffStatusEnum.DiffStatus status = 2;
+    // If a file changes its type, consider just as a removal of the old and addition of the new,
+    // instead of trying to figure out inter-types diff
     oneof content {
-        DatasetDiff dataset = 2;
+        DatasetDiff dataset = 3;
     }
 }
 
@@ -156,7 +167,7 @@ message ListCommitsRequest {
     string commit_head = 4; // If empty, consider commits from the base to the latest
     // List of folder names (with the last element potentially representing the blob name)
     // This will be used to limit the search to scope just this location, like `git log /my/path` would do
-    // repeated string location_prefix = 5; 
+    // repeated string location_prefix = 5;
 
     message Response {
         repeated Commit commits = 1;
