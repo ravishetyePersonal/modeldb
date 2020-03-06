@@ -21,7 +21,8 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
 
   public PythonEnvironmentRequirementBlobEntity(
       PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob,
-      PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity, boolean isRequirement) {
+      PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity,
+      boolean isRequirement) {
     library = pythonRequirementEnvironmentBlob.getLibrary();
     constraint = pythonRequirementEnvironmentBlob.getConstraint();
     final VersionEnvironmentBlob version = pythonRequirementEnvironmentBlob.getVersion();
@@ -70,19 +71,19 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
       return false;
     }
     PythonEnvironmentRequirementBlobEntity that = (PythonEnvironmentRequirementBlobEntity) o;
-    return Objects.equals(pythonEnvironmentBlobEntity, that.pythonEnvironmentBlobEntity) &&
-        Objects.equals(library, that.library) &&
-        Objects.equals(constraint, that.constraint) &&
-        Objects.equals(major, that.major) &&
-        Objects.equals(minor, that.minor) &&
-        Objects.equals(patch, that.patch) &&
-        Objects.equals(isRequirement, that.isRequirement);
+    return Objects.equals(pythonEnvironmentBlobEntity, that.pythonEnvironmentBlobEntity)
+        && Objects.equals(library, that.library)
+        && Objects.equals(constraint, that.constraint)
+        && Objects.equals(major, that.major)
+        && Objects.equals(minor, that.minor)
+        && Objects.equals(patch, that.patch)
+        && Objects.equals(isRequirement, that.isRequirement);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(pythonEnvironmentBlobEntity, library, constraint, major, minor, patch,
-        isRequirement);
+    return Objects.hash(
+        pythonEnvironmentBlobEntity, library, constraint, major, minor, patch, isRequirement);
   }
 
   public String getLibrary() {
@@ -98,8 +99,11 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   }
 
   public VersionEnvironmentBlob getVersion() {
-    return VersionEnvironmentBlob.newBuilder().setMajor(major).setMinor(minor)
-        .setPatch(patch).build();
+    return VersionEnvironmentBlob.newBuilder()
+        .setMajor(major)
+        .setMinor(minor)
+        .setPatch(patch)
+        .build();
   }
 
   public Boolean isRequirement() {
@@ -107,8 +111,8 @@ public class PythonEnvironmentRequirementBlobEntity implements Serializable {
   }
 
   public void toProto(Builder pythonEnvironmentBlobBuilder) {
-    final PythonRequirementEnvironmentBlob.Builder builderForValue = PythonRequirementEnvironmentBlob
-        .newBuilder().setVersion(getVersion());
+    final PythonRequirementEnvironmentBlob.Builder builderForValue =
+        PythonRequirementEnvironmentBlob.newBuilder().setVersion(getVersion());
     builderForValue.setLibrary(library).setConstraint(constraint);
     if (isRequirement()) {
       pythonEnvironmentBlobBuilder.addRequirements(builderForValue);

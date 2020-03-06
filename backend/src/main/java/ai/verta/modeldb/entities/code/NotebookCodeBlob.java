@@ -26,4 +26,3 @@ public class NotebookCodeBlob {
   @Column(name = "path_dataset_blob_hash", columnDefinition = "varchar", length = 64)
   private String path_dataset_blob_hash;
 }
-

@@ -56,11 +56,7 @@ public class DatasetContainer extends BlobContainer {
     String blobType = getBlobType();
 
     TreeElem treeChildDataset =
-        rootTree.push(
-            locationList,
-            null,
-            blobType,
-            null); // need to ensure dataset is sorted
+        rootTree.push(locationList, null, blobType, null); // need to ensure dataset is sorted
     switch (dataset.getContentCase()) {
       case S3:
         for (S3DatasetComponentBlob componentBlob : dataset.getS3().getComponentsList()) {
@@ -124,5 +120,4 @@ public class DatasetContainer extends BlobContainer {
         .append(path.getMd5());
     return FileHasher.getSha(sb.toString());
   }
-
 }

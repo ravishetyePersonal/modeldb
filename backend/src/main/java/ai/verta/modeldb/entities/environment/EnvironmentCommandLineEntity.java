@@ -41,9 +41,9 @@ public class EnvironmentCommandLineEntity implements Serializable {
       return false;
     }
     EnvironmentCommandLineEntity that = (EnvironmentCommandLineEntity) o;
-    return Objects.equals(environmentBlobEntity, that.environmentBlobEntity) &&
-        Objects.equals(command_seq_number, that.command_seq_number) &&
-        Objects.equals(command, that.command);
+    return Objects.equals(environmentBlobEntity, that.environmentBlobEntity)
+        && Objects.equals(command_seq_number, that.command_seq_number)
+        && Objects.equals(command, that.command);
   }
 
   @Override
@@ -51,8 +51,7 @@ public class EnvironmentCommandLineEntity implements Serializable {
     return Objects.hash(environmentBlobEntity, command_seq_number, command);
   }
 
-  public void setEnvironmentBlobEntity(
-      EnvironmentBlobEntity environmentBlobEntity) {
+  public void setEnvironmentBlobEntity(EnvironmentBlobEntity environmentBlobEntity) {
     this.environmentBlobEntity = environmentBlobEntity;
   }
 
@@ -60,4 +59,3 @@ public class EnvironmentCommandLineEntity implements Serializable {
     return command;
   }
 }
-

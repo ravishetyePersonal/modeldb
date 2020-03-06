@@ -20,7 +20,10 @@ public class TreeElem {
   TreeElem() {}
 
   public TreeElem push(
-      List<String> pathList, String blobHash, String type, BlobTreeInformation blobTreeInformation) {
+      List<String> pathList,
+      String blobHash,
+      String type,
+      BlobTreeInformation blobTreeInformation) {
     path = pathList.get(0);
     if (pathList.size() > 1) {
       children.putIfAbsent(pathList.get(1), new TreeElem());
@@ -111,8 +114,11 @@ public class TreeElem {
           blobTreeInformation.setBaseBlobHash(baseBlobHash);
           return blobTreeInformation;
         } else {
-          return new InternalFolderElementEntity(baseBlobHash, blobTreeInformation.getElementSha(), type, blobTreeInformation
-              .getElementName());
+          return new InternalFolderElementEntity(
+              baseBlobHash,
+              blobTreeInformation.getElementSha(),
+              type,
+              blobTreeInformation.getElementName());
         }
       }
       return new InternalFolderElementEntity(elem, baseBlobHash, type);

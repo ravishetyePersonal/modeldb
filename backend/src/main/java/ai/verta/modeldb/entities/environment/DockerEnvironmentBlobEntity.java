@@ -33,7 +33,10 @@ public class DockerEnvironmentBlobEntity {
   private String sha;
 
   public DockerEnvironmentBlob toProto() {
-    return DockerEnvironmentBlob.newBuilder().setRepository(repository).setTag(tag).setSha(sha).build();
+    return DockerEnvironmentBlob.newBuilder()
+        .setRepository(repository)
+        .setTag(tag)
+        .setSha(sha)
+        .build();
   }
 }
-

@@ -19,7 +19,9 @@ import org.hibernate.query.Query;
 public class DatasetBlobFactory extends BlobFactory {
 
   public DatasetBlobFactory(InternalFolderElementEntity internalFolderElementEntity) {
-    super(internalFolderElementEntity.getElement_type(), internalFolderElementEntity.getElement_sha());
+    super(
+        internalFolderElementEntity.getElement_type(),
+        internalFolderElementEntity.getElement_sha());
   }
 
   @Override

@@ -30,4 +30,3 @@ public class GitCodeBlob {
   @Column(name = "is_dirty")
   private Boolean is_dirty;
 }
-

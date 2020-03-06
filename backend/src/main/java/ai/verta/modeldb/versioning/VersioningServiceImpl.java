@@ -217,8 +217,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           commitDAO.setCommit(
               authService.getVertaIdFromUserInfo(currentLoginUserInfo),
               request.getCommit(),
-              (session) ->
-                  datasetComponentDAO.setBlobs(session, blobContainers, fileHasher),
+              (session) -> datasetComponentDAO.setBlobs(session, blobContainers, fileHasher),
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
 
       responseObserver.onNext(response);
@@ -229,8 +228,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  private List<BlobContainer> validateBlobs(CreateCommitRequest request)
-      throws ModelDBException {
+  private List<BlobContainer> validateBlobs(CreateCommitRequest request) throws ModelDBException {
     List<BlobContainer> blobContainers = new LinkedList<>();
     for (BlobExpanded blobExpanded : request.getBlobsList()) {
       if (blobExpanded.getLocationList().isEmpty()) {

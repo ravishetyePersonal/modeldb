@@ -43,7 +43,8 @@ public class EnvironmentContainer extends BlobContainer {
     private final PythonRequirementEnvironmentBlob requirement;
     private final boolean isRequirement;
 
-    public PythonRequirementKey(PythonRequirementEnvironmentBlob requirement, boolean isRequirement) {
+    public PythonRequirementKey(
+        PythonRequirementEnvironmentBlob requirement, boolean isRequirement) {
       this.requirement = requirement;
       this.isRequirement = isRequirement;
     }
@@ -57,9 +58,9 @@ public class EnvironmentContainer extends BlobContainer {
         return false;
       }
       PythonRequirementKey that = (PythonRequirementKey) o;
-      return Objects.equals(requirement.getLibrary(), that.requirement.getLibrary()) &&
-          Objects.equals(requirement.getConstraint(), that.requirement.getConstraint()) &&
-          Objects.equals(isRequirement, that.isRequirement);
+      return Objects.equals(requirement.getLibrary(), that.requirement.getLibrary())
+          && Objects.equals(requirement.getConstraint(), that.requirement.getConstraint())
+          && Objects.equals(isRequirement, that.isRequirement);
     }
 
     @Override
@@ -81,15 +82,14 @@ public class EnvironmentContainer extends BlobContainer {
     switch (environment.getContentCase()) {
       case DOCKER:
         if (environment.getDocker().getRepository().isEmpty()) {
-          throw new ModelDBException("Environment repository path should not be empty",
-              Code.INVALID_ARGUMENT);
+          throw new ModelDBException(
+              "Environment repository path should not be empty", Code.INVALID_ARGUMENT);
         }
         break;
       case PYTHON:
         final PythonEnvironmentBlob python = environment.getPython();
         Set<PythonRequirementKey> pythonRequirementKeys = new HashSet<>();
-        for (PythonRequirementEnvironmentBlob requirement : python
-            .getRequirementsList()) {
+        for (PythonRequirementEnvironmentBlob requirement : python.getRequirementsList()) {
           if (requirement.getLibrary().isEmpty()) {
             throw new ModelDBException("Requirement library name should not be empty");
           }
@@ -98,14 +98,14 @@ public class EnvironmentContainer extends BlobContainer {
         if (pythonRequirementKeys.size() != python.getRequirementsCount()) {
           throw new ModelDBException("There are recurring requirements");
         }
-        for (PythonRequirementEnvironmentBlob constraint : python
-            .getConstraintsList()) {
+        for (PythonRequirementEnvironmentBlob constraint : python.getConstraintsList()) {
           if (constraint.getConstraint().isEmpty()) {
             throw new ModelDBException("Constraint name should not be empty");
           }
           pythonRequirementKeys.add(new PythonRequirementKey(constraint, false));
         }
-        if (pythonRequirementKeys.size() != python.getRequirementsCount() + python.getConstraintsCount()) {
+        if (pythonRequirementKeys.size()
+            != python.getRequirementsCount() + python.getConstraintsCount()) {
           throw new ModelDBException("There are recurring constraints");
         }
         break;
@@ -138,18 +138,18 @@ public class EnvironmentContainer extends BlobContainer {
         pythonEnvironmentBlobEntity.setMinor(version.getMinor());
         pythonEnvironmentBlobEntity.setPatch(version.getPatch());
         entities.add(pythonEnvironmentBlobEntity);
-        for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob : python
-            .getRequirementsList()) {
+        for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob :
+            python.getRequirementsList()) {
           PythonEnvironmentRequirementBlobEntity pythonEnvironmentRequirementBlobEntity =
-              new PythonEnvironmentRequirementBlobEntity(pythonRequirementEnvironmentBlob,
-                  pythonEnvironmentBlobEntity, true);
+              new PythonEnvironmentRequirementBlobEntity(
+                  pythonRequirementEnvironmentBlob, pythonEnvironmentBlobEntity, true);
           entities.add(pythonEnvironmentRequirementBlobEntity);
         }
-        for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob : python
-            .getConstraintsList()) {
+        for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob :
+            python.getConstraintsList()) {
           PythonEnvironmentRequirementBlobEntity pythonEnvironmentRequirementBlobEntity =
-              new PythonEnvironmentRequirementBlobEntity(pythonRequirementEnvironmentBlob,
-                  pythonEnvironmentBlobEntity, false);
+              new PythonEnvironmentRequirementBlobEntity(
+                  pythonRequirementEnvironmentBlob, pythonEnvironmentBlobEntity, false);
           entities.add(pythonEnvironmentRequirementBlobEntity);
         }
         break;
@@ -159,26 +159,29 @@ public class EnvironmentContainer extends BlobContainer {
         final String dockerBlobHash = computeSHA(docker);
         environmentBlobEntity.setBlob_hash(FileHasher.getSha((blobHash + dockerBlobHash)));
         environmentBlobEntity.setEnvironment_type(DOCKER_ENV_TYPE);
-        DockerEnvironmentBlobEntity dockerEnvironmentBlobEntity = new DockerEnvironmentBlobEntity(dockerBlobHash,
-            environment.getDocker());
+        DockerEnvironmentBlobEntity dockerEnvironmentBlobEntity =
+            new DockerEnvironmentBlobEntity(dockerBlobHash, environment.getDocker());
         environmentBlobEntity.setDockerEnvironmentBlobEntity(dockerEnvironmentBlobEntity);
         entities.add(dockerEnvironmentBlobEntity);
         break;
       default:
         throw new ModelDBException("Blob unknown type", Code.INTERNAL);
     }
-    for (EnvironmentVariablesBlob environmentVariablesBlob: environment.getEnvironmentVariablesList()) {
-      EnvironmentVariablesEntity environmentVariablesBlobEntity = new EnvironmentVariablesEntity(environmentVariablesBlob);
+    for (EnvironmentVariablesBlob environmentVariablesBlob :
+        environment.getEnvironmentVariablesList()) {
+      EnvironmentVariablesEntity environmentVariablesBlobEntity =
+          new EnvironmentVariablesEntity(environmentVariablesBlob);
       environmentVariablesBlobEntity.setEnvironmentBlobEntity(environmentBlobEntity);
       entities.add(environmentVariablesBlobEntity);
     }
     int count = 0;
-    for (String command: environment.getCommandLineList()) {
-      EnvironmentCommandLineEntity environmentCommandLineEntity = new EnvironmentCommandLineEntity(count++, command);
+    for (String command : environment.getCommandLineList()) {
+      EnvironmentCommandLineEntity environmentCommandLineEntity =
+          new EnvironmentCommandLineEntity(count++, command);
       environmentCommandLineEntity.setEnvironmentBlobEntity(environmentBlobEntity);
       entities.add(environmentCommandLineEntity);
     }
-    for (Object entity: entities) {
+    for (Object entity : entities) {
       session.saveOrUpdate(entity);
     }
     final List<String> locationList = getLocationList();
@@ -189,8 +192,7 @@ public class EnvironmentContainer extends BlobContainer {
         new BlobTreeInformation() {
 
           @Override
-          public void setBaseBlobHash(String folderHash) {
-          }
+          public void setBaseBlobHash(String folderHash) {}
 
           @Override
           public boolean hasComponents() {
@@ -209,12 +211,13 @@ public class EnvironmentContainer extends BlobContainer {
         });
   }
 
-  private static final String PATTERN =
-      "[a-zA-Z0-9_-]+";
+  private static final String PATTERN = "[a-zA-Z0-9_-]+";
+
   private void validateEnvironmentVariableName(String name) throws ModelDBException {
     if (!Pattern.compile(PATTERN).matcher(name).matches()) {
       throw new ModelDBException(
-          "Environment variable name: " + name
+          "Environment variable name: "
+              + name
               + " should be not empty, should contain only alphanumeric or underscore",
           Code.INVALID_ARGUMENT);
     }
@@ -224,7 +227,9 @@ public class EnvironmentContainer extends BlobContainer {
     StringBuilder sb = new StringBuilder();
     sb.append("env:");
     for (EnvironmentVariablesBlob environmentVariablesBlob : blob.getEnvironmentVariablesList()) {
-      sb.append("name:").append(environmentVariablesBlob.getName()).append("value:")
+      sb.append("name:")
+          .append(environmentVariablesBlob.getName())
+          .append("value:")
           .append(environmentVariablesBlob.getValue());
     }
     sb.append("command_line:");
@@ -240,17 +245,19 @@ public class EnvironmentContainer extends BlobContainer {
     sb.append("python:");
     appendVersion(sb, version);
     sb.append("requirements:");
-    for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob : blob
-        .getRequirementsList()) {
-      sb.append("library:").append(pythonRequirementEnvironmentBlob.getLibrary())
+    for (PythonRequirementEnvironmentBlob pythonRequirementEnvironmentBlob :
+        blob.getRequirementsList()) {
+      sb.append("library:")
+          .append(pythonRequirementEnvironmentBlob.getLibrary())
           .append("constraint:")
           .append(pythonRequirementEnvironmentBlob.getConstraint());
       appendVersion(sb, pythonRequirementEnvironmentBlob.getVersion());
     }
     sb.append("constraints:");
-    for (PythonRequirementEnvironmentBlob pythonConstraintEnvironmentBlob : blob
-        .getConstraintsList()) {
-      sb.append("library:").append(pythonConstraintEnvironmentBlob.getLibrary())
+    for (PythonRequirementEnvironmentBlob pythonConstraintEnvironmentBlob :
+        blob.getConstraintsList()) {
+      sb.append("library:")
+          .append(pythonConstraintEnvironmentBlob.getLibrary())
           .append("constraint:")
           .append(pythonConstraintEnvironmentBlob.getConstraint());
       appendVersion(sb, pythonConstraintEnvironmentBlob.getVersion());
@@ -260,14 +267,22 @@ public class EnvironmentContainer extends BlobContainer {
 
   private String computeSHA(DockerEnvironmentBlob blob) throws NoSuchAlgorithmException {
     StringBuilder sb = new StringBuilder();
-    sb.append("docker:repository").append(blob.getRepository()).append("sha:")
-        .append(blob.getSha()).append("tag:").append(blob.getTag());
+    sb.append("docker:repository")
+        .append(blob.getRepository())
+        .append("sha:")
+        .append(blob.getSha())
+        .append("tag:")
+        .append(blob.getTag());
     return FileHasher.getSha(sb.toString());
-
   }
 
   private void appendVersion(StringBuilder sb, VersionEnvironmentBlob version) {
-    sb.append("version:").append("major:").append(version.getMajor()).append("minor")
-        .append(version.getMinor()).append("patch").append(version.getPatch());
+    sb.append("version:")
+        .append("major:")
+        .append(version.getMajor())
+        .append("minor")
+        .append(version.getMinor())
+        .append("patch")
+        .append(version.getPatch());
   }
 }

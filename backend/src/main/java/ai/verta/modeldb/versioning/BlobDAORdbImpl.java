@@ -1,8 +1,6 @@
 package ai.verta.modeldb.versioning;
 
 import ai.verta.modeldb.ModelDBException;
-import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
-import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
@@ -15,9 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;

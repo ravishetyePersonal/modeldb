@@ -6,9 +6,7 @@ import ai.verta.modeldb.versioning.Blob;
 import io.grpc.Status.Code;
 import org.hibernate.Session;
 
-/**
- * constructs proto object from it's database implementation
- */
+/** constructs proto object from it's database implementation */
 public abstract class BlobFactory {
 
   static final String S3_DATASET_BLOB = "S3DatasetBlob";
@@ -33,12 +31,9 @@ public abstract class BlobFactory {
       case DOCKER_ENVIRONMENT_BLOB:
         return new EnvironmentBlobFactory(folderElementEntity);
       default:
-        throw new ModelDBException(
-            "Unknown blob type found " + folderElementEntity,
-            Code.INTERNAL);
+        throw new ModelDBException("Unknown blob type found " + folderElementEntity, Code.INTERNAL);
     }
   }
-
 
   public abstract Blob getBlob(Session session) throws ModelDBException;
 

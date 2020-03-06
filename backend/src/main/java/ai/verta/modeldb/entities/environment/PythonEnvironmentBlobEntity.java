@@ -64,15 +64,18 @@ public class PythonEnvironmentBlobEntity {
   }
 
   @OneToMany(mappedBy = "pythonEnvironmentBlobEntity")
-  private Set<PythonEnvironmentRequirementBlobEntity> pythonEnvironmentRequirementBlobEntity = new HashSet<>();
+  private Set<PythonEnvironmentRequirementBlobEntity> pythonEnvironmentRequirementBlobEntity =
+      new HashSet<>();
 
   public VersionEnvironmentBlob getVersion() {
-    return VersionEnvironmentBlob.newBuilder().setMajor(major).setMinor(minor)
-        .setPatch(patch).build();
+    return VersionEnvironmentBlob.newBuilder()
+        .setMajor(major)
+        .setMinor(minor)
+        .setPatch(patch)
+        .build();
   }
 
   public Set<PythonEnvironmentRequirementBlobEntity> getPythonEnvironmentRequirementBlobEntity() {
     return pythonEnvironmentRequirementBlobEntity;
   }
 }
-

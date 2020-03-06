@@ -17,7 +17,9 @@ import org.hibernate.Session;
 
 public class EnvironmentBlobFactory extends BlobFactory {
   EnvironmentBlobFactory(InternalFolderElementEntity internalFolderElementEntity) {
-    super(internalFolderElementEntity.getElement_type(), internalFolderElementEntity.getElement_sha());
+    super(
+        internalFolderElementEntity.getElement_type(),
+        internalFolderElementEntity.getElement_sha());
   }
 
   @Override
@@ -27,9 +29,10 @@ public class EnvironmentBlobFactory extends BlobFactory {
         session.get(EnvironmentBlobEntity.class, getElementSha());
     switch (environmentBlobEntity.getEnvironment_type()) {
       case PYTHON_ENV_TYPE:
-        PythonEnvironmentBlob.Builder pythonEnvironmentBlobBuilder = PythonEnvironmentBlob.newBuilder();
-        PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity = environmentBlobEntity
-            .getPythonEnvironmentBlobEntity();
+        PythonEnvironmentBlob.Builder pythonEnvironmentBlobBuilder =
+            PythonEnvironmentBlob.newBuilder();
+        PythonEnvironmentBlobEntity pythonEnvironmentBlobEntity =
+            environmentBlobEntity.getPythonEnvironmentBlobEntity();
         pythonEnvironmentBlobBuilder.setVersion(pythonEnvironmentBlobEntity.getVersion());
         for (PythonEnvironmentRequirementBlobEntity pythonEnvironmentRequirementBlobEntity :
             pythonEnvironmentBlobEntity.getPythonEnvironmentRequirementBlobEntity()) {
@@ -38,15 +41,18 @@ public class EnvironmentBlobFactory extends BlobFactory {
         environmentBlobBuilder.setPython(pythonEnvironmentBlobBuilder);
         break;
       case DOCKER_ENV_TYPE:
-        DockerEnvironmentBlob dockerEnvironmentBlobBuilder = environmentBlobEntity.getDockerEnvironmentBlobEntity().toProto();
+        DockerEnvironmentBlob dockerEnvironmentBlobBuilder =
+            environmentBlobEntity.getDockerEnvironmentBlobEntity().toProto();
         environmentBlobBuilder.setDocker(dockerEnvironmentBlobBuilder);
         break;
     }
-    for (EnvironmentCommandLineEntity environmentCommandLineEntity: environmentBlobEntity.getEnvironmentCommandLineEntities()) {
+    for (EnvironmentCommandLineEntity environmentCommandLineEntity :
+        environmentBlobEntity.getEnvironmentCommandLineEntities()) {
       environmentBlobBuilder.addCommandLine(environmentCommandLineEntity.getCommand());
     }
 
-    for (EnvironmentVariablesEntity environmentVariablesEntity: environmentBlobEntity.getEnvironmentVariablesEntities()) {
+    for (EnvironmentVariablesEntity environmentVariablesEntity :
+        environmentBlobEntity.getEnvironmentVariablesEntities()) {
       environmentBlobBuilder.addEnvironmentVariables(environmentVariablesEntity.toProto());
     }
     return Blob.newBuilder().setEnvironment(environmentBlobBuilder).build();
