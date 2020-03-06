@@ -51,9 +51,9 @@ class TestNewDatasets:
         pytest.importorskip("boto3")
 
         dataset = verta.dataset.S3("s3://verta-starter")
-        assert len(dataset._msg.components) > 1
+        assert len(dataset._msg.s3.components) > 1
 
-        for s3_obj_metadata in (component.path for component in dataset._msg.components):
+        for s3_obj_metadata in (component.path for component in dataset._msg.s3.components):
             assert s3_obj_metadata.path != ""
             assert s3_obj_metadata.size != 0
             assert s3_obj_metadata.last_modified_at_source != 0
@@ -65,9 +65,9 @@ class TestNewDatasets:
 
         dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
 
-        assert len(dataset._msg.components) == 1
+        assert len(dataset._msg.s3.components) == 1
 
-        s3_obj_metadata = dataset._msg.components[0].path
+        s3_obj_metadata = dataset._msg.s3.components[0].path
         assert s3_obj_metadata.path != ""
         assert s3_obj_metadata.size != 0
         assert s3_obj_metadata.last_modified_at_source != 0
@@ -82,9 +82,9 @@ class TestNewDatasets:
             "s3://verta-starter/census-train.csv",
         ])
 
-        assert len(dataset._msg.components) == 2
+        assert len(dataset._msg.s3.components) == 2
 
-        for s3_obj_metadata in (component.path for component in dataset._msg.components):
+        for s3_obj_metadata in (component.path for component in dataset._msg.s3.components):
             assert s3_obj_metadata.path != ""
             assert s3_obj_metadata.size != 0
             assert s3_obj_metadata.last_modified_at_source != 0
@@ -100,7 +100,7 @@ class TestNewDatasets:
         ])
         bucket_dataset = verta.dataset.S3("s3://verta-starter")
 
-        assert len(multiple_dataset._msg.components) == len(bucket_dataset._msg.components)
+        assert len(multiple_dataset._msg.s3.components) == len(bucket_dataset._msg.s3.components)
 
 
 class TestBaseDatasets:
