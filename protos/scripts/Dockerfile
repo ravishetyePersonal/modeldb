@@ -40,3 +40,7 @@ RUN pip3 install grpcio-tools==1.27.2
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends jq
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+RUN pip3 install pystache==0.5.4 Click==7.0

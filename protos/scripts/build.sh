@@ -35,3 +35,8 @@ do
 done
 
 cp -R $PYTHON_OUTPUT/protos/* ../../client/verta/verta/_protos
+
+echo "Creating swagger definitions for scala"
+pushd ../../client/scala
+./swagger_codegen.sh
+popd

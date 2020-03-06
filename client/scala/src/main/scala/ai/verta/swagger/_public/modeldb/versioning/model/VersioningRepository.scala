@@ -5,6 +5,7 @@ import scala.util.Try
 
 import net.liftweb.json._
 
+import ai.verta.swagger._public.modeldb.versioning.model.DiffStatusEnumDiffStatus._
 import ai.verta.swagger._public.modeldb.versioning.model.WorkspaceTypeEnumWorkspaceType._
 import ai.verta.swagger.client.objects._
 
