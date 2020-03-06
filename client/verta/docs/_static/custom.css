@@ -314,7 +314,7 @@ h4 {
 }
 
 #rellinks > ul li a::before {
-  content: "Previos";
+  content: "Previous";
   display: inline;
   font-size: 13px;
   font-weight: 400;
