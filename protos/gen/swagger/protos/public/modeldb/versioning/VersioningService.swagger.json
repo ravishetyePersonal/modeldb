@@ -2101,6 +2101,15 @@
     }
   },
   "definitions": {
+    "DiffStatusEnumDiffStatus": {
+      "type": "string",
+      "enum": [
+        "ADDED",
+        "DELETED",
+        "MODIFIED"
+      ],
+      "default": "ADDED"
+    },
     "WorkspaceTypeEnumWorkspaceType": {
       "type": "string",
       "enum": [
@@ -2169,6 +2178,9 @@
             "type": "string"
           },
           "title": "List of folder names, with the last element being the name of the blob\nEach element goes one level deeper. So [\"foo\", \"bar\"] represents the same as /foo/bar"
+        },
+        "status": {
+          "$ref": "#/definitions/DiffStatusEnumDiffStatus"
         },
         "dataset": {
           "$ref": "#/definitions/versioningDatasetDiff"
@@ -2686,20 +2698,19 @@
     "versioningPathDatasetDiff": {
       "type": "object",
       "properties": {
-        "deleted": {
-          "type": "boolean",
-          "format": "boolean"
-        },
-        "added": {
-          "type": "boolean",
-          "format": "boolean"
-        },
         "A": {
-          "$ref": "#/definitions/versioningPathDatasetBlob",
-          "description": "things are modified when they have same path but different metadata."
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningPathDatasetComponentBlob"
+          },
+          "title": "Things are modified when they have same path but different metadata.\nComponents only present in A"
         },
         "B": {
-          "$ref": "#/definitions/versioningPathDatasetBlob"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningPathDatasetComponentBlob"
+          },
+          "title": "Components only present in B"
         }
       }
     },
@@ -2813,8 +2824,19 @@
     "versioningS3DatasetDiff": {
       "type": "object",
       "properties": {
-        "path": {
-          "$ref": "#/definitions/versioningPathDatasetDiff"
+        "A": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningS3DatasetComponentBlob"
+          },
+          "title": "Components only present in A"
+        },
+        "B": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningS3DatasetComponentBlob"
+          },
+          "title": "Components only present in B"
         }
       }
     },
@@ -2846,6 +2868,9 @@
         "patch": {
           "type": "integer",
           "format": "int32"
+        },
+        "suffix": {
+          "type": "string"
         }
       }
     }

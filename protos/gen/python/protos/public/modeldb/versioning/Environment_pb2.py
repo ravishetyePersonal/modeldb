@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='ai.verta.modeldb.versioning',
   syntax='proto3',
   serialized_options=b'P\001ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioning',
-  serialized_pb=b'\n2protos/public/modeldb/versioning/Environment.proto\x12\x1b\x61i.verta.modeldb.versioning\"\x94\x02\n\x0f\x45nvironmentBlob\x12\x44\n\x06python\x18\x01 \x01(\x0b\x32\x32.ai.verta.modeldb.versioning.PythonEnvironmentBlobH\x00\x12\x44\n\x06\x64ocker\x18\x02 \x01(\x0b\x32\x32.ai.verta.modeldb.versioning.DockerEnvironmentBlobH\x00\x12T\n\x15\x65nvironment_variables\x18\x03 \x03(\x0b\x32\x35.ai.verta.modeldb.versioning.EnvironmentVariablesBlob\x12\x14\n\x0c\x63ommand_line\x18\x04 \x03(\tB\t\n\x07\x63ontent\"7\n\x18\x45nvironmentVariablesBlob\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"E\n\x16VersionEnvironmentBlob\x12\r\n\x05major\x18\x01 \x01(\x05\x12\r\n\x05minor\x18\x02 \x01(\x05\x12\r\n\x05patch\x18\x03 \x01(\x05\"\x8d\x01\n PythonRequirementEnvironmentBlob\x12\x0f\n\x07library\x18\x01 \x01(\t\x12\x12\n\nconstraint\x18\x02 \x01(\t\x12\x44\n\x07version\x18\x03 \x01(\x0b\x32\x33.ai.verta.modeldb.versioning.VersionEnvironmentBlob\"\x86\x02\n\x15PythonEnvironmentBlob\x12\x44\n\x07version\x18\x01 \x01(\x0b\x32\x33.ai.verta.modeldb.versioning.VersionEnvironmentBlob\x12S\n\x0crequirements\x18\x02 \x03(\x0b\x32=.ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob\x12R\n\x0b\x63onstraints\x18\x03 \x03(\x0b\x32=.ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob\"E\n\x15\x44ockerEnvironmentBlob\x12\x12\n\nrepository\x18\x01 \x01(\t\x12\x0b\n\x03tag\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\tBMP\x01ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioningb\x06proto3'
+  serialized_pb=b'\n2protos/public/modeldb/versioning/Environment.proto\x12\x1b\x61i.verta.modeldb.versioning\"\x94\x02\n\x0f\x45nvironmentBlob\x12\x44\n\x06python\x18\x01 \x01(\x0b\x32\x32.ai.verta.modeldb.versioning.PythonEnvironmentBlobH\x00\x12\x44\n\x06\x64ocker\x18\x02 \x01(\x0b\x32\x32.ai.verta.modeldb.versioning.DockerEnvironmentBlobH\x00\x12T\n\x15\x65nvironment_variables\x18\x03 \x03(\x0b\x32\x35.ai.verta.modeldb.versioning.EnvironmentVariablesBlob\x12\x14\n\x0c\x63ommand_line\x18\x04 \x03(\tB\t\n\x07\x63ontent\"7\n\x18\x45nvironmentVariablesBlob\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"U\n\x16VersionEnvironmentBlob\x12\r\n\x05major\x18\x01 \x01(\x05\x12\r\n\x05minor\x18\x02 \x01(\x05\x12\r\n\x05patch\x18\x03 \x01(\x05\x12\x0e\n\x06suffix\x18\x04 \x01(\t\"\x8d\x01\n PythonRequirementEnvironmentBlob\x12\x0f\n\x07library\x18\x01 \x01(\t\x12\x12\n\nconstraint\x18\x02 \x01(\t\x12\x44\n\x07version\x18\x03 \x01(\x0b\x32\x33.ai.verta.modeldb.versioning.VersionEnvironmentBlob\"\x86\x02\n\x15PythonEnvironmentBlob\x12\x44\n\x07version\x18\x01 \x01(\x0b\x32\x33.ai.verta.modeldb.versioning.VersionEnvironmentBlob\x12S\n\x0crequirements\x18\x02 \x03(\x0b\x32=.ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob\x12R\n\x0b\x63onstraints\x18\x03 \x03(\x0b\x32=.ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob\"E\n\x15\x44ockerEnvironmentBlob\x12\x12\n\nrepository\x18\x01 \x01(\t\x12\x0b\n\x03tag\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\tBMP\x01ZIgithub.com/VertaAI/modeldb/protos/gen/go/protos/public/modeldb/versioningb\x06proto3'
 )
 
 
@@ -145,6 +145,13 @@ _VERSIONENVIRONMENTBLOB = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='suffix', full_name='ai.verta.modeldb.versioning.VersionEnvironmentBlob.suffix', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -158,7 +165,7 @@ _VERSIONENVIRONMENTBLOB = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=419,
-  serialized_end=488,
+  serialized_end=504,
 )
 
 
@@ -202,8 +209,8 @@ _PYTHONREQUIREMENTENVIRONMENTBLOB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=491,
-  serialized_end=632,
+  serialized_start=507,
+  serialized_end=648,
 )
 
 
@@ -247,8 +254,8 @@ _PYTHONENVIRONMENTBLOB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=635,
-  serialized_end=897,
+  serialized_start=651,
+  serialized_end=913,
 )
 
 
@@ -292,8 +299,8 @@ _DOCKERENVIRONMENTBLOB = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=899,
-  serialized_end=968,
+  serialized_start=915,
+  serialized_end=984,
 )
 
 _ENVIRONMENTBLOB.fields_by_name['python'].message_type = _PYTHONENVIRONMENTBLOB
