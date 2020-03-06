@@ -75,9 +75,10 @@ message BlobExpanded {
 
 message DiffStatusEnum {
     enum DiffStatus {
-        ADDED = 0;
-        DELETED = 1;
-        MODIFIED = 2;
+        UNKNOWN = 0;
+        ADDED = 1;
+        DELETED = 2;
+        MODIFIED = 3;
     }
 }
 
@@ -220,7 +221,7 @@ message ListCommitBlobsRequest {
 message GetCommitComponentRequest {
     RepositoryIdentification repository_id = 1;
     string commit_sha = 2;
-    // List of folder names, with the last element being the name of the blob
+    // List of folder names, with the last element being the name of the blob or tree
     // the last element determines if the response to be returned is Folder or Blob
     // Each element goes one level deeper. So ["foo", "bar"] represents the same as /foo/bar
     repeated string location = 3;
@@ -253,7 +254,7 @@ message ListBranchCommitsRequest {
     string branch = 3;
     // List of folder names (with the last element potentially representing the blob name)
     // This will be used to limit the search to scope just this location, like `git log /my/path` would do
-    repeated string location_prefix = 4;
+    //repeated string location_prefix = 4;
 
     message Response {
         repeated Commit commits = 1;
