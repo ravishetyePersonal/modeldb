@@ -103,9 +103,9 @@ class Repository(object):
 
         return commit.Commit(self._conn, self.id, parent_ids)
 
-    def get_commit(self, tag=None, id=None):
-        if tag is not None and id is not None:
-            raise ValueError("cannot specify both `tag` and `id`")
+    def get_commit(self, tag=None, branch=None, id=None):
+        if sum(map(lambda x: x is not None, [tag, id, branch])) > 1:
+            raise ValueError("cannot specify more than one of `tag`, `branch`, and `id`")
         elif tag is not None:
             msg = _VersioningService.GetTagRequest()
             endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/tags/{}".format(
@@ -113,6 +113,14 @@ class Repository(object):
                 self._conn.socket,
                 self.id,
                 tag,
+            )
+        elif branch is not None:
+            msg = _VersioningService.GetBranchRequest()
+            endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/branches/{}".format(
+                self._conn.scheme,
+                self._conn.socket,
+                self.id,
+                branch,
             )
         elif id is not None:
             msg = _VersioningService.GetCommitRequest()
@@ -123,9 +131,9 @@ class Repository(object):
                 id,
             )
         else:
-            raise ValueError("must specify either `tag` or `id`")
+            raise ValueError("must specify one of `tag`, `branch`, or `id`")
         response = _utils.make_request("GET", endpoint, self._conn)
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        return commit.Commit._from_id(self._conn, self.id, response_msg.commit.commit_sha)
+        return commit.Commit._from_id(self._conn, self.id, response_msg.commit.commit_sha, branch_name=branch)

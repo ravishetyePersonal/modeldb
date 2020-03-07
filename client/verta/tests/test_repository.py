@@ -4,8 +4,8 @@ import six
 
 import utils
 
-from verta._repository.commit import Commit
 import verta.dataset
+import verta.environment
 
 
 pytest.skip("unstable back end support", allow_module_level=True)
@@ -23,17 +23,15 @@ class TestRepository:
 
 class TestCommit:
     def test_add_get_rm(self, commit):
-        pytest.importorskip("boto3")
-
-        dataset1 = verta.dataset.S3("s3://verta-starter/census-test.csv")
-        dataset2 = verta.dataset.S3("s3://verta-starter/census-train.csv")
+        blob1 = verta.environment.Python(["a==1"])
+        blob2 = verta.environment.Python(["b==2"])
         path1 = "path/to/bananas"
         path2 = "path/to/still-bananas"
 
-        commit.update(path1, dataset1)
-        commit.update(path2, dataset2)
-        assert commit.get(path1) == dataset1
-        assert commit.get(path2) == dataset2
+        commit.update(path1, blob1)
+        commit.update(path2, blob2)
+        assert commit.get(path1) == blob1
+        assert commit.get(path2) == blob2
 
         commit.remove(path1)
         with pytest.raises(LookupError):
@@ -43,12 +41,10 @@ class TestCommit:
         assert not commit._blobs
 
     def test_save(self, commit):
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
-        commit.update(path, dataset)
+        commit.update(path, blob)
 
         commit.save()
 
@@ -80,15 +76,13 @@ class TestCommit:
             next(walk)  # a/c removed
 
     def test_get_commit_by_tag(self, repository):
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
         commit = repository.new_commit()
+        commit.update(path, blob)
+        commit.save()
         try:
-            commit.update(path, dataset)
-            commit.save()
             commit.tag("banana")
 
             assert commit.id == repository.get_commit(tag="banana").id
@@ -96,53 +90,113 @@ class TestCommit:
             utils.delete_commit(repository.id, commit.id, repository._conn)
 
     def test_get_commit_by_id(self, repository):
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
         commit = repository.new_commit()
+        commit.update(path, blob)
+        commit.save()
         try:
-            commit.update(path, dataset)
-            commit.save()
-
             assert commit.id == repository.get_commit(id=commit.id).id
         finally:
             utils.delete_commit(repository.id, commit.id, repository._conn)
 
     def test_become_child(self, commit):
-        pytest.importorskip("boto3")
-
-        dataset1 = verta.dataset.S3("s3://verta-starter/census-test.csv")
-        dataset2 = verta.dataset.S3("s3://verta-starter/census-train.csv")
+        blob1 = verta.environment.Python(["a==1"])
+        blob2 = verta.environment.Python(["b==2"])
         path1 = "path/to/bananas"
         path2 = "path/to/still-bananas"
 
-        commit.update(path1, dataset1)
+        commit.update(path1, blob1)
         commit.save()
         original_id = commit.id
+        try:
+            commit.update(path2, blob2)
+            assert commit.id is None
+            assert original_id in commit._parent_ids
+            assert commit.get(path1)
 
-        commit.update(path2, dataset2)
-        assert commit.id is None
-        assert original_id in commit._parent_ids
-        assert commit.get(path1)
-
-        commit.save()
-        assert commit.id != original_id
+            commit.save()
+            assert commit.id != original_id
+        finally:
+            utils.delete_commit(commit._repo_id, original_id, commit._conn)
 
     def test_set_parent(self, repository):
-        pytest.importorskip("boto3")
-
-        dataset1 = verta.dataset.S3("s3://verta-starter/census-test.csv")
+        blob1 = verta.environment.Python(["a==1"])
         path1 = "path/to/bananas"
 
         commit1 = repository.new_commit()
+        commit1.update(path1, blob1)
+        commit1.save()
         try:
-            commit1.update(path1, dataset1)
-            commit1.save()
-
             commit2 = repository.new_commit(parents=[commit1])
             assert commit1.id in commit2._parent_ids
             assert commit2.get(path1)
         finally:
             utils.delete_commit(repository.id, commit1.id, repository._conn)
+
+class TestBranch:
+    def test_set(self, repository):
+        branch = "banana"
+
+        blob = verta.environment.Python(["a==1"])
+        path = "path/to/bananas"
+
+        commit = repository.new_commit()
+        commit.update(path, blob)
+        commit.save()
+        try:
+            commit.branch(branch)
+            assert repository.get_commit(branch=branch).id == commit.id
+        finally:
+            utils.delete_commit(repository.id, commit.id, repository._conn)
+
+    def test_change(self, repository):
+        branch = "banana"
+
+        blob1 = verta.environment.Python(["a==1"])
+        blob2 = verta.environment.Python(["b==2"])
+        path1 = "path/to/bananas"
+        path2 = "path/to/still-bananas"
+
+        commit1 = repository.new_commit()
+        commit1.update(path1, blob1)
+        commit1.save()
+        try:
+            commit2 = repository.new_commit()
+            commit2.update(path2, blob2)
+            commit2.save()
+            try:
+                commit1.branch(branch)
+
+                commit2.branch(branch)
+                assert repository.get_commit(branch=branch).id == commit2.id
+            finally:
+                utils.delete_commit(repository.id, commit2.id, repository._conn)
+        finally:
+            utils.delete_commit(repository.id, commit1.id, repository._conn)
+
+    def test_update(self, repository):
+        branch = "banana"
+
+        blob1 = verta.environment.Python(["a==1"])
+        blob2 = verta.environment.Python(["b==2"])
+        path1 = "path/to/bananas"
+        path2 = "path/to/still-bananas"
+
+        commit = repository.new_commit()
+        commit.update(path1, blob1)
+        commit.save()
+        original_id = commit.id
+        try:
+            commit.branch(branch)
+
+            commit.update(path2, blob2)
+            commit.save()
+            try:
+                assert commit.id != original_id
+                assert repository.get_commit(branch=branch).id == commit.id
+            finally:
+                utils.delete_commit(commit._repo_id, commit.id, commit._conn)
+        finally:
+            utils.delete_commit(commit._repo_id, original_id, commit._conn)

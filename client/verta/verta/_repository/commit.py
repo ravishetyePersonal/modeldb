@@ -15,13 +15,14 @@ from . import blob as blob_module
 
 
 class Commit(object):
-    def __init__(self, conn, repo_id, parent_ids=None, id_=None):
+    def __init__(self, conn, repo_id, parent_ids=None, id_=None, branch_name=None):
         self._conn = conn
 
         self._repo_id = repo_id
         self._parent_ids = list(collections.OrderedDict.fromkeys(parent_ids or []))  # remove duplicates while maintaining order
 
         self.id = id_
+        self.branch_name = branch_name  # TODO: find a way to clear if branch is moved
 
         self._blobs = dict()
 
@@ -34,6 +35,7 @@ class Commit(object):
                 self._update_blobs_from_commit(parent_id)
 
     def __repr__(self):
+        branch_prefix = '(Branch: {}) '.format(self.branch_name) if self.branch_name is not None else ''
         if self.id is None:
             header = "unsaved Commit containing:"
         else:
@@ -45,10 +47,10 @@ class Commit(object):
         ))
         if not contents:
             contents = "<no contents>"
-        return '\n'.join((header, contents))
+        return '\n'.join((branch_prefix + header, contents))
 
     @classmethod
-    def _from_id(cls, conn, repo_id, id_):
+    def _from_id(cls, conn, repo_id, id_, **kwargs):
         endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits/{}".format(
             conn.scheme,
             conn.socket,
@@ -61,7 +63,7 @@ class Commit(object):
         response_msg = _utils.json_to_proto(response.json(),
                                             _VersioningService.GetCommitRequest.Response)
         commit_msg = response_msg.commit
-        return cls(conn, repo_id, commit_msg.parent_shas, commit_msg.commit_sha)
+        return cls(conn, repo_id, commit_msg.parent_shas, commit_msg.commit_sha, **kwargs)
 
     @staticmethod
     def _raise_lookup_error(path):
@@ -207,7 +209,17 @@ class Commit(object):
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), msg.Response)
+        original_id = self.id
         self.id = response_msg.commit.commit_sha
+
+        if self.branch_name is not None:
+            # update branch to child commit
+            try:
+                self.branch(self.branch_name)
+            except Exception as e:
+                # consider save failed, restore original ID
+                self.id = original_id
+                six.raise_from(e, None)
 
     def tag(self, tag):
         if self.id is None:
@@ -222,6 +234,22 @@ class Commit(object):
         )
         response = _utils.make_request("PUT", endpoint, self._conn, json=data)
         _utils.raise_for_http_error(response)
+
+    def branch(self, branch):
+        if self.id is None:
+            raise RuntimeError("Commit must be saved before it can be attached to a branch")
+
+        data = self.id
+        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/branches/{}".format(
+            self._conn.scheme,
+            self._conn.socket,
+            self._repo_id,
+            branch,
+        )
+        response = _utils.make_request("PUT", endpoint, self._conn, json=data)
+        _utils.raise_for_http_error(response)
+
+        self.branch_name = branch
 
 
 def blob_msg_to_object(blob_msg):
