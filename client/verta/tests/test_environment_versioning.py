@@ -84,22 +84,12 @@ class TestPython:
 
         assert env._msg.environment_variables
 
-    def test_commit(self, repository):
+    def test_commit(self, commit):
         env = verta.environment.Python()
 
-        commit1 = repository.new_commit()
-        commit1.update('env', env)
-        commit1.save()
-        try:
-            # get from internal blob dict
-            assert commit1.get('env')
-
-            commit2 = repository.new_commit(parents=[commit1])
-
-            # get from back end
-            assert commit2.get('env')
-        finally:
-            utils.delete_commit(repository.id, commit1.id, repository._conn)
+        commit.update('env', env)
+        commit.save()
+        assert commit.get('env')
 
     def test_reqs_from_env(self):
         env = verta.environment.Python()
