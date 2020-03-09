@@ -8,11 +8,11 @@ from .._repository import blob
 
 
 class _Configuration(blob.Blob):
-    def __init__(self):
-        """
-        Base class for configuration versioning. Not for human consumption.
+    """
+    Base class for configuration versioning. Not for human consumption.
 
-        """
+    """
+    def __init__(self):
         super(_Configuration, self).__init__()
 
         self._msg = _ConfigService.ConfigBlob()

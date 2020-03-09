@@ -12,6 +12,7 @@ Use the sidebar to navigate to specific pages for specific modules and classes.
     Experiment <api/experiment>
     ExperimentRun <api/experimentrun>
     ExperimentRuns <api/experimentruns>
+    Versioning <api/versioning>
     Data Versioning <api/dataset>
     Deployment <api/deployment>
     Integrations <api/integrations>

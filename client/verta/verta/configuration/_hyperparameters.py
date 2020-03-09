@@ -10,36 +10,36 @@ from . import _configuration
 
 
 class Hyperparameters(_configuration._Configuration):
+    """
+
+
+    Parameters
+    ----------
+    hyperparameters : dict of `name` to `value`
+        Hyperparameter names to individual values.
+    hyperparameter_ranges : dict of `name` to tuple of (`start`, `stop`, `step`)
+        Hyperparameyter names to a specified range of values.
+    hyperparameter_sets : dict of `name` to list of `values`
+        Hyperparameter names to sets of specific values.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from verta.configuration import Hyperparameters
+        config1 = Hyperparameters(hyperparameters={
+            'C': 1e-4,
+            'penalty': 'l2',
+        })
+        config2 = Hyperparameters(hyperparameter_ranges={
+            'C': (0, 1, 1e-2),
+        })
+        config3 = Hyperparameters(hyperparameter_sets={
+            'penalty': ['l1', 'l2'],
+        })
+
+    """
     def __init__(self, hyperparameters=None, hyperparameter_ranges=None, hyperparameter_sets=None):
-        """
-
-
-        Parameters
-        ----------
-        hyperparameters : dict of `name` to `value`
-            Hyperparameter names to individual values.
-        hyperparameter_ranges : dict of `name` to tuple of (`start`, `stop`, `step`)
-            Hyperparameyter names to a specified range of values.
-        hyperparameter_sets : dict of `name` to list of `values`
-            Hyperparameter names to sets of specific values.
-
-        Examples
-        --------
-        .. code-block:: python
-
-            from verta.configuration import Hyperparameters
-            config1 = Hyperparameters(hyperparameters={
-                'C': 1e-4,
-                'penalty': 'l2',
-            })
-            config2 = Hyperparameters(hyperparameter_ranges={
-                'C': (0, 1, 1e-2),
-            })
-            config3 = Hyperparameters(hyperparameter_sets={
-                'penalty': ['l1', 'l2'],
-            })
-
-        """
         super(Hyperparameters, self).__init__()
 
         if hyperparameters is not None:

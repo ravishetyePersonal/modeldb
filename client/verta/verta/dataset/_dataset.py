@@ -8,6 +8,10 @@ from .._repository import blob
 
 
 class _Dataset(blob.Blob):
+    """
+    Base class for dataset versioning. Not for human consumption.
+
+    """
     def __init__(self):
         super(_Dataset, self).__init__()
 

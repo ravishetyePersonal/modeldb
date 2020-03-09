@@ -13,13 +13,13 @@ from .._repository import blob
 
 
 class _Environment(blob.Blob):
+    """
+    Base class for environment versioning. Not for human consumption.
+
+    Handles environment variables and command line arguments.
+
+    """
     def __init__(self, env_vars):
-        """
-        Base class for environment versioning. Not for human consumption.
-
-        Handles environment variables and command line arguments.
-
-        """
         super(_Environment, self).__init__()
 
         self._msg = _EnvironmentService.EnvironmentBlob()

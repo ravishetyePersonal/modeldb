@@ -15,22 +15,33 @@ from . import _environment
 
 
 class Python(_environment._Environment):
+    """
+
+
+    Parameters
+    ----------
+    requirements : list of str, optional
+        List of PyPI package names. If not provided, all packages currently installed through
+        pip will be captured.
+    constraints : list of str, optional
+        List of PyPI package names with version specifiers. If not provided, nothing will be
+        captured.
+    env_vars : list of str, optional
+        Names of environment variables to capture. If not provided, nothing will be captured.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from verta.environment import Python
+        env1 = Python(requirements=Python.read_pip_file("../requirements.txt"))
+        env2 = Python(
+            requirements=["tensorflow"],
+            env_vars=["CUDA_VISIBLE_DEVICES"],
+        )
+
+    """
     def __init__(self, requirements=None, constraints=None, env_vars=None):
-        """
-
-
-        Parameters
-        ----------
-        requirements : list of str or file-like, optional
-            List of PyPI package names. If not provided, all packages currently installed through
-            pip will be captured.
-        constraints : list of str or file-like, optional
-            List of PyPI package names with version specifiers. If not provided, nothing will be
-            captured.
-        env_vars : list of str, optional
-            Names of environment variables to capture. If not provided, nothing will be captured.
-
-        """
         super(Python, self).__init__(env_vars=env_vars)
         self._capture_python_version()
         self._capture_requirements(requirements)

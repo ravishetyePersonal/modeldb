@@ -13,6 +13,28 @@ from . import _dataset
 
 
 class S3(_dataset._Dataset):
+    """
+
+
+    Parameters
+    ----------
+    paths : list of str
+        List of S3 object URLs of the form "s3://<bucket-name>/<key>".
+
+    Examples
+    --------
+    .. code-block:: python
+
+        from verta.dataset import S3
+        dataset1 = S3([
+            "s3://verta-starter/census-train.csv",
+            "s3://verta-starter/census-test.csv",
+        ])
+        dataset2 = S3([
+            "s3://verta-starter",
+        ])
+
+    """
     _S3_PATH = "s3://{}/{}"
 
     def __init__(self, paths):
