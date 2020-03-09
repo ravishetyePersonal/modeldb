@@ -2,10 +2,6 @@
 
 from __future__ import print_function
 
-from .external import six
-from .external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
-from .external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
-
 import ast
 import copy
 import glob
@@ -34,6 +30,10 @@ from ._protos.public.modeldb import CommonService_pb2 as _CommonService
 from ._protos.public.modeldb import ProjectService_pb2 as _ProjectService
 from ._protos.public.modeldb import ExperimentService_pb2 as _ExperimentService
 from ._protos.public.modeldb import ExperimentRunService_pb2 as _ExperimentRunService
+
+from .external import six
+from .external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
+from .external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
 
 from ._internal_utils import _artifact_utils
 from ._internal_utils import _pip_requirements_utils

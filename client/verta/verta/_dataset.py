@@ -1,4 +1,6 @@
-from .external import six
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
 
 import hashlib
 import os
@@ -18,9 +20,11 @@ except ImportError:  # Boto 3 not installed
     boto3 = None
 
 from ._protos.public.common import CommonService_pb2 as _CommonCommonService
-from ._protos.public.modeldb import CommonService_pb2 as _CommonService
 from ._protos.public.modeldb import DatasetService_pb2 as _DatasetService
 from ._protos.public.modeldb import DatasetVersionService_pb2 as _DatasetVersionService
+
+from .external import six
+
 from ._internal_utils import _utils
 
 

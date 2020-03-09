@@ -4,9 +4,9 @@ from __future__ import print_function
 
 import collections
 
-from ..external import six
-
 from .._protos.public.modeldb.versioning import VersioningService_pb2 as _VersioningService
+
+from ..external import six
 
 from .._internal_utils import _utils
 from .. import configuration

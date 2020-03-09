@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from ..external import six
-from ..external.six.moves.urllib.parse import urljoin  # pylint: disable=import-error, no-name-in-module
-
 import datetime
 import glob
 import inspect
@@ -22,6 +19,9 @@ from urllib3.util.retry import Retry
 
 from google.protobuf import json_format
 from google.protobuf.struct_pb2 import Value, ListValue, Struct, NULL_VALUE
+
+from ..external import six
+from ..external.six.moves.urllib.parse import urljoin  # pylint: disable=import-error, no-name-in-module
 
 from .._protos.public.modeldb import CommonService_pb2 as _CommonService
 
@@ -966,20 +966,6 @@ def get_git_repo_root_dir():
         # append trailing separator
         return os.path.join(dirpath, "")
     raise OSError("unable to find git repository root directory")
-
-
-# TODO: support pip3 and conda
-# def get_env_dependencies():
-#     """
-#     Returns a list of packages present in the current Python environment.
-
-#     Returns
-#     -------
-#     dependencies : list of str
-#         Names of packages and their pinned version numbers in the current Python environment.
-
-#     """
-#     return six.ensure_str(subprocess.check_output(["pip", "freeze"])).splitlines()
 
 
 def is_org(workspace_name, conn):

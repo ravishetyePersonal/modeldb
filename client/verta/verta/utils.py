@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .external import six
-
 import collections
 import json
 import numbers
@@ -15,6 +13,8 @@ try:
     import tensorflow as tf
 except ImportError:  # TensorFlow not installed
     tf = None
+
+from .external import six
 
 from ._internal_utils import _utils
 

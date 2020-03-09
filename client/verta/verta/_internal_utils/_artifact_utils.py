@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from ..external import six
-from ..external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
-
-import csv
-import json
 import os
-import subprocess
-import sys
 import tempfile
 
 import cloudpickle
+
+from ..external import six
+from ..external.six.moves import cPickle as pickle  # pylint: disable=import-error, no-name-in-module
 
 from .. import __about__
 
