@@ -6,7 +6,9 @@ import ai.verta.modeldb.CodeVersion;
 import ai.verta.modeldb.Experiment;
 import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.FindExperimentRuns;
+import ai.verta.modeldb.GetVersionedInput;
 import ai.verta.modeldb.KeyValueQuery;
+import ai.verta.modeldb.LogVersionedInput;
 import ai.verta.modeldb.ModelDBConstants;
 import ai.verta.modeldb.ModelDBMessages;
 import ai.verta.modeldb.Observation;
@@ -14,6 +16,7 @@ import ai.verta.modeldb.OperatorEnum;
 import ai.verta.modeldb.Project;
 import ai.verta.modeldb.SortExperimentRuns;
 import ai.verta.modeldb.TopExperimentRunsSelector;
+import ai.verta.modeldb.VersioningEntry;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.dto.ExperimentRunPaginationDTO;
 import ai.verta.modeldb.entities.ArtifactEntity;
@@ -1530,6 +1533,55 @@ public class ExperimentRunDAORdbImpl implements ExperimentRunDAO {
         experimentRunIds.add(experimentRunEntity.getId());
       }
       return experimentRunIds;
+    }
+  }
+
+  @Override
+  public LogVersionedInput.Response logVersionedInput(LogVersionedInput request)
+      throws InvalidProtocolBufferException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      Transaction transaction = session.beginTransaction();
+      ExperimentRunEntity runEntity = session.get(ExperimentRunEntity.class, request.getId());
+      VersioningEntry versioningEntry = request.getVersionedInputs();
+      runEntity.setVersioningModeldbEntityMappings(
+          RdbmsUtils.getVersioningMappingFromVersioningInput(versioningEntry, runEntity));
+      long currentTimestamp = Calendar.getInstance().getTimeInMillis();
+      runEntity.setDate_updated(currentTimestamp);
+      session.saveOrUpdate(runEntity);
+      // Update parent entity timestamp
+      updateParentEntitiesTimestamp(
+          session,
+          Collections.singletonList(runEntity.getProject_id()),
+          Collections.singletonList(runEntity.getExperiment_id()),
+          currentTimestamp);
+      transaction.commit();
+      LOGGER.debug("ExperimentRun versioning added successfully");
+      return LogVersionedInput.Response.newBuilder()
+          .setExperimentRun(runEntity.getProtoObject())
+          .build();
+    }
+  }
+
+  @Override
+  public GetVersionedInput.Response getVersionedInputs(GetVersionedInput request)
+      throws InvalidProtocolBufferException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      ExperimentRunEntity experimentRunObj =
+          session.get(ExperimentRunEntity.class, request.getId());
+      if (experimentRunObj != null) {
+        LOGGER.debug("ExperimentRun versioning fetch successfully");
+        return GetVersionedInput.Response.newBuilder()
+            .setVersionedInputs(
+                RdbmsUtils.getVersioningEntryFromList(
+                    experimentRunObj.getVersioningModeldbEntityMappings()))
+            .build();
+      } else {
+        String errorMessage = "ExperimentRun not found for given ID : " + request.getId();
+        LOGGER.warn(errorMessage);
+        Status status =
+            Status.newBuilder().setCode(Code.NOT_FOUND_VALUE).setMessage(errorMessage).build();
+        throw StatusProto.toStatusRuntimeException(status);
+      }
     }
   }
 }

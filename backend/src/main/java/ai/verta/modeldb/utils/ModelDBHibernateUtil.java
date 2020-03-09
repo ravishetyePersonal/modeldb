@@ -27,13 +27,27 @@ import ai.verta.modeldb.entities.QueryParameterEntity;
 import ai.verta.modeldb.entities.RawDatasetVersionInfoEntity;
 import ai.verta.modeldb.entities.TagsMapping;
 import ai.verta.modeldb.entities.UserCommentEntity;
+import ai.verta.modeldb.entities.code.GitCodeBlobEntity;
+import ai.verta.modeldb.entities.code.NotebookCodeBlobEntity;
+import ai.verta.modeldb.entities.config.ConfigBlobEntity;
+import ai.verta.modeldb.entities.config.HyperparameterElementConfigBlobEntity;
+import ai.verta.modeldb.entities.config.HyperparameterSetConfigBlobEntity;
 import ai.verta.modeldb.entities.dataset.PathDatasetComponentBlobEntity;
 import ai.verta.modeldb.entities.dataset.S3DatasetComponentBlobEntity;
+import ai.verta.modeldb.entities.environment.DockerEnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentCommandLineEntity;
+import ai.verta.modeldb.entities.environment.EnvironmentVariablesEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentBlobEntity;
+import ai.verta.modeldb.entities.environment.PythonEnvironmentRequirementBlobEntity;
 import ai.verta.modeldb.entities.metadata.LabelsMappingEntity;
+import ai.verta.modeldb.entities.versioning.BranchEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.entities.versioning.TagsEntity;
+import ai.verta.modeldb.entities.versioning.VersioningModeldbEntityMapping;
+import com.google.common.base.Joiner;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.grpc.health.v1.HealthCheckResponse;
@@ -46,6 +60,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import liquibase.Contexts;
@@ -117,7 +132,21 @@ public class ModelDBHibernateUtil {
     TagsEntity.class,
     PathDatasetComponentBlobEntity.class,
     S3DatasetComponentBlobEntity.class,
-    InternalFolderElementEntity.class
+    InternalFolderElementEntity.class,
+    EnvironmentBlobEntity.class,
+    DockerEnvironmentBlobEntity.class,
+    PythonEnvironmentBlobEntity.class,
+    PythonEnvironmentRequirementBlobEntity.class,
+    EnvironmentCommandLineEntity.class,
+    EnvironmentVariablesEntity.class,
+    BranchEntity.class,
+    HyperparameterElementConfigBlobEntity.class,
+    HyperparameterSetConfigBlobEntity.class,
+    ConfigBlobEntity.class,
+    GitCodeBlobEntity.class,
+    NotebookCodeBlobEntity.class,
+    BranchEntity.class,
+    VersioningModeldbEntityMapping.class
   };
 
   private ModelDBHibernateUtil() {}
@@ -479,7 +508,8 @@ public class ModelDBHibernateUtil {
             workspaceColumnName,
             workspaceId,
             workspaceType,
-            true);
+            true,
+            null);
     Long count = (Long) query.uniqueResult();
 
     if (count > 0) {
@@ -503,7 +533,8 @@ public class ModelDBHibernateUtil {
       String workspaceColumnName,
       String workspaceId,
       WorkspaceType workspaceType,
-      boolean shouldSetName) {
+      boolean shouldSetName,
+      List<String> ordering) {
     StringBuilder stringQueryBuilder = new StringBuilder(command);
     if (!workspaceId.isEmpty()) {
       if (shouldSetName) {
@@ -523,6 +554,11 @@ public class ModelDBHibernateUtil {
           .append(ModelDBConstants.WORKSPACE_TYPE);
     }
 
+    if (ordering != null && !ordering.isEmpty()) {
+      stringQueryBuilder.append(" order by ");
+      Joiner joiner = Joiner.on(",");
+      stringQueryBuilder.append(joiner.join(ordering));
+    }
     Query query = session.createQuery(stringQueryBuilder.toString());
     if (shouldSetName) {
       query.setParameter(fieldName, name);

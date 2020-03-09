@@ -46,6 +46,8 @@ import ai.verta.modeldb.project.ProjectServiceImpl;
 import ai.verta.modeldb.telemetry.TelemetryCron;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
+import ai.verta.modeldb.versioning.BlobDAORdbImpl;
+import ai.verta.modeldb.versioning.CommitDAORdbImpl;
 import ai.verta.modeldb.versioning.FileHasher;
 import ai.verta.modeldb.versioning.RepositoryDAORdbImpl;
 import ai.verta.modeldb.versioning.VersioningServiceImpl;
@@ -444,7 +446,8 @@ public class App implements ApplicationContextAware {
             authService,
             roleService,
             new RepositoryDAORdbImpl(authService, roleService),
-            null,
+            new CommitDAORdbImpl(),
+            new BlobDAORdbImpl(),
             experimentDAO,
             experimentRunDAO,
             new ModelDBAuthInterceptor(),

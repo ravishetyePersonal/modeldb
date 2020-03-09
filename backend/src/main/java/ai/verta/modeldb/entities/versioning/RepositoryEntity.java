@@ -5,11 +5,15 @@ import ai.verta.modeldb.versioning.Repository;
 import ai.verta.modeldb.versioning.Repository.Builder;
 import ai.verta.modeldb.versioning.SetRepository;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -46,6 +50,10 @@ public class RepositoryEntity {
   @Column(name = "workspace_type", columnDefinition = "varchar")
   private Integer workspace_type;
 
+  @OrderBy("date_created")
+  @ManyToMany(mappedBy = "repository")
+  private Set<CommitEntity> commits = new HashSet<>();
+
   @Column(name = "owner")
   private String owner;
 
@@ -69,18 +77,23 @@ public class RepositoryEntity {
     return workspace_id;
   }
 
+  public Set<CommitEntity> getCommits() {
+    return commits;
+  }
+
   public Integer getWorkspace_type() {
     return workspace_type;
   }
 
   public Repository toProto() {
-    final Builder builder = Repository.newBuilder()
-        .setId(this.id)
-        .setName(this.name)
-        .setDateCreated(this.date_created)
-        .setDateUpdated(this.date_updated)
-        .setWorkspaceId(this.workspace_id)
-        .setWorkspaceTypeValue(this.workspace_type);
+    final Builder builder =
+        Repository.newBuilder()
+            .setId(this.id)
+            .setName(this.name)
+            .setDateCreated(this.date_created)
+            .setDateUpdated(this.date_updated)
+            .setWorkspaceId(this.workspace_id)
+            .setWorkspaceTypeValue(this.workspace_type);
     if (owner != null) {
       builder.setOwner(owner);
     }

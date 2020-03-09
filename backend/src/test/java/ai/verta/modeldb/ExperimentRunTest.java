@@ -8857,4 +8857,162 @@ public class ExperimentRunTest {
     LOGGER.info(
         "Delete ExperimentRun by parent entities owner test stop................................");
   }
+
+  @Test
+  public void versioningAtExperimentRunCreateTest() {
+    LOGGER.info("Versioning ExperimentRun test start................................");
+
+    ProjectTest projectTest = new ProjectTest();
+    ExperimentTest experimentTest = new ExperimentTest();
+
+    ProjectServiceBlockingStub projectServiceStub = ProjectServiceGrpc.newBlockingStub(channel);
+    ExperimentServiceBlockingStub experimentServiceStub =
+        ExperimentServiceGrpc.newBlockingStub(channel);
+    ExperimentRunServiceBlockingStub experimentRunServiceStub =
+        ExperimentRunServiceGrpc.newBlockingStub(channel);
+
+    // Create project
+    CreateProject createProjectRequest =
+        projectTest.getCreateProjectRequest("experimentRun_project_ypcdt1");
+    CreateProject.Response createProjectResponse =
+        projectServiceStub.createProject(createProjectRequest);
+    Project project = createProjectResponse.getProject();
+
+    // Create two experiment of above project
+    CreateExperiment createExperimentRequest =
+        ExperimentTest.getCreateExperimentRequest(project.getId(), "Experiment_n_sprt_abc");
+    CreateExperiment.Response createExperimentResponse =
+        experimentServiceStub.createExperiment(createExperimentRequest);
+    Experiment experiment = createExperimentResponse.getExperiment();
+
+    CreateExperimentRun createExperimentRunRequest =
+        getCreateExperimentRunRequest(project.getId(), experiment.getId(), "ExperimentRun_n_sprt");
+    Map<String, Location> locationMap = new HashMap<>();
+    locationMap.put(
+        "location-1",
+        Location.newBuilder().addLocations("hyperparameter").addLocations("train").build());
+    locationMap.put(
+        "location-2", Location.newBuilder().addLocations("dataset").addLocations("train").build());
+    createExperimentRunRequest =
+        createExperimentRunRequest
+            .toBuilder()
+            .setVersionedInputs(
+                VersioningEntry.newBuilder()
+                    .setRepositoryId(123)
+                    .setCommit("xyz")
+                    .putAllKeyLocationMap(locationMap)
+                    .build())
+            .build();
+    CreateExperimentRun.Response createExperimentRunResponse =
+        experimentRunServiceStub.createExperimentRun(createExperimentRunRequest);
+    ExperimentRun experimentRun = createExperimentRunResponse.getExperimentRun();
+    LOGGER.info("ExperimentRun created successfully");
+    assertEquals(
+        "ExperimentRun name not match with expected ExperimentRun name",
+        createExperimentRunRequest.getName(),
+        experimentRun.getName());
+    assertEquals(
+        "ExperimentRun versioningInput not match with expected ExperimentRun versioningInput",
+        createExperimentRunRequest.getVersionedInputs(),
+        experimentRun.getVersionedInputs());
+
+    GetExperimentRunById getExperimentRunById =
+        GetExperimentRunById.newBuilder().setId(experimentRun.getId()).build();
+    GetExperimentRunById.Response getExperimentRunByIdRes =
+        experimentRunServiceStub.getExperimentRunById(getExperimentRunById);
+    assertEquals(
+        "ExperimentRun versioningInput not match with expected ExperimentRun versioningInput",
+        createExperimentRunRequest.getVersionedInputs(),
+        getExperimentRunByIdRes.getExperimentRun().getVersionedInputs());
+
+    DeleteProject deleteProject = DeleteProject.newBuilder().setId(project.getId()).build();
+    DeleteProject.Response deleteProjectResponse = projectServiceStub.deleteProject(deleteProject);
+    LOGGER.info("Project deleted successfully");
+    LOGGER.info(deleteProjectResponse.toString());
+    assertTrue(deleteProjectResponse.getStatus());
+
+    LOGGER.info("Versioning ExperimentRun test stop................................");
+  }
+
+  @Test
+  public void logGetVersioningExperimentRunCreateTest() {
+    LOGGER.info("Log and Get Versioning ExperimentRun test start................................");
+
+    ProjectTest projectTest = new ProjectTest();
+
+    ProjectServiceBlockingStub projectServiceStub = ProjectServiceGrpc.newBlockingStub(channel);
+    ExperimentServiceBlockingStub experimentServiceStub =
+        ExperimentServiceGrpc.newBlockingStub(channel);
+    ExperimentRunServiceBlockingStub experimentRunServiceStub =
+        ExperimentRunServiceGrpc.newBlockingStub(channel);
+
+    // Create project
+    CreateProject createProjectRequest =
+        projectTest.getCreateProjectRequest("experimentRun_project_ypcdt1");
+    CreateProject.Response createProjectResponse =
+        projectServiceStub.createProject(createProjectRequest);
+    Project project = createProjectResponse.getProject();
+
+    // Create two experiment of above project
+    CreateExperiment createExperimentRequest =
+        ExperimentTest.getCreateExperimentRequest(project.getId(), "Experiment_n_sprt_abc");
+    CreateExperiment.Response createExperimentResponse =
+        experimentServiceStub.createExperiment(createExperimentRequest);
+    Experiment experiment = createExperimentResponse.getExperiment();
+
+    CreateExperimentRun createExperimentRunRequest =
+        getCreateExperimentRunRequest(project.getId(), experiment.getId(), "ExperimentRun_n_sprt");
+    CreateExperimentRun.Response createExperimentRunResponse =
+        experimentRunServiceStub.createExperimentRun(createExperimentRunRequest);
+    ExperimentRun experimentRun = createExperimentRunResponse.getExperimentRun();
+    LOGGER.info("ExperimentRun created successfully");
+    assertEquals(
+        "ExperimentRun name not match with expected ExperimentRun name",
+        createExperimentRunRequest.getName(),
+        experimentRun.getName());
+    assertTrue(
+        "ExperimentRun versioningInput not match with expected ExperimentRun versioningInput",
+        !createExperimentRunRequest.hasVersionedInputs());
+
+    Map<String, Location> locationMap = new HashMap<>();
+    locationMap.put(
+        "location-1",
+        Location.newBuilder().addLocations("hyperparameter").addLocations("train").build());
+    locationMap.put(
+        "location-2", Location.newBuilder().addLocations("dataset").addLocations("train").build());
+
+    LogVersionedInput logVersionedInput =
+        LogVersionedInput.newBuilder()
+            .setId(experimentRun.getId())
+            .setVersionedInputs(
+                VersioningEntry.newBuilder()
+                    .setRepositoryId(123)
+                    .setCommit("xyz")
+                    .putAllKeyLocationMap(locationMap)
+                    .build())
+            .build();
+    LogVersionedInput.Response logVersionedInputResponse =
+        experimentRunServiceStub.logVersionedInput(logVersionedInput);
+    assertEquals(
+        "ExperimentRun versioningInput not match with expected ExperimentRun versioningInput",
+        logVersionedInput.getVersionedInputs(),
+        logVersionedInputResponse.getExperimentRun().getVersionedInputs());
+
+    GetVersionedInput getVersionedInput =
+        GetVersionedInput.newBuilder().setId(experimentRun.getId()).build();
+    GetVersionedInput.Response getVersionedInputResponse =
+        experimentRunServiceStub.getVersionedInputs(getVersionedInput);
+    assertEquals(
+        "ExperimentRun versioningInput not match with expected ExperimentRun versioningInput",
+        logVersionedInput.getVersionedInputs(),
+        getVersionedInputResponse.getVersionedInputs());
+
+    DeleteProject deleteProject = DeleteProject.newBuilder().setId(project.getId()).build();
+    DeleteProject.Response deleteProjectResponse = projectServiceStub.deleteProject(deleteProject);
+    LOGGER.info("Project deleted successfully");
+    LOGGER.info(deleteProjectResponse.toString());
+    assertTrue(deleteProjectResponse.getStatus());
+
+    LOGGER.info("Log and Get Versioning ExperimentRun test stop................................");
+  }
 }

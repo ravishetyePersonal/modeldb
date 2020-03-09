@@ -3,6 +3,8 @@ package ai.verta.modeldb.entities;
 import ai.verta.modeldb.CodeVersion;
 import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.ModelDBConstants;
+import ai.verta.modeldb.VersioningEntry;
+import ai.verta.modeldb.entities.versioning.VersioningModeldbEntityMapping;
 import ai.verta.modeldb.utils.RdbmsUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
@@ -72,6 +74,12 @@ public class ExperimentRunEntity {
       setCode_version_snapshot(
           RdbmsUtils.generateCodeVersionEntity(
               ModelDBConstants.CODE_VERSION, experimentRun.getCodeVersionSnapshot()));
+    }
+
+    if (experimentRun.getVersionedInputs() != null && experimentRun.hasVersionedInputs()) {
+      VersioningEntry versioningEntry = experimentRun.getVersionedInputs();
+      this.versioningModeldbEntityMappings =
+          RdbmsUtils.getVersioningMappingFromVersioningInput(versioningEntry, this);
     }
   }
 
@@ -166,6 +174,13 @@ public class ExperimentRunEntity {
   @OneToOne(targetEntity = CodeVersionEntity.class, cascade = CascadeType.ALL)
   @OrderBy("id")
   private CodeVersionEntity code_version_snapshot;
+
+  @OneToMany(
+      targetEntity = VersioningModeldbEntityMapping.class,
+      mappedBy = "experimentRunEntity",
+      cascade = CascadeType.ALL)
+  @LazyCollection(LazyCollectionOption.FALSE)
+  private List<VersioningModeldbEntityMapping> versioningModeldbEntityMappings = new ArrayList<>();
 
   @Transient private Map<String, List<KeyValueEntity>> keyValueEntityMap = new HashMap<>();
 
@@ -397,6 +412,15 @@ public class ExperimentRunEntity {
     this.attributeMapping.addAll(attributeMapping);
   }
 
+  public List<VersioningModeldbEntityMapping> getVersioningModeldbEntityMappings() {
+    return versioningModeldbEntityMappings;
+  }
+
+  public void setVersioningModeldbEntityMappings(
+      List<VersioningModeldbEntityMapping> versioningModeldbEntityMappings) {
+    this.versioningModeldbEntityMappings = versioningModeldbEntityMappings;
+  }
+
   public ExperimentRun getProtoObject() throws InvalidProtocolBufferException {
     LOGGER.trace("starting conversion");
     if (keyValueEntityMap.size() == 0) {
@@ -468,6 +492,11 @@ public class ExperimentRunEntity {
 
     if (code_version_snapshot != null) {
       experimentRunBuilder.setCodeVersionSnapshot(code_version_snapshot.getProtoObject());
+    }
+    if (versioningModeldbEntityMappings != null && versioningModeldbEntityMappings.size() > 0) {
+      VersioningEntry versioningEntry =
+          RdbmsUtils.getVersioningEntryFromList(versioningModeldbEntityMappings);
+      experimentRunBuilder.setVersionedInputs(versioningEntry);
     }
     LOGGER.trace("Returning converted ExperimentRun");
     return experimentRunBuilder.build();

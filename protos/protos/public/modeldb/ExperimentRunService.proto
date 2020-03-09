@@ -39,6 +39,31 @@ message ExperimentRun {
     repeated Feature features = 27;
     string job_id = 28;
     string owner = 29;
+    VersioningEntry versioned_inputs = 30;
+}
+
+message VersioningEntry {
+    uint64 repository_id = 1;
+    string commit = 2;
+    map<string, Location> key_location_map = 3;
+}
+
+message Location {
+    repeated string location = 1;
+}
+
+message LogVersionedInput {
+    string id = 1;
+    VersioningEntry versioned_inputs = 2;
+    message Response {
+        ExperimentRun experiment_run = 1;
+    }
+}
+message GetVersionedInput {
+    string id = 1;
+    message Response {
+        VersioningEntry versioned_inputs = 1;
+    }
 }
 
 // observations with the same key are not overwritten, the are appended to a list
@@ -72,6 +97,7 @@ message CreateExperimentRun {
     repeated common.KeyValue metrics = 25;
     repeated Observation observations = 26;
     repeated Feature features = 27;
+    VersioningEntry versioned_inputs = 28;
 
     message Response {
         ExperimentRun experiment_run = 1;
@@ -823,6 +849,19 @@ service ExperimentRunService {
         option (google.api.http) = {
             delete: "/v1/experiment-run/deleteExperimentRuns"
             body: "*"
+        };
+    };
+
+    rpc logVersionedInput(LogVersionedInput) returns (LogVersionedInput.Response) {
+        option (google.api.http) = {
+            post: "/v1/experiment-run/logVersionedInput"
+            body: "*"
+        };
+    };
+
+    rpc getVersionedInputs(GetVersionedInput) returns (GetVersionedInput.Response) {
+        option (google.api.http) = {
+            get: "/v1/experiment-run/getVersionedInput"
         };
     };
 }

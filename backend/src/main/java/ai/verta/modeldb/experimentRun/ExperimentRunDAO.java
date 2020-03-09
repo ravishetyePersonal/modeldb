@@ -6,6 +6,8 @@ import ai.verta.modeldb.CodeVersion;
 import ai.verta.modeldb.Experiment;
 import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.FindExperimentRuns;
+import ai.verta.modeldb.GetVersionedInput;
+import ai.verta.modeldb.LogVersionedInput;
 import ai.verta.modeldb.Observation;
 import ai.verta.modeldb.Project;
 import ai.verta.modeldb.SortExperimentRuns;
@@ -461,5 +463,11 @@ public interface ExperimentRunDAO {
    * @return {@link List<String>} : list of experimentRun Ids
    */
   List<String> getExperimentRunIdsByExperimentIds(List<String> experimentIds)
+      throws InvalidProtocolBufferException;
+
+  LogVersionedInput.Response logVersionedInput(LogVersionedInput request)
+      throws InvalidProtocolBufferException;
+
+  GetVersionedInput.Response getVersionedInputs(GetVersionedInput request)
       throws InvalidProtocolBufferException;
 }

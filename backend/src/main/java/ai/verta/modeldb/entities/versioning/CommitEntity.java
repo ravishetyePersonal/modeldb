@@ -20,12 +20,16 @@ public class CommitEntity {
   public CommitEntity() {}
 
   public CommitEntity(
-      RepositoryEntity repositoryEntity, List<CommitEntity> parentCommits, Commit internalCommit) {
+      RepositoryEntity repositoryEntity,
+      List<CommitEntity> parentCommits,
+      Commit internalCommit,
+      String rootSha) {
     this.commit_hash = internalCommit.getCommitSha();
     this.date_created = internalCommit.getDateCreated();
     this.message = internalCommit.getMessage();
     this.repository.add(repositoryEntity);
     this.author = internalCommit.getAuthor();
+    this.rootSha = rootSha;
 
     if (parentCommits != null) {
       this.parent_commits.addAll(parentCommits);
@@ -45,8 +49,11 @@ public class CommitEntity {
   @Column(name = "author", columnDefinition = "varchar", length = 50)
   private String author;
 
+  @Column(name = "root_sha", columnDefinition = "varchar", length = 64)
+  private String rootSha;
+
   // Repo fork
-  @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.ALL)
+  @ManyToMany(targetEntity = RepositoryEntity.class, cascade = CascadeType.PERSIST)
   @JoinTable(
       name = "repository_commit",
       joinColumns = @JoinColumn(name = "commit_hash"),
@@ -54,12 +61,15 @@ public class CommitEntity {
   private Set<RepositoryEntity> repository = new HashSet<>();
 
   // merge commit have multiple parents
-  @ManyToMany(targetEntity = CommitEntity.class, cascade = CascadeType.ALL)
+  @ManyToMany(targetEntity = CommitEntity.class, cascade = CascadeType.PERSIST)
   @JoinTable(
       name = "commit_parent",
       joinColumns = @JoinColumn(name = "child_hash"),
       inverseJoinColumns = @JoinColumn(name = "parent_hash"))
   private Set<CommitEntity> parent_commits = new HashSet<>();
+
+  @ManyToMany(mappedBy = "parent_commits")
+  private Set<CommitEntity> child_commits = new HashSet<>();
 
   public String getCommit_hash() {
     return commit_hash;
@@ -83,6 +93,14 @@ public class CommitEntity {
 
   public Set<CommitEntity> getParent_commits() {
     return parent_commits;
+  }
+
+  public String getRootSha() {
+    return rootSha;
+  }
+
+  public Set<CommitEntity> getChild_commits() {
+    return child_commits;
   }
 
   private List<String> getParentCommitIds() {

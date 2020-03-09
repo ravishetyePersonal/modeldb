@@ -38,8 +38,6 @@ import ai.verta.modeldb.SetDatasetWorkspace.Response;
 import ai.verta.modeldb.UpdateDatasetAttributes;
 import ai.verta.modeldb.UpdateDatasetDescription;
 import ai.verta.modeldb.UpdateDatasetName;
-import ai.verta.modeldb.UpdateProjectName;
-import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.datasetVersion.DatasetVersionDAO;
@@ -127,9 +125,8 @@ public class DatasetServiceImpl extends DatasetServiceImplBase {
       UserInfo userInfo = authService.getCurrentLoginUserInfo();
 
       Dataset dataset = getDatasetFromRequest(request, userInfo);
-      ModelDBUtils
-          .checkPersonalWorkspace(userInfo, dataset.getWorkspaceType(), dataset.getWorkspaceId(),
-              "dataset");
+      ModelDBUtils.checkPersonalWorkspace(
+          userInfo, dataset.getWorkspaceType(), dataset.getWorkspaceId(), "dataset");
       Dataset createdDataset = datasetDAO.createDataset(dataset, userInfo);
 
       responseObserver.onNext(

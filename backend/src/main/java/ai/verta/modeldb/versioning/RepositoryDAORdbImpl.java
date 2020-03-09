@@ -6,6 +6,7 @@ import ai.verta.modeldb.WorkspaceTypeEnum.WorkspaceType;
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.dto.WorkspaceDTO;
+import ai.verta.modeldb.entities.versioning.BranchEntity;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.entities.versioning.TagsEntity;
@@ -15,8 +16,12 @@ import ai.verta.modeldb.versioning.GetRepositoryRequest.Response;
 import ai.verta.uac.UserInfo;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,6 +95,25 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(ModelDBConstants.REPOSITORY_ID)
           .append(" = :repoId ")
           .toString();
+  private static final String CHECK_BRANCH_IN_REPOSITORY_HQL =
+      new StringBuilder("From ")
+          .append(BranchEntity.class.getSimpleName())
+          .append(" br ")
+          .append(" where ")
+          .append(" br.id.")
+          .append(ModelDBConstants.REPOSITORY_ID)
+          .append(" = :repositoryId ")
+          .append(" AND br.id.")
+          .append(ModelDBConstants.BRANCH)
+          .append(" = :branch ")
+          .toString();
+  private static final String GET_REPOSITORY_BRANCHES_HQL =
+      new StringBuilder("From ")
+          .append(BranchEntity.class.getSimpleName())
+          .append(" br where br.id.")
+          .append(ModelDBConstants.REPOSITORY_ID)
+          .append(" = :repoId ")
+          .toString();
 
   public RepositoryDAORdbImpl(AuthService authService, RoleService roleService) {
     this.authService = authService;
@@ -107,7 +131,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   }
 
   private WorkspaceDTO verifyAndGetWorkspaceDTO(
-      RepositoryIdentification id, boolean shouldCheckNamed, boolean create) throws ModelDBException {
+      RepositoryIdentification id, boolean shouldCheckNamed, boolean create)
+      throws ModelDBException {
     WorkspaceDTO workspaceDTO = null;
     String message = null;
     if (id.hasNamedId()) {
@@ -122,14 +147,16 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
         workspaceDTO =
             roleService.getWorkspaceDTOByWorkspaceName(userInfo, named.getWorkspaceName());
         if (create) {
-          ModelDBUtils
-              .checkPersonalWorkspace(userInfo, workspaceDTO.getWorkspaceType(),
-                  workspaceDTO.getWorkspaceId(), "repository");
+          ModelDBUtils.checkPersonalWorkspace(
+              userInfo,
+              workspaceDTO.getWorkspaceType(),
+              workspaceDTO.getWorkspaceId(),
+              "repository");
         }
       } catch (StatusRuntimeException e) {
         LOGGER.warn(e);
-        throw new ModelDBException("Error getting workspace: " + e.getStatus().getDescription(),
-            e.getStatus().getCode());
+        throw new ModelDBException(
+            "Error getting workspace: " + e.getStatus().getDescription(), e.getStatus().getCode());
       }
       if (named.getName().isEmpty() && shouldCheckNamed) {
         message = "Repository name should not be empty";
@@ -142,12 +169,13 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
     return workspaceDTO;
   }
 
-  private WorkspaceDTO verifyAndGetWorkspaceDTO(RepositoryIdentification id, boolean shouldCheckNamed)
-      throws ModelDBException {
+  private WorkspaceDTO verifyAndGetWorkspaceDTO(
+      RepositoryIdentification id, boolean shouldCheckNamed) throws ModelDBException {
     return verifyAndGetWorkspaceDTO(id, shouldCheckNamed, false);
   }
 
-  private RepositoryEntity getRepositoryById(Session session, RepositoryIdentification id)
+  @Override
+  public RepositoryEntity getRepositoryById(Session session, RepositoryIdentification id)
       throws ModelDBException {
     RepositoryEntity repository;
     if (id.hasNamedId()) {
@@ -181,7 +209,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
             ModelDBConstants.WORKSPACE_ID,
             workspaceDTO.getWorkspaceId(),
             workspaceDTO.getWorkspaceType(),
-            true);
+            true,
+            null);
     return Optional.ofNullable((RepositoryEntity) query.uniqueResult());
   }
 
@@ -264,7 +293,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              Collections.singletonList(ModelDBConstants.DATE_UPDATED));
       int pageLimit = request.getPagination().getPageLimit();
       if (request.hasPagination()) {
         query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);
@@ -283,7 +313,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               ModelDBConstants.WORKSPACE_ID,
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
-              false);
+              false,
+              null);
       list.forEach((o) -> builder.addRepositories(((RepositoryEntity) o).toProto()));
       final Long value = (Long) query.uniqueResult();
       builder.setTotalRecords(value);
@@ -297,12 +328,28 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public SetTagRequest.Response setTag(SetTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
-      // TODO: Check commit_hash exists in DB
-      TagsEntity tagsEntity =
-          new TagsEntity(repository.getId(), request.getCommitSha(), request.getTag());
-      session.saveOrUpdate(tagsEntity);
+      boolean exists =
+          VersioningUtils.commitRepositoryMappingExists(
+              session, request.getCommitSha(), repository.getId());
+      if (!exists) {
+        throw new ModelDBException(
+            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+      }
+
+      Query query = session.createQuery(GET_TAG_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("tag", request.getTag());
+      TagsEntity tagsEntity = (TagsEntity) query.uniqueResult();
+      if (tagsEntity != null) {
+        throw new ModelDBException("Tag '" + request.getTag() + "' already exists", Code.NOT_FOUND);
+      }
+
+      tagsEntity = new TagsEntity(repository.getId(), request.getCommitSha(), request.getTag());
+      session.save(tagsEntity);
+      session.getTransaction().commit();
       return SetTagRequest.Response.newBuilder().build();
     }
   }
@@ -310,13 +357,19 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public GetTagRequest.Response getTag(GetTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
       RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
       Query query = session.createQuery(GET_TAG_HQL);
       query.setParameter("repositoryId", repository.getId());
       query.setParameter("tag", request.getTag());
       TagsEntity tagsEntity = (TagsEntity) query.uniqueResult();
+      if (tagsEntity == null) {
+        throw new ModelDBException("Tag not found", Code.NOT_FOUND);
+      }
+
       CommitEntity commitEntity = session.get(CommitEntity.class, tagsEntity.getCommit_hash());
+      session.getTransaction().commit();
       return GetTagRequest.Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
     }
   }
@@ -324,12 +377,13 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public DeleteTagRequest.Response deleteTag(DeleteTagRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       session.beginTransaction();
-
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       TagsEntity tagsEntity =
-          session.load(
-              TagsEntity.class, new TagsEntity.TagId(request.getTag(), repository.getId()));
+          session.get(TagsEntity.class, new TagsEntity.TagId(request.getTag(), repository.getId()));
+      if (tagsEntity == null) {
+        throw new ModelDBException("Tag not found", Code.NOT_FOUND);
+      }
       session.delete(tagsEntity);
       session.getTransaction().commit();
       return DeleteTagRequest.Response.newBuilder().build();
@@ -339,19 +393,168 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
   @Override
   public ListTagsRequest.Response listTags(ListTagsRequest request) throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
-      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
       session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
 
       Query query = session.createQuery(GET_TAGS_HQL);
       query.setParameter("repoId", repository.getId());
       List<TagsEntity> tagsEntities = query.list();
 
+      if (tagsEntities == null || tagsEntities.isEmpty()) {
+        return ListTagsRequest.Response.newBuilder().setTotalRecords(0).build();
+      }
+
       session.getTransaction().commit();
+      List<String> tags =
+          tagsEntities.stream()
+              .map(tagsEntity -> tagsEntity.getId().getTag())
+              .collect(Collectors.toList());
       return ListTagsRequest.Response.newBuilder()
-          .addAllTags(
-              tagsEntities.stream()
-                  .map(tagsEntity -> tagsEntity.getId().getTag())
-                  .collect(Collectors.toList()))
+          .addAllTags(tags)
+          .setTotalRecords(tags.size())
+          .build();
+    }
+  }
+
+  @Override
+  public SetBranchRequest.Response setBranch(SetBranchRequest request) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      boolean exists =
+          VersioningUtils.commitRepositoryMappingExists(
+              session, request.getCommitSha(), repository.getId());
+      if (!exists) {
+        throw new ModelDBException(
+            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+      }
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity != null) {
+        if (branchEntity.getCommit_hash().equals(request.getCommitSha()))
+          return SetBranchRequest.Response.newBuilder().build();
+        session.delete(branchEntity);
+      }
+
+      branchEntity =
+          new BranchEntity(repository.getId(), request.getCommitSha(), request.getBranch());
+      session.save(branchEntity);
+      session.getTransaction().commit();
+      return SetBranchRequest.Response.newBuilder().build();
+    }
+  }
+
+  @Override
+  public GetBranchRequest.Response getBranch(GetBranchRequest request) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+
+      CommitEntity commitEntity = session.get(CommitEntity.class, branchEntity.getCommit_hash());
+      session.getTransaction().commit();
+      return GetBranchRequest.Response.newBuilder().setCommit(commitEntity.toCommitProto()).build();
+    }
+  }
+
+  @Override
+  public DeleteBranchRequest.Response deleteBranch(DeleteBranchRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+      BranchEntity branchEntity =
+          session.get(
+              BranchEntity.class,
+              new BranchEntity.BranchId(request.getBranch(), repository.getId()));
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+      session.delete(branchEntity);
+      session.getTransaction().commit();
+      return DeleteBranchRequest.Response.newBuilder().build();
+    }
+  }
+
+  @Override
+  public ListBranchesRequest.Response listBranches(ListBranchesRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(GET_REPOSITORY_BRANCHES_HQL);
+      query.setParameter("repoId", repository.getId());
+      List<BranchEntity> branchEntities = query.list();
+
+      if (branchEntities == null || branchEntities.isEmpty()) {
+        return ListBranchesRequest.Response.newBuilder().setTotalRecords(0).build();
+      }
+
+      session.getTransaction().commit();
+      List<String> branches =
+          branchEntities.stream()
+              .map(branchEntity -> branchEntity.getId().getBranch())
+              .collect(Collectors.toList());
+      return ListBranchesRequest.Response.newBuilder()
+          .addAllBranches(branches)
+          .setTotalRecords(branches.size())
+          .build();
+    }
+  }
+
+  @Override
+  public ListBranchCommitsRequest.Response listBranchCommits(ListBranchCommitsRequest request)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      session.beginTransaction();
+      RepositoryEntity repository = getRepositoryById(session, request.getRepositoryId());
+
+      Query query = session.createQuery(CHECK_BRANCH_IN_REPOSITORY_HQL);
+      query.setParameter("repositoryId", repository.getId());
+      query.setParameter("branch", request.getBranch());
+      BranchEntity branchEntity = (BranchEntity) query.uniqueResult();
+      if (branchEntity == null) {
+        throw new ModelDBException(ModelDBConstants.BRANCH_NOT_FOUND, Code.NOT_FOUND);
+      }
+      // list of commits to be used in the in clause in the final query
+      Set<String> commitSHAs = new HashSet<String>();
+      // List of commits to be traversed
+      List<String> childCommitSHAs = new LinkedList<String>();
+      childCommitSHAs.add(branchEntity.getCommit_hash());
+      String getParentCommitsQuery = "SELECT parent_hash FROM commit_parent WHERE child_hash = \"";
+
+      while (!childCommitSHAs.isEmpty()) {
+        String childCommit = childCommitSHAs.remove(0);
+        commitSHAs.add(childCommit);
+        Query sqlQuery = session.createSQLQuery(getParentCommitsQuery + childCommit + "\"");
+        List<String> parentCommitSHAs = sqlQuery.list();
+        childCommitSHAs.addAll(parentCommitSHAs);
+      }
+
+      String getChildCommits =
+          "FROM "
+              + CommitEntity.class.getSimpleName()
+              + " c WHERE c.commit_hash IN (:childCommitSHAs)  ORDER BY c.date_created DESC";
+      query = session.createQuery(getChildCommits);
+      query.setParameterList("childCommitSHAs", commitSHAs);
+      List<CommitEntity> commits = query.list();
+
+      return ListBranchCommitsRequest.Response.newBuilder()
+          .addAllCommits(
+              commits.stream().map(CommitEntity::toCommitProto).collect(Collectors.toList()))
+          .setTotalRecords(commits.size())
           .build();
     }
   }

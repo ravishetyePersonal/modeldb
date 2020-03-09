@@ -15,11 +15,9 @@ public class PathDatasetComponentBlobEntity {
   public PathDatasetComponentBlobEntity() {}
 
   public PathDatasetComponentBlobEntity(
-      String pathDatasetBlobId,
-      String blobHash,
-      PathDatasetComponentBlob pathDatasetComponentBlob) {
+      String blobHash, String blobHashDataset, PathDatasetComponentBlob pathDatasetComponentBlob) {
 
-    this.id = new PathDatasetComponentBlobId(blobHash, pathDatasetBlobId);
+    this.id = new PathDatasetComponentBlobId(blobHash, blobHashDataset);
     this.path = pathDatasetComponentBlob.getPath();
     this.size = pathDatasetComponentBlob.getSize();
     this.last_modified_at_source = pathDatasetComponentBlob.getLastModifiedAtSource();
@@ -88,9 +86,9 @@ class PathDatasetComponentBlobId implements Serializable {
       length = 64)
   private String path_dataset_blob_id;
 
-  public PathDatasetComponentBlobId(String blobHash, String pathDatasetBlobId) {
+  public PathDatasetComponentBlobId(String blobHash, String datasetBlobHash) {
     this.blob_hash = blobHash;
-    this.path_dataset_blob_id = pathDatasetBlobId;
+    path_dataset_blob_id = datasetBlobHash;
   }
 
   private PathDatasetComponentBlobId() {}
