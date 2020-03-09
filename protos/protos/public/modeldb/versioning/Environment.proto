@@ -43,3 +43,27 @@ message DockerEnvironmentBlob {
     string tag = 2;
     string sha = 3;
 }
+
+message EnvironmentDiff {
+    oneof content {
+        PythonEnvironmentDiff python = 1;
+        DockerEnvironmentDiff docker = 2;
+    }
+    // Should only contain environment variables unique to A/B (considering all fields)
+    repeated EnvironmentVariablesBlob environment_variables_A = 3;
+    repeated EnvironmentVariablesBlob environment_variables_B = 4;
+
+    repeated string command_line_A = 5;
+    repeated string command_line_B = 6;
+}
+
+message PythonEnvironmentDiff {
+    // Should only contain requirements and constraints unique to A/B (considering all fields)
+    PythonEnvironmentBlob A = 1;
+    PythonEnvironmentBlob B = 2;
+}
+
+message DockerEnvironmentDiff {
+    DockerEnvironmentBlob A = 1;
+    DockerEnvironmentBlob B = 2;
+}

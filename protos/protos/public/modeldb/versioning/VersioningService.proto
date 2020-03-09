@@ -91,6 +91,9 @@ message BlobDiff {
     // instead of trying to figure out inter-types diff
     oneof content {
         DatasetDiff dataset = 3;
+        EnvironmentDiff environment = 4;
+        CodeDiff code = 5;
+        ConfigDiff config = 6;
     }
 }
 
