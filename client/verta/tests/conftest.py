@@ -267,15 +267,20 @@ def experiment_run(client):
 def repository(client):
     name = _utils.generate_default_name()
     repo = client.get_or_create_repository(name)
+    root_id = repo.get_commit()
 
     yield repo
 
+    try:
+        utils.delete_commit(repository.id, root_id, repository._conn)
+    except:
+        pass  # may have already been deleted in test
     utils.delete_repository(repo.id, client._conn)
 
 
 @pytest.fixture
 def commit(repository):
-    commit = repository.new_commit()
+    commit = repository.get_commit()
 
     yield commit
 

@@ -87,10 +87,22 @@ class Repository(object):
                                             _VersioningService.GetRepositoryRequest.Response)
         return cls(conn, response_msg.repository.id)
 
-    def new_commit(self, parents=None):
-        if parents is None:
-            parents = []
+    def new_commit(self, parents):
+        """
+        Prepares a new unsaved Commit with `parents`.
 
+        This method is mostly for lower-level Commit operations. It is recommended to use e.g.
+        :meth:`Repository.get_commit` for your first and future Commits.
+
+        Parameters
+        ----------
+        parents : list of :class:`Commit`
+
+        Returns
+        -------
+        :class:`Commit`
+
+        """
         parent_ids = []
         for i, parent in enumerate(parents):
             if not isinstance(parent, commit.Commit):
@@ -103,9 +115,37 @@ class Repository(object):
 
         return commit.Commit(self._conn, self.id, parent_ids)
 
-    def get_commit(self, tag=None, branch=None, id=None):
-        if sum(map(lambda x: x is not None, [tag, id, branch])) > 1:
-            raise ValueError("cannot specify more than one of `tag`, `branch`, and `id`")
+    def get_commit(self, branch=None, tag=None, id=None):
+        """
+        Returns the Commit with the specified `branch`, `tag`, or `id`.
+
+        If no arguments are passed, ``branch="master"`` is the default.
+
+        Parameters
+        ----------
+        branch : str, optional
+        tag : str, optional
+        id : str, optional
+
+        Returns
+        -------
+        :class:`Commit`
+
+        """
+        num_args = sum(map(lambda x: x is not None, [tag, id, branch]))
+        if num_args > 1:
+            raise ValueError("cannot specify more than one of `branch`, `tag`, and `id`")
+        if num_args == 0:
+            branch = "master"
+
+        if branch is not None:
+            msg = _VersioningService.GetBranchRequest()
+            endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/branches/{}".format(
+                self._conn.scheme,
+                self._conn.socket,
+                self.id,
+                branch,
+            )
         elif tag is not None:
             msg = _VersioningService.GetTagRequest()
             endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/tags/{}".format(
@@ -113,14 +153,6 @@ class Repository(object):
                 self._conn.socket,
                 self.id,
                 tag,
-            )
-        elif branch is not None:
-            msg = _VersioningService.GetBranchRequest()
-            endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/branches/{}".format(
-                self._conn.scheme,
-                self._conn.socket,
-                self.id,
-                branch,
             )
         elif id is not None:
             msg = _VersioningService.GetCommitRequest()
@@ -130,8 +162,6 @@ class Repository(object):
                 self.id,
                 id,
             )
-        else:
-            raise ValueError("must specify one of `tag`, `branch`, or `id`")
         response = _utils.make_request("GET", endpoint, self._conn)
         _utils.raise_for_http_error(response)
 

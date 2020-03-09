@@ -20,6 +20,13 @@ class TestRepository:
         retrieved_repo = client.get_or_create_repository(id=repository.id)
         assert repository.id == retrieved_repo.id
 
+    def test_max_one_arg_for_get_commit(self, repository):
+        with pytest.raises(ValueError):
+            repository.get_commit(branch="banana", tag="coconut")
+
+    def test_master_branch_default(self, repository):
+        assert repository.get_commit().branch_name == "master"
+
 
 class TestCommit:
     def test_add_get_rm(self, commit):
@@ -79,7 +86,7 @@ class TestCommit:
         blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
-        commit = repository.new_commit()
+        commit = repository.get_commit()
         commit.update(path, blob)
         commit.save()
         try:
@@ -93,7 +100,7 @@ class TestCommit:
         blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
-        commit = repository.new_commit()
+        commit = repository.get_commit()
         commit.update(path, blob)
         commit.save()
         try:
@@ -125,7 +132,7 @@ class TestCommit:
         blob1 = verta.environment.Python(["a==1"])
         path1 = "path/to/bananas"
 
-        commit1 = repository.new_commit()
+        commit1 = repository.get_commit()
         commit1.update(path1, blob1)
         commit1.save()
         try:
@@ -142,7 +149,7 @@ class TestBranch:
         blob = verta.environment.Python(["a==1"])
         path = "path/to/bananas"
 
-        commit = repository.new_commit()
+        commit = repository.get_commit()
         commit.update(path, blob)
         commit.save()
         try:
@@ -159,11 +166,12 @@ class TestBranch:
         path1 = "path/to/bananas"
         path2 = "path/to/still-bananas"
 
-        commit1 = repository.new_commit()
+        commit1 = repository.get_commit()
+        root_id = commit1.id
         commit1.update(path1, blob1)
         commit1.save()
         try:
-            commit2 = repository.new_commit()
+            commit2 = repository.get_commit(id=root_id)
             commit2.update(path2, blob2)
             commit2.save()
             try:
@@ -184,7 +192,7 @@ class TestBranch:
         path1 = "path/to/bananas"
         path2 = "path/to/still-bananas"
 
-        commit = repository.new_commit()
+        commit = repository.get_commit()
         commit.update(path1, blob1)
         commit.save()
         original_id = commit.id
