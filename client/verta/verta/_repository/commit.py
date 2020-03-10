@@ -267,7 +267,7 @@ def blob_msg_to_object(blob_msg):
         if content_subtype == 's3':
             obj = dataset.S3(paths=[])
         elif content_subtype == 'path':
-            raise NotImplementedError
+            obj = dataset.Path(paths=[])
     elif content_type == 'environment':
         content_subtype = blob_msg.environment.WhichOneof('content')
         if content_subtype == 'python':

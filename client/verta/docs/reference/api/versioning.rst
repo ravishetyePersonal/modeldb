@@ -17,6 +17,8 @@ Configuration
 
 Dataset
 ^^^^^^^
+.. autoclass:: verta.dataset.Path
+    :members:
 .. autoclass:: verta.dataset.S3
     :members:
 
