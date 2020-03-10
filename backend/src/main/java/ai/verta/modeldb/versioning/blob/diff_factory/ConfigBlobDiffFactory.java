@@ -49,7 +49,8 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
       hyperparameterSetBuilder.addAllB(config.getHyperparameterSetList());
     }
 
-    configBuilder.setHyperparameters(hyperparameterBuilder).build();
-    blobBuilder.setConfig(configBuilder.build());
+    configBuilder.setHyperparameters(hyperparameterBuilder);
+    configBuilder.setHyperparameterSet(hyperparameterSetBuilder);
+    blobBuilder.setConfig(configBuilder);
   }
 }
