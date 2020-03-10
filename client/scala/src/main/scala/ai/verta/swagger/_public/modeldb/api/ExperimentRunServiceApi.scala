@@ -308,6 +308,16 @@ class ExperimentRunServiceApi(client: HttpClient, val basePath: String = "/v1") 
 
   def getUrlForArtifact(body: ModeldbGetUrlForArtifact)(implicit ec: ExecutionContext): Try[ModeldbGetUrlForArtifactResponse] = Await.result(getUrlForArtifactAsync(body), Duration.Inf)
 
+  def getVersionedInputsAsync(id: String)(implicit ec: ExecutionContext): Future[Try[ModeldbGetVersionedInputResponse]] = {
+    val __query = Map[String,String](
+      "id" -> client.toQuery(id)
+    )
+    val body: String = null
+    return client.request[String, ModeldbGetVersionedInputResponse]("GET", basePath + s"/experiment-run/getVersionedInput", __query, body, ModeldbGetVersionedInputResponse.fromJson)
+  }
+
+  def getVersionedInputs(id: String)(implicit ec: ExecutionContext): Try[ModeldbGetVersionedInputResponse] = Await.result(getVersionedInputsAsync(id), Duration.Inf)
+
   def logArtifactAsync(body: ModeldbLogArtifact)(implicit ec: ExecutionContext): Future[Try[ModeldbLogArtifactResponse]] = {
     val __query = Map[String,String](
     )
@@ -435,6 +445,15 @@ class ExperimentRunServiceApi(client: HttpClient, val basePath: String = "/v1") 
   }
 
   def logObservations(body: ModeldbLogObservations)(implicit ec: ExecutionContext): Try[ModeldbLogObservationsResponse] = Await.result(logObservationsAsync(body), Duration.Inf)
+
+  def logVersionedInputAsync(body: ModeldbLogVersionedInput)(implicit ec: ExecutionContext): Future[Try[ModeldbLogVersionedInputResponse]] = {
+    val __query = Map[String,String](
+    )
+    if (body == null) throw new Exception("Missing required parameter \"body\"")
+    return client.request[ModeldbLogVersionedInput, ModeldbLogVersionedInputResponse]("POST", basePath + s"/experiment-run/logVersionedInput", __query, body, ModeldbLogVersionedInputResponse.fromJson)
+  }
+
+  def logVersionedInput(body: ModeldbLogVersionedInput)(implicit ec: ExecutionContext): Try[ModeldbLogVersionedInputResponse] = Await.result(logVersionedInputAsync(body), Duration.Inf)
 
   def setParentExperimentRunIdAsync(body: ModeldbSetParentExperimentRunId)(implicit ec: ExecutionContext): Future[Try[ModeldbSetParentExperimentRunIdResponse]] = {
     val __query = Map[String,String](

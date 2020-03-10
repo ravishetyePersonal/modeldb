@@ -1080,6 +1080,36 @@
         ]
       }
     },
+    "/experiment-run/getVersionedInput": {
+      "get": {
+        "operationId": "getVersionedInputs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/modeldbGetVersionedInputResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ExperimentRunService"
+        ]
+      }
+    },
     "/experiment-run/logArtifact": {
       "post": {
         "summary": "artifact",
@@ -1546,6 +1576,38 @@
         ]
       }
     },
+    "/experiment-run/logVersionedInput": {
+      "post": {
+        "operationId": "logVersionedInput",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/modeldbLogVersionedInputResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/modeldbLogVersionedInput"
+            }
+          }
+        ],
+        "tags": [
+          "ExperimentRunService"
+        ]
+      }
+    },
     "/experiment-run/setParentExperimentRunId": {
       "post": {
         "operationId": "setParentExperimentRunId",
@@ -1956,6 +2018,9 @@
           "items": {
             "$ref": "#/definitions/modeldbFeature"
           }
+        },
+        "versioned_inputs": {
+          "$ref": "#/definitions/modeldbVersioningEntry"
         }
       }
     },
@@ -2172,6 +2237,9 @@
         },
         "owner": {
           "type": "string"
+        },
+        "versioned_inputs": {
+          "$ref": "#/definitions/modeldbVersioningEntry"
         }
       },
       "title": "ExperimentRun Entity"
@@ -2439,6 +2507,14 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "modeldbGetVersionedInputResponse": {
+      "type": "object",
+      "properties": {
+        "versioned_inputs": {
+          "$ref": "#/definitions/modeldbVersioningEntry"
         }
       }
     },
@@ -2777,6 +2853,25 @@
         }
       }
     },
+    "modeldbLogVersionedInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "versioned_inputs": {
+          "$ref": "#/definitions/modeldbVersioningEntry"
+        }
+      }
+    },
+    "modeldbLogVersionedInputResponse": {
+      "type": "object",
+      "properties": {
+        "experiment_run": {
+          "$ref": "#/definitions/modeldbExperimentRun"
+        }
+      }
+    },
     "modeldbObservation": {
       "type": "object",
       "properties": {
@@ -2876,6 +2971,24 @@
         }
       }
     },
+    "modeldbVersioningEntry": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "key_location_map": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/vertamodeldbLocation"
+          }
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -2913,6 +3026,17 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "vertamodeldbLocation": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }

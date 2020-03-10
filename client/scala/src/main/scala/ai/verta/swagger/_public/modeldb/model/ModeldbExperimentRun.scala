@@ -47,7 +47,8 @@ case class ModeldbExperimentRun (
   observations: Option[List[ModeldbObservation]] = None,
   features: Option[List[ModeldbFeature]] = None,
   job_id: Option[String] = None,
-  owner: Option[String] = None
+  owner: Option[String] = None,
+  versioned_inputs: Option[ModeldbVersioningEntry] = None
 ) extends BaseSwagger {
   def toJson(): JValue = ModeldbExperimentRun.toJson(this)
 }
@@ -77,7 +78,8 @@ object ModeldbExperimentRun {
         obj.observations.map(x => JField("observations", ((x: List[ModeldbObservation]) => JArray(x.map(((x: ModeldbObservation) => ModeldbObservation.toJson(x)))))(x))),
         obj.features.map(x => JField("features", ((x: List[ModeldbFeature]) => JArray(x.map(((x: ModeldbFeature) => ModeldbFeature.toJson(x)))))(x))),
         obj.job_id.map(x => JField("job_id", JString(x))),
-        obj.owner.map(x => JField("owner", JString(x)))
+        obj.owner.map(x => JField("owner", JString(x))),
+        obj.versioned_inputs.map(x => JField("versioned_inputs", ((x: ModeldbVersioningEntry) => ModeldbVersioningEntry.toJson(x))(x)))
       ).flatMap(x => x match {
         case Some(y) => List(y)
         case None => Nil
@@ -112,7 +114,8 @@ object ModeldbExperimentRun {
           observations = fieldsMap.get("observations").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbObservation.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
           features = fieldsMap.get("features").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbFeature.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
           job_id = fieldsMap.get("job_id").map(JsonConverter.fromJsonString),
-          owner = fieldsMap.get("owner").map(JsonConverter.fromJsonString)
+          owner = fieldsMap.get("owner").map(JsonConverter.fromJsonString),
+          versioned_inputs = fieldsMap.get("versioned_inputs").map(ModeldbVersioningEntry.fromJson)
         )
       }
       case _ => throw new IllegalArgumentException(s"unknown type ${value.getClass.toString}")

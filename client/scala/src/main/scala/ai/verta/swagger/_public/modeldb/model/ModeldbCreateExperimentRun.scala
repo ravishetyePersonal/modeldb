@@ -32,7 +32,8 @@ case class ModeldbCreateExperimentRun (
   datasets: Option[List[ModeldbArtifact]] = None,
   metrics: Option[List[CommonKeyValue]] = None,
   observations: Option[List[ModeldbObservation]] = None,
-  features: Option[List[ModeldbFeature]] = None
+  features: Option[List[ModeldbFeature]] = None,
+  versioned_inputs: Option[ModeldbVersioningEntry] = None
 ) extends BaseSwagger {
   def toJson(): JValue = ModeldbCreateExperimentRun.toJson(this)
 }
@@ -60,7 +61,8 @@ object ModeldbCreateExperimentRun {
         obj.datasets.map(x => JField("datasets", ((x: List[ModeldbArtifact]) => JArray(x.map(((x: ModeldbArtifact) => ModeldbArtifact.toJson(x)))))(x))),
         obj.metrics.map(x => JField("metrics", ((x: List[CommonKeyValue]) => JArray(x.map(((x: CommonKeyValue) => CommonKeyValue.toJson(x)))))(x))),
         obj.observations.map(x => JField("observations", ((x: List[ModeldbObservation]) => JArray(x.map(((x: ModeldbObservation) => ModeldbObservation.toJson(x)))))(x))),
-        obj.features.map(x => JField("features", ((x: List[ModeldbFeature]) => JArray(x.map(((x: ModeldbFeature) => ModeldbFeature.toJson(x)))))(x)))
+        obj.features.map(x => JField("features", ((x: List[ModeldbFeature]) => JArray(x.map(((x: ModeldbFeature) => ModeldbFeature.toJson(x)))))(x))),
+        obj.versioned_inputs.map(x => JField("versioned_inputs", ((x: ModeldbVersioningEntry) => ModeldbVersioningEntry.toJson(x))(x)))
       ).flatMap(x => x match {
         case Some(y) => List(y)
         case None => Nil
@@ -93,7 +95,8 @@ object ModeldbCreateExperimentRun {
           datasets = fieldsMap.get("datasets").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbArtifact.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
           metrics = fieldsMap.get("metrics").map((x: JValue) => x match {case JArray(elements) => elements.map(CommonKeyValue.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
           observations = fieldsMap.get("observations").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbObservation.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
-          features = fieldsMap.get("features").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbFeature.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")})
+          features = fieldsMap.get("features").map((x: JValue) => x match {case JArray(elements) => elements.map(ModeldbFeature.fromJson); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
+          versioned_inputs = fieldsMap.get("versioned_inputs").map(ModeldbVersioningEntry.fromJson)
         )
       }
       case _ => throw new IllegalArgumentException(s"unknown type ${value.getClass.toString}")
