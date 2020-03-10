@@ -14,12 +14,13 @@ from . import _dataset
 
 class S3(_dataset._Dataset):
     """
-
+    Captures metadata about S3 objects.
 
     Parameters
     ----------
     paths : list of str
-        List of S3 object URLs of the form "s3://<bucket-name>/<key>".
+        List of S3 object URLs of the form "s3://<bucket-name>/<key>" or bucket URLs of the form
+        "s3://<bucket-name>".
 
     Examples
     --------

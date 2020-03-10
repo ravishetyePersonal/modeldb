@@ -16,12 +16,12 @@ from . import _dataset
 
 class Path(_dataset._Dataset):
     """
-
+    Captures metadata about files.
 
     Parameters
     ----------
     paths : list of str
-        List of filepaths.
+        List of filepaths or directory paths.
 
     Examples
     --------
