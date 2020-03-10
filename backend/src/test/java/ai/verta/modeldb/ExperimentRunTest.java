@@ -8890,9 +8890,9 @@ public class ExperimentRunTest {
     Map<String, Location> locationMap = new HashMap<>();
     locationMap.put(
         "location-1",
-        Location.newBuilder().addLocations("hyperparameter").addLocations("train").build());
+        Location.newBuilder().addLocation("hyperparameter").addLocation("train").build());
     locationMap.put(
-        "location-2", Location.newBuilder().addLocations("dataset").addLocations("train").build());
+        "location-2", Location.newBuilder().addLocation("dataset").addLocation("train").build());
     createExperimentRunRequest =
         createExperimentRunRequest
             .toBuilder()
@@ -8977,9 +8977,9 @@ public class ExperimentRunTest {
     Map<String, Location> locationMap = new HashMap<>();
     locationMap.put(
         "location-1",
-        Location.newBuilder().addLocations("hyperparameter").addLocations("train").build());
+        Location.newBuilder().addLocation("hyperparameter").addLocation("train").build());
     locationMap.put(
-        "location-2", Location.newBuilder().addLocations("dataset").addLocations("train").build());
+        "location-2", Location.newBuilder().addLocation("dataset").addLocation("train").build());
 
     LogVersionedInput logVersionedInput =
         LogVersionedInput.newBuilder()

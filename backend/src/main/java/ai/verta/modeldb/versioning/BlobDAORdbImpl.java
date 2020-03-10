@@ -6,12 +6,12 @@ import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
+import ai.verta.modeldb.versioning.blob.diff_factory.BlobDiffFactory;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -400,49 +400,8 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
         .map(
             location -> {
               BlobExpanded blobExpanded = locationBlobsMapCommitA.get(location);
-              Blob blob = blobExpanded.getBlob();
-              switch (blob.getContentCase()) {
-                case DATASET:
-                  switch (blob.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlob = blob.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllA(pathDatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.ADDED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlob = blob.getDataset().getS3();
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllA(s3DatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setStatus(DiffStatusEnum.DiffStatus.ADDED)
-                          .setDataset(finalS3DatasetDiff)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
+              return result.add(location);
             })
         .collect(Collectors.toList());
   }
@@ -453,49 +412,8 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
         .map(
             location -> {
               BlobExpanded blobExpanded = locationBlobsMapCommitB.get(location);
-              Blob blob = blobExpanded.getBlob();
-              switch (blob.getContentCase()) {
-                case DATASET:
-                  switch (blob.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlob = blob.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllB(pathDatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.DELETED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlob = blob.getDataset().getS3();
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllB(s3DatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(finalS3DatasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.DELETED)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
+              return result.delete(location);
             })
         .collect(Collectors.toList());
   }
@@ -505,59 +423,13 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
       Map<String, BlobExpanded> locationBlobsMapCommitA,
       Map<String, BlobExpanded> locationBlobsMapCommitB) {
     return modifiedLocations.stream()
-        .map(
+        .flatMap(
             location -> {
               BlobExpanded blobExpandedCommitA = locationBlobsMapCommitA.get(location);
               BlobExpanded blobExpandedCommitB = locationBlobsMapCommitB.get(location);
-              Blob blobCommitA = blobExpandedCommitA.getBlob();
-              Blob blobCommitB = blobExpandedCommitB.getBlob();
-              switch (blobCommitA.getContentCase()) {
-                case DATASET:
-                  switch (blobCommitA.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlobCommitA = blobCommitA.getDataset().getPath();
-                      PathDatasetBlob pathDatasetBlobCommitB = blobCommitB.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllA(pathDatasetBlobCommitA.getComponentsList())
-                              .addAllB(pathDatasetBlobCommitB.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.MODIFIED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlobCommitA = blobCommitA.getDataset().getS3();
-                      S3DatasetBlob s3DatasetBlobCommitB = blobCommitB.getDataset().getS3();
-
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllA(s3DatasetBlobCommitA.getComponentsList())
-                              .addAllB(s3DatasetBlobCommitB.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(finalS3DatasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.MODIFIED)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobDiffFactory a = BlobDiffFactory.create(blobExpandedCommitA);
+              BlobDiffFactory b = BlobDiffFactory.create(blobExpandedCommitB);
+              return a.compare(b, location).stream();
             })
         .collect(Collectors.toList());
   }
