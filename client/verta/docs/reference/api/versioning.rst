@@ -9,6 +9,10 @@ Versioning
 
 Code
 ^^^^
+.. autoclass:: verta.code._git.Git
+    :members:
+.. autoclass:: verta.code._notebook.Notebook
+    :members:
 
 Configuration
 ^^^^^^^^^^^^^

@@ -9,6 +9,7 @@ from .._protos.public.modeldb.versioning import VersioningService_pb2 as _Versio
 from ..external import six
 
 from .._internal_utils import _utils
+from .. import code
 from .. import configuration
 from .. import dataset
 from .. import environment
@@ -108,7 +109,9 @@ class Commit(object):
             blob_msg = _VersioningService.BlobExpanded()
             blob_msg.location.extend(path_to_location(path))  # pylint: disable=no-member
             # TODO: move typecheck & CopyFrom to root blob base class
-            if isinstance(blob, configuration._Configuration):
+            if isinstance(blob, code._Code):
+                blob_msg.blob.code.CopyFrom(blob._msg)  # pylint: disable=no-member
+            elif isinstance(blob, configuration._Configuration):
                 blob_msg.blob.config.CopyFrom(blob._msg)  # pylint: disable=no-member
             elif isinstance(blob, dataset._Dataset):
                 blob_msg.blob.dataset.CopyFrom(blob._msg)  # pylint: disable=no-member
@@ -260,7 +263,13 @@ def blob_msg_to_object(blob_msg):
     content_type = blob_msg.WhichOneof('content')
     content_subtype = None
     obj = None
-    if content_type == 'config':
+    if content_type == 'code':
+        content_subtype = blob_msg.code.WhichOneof('content')
+        if content_subtype == 'git':
+            obj = code.Git()  # TODO: skip obj init, because it requires git
+        elif content_subtype == 'notebook':
+            obj = code.Notebook()  # TODO: skip obj init, because it requires Jupyter
+    elif content_type == 'config':
         obj = configuration.Hyperparameters()
     elif content_type == 'dataset':
         content_subtype = blob_msg.dataset.WhichOneof('content')

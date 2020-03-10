@@ -36,6 +36,7 @@ from .external.six.moves import cPickle as pickle  # pylint: disable=import-erro
 from .external.six.moves.urllib.parse import urlparse  # pylint: disable=import-error, no-name-in-module
 
 from ._internal_utils import _artifact_utils
+from ._internal_utils import _git_utils
 from ._internal_utils import _pip_requirements_utils
 from ._internal_utils import _utils
 
@@ -867,7 +868,7 @@ class _ModelDBEntity(object):
         if self._conf.use_git:
             # verify Git
             try:
-                repo_root_dir = _utils.get_git_repo_root_dir()
+                repo_root_dir = _git_utils.get_git_repo_root_dir()
             except OSError:
                 # don't halt execution
                 print("unable to locate git repository; you may be in an unsupported environment")
@@ -911,24 +912,24 @@ class _ModelDBEntity(object):
         if self._conf.use_git:
             try:
                 # adjust `exec_path` to be relative to repo root
-                exec_path = os.path.relpath(exec_path, _utils.get_git_repo_root_dir())
+                exec_path = os.path.relpath(exec_path, _git_utils.get_git_repo_root_dir())
             except OSError as e:
                 print("{}; logging absolute path to file instead")
                 exec_path = os.path.abspath(exec_path)
             msg.code_version.git_snapshot.filepaths.append(exec_path)
 
             try:
-                msg.code_version.git_snapshot.repo = repo_url or _utils.get_git_remote_url()
+                msg.code_version.git_snapshot.repo = repo_url or _git_utils.get_git_remote_url()
             except OSError as e:
                 print("{}; skipping".format(e))
 
             try:
-                msg.code_version.git_snapshot.hash = commit_hash or _utils.get_git_commit_hash()
+                msg.code_version.git_snapshot.hash = commit_hash or _git_utils.get_git_commit_hash()
             except OSError as e:
                 print("{}; skipping".format(e))
 
             try:
-                is_dirty = _utils.get_git_commit_dirtiness(commit_hash)
+                is_dirty = _git_utils.get_git_commit_dirtiness(commit_hash)
             except OSError as e:
                 print("{}; skipping".format(e))
             else:
@@ -946,8 +947,18 @@ class _ModelDBEntity(object):
             # write ZIP archive
             zipstream = six.BytesIO()
             with zipfile.ZipFile(zipstream, 'w') as zipf:
-                # TODO: save notebook
-                zipf.write(exec_path, os.path.basename(exec_path))  # write as base filename
+                filename = os.path.basename(exec_path)
+                if exec_path.endswith(".ipynb"):
+                    try:
+                        saved_notebook = _utils.save_notebook(exec_path)
+                    except:  # failed to save
+                        print("unable to automatically save Notebook;"
+                              " logging latest checkpoint from disk")
+                        zipf.write(exec_path, filename)
+                    else:
+                        zipf.writestr(filename, six.ensure_binary(saved_notebook.read()))
+                else:
+                    zipf.write(exec_path, filename)
             zipstream.seek(0)
 
             key = 'code'
