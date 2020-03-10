@@ -1,9 +1,5 @@
 import pytest
 
-import six
-
-import utils
-
 import verta.configuration
 
 

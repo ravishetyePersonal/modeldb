@@ -1,8 +1,6 @@
 import pytest
 
-import six
-
-import utils
+from .. import utils
 
 import verta.dataset
 import verta.environment
