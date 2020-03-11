@@ -14,7 +14,7 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
   }
 
   @Override
-  protected boolean typeEqual(BlobDiffFactory blobDiffFactory) {
+  protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
     return true;
   }
 

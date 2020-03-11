@@ -32,31 +32,37 @@ public abstract class BlobDiffFactory {
   }
 
   public List<BlobDiff> compare(BlobDiffFactory blobDiffFactoryB, String location) {
-    // TODO: Here used the `#` for split the locations but if folder
-    // TODO: - contain the `#` then this functionality will break.
-    final Builder builder = BlobDiff.newBuilder()
-        .addAllLocation(Arrays.asList(location.split("#")));
-    if (commonTypeEqual(blobDiffFactoryB)) {
+    if (typeEqual(blobDiffFactoryB)) {
+      //use modified blob diff
+      // TODO: Here used the `#` for split the locations but if folder
+      // TODO: - contain the `#` then this functionality will break.
+      final Builder builder = BlobDiff.newBuilder()
+          .addAllLocation(Arrays.asList(location.split("#")));
       builder.setStatus(DiffStatus.MODIFIED);
       blobDiffFactoryB.delete(builder);
       add(builder);
       return Collections.singletonList(builder.build());
     } else {
-      final Builder builder2 = builder.clone();
-      builder.setStatus(DiffStatus.DELETED);
-      blobDiffFactoryB.delete(builder);
-      builder2.setStatus(DiffStatus.ADDED);
-      add(builder2);
-      return Stream.of(builder, builder2).map(Builder::build).collect(Collectors.toList());
+      //use delete and add
+      // TODO: Here used the `#` for split the locations but if folder
+      // TODO: - contain the `#` then this functionality will break.
+      final Builder oldBlobDiff = BlobDiff.newBuilder()
+          .addAllLocation(Arrays.asList(location.split("#")));
+      final Builder newBlobDiff = oldBlobDiff.clone();
+      oldBlobDiff.setStatus(DiffStatus.DELETED);
+      blobDiffFactoryB.delete(oldBlobDiff);
+      newBlobDiff.setStatus(DiffStatus.ADDED);
+      add(newBlobDiff);
+      return Stream.of(oldBlobDiff, newBlobDiff).map(Builder::build).collect(Collectors.toList());
     }
   }
 
-  private boolean commonTypeEqual(BlobDiffFactory blobDiffFactory) {
+  private boolean typeEqual(BlobDiffFactory blobDiffFactory) {
     return blobDiffFactory.getBlobType() == getBlobType()
-        && typeEqual(blobDiffFactory);
+        && subtypeEqual(blobDiffFactory);
   }
 
-  protected abstract boolean typeEqual(BlobDiffFactory blobDiffFactory);
+  protected abstract boolean subtypeEqual(BlobDiffFactory blobDiffFactory);
 
   protected abstract void add(Builder builder);
 

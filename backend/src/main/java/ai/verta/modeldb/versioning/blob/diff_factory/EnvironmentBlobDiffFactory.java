@@ -14,7 +14,7 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
   }
 
   @Override
-  protected boolean typeEqual(BlobDiffFactory blobDiffFactory) {
+  protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
     return blobDiffFactory.getBlobExpanded().getBlob().getEnvironment().getContentCase()
         .equals(getBlobExpanded().getBlob().getEnvironment().getContentCase());
   }

@@ -14,7 +14,7 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
   }
 
   @Override
-  protected boolean typeEqual(BlobDiffFactory blobDiffFactory) {
+  protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
     return blobDiffFactory.getBlobExpanded().getBlob().getCode().getContentCase()
         .equals(getBlobExpanded().getBlob().getCode().getContentCase());
   }
