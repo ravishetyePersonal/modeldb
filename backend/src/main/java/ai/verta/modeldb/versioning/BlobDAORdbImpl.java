@@ -5,6 +5,7 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
+import ai.verta.modeldb.versioning.BlobDiff.ContentCase;
 import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +32,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 public class BlobDAORdbImpl implements BlobDAO {
+
   private static final Logger LOGGER = LogManager.getLogger(BlobDAORdbImpl.class);
 
   public static final String TREE = "TREE";
@@ -93,8 +96,11 @@ public class BlobDAORdbImpl implements BlobDAO {
                 })
             .reduce((a, b) -> ((Folder) a).toBuilder().mergeFrom((Folder) b).build());
 
-    if (result.isPresent()) return (Folder) result.get();
-    else return null;
+    if (result.isPresent()) {
+      return (Folder) result.get();
+    } else {
+      return null;
+    }
   }
 
   // TODO : check if there is a way to optimize on the calls to data base.
@@ -182,7 +188,7 @@ public class BlobDAORdbImpl implements BlobDAO {
    *
    * @param session
    * @param parentFolderHash : folder hash of the parent
-   * @param elementName : element name of the element to be fetched
+   * @param elementName      : element name of the element to be fetched
    * @return {@link List<InternalFolderElementEntity>}
    */
   private List<InternalFolderElementEntity> getFolderElement(
@@ -255,7 +261,7 @@ public class BlobDAORdbImpl implements BlobDAO {
    * returns them with their location as set
    *
    * @param session
-   * @param folderHash : the base folder to start the search for location list
+   * @param folderHash   : the base folder to start the search for location list
    * @param locationList : list of trees and psossibly terminating with blob
    * @return
    * @throws ModelDBException
@@ -643,8 +649,73 @@ public class BlobDAORdbImpl implements BlobDAO {
     return null;
   }
 
-  private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blob) {
-    return null;
+  private <T> Map<String, T> convert(
+      List<T> configBlob, Function<T, String> getName) {
+    return configBlob.stream().collect(Collectors.toMap(
+        getName, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob
+    ));
+  }
+
+  private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+    BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
+    switch (blobDiff.getContentCase()) {
+      case CONFIG:
+        Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap = convert(
+            blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
+            HyperparameterSetConfigBlob::getName);
+
+        blobDiff.getConfig().getHyperparameterSet().getBList().forEach(
+            hyperparameterSetConfigBlob -> hyperparameterSetMap
+                .remove(hyperparameterSetConfigBlob.getName()));
+        hyperparameterSetMap.putAll(convert(blobDiff.getConfig().getHyperparameterSet().getAList(),
+            HyperparameterSetConfigBlob::getName));
+
+        Map<String, HyperparameterConfigBlob> hyperparameterMap = convert(
+            blobExpanded.getBlob().getConfig().getHyperparametersList(),
+            HyperparameterConfigBlob::getName);
+
+        blobDiff.getConfig().getHyperparameters().getBList().forEach(
+            hyperparameterConfigBlob -> hyperparameterMap
+                .remove(hyperparameterConfigBlob.getName()));
+        hyperparameterMap.putAll(convert(blobDiff.getConfig().getHyperparameters().getAList(),
+            HyperparameterConfigBlob::getName));
+
+        blobExpandedNew.setBlob(Blob.newBuilder().setConfig(ConfigBlob.newBuilder()
+            .addAllHyperparameters(hyperparameterMap.values())
+            .addAllHyperparameterSet(hyperparameterSetMap.values()))).build();
+      case DATASET:
+        final DatasetBlob dataset = blobExpanded.getBlob().getDataset();
+        switch (dataset.getContentCase()) {
+          case PATH:
+            Map<String, PathDatasetComponentBlob> pathMap = convert(
+                dataset.getPath().getComponentsList(),
+                PathDatasetComponentBlob::getPath);
+
+            blobDiff.getDataset().getPath().getBList().forEach(
+                pathDatasetComponentBlob -> pathMap
+                    .remove(pathDatasetComponentBlob.getPath()));
+            pathMap.putAll(convert(blobDiff.getDataset().getPath().getAList(),
+                PathDatasetComponentBlob::getPath));
+
+            blobExpandedNew.setBlob(Blob.newBuilder().setDataset(DatasetBlob.newBuilder().setPath(
+                PathDatasetBlob.newBuilder().addAllComponents(pathMap.values()))));
+            break;
+          case S3:
+            Map<String, S3DatasetComponentBlob> s3Map = convert(dataset.getS3().getComponentsList(),
+                s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
+
+            blobDiff.getDataset().getS3().getBList().forEach(
+                s3DatasetComponentBlob -> s3Map
+                    .remove(s3DatasetComponentBlob.getPath().getPath()));
+            s3Map.putAll(convert(blobDiff.getDataset().getS3().getAList(),
+                s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
+
+            blobExpandedNew.setBlob(Blob.newBuilder().setDataset(DatasetBlob.newBuilder().setS3(
+                S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
+            break;
+        }
+    }
+    return Collections.singleton(blobExpandedNew.build());
   }
 
   private Set<BlobExpanded> atomicResult(BlobDiff blobDiff, BlobExpanded blob) {
@@ -652,7 +723,8 @@ public class BlobDAORdbImpl implements BlobDAO {
   }
 
   private boolean isAtomic(BlobDiff blobDiff) {
-    return false;
+    return blobDiff.getContentCase() == ContentCase.DATASET
+        || blobDiff.getContentCase() == ContentCase.CONFIG;
   }
 
   private void checkType(BlobDiff blobDiff, BlobExpanded blob) {}
