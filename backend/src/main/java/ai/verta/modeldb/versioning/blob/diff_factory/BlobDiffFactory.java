@@ -5,6 +5,9 @@ import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobDiff.Builder;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
+import com.google.rpc.Code;
+import com.google.rpc.Status;
+import io.grpc.protobuf.StatusProto;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -90,35 +93,12 @@ public abstract class BlobDiffFactory {
       case DATASET:
         return new DatasetBlobDiffFactory(blobExpanded);
       default:
-        return new BlobDiffFactory(blobExpanded) {
-          @Override
-          public List<BlobDiff> compare(BlobDiffFactory blobDiffFactory, String location) {
-            return Collections.emptyList();
-          }
-
-          @Override
-          public BlobDiff add(String location) {
-            return BlobDiff.newBuilder().build();
-          }
-
-          @Override
-          public BlobDiff delete(String location) {
-            return BlobDiff.newBuilder().build();
-          }
-
-          @Override
-          protected boolean typeEqual(BlobDiffFactory blobDiffFactory) {
-            return false;
-          }
-
-          @Override
-          protected void add(Builder builder) {
-          }
-
-          @Override
-          protected void delete(Builder builder) {
-          }
-        };
+        Status status =
+            Status.newBuilder()
+                .setCode(Code.INTERNAL_VALUE)
+                .setMessage("Invalid blob type found")
+                .build();
+        throw StatusProto.toStatusRuntimeException(status);
     }
   }
 }
