@@ -36,15 +36,15 @@ public abstract class BlobDiffFactory {
     // TODO: - contain the `#` then this functionality will break.
     final Builder builder = BlobDiff.newBuilder()
         .addAllLocation(Arrays.asList(location.split("#")));
-    if (commonTypeEqual(blobDiffFactory)) {
+    if (commonTypeEqual(blobDiffFactoryB)) {
       builder.setStatus(DiffStatus.MODIFIED);
-      blobDiffFactory.delete(builder);
+      blobDiffFactoryB.delete(builder);
       add(builder);
       return Collections.singletonList(builder.build());
     } else {
       final Builder builder2 = builder.clone();
       builder.setStatus(DiffStatus.DELETED);
-      blobDiffFactory.delete(builder);
+      blobDiffFactoryB.delete(builder);
       builder2.setStatus(DiffStatus.ADDED);
       add(builder2);
       return Stream.of(builder, builder2).map(Builder::build).collect(Collectors.toList());
@@ -53,7 +53,7 @@ public abstract class BlobDiffFactory {
 
   private boolean commonTypeEqual(BlobDiffFactory blobDiffFactory) {
     return blobDiffFactory.getBlobType() == getBlobType()
-        && blobDiffFactory.typeEqual(this);
+        && typeEqual(blobDiffFactory);
   }
 
   protected abstract boolean typeEqual(BlobDiffFactory blobDiffFactory);
