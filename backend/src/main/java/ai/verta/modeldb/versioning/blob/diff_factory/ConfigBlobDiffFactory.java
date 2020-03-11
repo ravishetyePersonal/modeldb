@@ -84,7 +84,7 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
     blobDiffBuilder.setConfig(configBuilder);
   }
 
-  protected static <T> void removeCommon(Set<T> hyperparameterConfigBlobsA,
+  static <T> void removeCommon(Set<T> hyperparameterConfigBlobsA,
       HashSet<T> commonElements,
       HashSet<T> hyperparameterConfigBlobsB) {
     commonElements.retainAll(hyperparameterConfigBlobsB);
