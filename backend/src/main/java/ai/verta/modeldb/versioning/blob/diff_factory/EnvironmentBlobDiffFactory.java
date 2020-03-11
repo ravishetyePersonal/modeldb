@@ -1,6 +1,6 @@
 package ai.verta.modeldb.versioning.blob.diff_factory;
 
-import ai.verta.modeldb.versioning.BlobDiff.Builder;
+import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.EnvironmentBlob;
 import ai.verta.modeldb.versioning.EnvironmentDiff;
@@ -15,21 +15,25 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
 
   @Override
   protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
-    return blobDiffFactory.getBlobExpanded().getBlob().getEnvironment().getContentCase()
+    return blobDiffFactory
+        .getBlobExpanded()
+        .getBlob()
+        .getEnvironment()
+        .getContentCase()
         .equals(getBlobExpanded().getBlob().getEnvironment().getContentCase());
   }
 
   @Override
-  protected void add(Builder blobBuilder) {
+  protected void add(BlobDiff.Builder blobBuilder) {
     modify(blobBuilder, true);
   }
 
   @Override
-  protected void delete(Builder blobBuilder) {
+  protected void delete(BlobDiff.Builder blobBuilder) {
     modify(blobBuilder, false);
   }
 
-  private void modify(Builder blobBuilder, boolean add) {
+  private void modify(BlobDiff.Builder blobBuilder, boolean add) {
     final EnvironmentDiff.Builder environmentBuilder = EnvironmentDiff.newBuilder();
     final EnvironmentBlob environment = getBlobExpanded().getBlob().getEnvironment();
     switch (environment.getContentCase()) {

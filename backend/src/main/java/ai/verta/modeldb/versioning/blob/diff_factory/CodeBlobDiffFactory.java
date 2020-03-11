@@ -1,6 +1,6 @@
 package ai.verta.modeldb.versioning.blob.diff_factory;
 
-import ai.verta.modeldb.versioning.BlobDiff.Builder;
+import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.CodeBlob;
 import ai.verta.modeldb.versioning.CodeDiff;
@@ -15,28 +15,32 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
 
   @Override
   protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
-    return blobDiffFactory.getBlobExpanded().getBlob().getCode().getContentCase()
+    return blobDiffFactory
+        .getBlobExpanded()
+        .getBlob()
+        .getCode()
+        .getContentCase()
         .equals(getBlobExpanded().getBlob().getCode().getContentCase());
   }
 
   @Override
-  protected void add(Builder blobBuilder) {
-    modify(blobBuilder, true);
+  protected void add(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, true);
   }
 
   @Override
-  protected void delete(Builder blobBuilder) {
-    modify(blobBuilder, false);
+  protected void delete(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, false);
   }
 
-  private void modify(Builder blobBuilder, boolean add) {
+  private void modify(BlobDiff.Builder blobDiffBuilder, boolean add) {
     final CodeDiff.Builder codeBuilder = CodeDiff.newBuilder();
     final CodeBlob code = getBlobExpanded().getBlob().getCode();
     switch (code.getContentCase()) {
       case GIT:
         GitCodeDiff.Builder gitBuilder;
-        if (blobBuilder.hasCode()) {
-          gitBuilder = blobBuilder.getCode().getGit().toBuilder();
+        if (blobDiffBuilder.hasCode()) {
+          gitBuilder = blobDiffBuilder.getCode().getGit().toBuilder();
         } else {
           gitBuilder = GitCodeDiff.newBuilder();
         }
@@ -45,13 +49,13 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
         } else {
           gitBuilder.setB(code.getGit());
         }
-            
+
         codeBuilder.setGit(gitBuilder).build();
         break;
       case NOTEBOOK:
         NotebookCodeDiff.Builder notebookBuilder;
-        if (blobBuilder.hasCode()) {
-          notebookBuilder = blobBuilder.getCode().getNotebook().toBuilder();
+        if (blobDiffBuilder.hasCode()) {
+          notebookBuilder = blobDiffBuilder.getCode().getNotebook().toBuilder();
         } else {
           notebookBuilder = NotebookCodeDiff.newBuilder();
         }
@@ -64,6 +68,6 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
         codeBuilder.setNotebook(notebookBuilder).build();
         break;
     }
-    blobBuilder.setCode(codeBuilder.build());
+    blobDiffBuilder.setCode(codeBuilder.build());
   }
 }

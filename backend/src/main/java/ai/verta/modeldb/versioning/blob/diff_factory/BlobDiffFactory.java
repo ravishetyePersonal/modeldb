@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** constructs proto blob diff object from proto blobs*/
+/** constructs proto blob diff object from proto blobs */
 public abstract class BlobDiffFactory {
 
   private final BlobExpanded blobExpanded;
@@ -33,21 +33,21 @@ public abstract class BlobDiffFactory {
 
   public List<BlobDiff> compare(BlobDiffFactory blobDiffFactoryB, String location) {
     if (typeEqual(blobDiffFactoryB)) {
-      //use modified blob diff
+      // use modified blob diff
       // TODO: Here used the `#` for split the locations but if folder
       // TODO: - contain the `#` then this functionality will break.
-      final Builder builder = BlobDiff.newBuilder()
-          .addAllLocation(Arrays.asList(location.split("#")));
+      final Builder builder =
+          BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
       builder.setStatus(DiffStatus.MODIFIED);
       blobDiffFactoryB.delete(builder);
       add(builder);
       return Collections.singletonList(builder.build());
     } else {
-      //use delete and add
+      // use delete and add
       // TODO: Here used the `#` for split the locations but if folder
       // TODO: - contain the `#` then this functionality will break.
-      final Builder oldBlobDiff = BlobDiff.newBuilder()
-          .addAllLocation(Arrays.asList(location.split("#")));
+      final Builder oldBlobDiff =
+          BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
       final Builder newBlobDiff = oldBlobDiff.clone();
       oldBlobDiff.setStatus(DiffStatus.DELETED);
       blobDiffFactoryB.delete(oldBlobDiff);
@@ -58,8 +58,7 @@ public abstract class BlobDiffFactory {
   }
 
   private boolean typeEqual(BlobDiffFactory blobDiffFactory) {
-    return blobDiffFactory.getBlobType() == getBlobType()
-        && subtypeEqual(blobDiffFactory);
+    return blobDiffFactory.getBlobType() == getBlobType() && subtypeEqual(blobDiffFactory);
   }
 
   protected abstract boolean subtypeEqual(BlobDiffFactory blobDiffFactory);
@@ -71,8 +70,8 @@ public abstract class BlobDiffFactory {
   public BlobDiff add(String location) {
     // TODO: Here used the `#` for split the locations but if folder
     // TODO: - contain the `#` then this functionality will break.
-    final Builder builder = BlobDiff.newBuilder()
-        .addAllLocation(Arrays.asList(location.split("#")));
+    final Builder builder =
+        BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
     builder.setStatus(DiffStatus.ADDED);
     add(builder);
     return builder.build();
@@ -81,8 +80,8 @@ public abstract class BlobDiffFactory {
   public BlobDiff delete(String location) {
     // TODO: Here used the `#` for split the locations but if folder
     // TODO: - contain the `#` then this functionality will break.
-    final Builder builder = BlobDiff.newBuilder()
-        .addAllLocation(Arrays.asList(location.split("#")));
+    final Builder builder =
+        BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
     builder.setStatus(DiffStatus.DELETED);
     delete(builder);
     return builder.build();

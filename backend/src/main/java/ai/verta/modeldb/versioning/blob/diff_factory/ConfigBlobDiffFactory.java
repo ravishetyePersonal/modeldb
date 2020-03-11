@@ -1,6 +1,6 @@
 package ai.verta.modeldb.versioning.blob.diff_factory;
 
-import ai.verta.modeldb.versioning.BlobDiff.Builder;
+import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.ConfigBlob;
 import ai.verta.modeldb.versioning.ConfigDiff;
@@ -19,22 +19,22 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
   }
 
   @Override
-  protected void add(Builder blobBuilder) {
-    modify(blobBuilder, true);
+  protected void add(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, true);
   }
 
   @Override
-  protected void delete(Builder blobBuilder) {
-    modify(blobBuilder, false);
+  protected void delete(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, false);
   }
 
-  private void modify(Builder blobBuilder, boolean add) {
+  private void modify(BlobDiff.Builder blobDiffBuilder, boolean add) {
     final ConfigDiff.Builder configBuilder = ConfigDiff.newBuilder();
     final ConfigBlob config = getBlobExpanded().getBlob().getConfig();
     HyperparameterConfigDiff.Builder hyperparameterBuilder;
     HyperparameterSetConfigDiff.Builder hyperparameterSetBuilder;
-    if (blobBuilder.hasConfig()) {
-      final ConfigDiff config1 = blobBuilder.getConfig();
+    if (blobDiffBuilder.hasConfig()) {
+      final ConfigDiff config1 = blobDiffBuilder.getConfig();
       hyperparameterBuilder = config1.getHyperparameters().toBuilder();
       hyperparameterSetBuilder = config1.getHyperparameterSet().toBuilder();
     } else {
@@ -51,6 +51,6 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
 
     configBuilder.setHyperparameters(hyperparameterBuilder);
     configBuilder.setHyperparameterSet(hyperparameterSetBuilder);
-    blobBuilder.setConfig(configBuilder);
+    blobDiffBuilder.setConfig(configBuilder);
   }
 }

@@ -1,6 +1,6 @@
 package ai.verta.modeldb.versioning.blob.diff_factory;
 
-import ai.verta.modeldb.versioning.BlobDiff.Builder;
+import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.DatasetBlob;
 import ai.verta.modeldb.versioning.DatasetDiff;
@@ -15,28 +15,32 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
 
   @Override
   protected boolean subtypeEqual(BlobDiffFactory blobDiffFactory) {
-    return blobDiffFactory.getBlobExpanded().getBlob().getDataset().getContentCase()
+    return blobDiffFactory
+        .getBlobExpanded()
+        .getBlob()
+        .getDataset()
+        .getContentCase()
         .equals(getBlobExpanded().getBlob().getDataset().getContentCase());
   }
 
   @Override
-  protected void add(Builder blobBuilder) {
-    modify(blobBuilder, true);
+  protected void add(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, true);
   }
 
   @Override
-  protected void delete(Builder blobBuilder) {
-    modify(blobBuilder, false);
+  protected void delete(BlobDiff.Builder blobDiffBuilder) {
+    modify(blobDiffBuilder, false);
   }
 
-  private void modify(Builder blobBuilder, boolean add) {
+  private void modify(BlobDiff.Builder blobDiffBuilder, boolean add) {
     final DatasetDiff.Builder datasetBuilder = DatasetDiff.newBuilder();
     final DatasetBlob dataset = getBlobExpanded().getBlob().getDataset();
     switch (dataset.getContentCase()) {
       case PATH:
         PathDatasetDiff.Builder pathBuilder;
-        if (blobBuilder.hasDataset()) {
-          pathBuilder = blobBuilder.getDataset().getPath().toBuilder();
+        if (blobDiffBuilder.hasDataset()) {
+          pathBuilder = blobDiffBuilder.getDataset().getPath().toBuilder();
         } else {
           pathBuilder = PathDatasetDiff.newBuilder();
         }
@@ -50,8 +54,8 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
         break;
       case S3:
         S3DatasetDiff.Builder s3Builder;
-        if (blobBuilder.hasDataset()) {
-          s3Builder = blobBuilder.getDataset().getS3().toBuilder();
+        if (blobDiffBuilder.hasDataset()) {
+          s3Builder = blobDiffBuilder.getDataset().getS3().toBuilder();
         } else {
           s3Builder = S3DatasetDiff.newBuilder();
         }
@@ -64,6 +68,6 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
         datasetBuilder.setS3(s3Builder).build();
         break;
     }
-    blobBuilder.setDataset(datasetBuilder.build());
+    blobDiffBuilder.setDataset(datasetBuilder.build());
   }
 }
