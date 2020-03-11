@@ -10,9 +10,8 @@ import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
-import com.google.rpc.Code;
 import io.grpc.Status;
-import io.grpc.protobuf.StatusProto;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -600,53 +599,51 @@ public class BlobDAORdbImpl implements BlobDAO {
           getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>());
       Map<String, BlobExpanded> locationBlobsMapCommit =
           getLocationWiseBlobExpandedMapFromList(locationBlobListCommit);
-      Set<BlobExpanded> newBlobs = request.getDiffsList().stream()
-          .flatMap(
-              blobDiff -> {
-                // Apply the diffs on top of commit_base
-                Set<BlobExpanded> result;
-                if (blobDiff.getStatus() == DiffStatus.ADDED) {
-                  // If a blob was added in the diff, add it on top of commit_base (doesn't matter
-                  // if it was present already or not)
-                  result = Collections.emptySet();
-                } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
-                  // If a blob was deleted, delete if from commit_base if present
-                  result = Collections.emptySet();
-                } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
-                  // If a blob was modified, then:
-                  BlobExpanded blobExpanded = locationBlobsMapCommit
-                      .get(String.join("#", blobDiff.getLocationList()));
-                  // 1) check that the type of the diff is consistent with the type of the blob. If
-                  // they are different, raise an error saying so
-                  checkType(blobDiff, blobExpanded);
-                  // 2) apply the diff to the blob as per the following logic:
-                  if (isAtomic(blobDiff)) {
-                    // 2a) if the field is atomic (e.g. python version, git repository), use the
-                    // newer version (B) from the diff and overwrite what the commit_base has
-                    result = atomicResult(blobDiff, blobExpanded);
-                  } else {
-                    // 2b) if the field is not atomic (e.g. list of python requirements, dataset
-                    // components), merge the lists by a) copying new values, b) deleting removed
-                    // values, c) updating values that are already present based on some reasonable
-                    // key
-                    result = complexResult(blobDiff, blobExpanded);
-                  }
-                } else {
-                  com.google.rpc.Status status =
-                      com.google.rpc.Status.newBuilder()
-                          .setCode(Code.INTERNAL_VALUE)
-                          .setMessage("Invalid ModelDB diff type")
-                          .build();
-                  throw StatusProto.toStatusRuntimeException(status);
-                }
-                return result.stream();
-              })
-          .collect(Collectors.toSet());
+      Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
+      for (BlobDiff blobDiff : request.getDiffsList()) {
+        // Apply the diffs on top of commit_base
+        if (blobDiff.getStatus() == DiffStatus.ADDED) {
+          // If a blob was added in the diff, add it on top of commit_base (doesn't matter
+          // if it was present already or not)
+          BlobExpanded blobExpanded = convertBlobDiffToBlobExpand(blobDiff);
+          blobContainers.add(blobExpanded);
+        } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
+          // If a blob was deleted, delete if from commit_base if present
+          //TODO: delete but from where? any clarification at this step?
+        } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
+          // If a blob was modified, then:
+          BlobExpanded blobExpanded = locationBlobsMapCommit
+                  .get(String.join("#", blobDiff.getLocationList()));
+          // 1) check that the type of the diff is consistent with the type of the blob. If
+          // they are different, raise an error saying so
+          checkType(blobDiff, blobExpanded);
+          // 2) apply the diff to the blob as per the following logic:
+          if (isAtomic(blobDiff)) {
+            // 2a) if the field is atomic (e.g. python version, git repository), use the
+            // newer version (B) from the diff and overwrite what the commit_base has
+            Set<BlobExpanded> atomicResult = atomicResult(blobDiff, blobExpanded);
+            blobContainers.addAll(atomicResult);
+          } else {
+            // 2b) if the field is not atomic (e.g. list of python requirements, dataset
+            // components), merge the lists by a) copying new values, b) deleting removed
+            // values, c) updating values that are already present based on some reasonable
+            // key
+            Set<BlobExpanded> complexResultBlobExpands = complexResult(blobDiff, blobExpanded);
+            blobContainers.addAll(complexResultBlobExpands);
+          }
+        } else {
+          throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
+        }
+      }
       Map<String, BlobExpanded> locationBlobsMapNew =
-          getLocationWiseBlobExpandedMapFromList(newBlobs);
+          getLocationWiseBlobExpandedMapFromList(blobContainers);
       locationBlobsMapCommit.putAll(locationBlobsMapNew);
+      List<BlobContainer> blobContainerList = new LinkedList<>();
+      for (Map.Entry<String, BlobExpanded> blobExpandedEntry: locationBlobsMapCommit.entrySet()) {
+        blobContainerList.add(BlobContainer.create(blobExpandedEntry.getValue()));
+      }
+      return blobContainerList;
     }
-    return null;
   }
 
   private <T> Map<String, T> convert(
@@ -727,14 +724,73 @@ public class BlobDAORdbImpl implements BlobDAO {
         || blobDiff.getContentCase() == ContentCase.CONFIG;
   }
 
-  private void checkType(BlobDiff blobDiff, BlobExpanded blob) {}
-
-  private BlobContainer getBlob(
-      Session session, CommitEntity commitEntity, ProtocolStringList locationList) {
-    return null;
+  private void checkType(BlobDiff blobDiff, BlobExpanded existingBlob) throws ModelDBException {
+    BlobExpanded blobDiffExpanded = convertBlobDiffToBlobExpand(blobDiff);
+    if (!blobDiffExpanded.getBlob().getContentCase().equals(existingBlob.getBlob().getContentCase())){
+      throw new ModelDBException("Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+    } else {
+      Blob newBlob = blobDiffExpanded.getBlob();
+    switch (blobDiff.getContentCase()) {
+      case DATASET:
+        if (!newBlob.getDataset().getContentCase().equals(existingBlob.getBlob().getDataset().getContentCase())){
+          throw new ModelDBException("Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+        }
+        break;
+      case ENVIRONMENT:
+      case CODE:
+        throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
+      case CONFIG:
+        //do nothing to check
+        break;
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException("Unknown blob type found", Status.Code.INVALID_ARGUMENT);
+    }
+    }
   }
 
-  private List<BlobContainer> convertBlobDiffToAddDiff(BlobDiff blobDiff) {
-    return null;
+  private BlobExpanded convertBlobDiffToBlobExpand(BlobDiff blobDiff) throws ModelDBException {
+    switch (blobDiff.getContentCase()) {
+      case DATASET:
+        DatasetBlob datasetBlob;
+        switch (blobDiff.getDataset().getContentCase()) {
+          case PATH:
+            PathDatasetDiff pathDatasetDiff = blobDiff.getDataset().getPath();
+            PathDatasetBlob pathDatasetBlob = PathDatasetBlob.newBuilder().addAllComponents(pathDatasetDiff.getAList()).build();
+            datasetBlob = DatasetBlob.newBuilder().setPath(pathDatasetBlob).build();
+            break;
+          case S3:
+            S3DatasetDiff s3DatasetDiff = blobDiff.getDataset().getS3();
+            S3DatasetBlob s3DatasetBlob = S3DatasetBlob.newBuilder().addAllComponents(s3DatasetDiff.getAList()).build();
+            datasetBlob = DatasetBlob.newBuilder().setS3(s3DatasetBlob).build();
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+
+        return BlobExpanded.newBuilder()
+                .addAllLocation(blobDiff.getLocationList())
+                .setBlob(Blob.newBuilder().setDataset(datasetBlob).build())
+                .build();
+      case ENVIRONMENT:
+      case CODE:
+        throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
+      case CONFIG:
+        HyperparameterConfigDiff hyperparameterConfigDiff = blobDiff.getConfig().getHyperparameters();
+        HyperparameterSetConfigDiff hyperparameterSetConfigDiff = blobDiff.getConfig().getHyperparameterSet();
+
+        ConfigBlob configBlob = ConfigBlob.newBuilder()
+                .addAllHyperparameters(hyperparameterConfigDiff.getAList())
+                .addAllHyperparameterSet(hyperparameterSetConfigDiff.getAList())
+                .build();
+        return BlobExpanded.newBuilder()
+                .addAllLocation(blobDiff.getLocationList())
+                .setBlob(Blob.newBuilder().setConfig(configBlob).build())
+                .build();
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+    }
   }
 }
