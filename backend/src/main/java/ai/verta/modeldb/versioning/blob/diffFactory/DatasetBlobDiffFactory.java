@@ -1,6 +1,6 @@
-package ai.verta.modeldb.versioning.blob.diff_factory;
+package ai.verta.modeldb.versioning.blob.diffFactory;
 
-import static ai.verta.modeldb.versioning.blob.diff_factory.ConfigBlobDiffFactory.removeCommon;
+import static ai.verta.modeldb.versioning.blob.diffFactory.ConfigBlobDiffFactory.removeCommon;
 
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;

@@ -6,7 +6,7 @@ import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
-import ai.verta.modeldb.versioning.blob.diff_factory.BlobDiffFactory;
+import ai.verta.modeldb.versioning.blob.diffFactory.BlobDiffFactory;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;

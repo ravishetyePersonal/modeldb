@@ -1,4 +1,4 @@
-package ai.verta.modeldb.versioning.blob.diff_factory;
+package ai.verta.modeldb.versioning.blob.diffFactory;
 
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
