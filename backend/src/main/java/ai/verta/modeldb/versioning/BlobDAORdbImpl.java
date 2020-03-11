@@ -628,8 +628,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             // components), merge the lists by a) copying new values, b) deleting removed
             // values, c) updating values that are already present based on some reasonable
             // key
-            Set<BlobExpanded> complexResultBlobExpands = complexResult(blobDiff, blobExpanded);
-            blobContainers.addAll(complexResultBlobExpands);
+            blobContainers.add(complexResult(blobDiff, blobExpanded));
           }
         } else {
           throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
@@ -653,7 +652,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             Collectors.toMap(getKey, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob));
   }
 
-  private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+  private BlobExpanded complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
@@ -750,7 +749,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             break;
         }
     }
-    return Collections.singleton(blobExpandedNew.build());
+    return blobExpandedNew.build();
   }
 
   private Set<BlobExpanded> atomicResult(BlobDiff blobDiff, BlobExpanded blob) {
