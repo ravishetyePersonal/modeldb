@@ -239,13 +239,18 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       }
       List<BlobContainer> blobContainers;
 
-      final RepositoryFunction repositoryFunction = (session) -> repositoryDAO
-          .getRepositoryById(session, request.getRepositoryId());
+      final RepositoryFunction repositoryFunction =
+          (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId());
       if (request.getBlobsCount() == 0) {
         blobContainers = validateBlobs(request);
       } else {
         validateBlobDiffs(request);
-        blobContainers = commitDAO.convertBlobDiffsToBlobs(request, repositoryFunction, (session, repository) -> commitDAO.getCommitEntity(session, request.getCommitBase(), repository));
+        blobContainers =
+            commitDAO.convertBlobDiffsToBlobs(
+                request,
+                repositoryFunction,
+                (session, repository) ->
+                    commitDAO.getCommitEntity(session, request.getCommitBase(), repository));
       }
 
       UserInfo currentLoginUserInfo = authService.getCurrentLoginUserInfo();
@@ -264,9 +269,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     }
   }
 
-  //TODO: add validation VR-3587
-  private void validateBlobDiffs(CreateCommitRequest request) throws ModelDBException {
-  }
+  // TODO: add validation VR-3587
+  private void validateBlobDiffs(CreateCommitRequest request) throws ModelDBException {}
 
   private List<BlobContainer> validateBlobs(CreateCommitRequest request) throws ModelDBException {
     List<BlobContainer> blobContainers = new LinkedList<>();

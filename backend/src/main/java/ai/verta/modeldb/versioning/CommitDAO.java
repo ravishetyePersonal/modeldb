@@ -18,12 +18,16 @@ interface CommitDAO {
 
   Commit getCommit(String commitHash, RepositoryFunction getRepository) throws ModelDBException;
 
-  CommitEntity getCommitEntity(Session session, String commitHash,
-      RepositoryFunction getRepositoryFunction) throws ModelDBException;
+  CommitEntity getCommitEntity(
+      Session session, String commitHash, RepositoryFunction getRepositoryFunction)
+      throws ModelDBException;
 
   DeleteCommitRequest.Response deleteCommit(String commitHash, RepositoryFunction getRepository)
       throws ModelDBException;
 
-  List<BlobContainer> convertBlobDiffsToBlobs(CreateCommitRequest request,
-      RepositoryFunction repositoryFunction, CommitFunction commitFunction) throws ModelDBException;
+  List<BlobContainer> convertBlobDiffsToBlobs(
+      CreateCommitRequest request,
+      RepositoryFunction repositoryFunction,
+      CommitFunction commitFunction)
+      throws ModelDBException;
 }
