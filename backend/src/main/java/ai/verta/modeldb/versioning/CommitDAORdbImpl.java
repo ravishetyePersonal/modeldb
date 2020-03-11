@@ -6,14 +6,20 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
+import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
+import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import com.google.protobuf.ProtocolStringList;
+import com.google.rpc.Status;
 import io.grpc.Status.Code;
+import io.grpc.protobuf.StatusProto;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -154,20 +160,26 @@ public class CommitDAORdbImpl implements CommitDAO {
       throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
-      RepositoryEntity repositoryEntity = getRepository.apply(session);
-      boolean exists =
-          VersioningUtils.commitRepositoryMappingExists(
-              session, commitHash, repositoryEntity.getId());
-      if (!exists) {
-        throw new ModelDBException(
-            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
-      }
-
-      CommitEntity commitEntity = session.load(CommitEntity.class, commitHash);
+      CommitEntity commitEntity = getCommitEntity(session, commitHash, getRepository);
 
       session.getTransaction().commit();
       return commitEntity.toCommitProto();
     }
+  }
+
+  @Override
+  public CommitEntity getCommitEntity(Session session, String commitHash,
+      RepositoryFunction getRepositoryFunction) throws ModelDBException {
+    RepositoryEntity repositoryEntity = getRepositoryFunction.apply(session);
+    boolean exists =
+        VersioningUtils.commitRepositoryMappingExists(
+            session, commitHash, repositoryEntity.getId());
+    if (!exists) {
+      throw new ModelDBException(
+          "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+    }
+
+    return session.load(CommitEntity.class, commitHash);
   }
 
   @Override
@@ -200,5 +212,70 @@ public class CommitDAORdbImpl implements CommitDAO {
       session.getTransaction().commit();
       return DeleteCommitRequest.Response.newBuilder().build();
     }
+  }
+
+  @Override
+  public List<BlobContainer> convertBlobDiffsToBlobs(CreateCommitRequest request,
+      RepositoryFunction repositoryFunction, CommitFunction commitFunction) throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
+      CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
+      return request.getDiffsList().stream().flatMap(blobDiff -> {
+        // Apply the diffs on top of commit_base
+        List<BlobContainer> result;
+        if (blobDiff.getStatus() == DiffStatus.ADDED) {
+          // If a blob was added in the diff, add it on top of commit_base (doesn't matter if it was present already or not)
+          result = convertBlobDiffToAddDiff(blobDiff);
+        } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
+          // If a blob was deleted, delete if from commit_base if present
+          result = Collections.emptyList();
+        } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
+          // If a blob was modified, then:
+          BlobContainer blob = getBlob(session, commitEntity);
+          // 1) check that the type of the diff is consistent with the type of the blob. If they are different, raise an error saying so
+          checkType(blobDiff, blob);
+          // 2) apply the diff to the blob as per the following logic:
+          if (isAtomic(blobDiff)) {
+            // 2a) if the field is atomic (e.g. python version, git repository), use the newer version (B) from the diff and overwrite what the commit_base has
+            result = atomicResult(blobDiff, blob);
+          } else {
+            // 2b) if the field is not atomic (e.g. list of python requirements, dataset components), merge the lists by a) copying new values, b) deleting removed values, c) updating values that are already present based on some reasonable key
+            result = complexResult(blobDiff, blob);
+          }
+        } else {
+          Status status =
+              Status.newBuilder()
+                  .setCode(com.google.rpc.Code.INTERNAL_VALUE)
+                  .setMessage("Invalid ModelDB diff type")
+                  .build();
+          throw StatusProto.toStatusRuntimeException(status);
+        }
+        return result.stream();
+      }).collect(Collectors.toList());
+    }
+  }
+
+  private List<BlobContainer> complexResult(BlobDiff blobDiff, BlobContainer blob) {
+    return null;
+  }
+
+  private List<BlobContainer> atomicResult(BlobDiff blobDiff, BlobContainer blob) {
+    return null;
+  }
+
+  private boolean isAtomic(BlobDiff blobDiff) {
+    return false;
+  }
+
+  private void checkType(BlobDiff blobDiff, BlobContainer blob) {
+
+  }
+
+  private BlobContainer getBlob(Session session, CommitEntity commitEntity) {
+    return null;
+  }
+
+  private List<BlobContainer> convertBlobDiffToAddDiff(BlobDiff blobDiff) {
+    return null;
   }
 }

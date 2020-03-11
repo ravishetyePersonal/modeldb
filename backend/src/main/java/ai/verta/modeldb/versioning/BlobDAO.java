@@ -6,7 +6,7 @@ import com.google.protobuf.ProtocolStringList;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-interface DatasetComponentDAO {
+interface BlobDAO {
 
   String setBlobs(List<BlobContainer> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException, ModelDBException;

@@ -1,8 +1,12 @@
 package ai.verta.modeldb.versioning;
 
 import ai.verta.modeldb.ModelDBException;
+import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
+import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import org.hibernate.Session;
 
 interface CommitDAO {
   Response setCommit(
@@ -14,6 +18,12 @@ interface CommitDAO {
 
   Commit getCommit(String commitHash, RepositoryFunction getRepository) throws ModelDBException;
 
+  CommitEntity getCommitEntity(Session session, String commitHash,
+      RepositoryFunction getRepositoryFunction) throws ModelDBException;
+
   DeleteCommitRequest.Response deleteCommit(String commitHash, RepositoryFunction getRepository)
       throws ModelDBException;
+
+  List<BlobContainer> convertBlobDiffsToBlobs(CreateCommitRequest request,
+      RepositoryFunction repositoryFunction, CommitFunction commitFunction) throws ModelDBException;
 }

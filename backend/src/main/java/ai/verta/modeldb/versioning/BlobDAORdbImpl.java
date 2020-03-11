@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-public class BlobDAORdbImpl implements DatasetComponentDAO {
+public class BlobDAORdbImpl implements BlobDAO {
   private static final Logger LOGGER = LogManager.getLogger(BlobDAORdbImpl.class);
 
   public static final String TREE = "TREE";
@@ -57,7 +57,7 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
     }
   }
 
-  private Blob getBlob(Session session, InternalFolderElementEntity folderElementEntity)
+  public Blob getBlob(Session session, InternalFolderElementEntity folderElementEntity)
       throws ModelDBException {
     return BlobFactory.create(folderElementEntity).getBlob(session);
   }

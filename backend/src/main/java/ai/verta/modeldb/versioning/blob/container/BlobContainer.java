@@ -13,7 +13,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 /** contains proto object and saves it to the database */
-public abstract class BlobContainer {
+public abstract class BlobContainer implements List<BlobContainer> {
 
   private final BlobExpanded blobExpanded;
 
