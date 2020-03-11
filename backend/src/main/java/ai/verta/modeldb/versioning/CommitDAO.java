@@ -24,5 +24,4 @@ interface CommitDAO {
 
   DeleteCommitRequest.Response deleteCommit(String commitHash, RepositoryFunction getRepository)
       throws ModelDBException;
-
 }

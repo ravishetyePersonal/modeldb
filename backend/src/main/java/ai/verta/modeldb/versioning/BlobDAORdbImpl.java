@@ -187,7 +187,7 @@ public class BlobDAORdbImpl implements BlobDAO {
    *
    * @param session
    * @param parentFolderHash : folder hash of the parent
-   * @param elementName      : element name of the element to be fetched
+   * @param elementName : element name of the element to be fetched
    * @return {@link List<InternalFolderElementEntity>}
    */
   private List<InternalFolderElementEntity> getFolderElement(
@@ -260,7 +260,7 @@ public class BlobDAORdbImpl implements BlobDAO {
    * returns them with their location as set
    *
    * @param session
-   * @param folderHash   : the base folder to start the search for location list
+   * @param folderHash : the base folder to start the search for location list
    * @param locationList : list of trees and psossibly terminating with blob
    * @return
    * @throws ModelDBException
@@ -609,11 +609,11 @@ public class BlobDAORdbImpl implements BlobDAO {
           blobContainers.add(blobExpanded);
         } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
           // If a blob was deleted, delete if from commit_base if present
-          //TODO: delete but from where? any clarification at this step?
+          // TODO: delete but from where? any clarification at this step?
         } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
           // If a blob was modified, then:
-          BlobExpanded blobExpanded = locationBlobsMapCommit
-                  .get(String.join("#", blobDiff.getLocationList()));
+          BlobExpanded blobExpanded =
+              locationBlobsMapCommit.get(String.join("#", blobDiff.getLocationList()));
           // 1) check that the type of the diff is consistent with the type of the blob. If
           // they are different, raise an error saying so
           checkType(blobDiff, blobExpanded);
@@ -639,76 +639,114 @@ public class BlobDAORdbImpl implements BlobDAO {
           getLocationWiseBlobExpandedMapFromList(blobContainers);
       locationBlobsMapCommit.putAll(locationBlobsMapNew);
       List<BlobContainer> blobContainerList = new LinkedList<>();
-      for (Map.Entry<String, BlobExpanded> blobExpandedEntry: locationBlobsMapCommit.entrySet()) {
+      for (Map.Entry<String, BlobExpanded> blobExpandedEntry : locationBlobsMapCommit.entrySet()) {
         blobContainerList.add(BlobContainer.create(blobExpandedEntry.getValue()));
       }
       return blobContainerList;
     }
   }
 
-  private <T> Map<String, T> convert(
-      List<T> configBlob, Function<T, String> getName) {
-    return configBlob.stream().collect(Collectors.toMap(
-        getName, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob
-    ));
+  private <T> Map<String, T> convertComponentsSetToMap(
+      List<T> configBlob, Function<T, String> getKey) {
+    return configBlob.stream()
+        .collect(
+            Collectors.toMap(getKey, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob));
   }
 
   private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
-        Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap = convert(
-            blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
-            HyperparameterSetConfigBlob::getName);
+        Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap =
+            convertComponentsSetToMap(
+                blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
+                HyperparameterSetConfigBlob::getName);
 
-        blobDiff.getConfig().getHyperparameterSet().getBList().forEach(
-            hyperparameterSetConfigBlob -> hyperparameterSetMap
-                .remove(hyperparameterSetConfigBlob.getName()));
-        hyperparameterSetMap.putAll(convert(blobDiff.getConfig().getHyperparameterSet().getAList(),
-            HyperparameterSetConfigBlob::getName));
+        blobDiff
+            .getConfig()
+            .getHyperparameterSet()
+            .getBList()
+            .forEach(
+                hyperparameterSetConfigBlob ->
+                    hyperparameterSetMap.remove(hyperparameterSetConfigBlob.getName()));
+        hyperparameterSetMap.putAll(
+            convertComponentsSetToMap(
+                blobDiff.getConfig().getHyperparameterSet().getAList(),
+                HyperparameterSetConfigBlob::getName));
 
-        Map<String, HyperparameterConfigBlob> hyperparameterMap = convert(
-            blobExpanded.getBlob().getConfig().getHyperparametersList(),
-            HyperparameterConfigBlob::getName);
+        Map<String, HyperparameterConfigBlob> hyperparameterMap =
+            convertComponentsSetToMap(
+                blobExpanded.getBlob().getConfig().getHyperparametersList(),
+                HyperparameterConfigBlob::getName);
 
-        blobDiff.getConfig().getHyperparameters().getBList().forEach(
-            hyperparameterConfigBlob -> hyperparameterMap
-                .remove(hyperparameterConfigBlob.getName()));
-        hyperparameterMap.putAll(convert(blobDiff.getConfig().getHyperparameters().getAList(),
-            HyperparameterConfigBlob::getName));
+        blobDiff
+            .getConfig()
+            .getHyperparameters()
+            .getBList()
+            .forEach(
+                hyperparameterConfigBlob ->
+                    hyperparameterMap.remove(hyperparameterConfigBlob.getName()));
+        hyperparameterMap.putAll(
+            convertComponentsSetToMap(
+                blobDiff.getConfig().getHyperparameters().getAList(),
+                HyperparameterConfigBlob::getName));
 
-        blobExpandedNew.setBlob(Blob.newBuilder().setConfig(ConfigBlob.newBuilder()
-            .addAllHyperparameters(hyperparameterMap.values())
-            .addAllHyperparameterSet(hyperparameterSetMap.values()))).build();
+        blobExpandedNew
+            .setBlob(
+                Blob.newBuilder()
+                    .setConfig(
+                        ConfigBlob.newBuilder()
+                            .addAllHyperparameters(hyperparameterMap.values())
+                            .addAllHyperparameterSet(hyperparameterSetMap.values())))
+            .build();
       case DATASET:
         final DatasetBlob dataset = blobExpanded.getBlob().getDataset();
         switch (dataset.getContentCase()) {
           case PATH:
-            Map<String, PathDatasetComponentBlob> pathMap = convert(
-                dataset.getPath().getComponentsList(),
-                PathDatasetComponentBlob::getPath);
+            Map<String, PathDatasetComponentBlob> pathMap =
+                convertComponentsSetToMap(
+                    dataset.getPath().getComponentsList(), PathDatasetComponentBlob::getPath);
 
-            blobDiff.getDataset().getPath().getBList().forEach(
-                pathDatasetComponentBlob -> pathMap
-                    .remove(pathDatasetComponentBlob.getPath()));
-            pathMap.putAll(convert(blobDiff.getDataset().getPath().getAList(),
-                PathDatasetComponentBlob::getPath));
+            blobDiff
+                .getDataset()
+                .getPath()
+                .getBList()
+                .forEach(
+                    pathDatasetComponentBlob -> pathMap.remove(pathDatasetComponentBlob.getPath()));
+            pathMap.putAll(
+                convertComponentsSetToMap(
+                    blobDiff.getDataset().getPath().getAList(), PathDatasetComponentBlob::getPath));
 
-            blobExpandedNew.setBlob(Blob.newBuilder().setDataset(DatasetBlob.newBuilder().setPath(
-                PathDatasetBlob.newBuilder().addAllComponents(pathMap.values()))));
+            blobExpandedNew.setBlob(
+                Blob.newBuilder()
+                    .setDataset(
+                        DatasetBlob.newBuilder()
+                            .setPath(
+                                PathDatasetBlob.newBuilder().addAllComponents(pathMap.values()))));
             break;
           case S3:
-            Map<String, S3DatasetComponentBlob> s3Map = convert(dataset.getS3().getComponentsList(),
-                s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
+            Map<String, S3DatasetComponentBlob> s3Map =
+                convertComponentsSetToMap(
+                    dataset.getS3().getComponentsList(),
+                    s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
 
-            blobDiff.getDataset().getS3().getBList().forEach(
-                s3DatasetComponentBlob -> s3Map
-                    .remove(s3DatasetComponentBlob.getPath().getPath()));
-            s3Map.putAll(convert(blobDiff.getDataset().getS3().getAList(),
-                s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
+            blobDiff
+                .getDataset()
+                .getS3()
+                .getBList()
+                .forEach(
+                    s3DatasetComponentBlob ->
+                        s3Map.remove(s3DatasetComponentBlob.getPath().getPath()));
+            s3Map.putAll(
+                convertComponentsSetToMap(
+                    blobDiff.getDataset().getS3().getAList(),
+                    s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
 
-            blobExpandedNew.setBlob(Blob.newBuilder().setDataset(DatasetBlob.newBuilder().setS3(
-                S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
+            blobExpandedNew.setBlob(
+                Blob.newBuilder()
+                    .setDataset(
+                        DatasetBlob.newBuilder()
+                            .setS3(S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
             break;
         }
     }
@@ -726,26 +764,34 @@ public class BlobDAORdbImpl implements BlobDAO {
 
   private void checkType(BlobDiff blobDiff, BlobExpanded existingBlob) throws ModelDBException {
     BlobExpanded blobDiffExpanded = convertBlobDiffToBlobExpand(blobDiff);
-    if (!blobDiffExpanded.getBlob().getContentCase().equals(existingBlob.getBlob().getContentCase())){
-      throw new ModelDBException("Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+    if (!blobDiffExpanded
+        .getBlob()
+        .getContentCase()
+        .equals(existingBlob.getBlob().getContentCase())) {
+      throw new ModelDBException(
+          "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
     } else {
       Blob newBlob = blobDiffExpanded.getBlob();
-    switch (blobDiff.getContentCase()) {
-      case DATASET:
-        if (!newBlob.getDataset().getContentCase().equals(existingBlob.getBlob().getDataset().getContentCase())){
-          throw new ModelDBException("Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
-        }
-        break;
-      case ENVIRONMENT:
-      case CODE:
-        throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
-      case CONFIG:
-        //do nothing to check
-        break;
-      case CONTENT_NOT_SET:
-      default:
-        throw new ModelDBException("Unknown blob type found", Status.Code.INVALID_ARGUMENT);
-    }
+      switch (blobDiff.getContentCase()) {
+        case DATASET:
+          if (!newBlob
+              .getDataset()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getDataset().getContentCase())) {
+            throw new ModelDBException(
+                "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+          }
+          break;
+        case ENVIRONMENT:
+        case CODE:
+          throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
+        case CONFIG:
+          // do nothing to check
+          break;
+        case CONTENT_NOT_SET:
+        default:
+          throw new ModelDBException("Unknown blob type found", Status.Code.INVALID_ARGUMENT);
+      }
     }
   }
 
@@ -756,12 +802,14 @@ public class BlobDAORdbImpl implements BlobDAO {
         switch (blobDiff.getDataset().getContentCase()) {
           case PATH:
             PathDatasetDiff pathDatasetDiff = blobDiff.getDataset().getPath();
-            PathDatasetBlob pathDatasetBlob = PathDatasetBlob.newBuilder().addAllComponents(pathDatasetDiff.getAList()).build();
+            PathDatasetBlob pathDatasetBlob =
+                PathDatasetBlob.newBuilder().addAllComponents(pathDatasetDiff.getAList()).build();
             datasetBlob = DatasetBlob.newBuilder().setPath(pathDatasetBlob).build();
             break;
           case S3:
             S3DatasetDiff s3DatasetDiff = blobDiff.getDataset().getS3();
-            S3DatasetBlob s3DatasetBlob = S3DatasetBlob.newBuilder().addAllComponents(s3DatasetDiff.getAList()).build();
+            S3DatasetBlob s3DatasetBlob =
+                S3DatasetBlob.newBuilder().addAllComponents(s3DatasetDiff.getAList()).build();
             datasetBlob = DatasetBlob.newBuilder().setS3(s3DatasetBlob).build();
             break;
           case CONTENT_NOT_SET:
@@ -770,24 +818,27 @@ public class BlobDAORdbImpl implements BlobDAO {
         }
 
         return BlobExpanded.newBuilder()
-                .addAllLocation(blobDiff.getLocationList())
-                .setBlob(Blob.newBuilder().setDataset(datasetBlob).build())
-                .build();
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setDataset(datasetBlob).build())
+            .build();
       case ENVIRONMENT:
       case CODE:
         throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
       case CONFIG:
-        HyperparameterConfigDiff hyperparameterConfigDiff = blobDiff.getConfig().getHyperparameters();
-        HyperparameterSetConfigDiff hyperparameterSetConfigDiff = blobDiff.getConfig().getHyperparameterSet();
+        HyperparameterConfigDiff hyperparameterConfigDiff =
+            blobDiff.getConfig().getHyperparameters();
+        HyperparameterSetConfigDiff hyperparameterSetConfigDiff =
+            blobDiff.getConfig().getHyperparameterSet();
 
-        ConfigBlob configBlob = ConfigBlob.newBuilder()
+        ConfigBlob configBlob =
+            ConfigBlob.newBuilder()
                 .addAllHyperparameters(hyperparameterConfigDiff.getAList())
                 .addAllHyperparameterSet(hyperparameterSetConfigDiff.getAList())
                 .build();
         return BlobExpanded.newBuilder()
-                .addAllLocation(blobDiff.getLocationList())
-                .setBlob(Blob.newBuilder().setConfig(configBlob).build())
-                .build();
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setConfig(configBlob).build())
+            .build();
       case CONTENT_NOT_SET:
       default:
         throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
