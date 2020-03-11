@@ -40,10 +40,11 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
         } else {
           pythonBuilder = PythonEnvironmentDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           pythonBuilder.setA(environment.getPython());
-        else
+        } else {
           pythonBuilder.setB(environment.getPython());
+        }
 
         environmentBuilder.setPython(pythonBuilder).build();
         break;
@@ -54,10 +55,11 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
         } else {
           dockerBuilder = DockerEnvironmentDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           dockerBuilder.setA(environment.getDocker());
-        else
+        } else {
           dockerBuilder.setB(environment.getDocker());
+        }
 
         environmentBuilder.setDocker(dockerBuilder).build();
         break;

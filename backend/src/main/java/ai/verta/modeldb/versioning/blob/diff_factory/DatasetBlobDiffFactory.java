@@ -40,10 +40,11 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
         } else {
           pathBuilder = PathDatasetDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           pathBuilder.addAllA(dataset.getPath().getComponentsList());
-        else
+        } else {
           pathBuilder.addAllB(dataset.getPath().getComponentsList());
+        }
 
         datasetBuilder.setPath(pathBuilder).build();
         break;
@@ -54,10 +55,11 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
         } else {
           s3Builder = S3DatasetDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           s3Builder.addAllA(dataset.getS3().getComponentsList());
-        else
+        } else {
           s3Builder.addAllB(dataset.getS3().getComponentsList());
+        }
 
         datasetBuilder.setS3(s3Builder).build();
         break;

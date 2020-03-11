@@ -40,10 +40,11 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
         } else {
           gitBuilder = GitCodeDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           gitBuilder.setA(code.getGit());
-        else
+        } else {
           gitBuilder.setB(code.getGit());
+        }
             
         codeBuilder.setGit(gitBuilder).build();
         break;
@@ -54,10 +55,11 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
         } else {
           notebookBuilder = NotebookCodeDiff.newBuilder();
         }
-        if (add)
+        if (add) {
           notebookBuilder.setA(code.getNotebook());
-        else
+        } else {
           notebookBuilder.setB(code.getNotebook());
+        }
 
         codeBuilder.setNotebook(notebookBuilder).build();
         break;
