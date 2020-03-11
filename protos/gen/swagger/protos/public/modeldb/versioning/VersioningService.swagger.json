@@ -2308,6 +2308,16 @@
           "items": {
             "$ref": "#/definitions/versioningBlobExpanded"
           }
+        },
+        "commit_base": {
+          "type": "string",
+          "title": "Apply the diffs on top of commit_base\nIf a blob was added in the diff, add it on top of commit_base (doesn't matter if it was present already or not)\nIf a blob was deleted, delete if from commit_base if present\nIf a blob was modified, then:\n1) check that the type of the diff is consistent with the type of the blob. If they are different, raise an error saying so\n2) apply the diff to the blob as per the following logic:\n2a) if the field is atomic (e.g. python version, git repository), use the newer version (B) from the diff and overwrite what the commit_base has\n2b) if the field is not atomic (e.g. list of python requirements, dataset components), merge the lists by a) copying new values, b) deleting removed values, c) updating values that are already present based on some reasonable key"
+        },
+        "diffs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningBlobDiff"
+          }
         }
       }
     },
