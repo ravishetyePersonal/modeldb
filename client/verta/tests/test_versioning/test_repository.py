@@ -6,9 +6,6 @@ import verta.dataset
 import verta.environment
 
 
-pytest.skip("unstable back end support", allow_module_level=True)
-
-
 class TestRepository:
     def test_get_by_name(self, client, repository):
         retrieved_repo = client.get_or_create_repository(repository.name)

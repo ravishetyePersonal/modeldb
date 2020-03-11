@@ -3,9 +3,6 @@ import pytest
 import verta.dataset
 
 
-pytest.skip("unstable back end support", allow_module_level=True)
-
-
 class TestS3:
     def test_s3_bucket(self):
         # pylint: disable=no-member

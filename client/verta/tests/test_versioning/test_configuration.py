@@ -3,9 +3,6 @@ import pytest
 import verta.configuration
 
 
-pytest.skip("unstable back end support", allow_module_level=True)
-
-
 class TestInternalFunctions:
     def test_value_to_msg(self):
         fn = verta.configuration.Hyperparameters._value_to_msg

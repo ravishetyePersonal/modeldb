@@ -11,9 +11,6 @@ import verta.environment
 from verta._internal_utils import _pip_requirements_utils
 
 
-pytest.skip("unstable back end support", allow_module_level=True)
-
-
 @pytest.fixture
 def requirements_file():
     with tempfile.NamedTemporaryFile('w+') as tempf:
