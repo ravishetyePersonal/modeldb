@@ -53,7 +53,7 @@ public abstract class BlobDiffFactory {
 
   private boolean commonTypeEqual(BlobDiffFactory blobDiffFactory) {
     return blobDiffFactory.getBlobType() == getBlobType()
-        && blobDiffFactory.typeEqual(blobDiffFactory);
+        && blobDiffFactory.typeEqual(this);
   }
 
   protected abstract boolean typeEqual(BlobDiffFactory blobDiffFactory);
