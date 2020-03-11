@@ -49,11 +49,9 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
       if (hyperparameterBuilder.getBCount() != 0) {
         Set<HyperparameterConfigBlob> hyperparameterConfigBlobsA =
             new HashSet<>(config.getHyperparametersList());
-        HashSet<HyperparameterConfigBlob> commonElements =
-            new HashSet<>(hyperparameterConfigBlobsA);
         HashSet<HyperparameterConfigBlob> hyperparameterConfigBlobsB =
             new HashSet<>(hyperparameterBuilder.getBList());
-        removeCommon(hyperparameterConfigBlobsA, commonElements, hyperparameterConfigBlobsB);
+        removeCommon(hyperparameterConfigBlobsA, hyperparameterConfigBlobsB);
         hyperparameterBuilder.clear();
         hyperparameterBuilder.addAllA(hyperparameterConfigBlobsA);
         hyperparameterBuilder.addAllB(hyperparameterConfigBlobsB);
@@ -63,11 +61,9 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
       if (hyperparameterBuilder.getBCount() != 0) {
         Set<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsA =
             new HashSet<>(config.getHyperparameterSetList());
-        HashSet<HyperparameterSetConfigBlob> commonElements =
-            new HashSet<>(hyperparameterSetConfigBlobsA);
         HashSet<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsB =
             new HashSet<>(hyperparameterSetBuilder.getBList());
-        removeCommon(hyperparameterSetConfigBlobsA, commonElements, hyperparameterSetConfigBlobsB);
+        removeCommon(hyperparameterSetConfigBlobsA, hyperparameterSetConfigBlobsB);
         hyperparameterSetBuilder.clear();
         hyperparameterSetBuilder.addAllA(hyperparameterSetConfigBlobsA);
         hyperparameterSetBuilder.addAllB(hyperparameterSetConfigBlobsB);
@@ -84,11 +80,12 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
     blobDiffBuilder.setConfig(configBuilder);
   }
 
-  static <T> void removeCommon(Set<T> hyperparameterConfigBlobsA,
-      HashSet<T> commonElements,
-      HashSet<T> hyperparameterConfigBlobsB) {
-    commonElements.retainAll(hyperparameterConfigBlobsB);
-    hyperparameterConfigBlobsA.removeAll(commonElements);
-    hyperparameterConfigBlobsB.removeAll(commonElements);
+  static <T> void removeCommon(Set<T> componentsBlobsA,
+      Set<T> componentsBlobsB) {
+    Set<T> commonElements =
+        new HashSet<>(componentsBlobsA);
+    commonElements.retainAll(componentsBlobsB);
+    componentsBlobsA.removeAll(commonElements);
+    componentsBlobsB.removeAll(commonElements);
   }
 }

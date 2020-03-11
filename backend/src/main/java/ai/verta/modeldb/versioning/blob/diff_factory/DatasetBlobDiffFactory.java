@@ -54,11 +54,9 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           if (pathBuilder.getBCount() != 0) {
             Set<PathDatasetComponentBlob> pathDatasetComponentBlobsA =
                 new HashSet<>(dataset.getPath().getComponentsList());
-            HashSet<PathDatasetComponentBlob> commonElements =
-                new HashSet<>(pathDatasetComponentBlobsA);
             HashSet<PathDatasetComponentBlob> pathDatasetComponentBlobsB =
                 new HashSet<>(pathBuilder.getBList());
-            removeCommon(pathDatasetComponentBlobsA, commonElements, pathDatasetComponentBlobsB);
+            removeCommon(pathDatasetComponentBlobsA, pathDatasetComponentBlobsB);
             pathBuilder.clear();
             pathBuilder.addAllA(pathDatasetComponentBlobsA);
             pathBuilder.addAllB(pathDatasetComponentBlobsB);
@@ -82,11 +80,9 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           if (s3Builder.getBCount() != 0) {
             Set<S3DatasetComponentBlob> s3DatasetComponentBlobsA =
                 new HashSet<>(dataset.getS3().getComponentsList());
-            HashSet<S3DatasetComponentBlob> commonElements =
-                new HashSet<>(s3DatasetComponentBlobsA);
             HashSet<S3DatasetComponentBlob> s3DatasetComponentBlobsB =
                 new HashSet<>(s3Builder.getBList());
-            removeCommon(s3DatasetComponentBlobsA, commonElements, s3DatasetComponentBlobsB);
+            removeCommon(s3DatasetComponentBlobsA, s3DatasetComponentBlobsB);
             s3Builder.clear();
             s3Builder.addAllA(s3DatasetComponentBlobsA);
             s3Builder.addAllB(s3DatasetComponentBlobsB);
