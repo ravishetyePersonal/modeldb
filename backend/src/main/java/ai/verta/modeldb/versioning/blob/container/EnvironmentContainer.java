@@ -79,7 +79,7 @@ public class EnvironmentContainer extends BlobContainer {
       variableNames.add(blob.getName());
     }
     if (variableNames.size() != environment.getEnvironmentVariablesCount()) {
-      throw new ModelDBException("There are recurring variables");
+      throw new ModelDBException("There are recurring variables", Code.INVALID_ARGUMENT);
     }
     switch (environment.getContentCase()) {
       case DOCKER:
@@ -93,22 +93,24 @@ public class EnvironmentContainer extends BlobContainer {
         Set<PythonRequirementKey> pythonRequirementKeys = new HashSet<>();
         for (PythonRequirementEnvironmentBlob requirement : python.getRequirementsList()) {
           if (requirement.getLibrary().isEmpty()) {
-            throw new ModelDBException("Requirement library name should not be empty");
+            throw new ModelDBException("Requirement library name should not be empty",
+                Code.INVALID_ARGUMENT);
           }
           pythonRequirementKeys.add(new PythonRequirementKey(requirement, true));
         }
         if (pythonRequirementKeys.size() != python.getRequirementsCount()) {
-          throw new ModelDBException("There are recurring requirements");
+          throw new ModelDBException("There are recurring requirements", Code.INVALID_ARGUMENT);
         }
         for (PythonRequirementEnvironmentBlob constraint : python.getConstraintsList()) {
-          if (constraint.getConstraint().isEmpty()) {
-            throw new ModelDBException("Constraint name should not be empty");
+          if (constraint.getLibrary().isEmpty()) {
+            throw new ModelDBException("Constraint library name should not be empty",
+                Code.INVALID_ARGUMENT);
           }
           pythonRequirementKeys.add(new PythonRequirementKey(constraint, false));
         }
         if (pythonRequirementKeys.size()
             != python.getRequirementsCount() + python.getConstraintsCount()) {
-          throw new ModelDBException("There are recurring constraints");
+          throw new ModelDBException("There are recurring constraints", Code.INVALID_ARGUMENT);
         }
         break;
       default:
