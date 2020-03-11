@@ -636,6 +636,9 @@ public class BlobDAORdbImpl implements BlobDAO {
                 return result.stream();
               })
           .collect(Collectors.toSet());
+      Map<String, BlobExpanded> locationBlobsMapNew =
+          getLocationWiseBlobExpandedMapFromList(newBlobs);
+      locationBlobsMapCommit.putAll(locationBlobsMapNew);
     }
     return null;
   }
