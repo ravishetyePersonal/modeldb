@@ -6,7 +6,7 @@ import verta
 from verta._internal_utils import _utils
 
 import pytest
-import utils
+from . import utils
 
 
 class TestTags:

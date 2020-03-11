@@ -4,15 +4,15 @@ import os
 import zipfile
 
 import verta
-from verta._internal_utils import _utils
+from verta._internal_utils import _git_utils
 
 import pytest
-import utils
+from . import utils
 
 
 # check if in git repo
 try:
-    _utils.get_git_repo_root_dir()
+    _git_utils.get_git_repo_root_dir()
 except OSError:
     IN_GIT_REPO = False
 else:

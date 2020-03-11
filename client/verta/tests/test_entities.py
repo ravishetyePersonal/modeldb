@@ -7,7 +7,7 @@ import shutil
 import requests
 
 import pytest
-import utils
+from . import utils
 
 import verta
 import json
