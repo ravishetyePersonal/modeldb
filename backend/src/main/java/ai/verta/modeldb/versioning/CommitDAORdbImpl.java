@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -237,7 +236,7 @@ public class CommitDAORdbImpl implements CommitDAO {
                   result = Collections.emptyList();
                 } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
                   // If a blob was modified, then:
-                  BlobContainer blob = getBlob(session, commitEntity);
+                  BlobContainer blob = getBlob(session, commitEntity, blobDiff.getLocationList());
                   // 1) check that the type of the diff is consistent with the type of the blob. If
                   // they are different, raise an error saying so
                   checkType(blobDiff, blob);
@@ -281,7 +280,8 @@ public class CommitDAORdbImpl implements CommitDAO {
 
   private void checkType(BlobDiff blobDiff, BlobContainer blob) {}
 
-  private BlobContainer getBlob(Session session, CommitEntity commitEntity) {
+  private BlobContainer getBlob(
+      Session session, CommitEntity commitEntity, ProtocolStringList locationList) {
     return null;
   }
 
