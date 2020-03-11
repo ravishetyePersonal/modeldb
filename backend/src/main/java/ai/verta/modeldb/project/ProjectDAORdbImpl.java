@@ -255,33 +255,28 @@ public class ProjectDAORdbImpl implements ProjectDAO {
               projectId,
               ModelDBServiceResourceTypes.PROJECT);
           if (projectVisibility.equals(ProjectVisibility.ORG_SCOPED_PUBLIC)) {
-            roleService.createRoleBinding(
-                projRead,
-                new CollaboratorOrg(org.getId()),
-                projectId,
-                ModelDBServiceResourceTypes.PROJECT);
-          }
-          String globalSharingRoleName =
-              new StringBuilder()
-                  .append("O_")
-                  .append(workspaceId)
-                  .append("_GLOBAL_SHARING")
-                  .toString();
-          try {
-            Role globalSharingRole =
-                roleService.getRoleByName(
-                    globalSharingRoleName, RoleScope.newBuilder().setOrgId(workspaceId).build());
-            roleService.createRoleBinding(
-                globalSharingRole,
-                new CollaboratorOrg(workspaceId),
-                projectId,
-                ModelDBServiceResourceTypes.PROJECT);
-          } catch (StatusRuntimeException ex) {
-            if (ex.getStatus().getCode().value() == Code.NOT_FOUND_VALUE) {
-              // DO NOTHING if the role does not exist
-              LOGGER.warn(ex.getMessage());
-            } else {
-              throw ex;
+            String globalSharingRoleName =
+                new StringBuilder()
+                    .append("O_")
+                    .append(workspaceId)
+                    .append("_GLOBAL_SHARING")
+                    .toString();
+            try {
+              Role globalSharingRole =
+                  roleService.getRoleByName(
+                      globalSharingRoleName, RoleScope.newBuilder().setOrgId(workspaceId).build());
+              roleService.createRoleBinding(
+                  globalSharingRole,
+                  new CollaboratorOrg(workspaceId),
+                  projectId,
+                  ModelDBServiceResourceTypes.PROJECT);
+            } catch (StatusRuntimeException ex) {
+              if (ex.getStatus().getCode().value() == Code.NOT_FOUND_VALUE) {
+                // DO NOTHING if the role does not exist
+                LOGGER.warn(ex.getMessage());
+              } else {
+                throw ex;
+              }
             }
           }
           break;
@@ -801,37 +796,25 @@ public class ProjectDAORdbImpl implements ProjectDAO {
             roleService.deleteRoleBinding(projectAdminRoleBinding.getId());
           }
           if (projectVisibility.equals(ProjectVisibility.ORG_SCOPED_PUBLIC)) {
-            String orgProjectReadRoleBindingName =
+            String globalSharingRoleName =
+                new StringBuilder()
+                    .append("O_")
+                    .append(workspaceId)
+                    .append("_GLOBAL_SHARING")
+                    .toString();
+
+            String globalSharingRoleBindingName =
                 roleService.buildRoleBindingName(
-                    ModelDBConstants.ROLE_PROJECT_READ_ONLY,
+                    globalSharingRoleName,
                     projectId,
-                    new CollaboratorOrg(org.getId()),
+                    new CollaboratorOrg(workspaceId),
                     ModelDBServiceResourceTypes.PROJECT.name());
-            RoleBinding orgProjectReadRoleBinding =
-                roleService.getRoleBindingByName(orgProjectReadRoleBindingName);
-            if (orgProjectReadRoleBinding != null && !orgProjectReadRoleBinding.getId().isEmpty()) {
-              roleService.deleteRoleBinding(orgProjectReadRoleBinding.getId());
+            RoleBinding globalSharingRoleBinding =
+                roleService.getRoleBindingByName(globalSharingRoleBindingName);
+            if (globalSharingRoleBinding != null && !globalSharingRoleBinding.getId().isEmpty()) {
+              roleService.deleteRoleBinding(globalSharingRoleBinding.getId());
             }
           }
-          String globalSharingRoleName =
-              new StringBuilder()
-                  .append("O_")
-                  .append(workspaceId)
-                  .append("_GLOBAL_SHARING")
-                  .toString();
-
-          String globalSharingRoleBindingName =
-              roleService.buildRoleBindingName(
-                  globalSharingRoleName,
-                  projectId,
-                  new CollaboratorOrg(workspaceId),
-                  ModelDBServiceResourceTypes.PROJECT.name());
-          RoleBinding globalSharingRoleBinding =
-              roleService.getRoleBindingByName(globalSharingRoleBindingName);
-          if (globalSharingRoleBinding != null && !globalSharingRoleBinding.getId().isEmpty()) {
-            roleService.deleteRoleBinding(globalSharingRoleBinding.getId());
-          }
-
           break;
         case USER:
           String projectRoleBindingName =
