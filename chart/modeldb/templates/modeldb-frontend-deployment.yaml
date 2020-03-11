@@ -18,7 +18,7 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: {{ .Values.image.modeldbWebappImage}}
+      - image: {{ .Values.image.modeldbFrontendImage}}
         name: modeldb-frontend
         env:
           - name:  DEPLOYED

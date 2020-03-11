@@ -4,12 +4,13 @@ metadata:
   annotations:
   labels:
     app: modeldb
-  name: modeldb-webapp
+  name: modeldb-frontend
 spec:
   ports:
-  - port: 80
+  - port: 3000
     targetPort: 3000
+    nodePort: 30080
   selector:
     app: modeldb
-    tier: webapp
-  type: {{ .Values.service.modeldbWebappService }}
+    tier: frontend
+  type: {{ .Values.service.modeldbFrontendService }}
