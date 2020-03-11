@@ -7,8 +7,6 @@ import tempfile
 
 import six
 
-import utils
-
 import verta.environment
 from verta._internal_utils import _pip_requirements_utils
 

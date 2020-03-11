@@ -62,7 +62,7 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
     return BlobFactory.create(folderElementEntity).getBlob(session);
   }
 
-  private Folder getFolder(Session session, String commitSha, String folderSha) throws Throwable {
+  private Folder getFolder(Session session, String commitSha, String folderSha) {
     Optional result =
         session
             .createQuery(
@@ -90,9 +90,8 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
                 })
             .reduce((a, b) -> ((Folder) a).toBuilder().mergeFrom((Folder) b).build());
 
-    return (Folder)
-        result.orElseThrow(
-            () -> new ModelDBException("No such folder found", Status.Code.NOT_FOUND));
+    if (result.isPresent()) return (Folder) result.get();
+    else return null;
   }
 
   // TODO : check if there is a way to optimize on the calls to data base.
@@ -118,6 +117,9 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
       if (locationList.isEmpty()) { // getting root
         Folder folder = getFolder(session, commit.getCommit_hash(), folderHash);
         session.getTransaction().commit();
+        if (folder == null) { // root is empty
+          return GetCommitComponentRequest.Response.newBuilder().build();
+        }
         return GetCommitComponentRequest.Response.newBuilder().setFolder(folder).build();
       }
       for (int index = 0; index < locationList.size(); index++) {
@@ -145,6 +147,9 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
           if (index == locationList.size() - 1) {
             Folder folder = getFolder(session, commit.getCommit_hash(), folderHash);
             session.getTransaction().commit();
+            if (folder == null) { // folder is empty
+              return GetCommitComponentRequest.Response.newBuilder().build();
+            }
             return GetCommitComponentRequest.Response.newBuilder().setFolder(folder).build();
           }
         } else {

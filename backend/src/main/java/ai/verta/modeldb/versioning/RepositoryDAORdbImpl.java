@@ -294,7 +294,8 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
               workspaceDTO.getWorkspaceId(),
               workspaceDTO.getWorkspaceType(),
               false,
-              Collections.singletonList(ModelDBConstants.DATE_UPDATED));
+              Collections.singletonList(
+                  ModelDBConstants.DATE_UPDATED + " " + ModelDBConstants.ORDER_DESC));
       int pageLimit = request.getPagination().getPageLimit();
       if (request.hasPagination()) {
         query.setFirstResult((request.getPagination().getPageNumber() - 1) * pageLimit);

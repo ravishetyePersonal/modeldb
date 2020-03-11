@@ -9,6 +9,10 @@ Versioning
 
 Code
 ^^^^
+.. autoclass:: verta.code._git.Git
+    :members:
+.. autoclass:: verta.code._notebook.Notebook
+    :members:
 
 Configuration
 ^^^^^^^^^^^^^
@@ -17,6 +21,8 @@ Configuration
 
 Dataset
 ^^^^^^^
+.. autoclass:: verta.dataset.Path
+    :members:
 .. autoclass:: verta.dataset.S3
     :members:
 

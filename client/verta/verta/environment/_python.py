@@ -16,7 +16,7 @@ from . import _environment
 
 class Python(_environment._Environment):
     """
-
+    Captures metadata about Python, installed packages, and system environment variables.
 
     Parameters
     ----------

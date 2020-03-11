@@ -2163,6 +2163,15 @@
         },
         "dataset": {
           "$ref": "#/definitions/versioningDatasetDiff"
+        },
+        "environment": {
+          "$ref": "#/definitions/versioningEnvironmentDiff"
+        },
+        "code": {
+          "$ref": "#/definitions/versioningCodeDiff"
+        },
+        "config": {
+          "$ref": "#/definitions/versioningConfigDiff"
         }
       }
     },
@@ -2189,6 +2198,17 @@
         },
         "notebook": {
           "$ref": "#/definitions/versioningNotebookCodeBlob"
+        }
+      }
+    },
+    "versioningCodeDiff": {
+      "type": "object",
+      "properties": {
+        "git": {
+          "$ref": "#/definitions/versioningGitCodeDiff"
+        },
+        "notebook": {
+          "$ref": "#/definitions/versioningNotebookCodeDiff"
         }
       }
     },
@@ -2249,6 +2269,17 @@
         }
       }
     },
+    "versioningConfigDiff": {
+      "type": "object",
+      "properties": {
+        "hyperparameter_set": {
+          "$ref": "#/definitions/versioningHyperparameterSetConfigDiff"
+        },
+        "hyperparameters": {
+          "$ref": "#/definitions/versioningHyperparameterConfigDiff"
+        }
+      }
+    },
     "versioningContinuousHyperparameterSetConfigBlob": {
       "type": "object",
       "properties": {
@@ -2276,6 +2307,16 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/versioningBlobExpanded"
+          }
+        },
+        "commit_base": {
+          "type": "string",
+          "title": "Apply the diffs on top of commit_base\nIf a blob was added in the diff, add it on top of commit_base (doesn't matter if it was present already or not)\nIf a blob was deleted, delete if from commit_base if present\nIf a blob was modified, then:\n1) check that the type of the diff is consistent with the type of the blob. If they are different, raise an error saying so\n2) apply the diff to the blob as per the following logic:\n2a) if the field is atomic (e.g. python version, git repository), use the newer version (B) from the diff and overwrite what the commit_base has\n2b) if the field is not atomic (e.g. list of python requirements, dataset components), merge the lists by a) copying new values, b) deleting removed values, c) updating values that are already present based on some reasonable key"
+        },
+        "diffs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningBlobDiff"
           }
         }
       }
@@ -2353,6 +2394,17 @@
         }
       }
     },
+    "versioningDockerEnvironmentDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "$ref": "#/definitions/versioningDockerEnvironmentBlob"
+        },
+        "B": {
+          "$ref": "#/definitions/versioningDockerEnvironmentBlob"
+        }
+      }
+    },
     "versioningEnvironmentBlob": {
       "type": "object",
       "properties": {
@@ -2369,6 +2421,42 @@
           }
         },
         "command_line": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "versioningEnvironmentDiff": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "$ref": "#/definitions/versioningPythonEnvironmentDiff"
+        },
+        "docker": {
+          "$ref": "#/definitions/versioningDockerEnvironmentDiff"
+        },
+        "environment_variables_A": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningEnvironmentVariablesBlob"
+          },
+          "title": "Should only contain environment variables unique to A/B (considering all fields)"
+        },
+        "environment_variables_B": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningEnvironmentVariablesBlob"
+          }
+        },
+        "command_line_A": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "command_line_B": {
           "type": "array",
           "items": {
             "type": "string"
@@ -2485,6 +2573,17 @@
         }
       }
     },
+    "versioningGitCodeDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "$ref": "#/definitions/versioningGitCodeBlob"
+        },
+        "B": {
+          "$ref": "#/definitions/versioningGitCodeBlob"
+        }
+      }
+    },
     "versioningHyperparameterConfigBlob": {
       "type": "object",
       "properties": {
@@ -2493,6 +2592,24 @@
         },
         "value": {
           "$ref": "#/definitions/versioningHyperparameterValuesConfigBlob"
+        }
+      }
+    },
+    "versioningHyperparameterConfigDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningHyperparameterConfigBlob"
+          },
+          "description": "Hyperparameters only in A/B *or* modified between them. We can identify the modification by matching on the name."
+        },
+        "B": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningHyperparameterConfigBlob"
+          }
         }
       }
     },
@@ -2507,6 +2624,24 @@
         },
         "discrete": {
           "$ref": "#/definitions/versioningDiscreteHyperparameterSetConfigBlob"
+        }
+      }
+    },
+    "versioningHyperparameterSetConfigDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningHyperparameterSetConfigBlob"
+          },
+          "description": "Sets only in A/B *or* modified between them. We can identify the modification by matching on the name."
+        },
+        "B": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/versioningHyperparameterSetConfigBlob"
+          }
         }
       }
     },
@@ -2627,6 +2762,17 @@
         }
       }
     },
+    "versioningNotebookCodeDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "$ref": "#/definitions/versioningNotebookCodeBlob"
+        },
+        "B": {
+          "$ref": "#/definitions/versioningNotebookCodeBlob"
+        }
+      }
+    },
     "versioningPagination": {
       "type": "object",
       "properties": {
@@ -2710,6 +2856,18 @@
           "items": {
             "$ref": "#/definitions/versioningPythonRequirementEnvironmentBlob"
           }
+        }
+      }
+    },
+    "versioningPythonEnvironmentDiff": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "$ref": "#/definitions/versioningPythonEnvironmentBlob",
+          "title": "Should only contain requirements and constraints unique to A/B (considering all fields)"
+        },
+        "B": {
+          "$ref": "#/definitions/versioningPythonEnvironmentBlob"
         }
       }
     },

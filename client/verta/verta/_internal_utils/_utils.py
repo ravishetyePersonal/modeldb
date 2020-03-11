@@ -784,12 +784,14 @@ def get_python_version():
     return '.'.join(map(str, sys.version_info[:3]))
 
 
-def save_notebook(timeout=5):
+def save_notebook(notebook_path=None, timeout=5):
     """
     Saves the current notebook on disk and returns its contents after the file has been rewritten.
 
     Parameters
     ----------
+    notebook_path : str, optional
+        Filepath of the Jupyter Notebook.
     timeout : float, default 5
         Maximum number of seconds to wait for the notebook to save.
 
@@ -806,7 +808,8 @@ def save_notebook(timeout=5):
         If the notebook is not saved within `timeout` seconds.
 
     """
-    notebook_path = get_notebook_filepath()
+    if notebook_path is None:
+        notebook_path = get_notebook_filepath()
     modtime = os.path.getmtime(notebook_path)
 
     display(Javascript('''
@@ -901,71 +904,6 @@ def get_script_filepath():
             else:
                 break  # continuing might end up returning a built-in
     raise OSError("unable to find script file")
-
-
-def get_git_commit_hash():
-    try:
-        return six.ensure_str(
-            subprocess.check_output(["git", "rev-parse", "--verify", "HEAD"])
-        ).strip()
-    except:
-        pass
-    raise OSError("unable to find git commit hash")
-
-
-def get_git_commit_dirtiness(commit_hash=None):
-    if commit_hash is not None:
-        try:  # compare `commit_hash` to the working tree and index
-            diffs = six.ensure_str(
-                subprocess.check_output(["git", "diff-index", commit_hash])
-            ).splitlines()
-        except:
-            pass
-        else:
-            return len(diffs) > 0
-    else:
-        try:
-            diff_paths = six.ensure_str(
-                subprocess.check_output(["git", "status", "--porcelain"])
-            ).splitlines()
-        except:
-            pass
-        else:
-            return not all(path.startswith("??") for path in diff_paths)
-    raise OSError("unable to determine git commit dirtiness")
-
-
-def get_git_remote_url():
-    try:
-        return six.ensure_str(
-            subprocess.check_output(["git", "ls-remote", "--get-url"])
-        ).strip()
-    except:
-        pass
-    raise OSError("unable to find git remote URL")
-
-
-def get_git_branch_name():
-    try:
-        return six.ensure_str(
-            subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
-        ).strip()
-    except:
-        pass
-    raise OSError("unable to find git branch name")
-
-
-def get_git_repo_root_dir():
-    try:
-        dirpath = six.ensure_str(
-            subprocess.check_output(["git", "rev-parse", "--show-toplevel"])
-        ).strip()
-    except:
-        pass
-    else:
-        # append trailing separator
-        return os.path.join(dirpath, "")
-    raise OSError("unable to find git repository root directory")
 
 
 def is_org(workspace_name, conn):

@@ -1190,6 +1190,9 @@
         },
         "owner": {
           "type": "string"
+        },
+        "versioned_inputs": {
+          "$ref": "#/definitions/modeldbVersioningEntry"
         }
       },
       "title": "ExperimentRun Entity"
@@ -1491,6 +1494,24 @@
         }
       }
     },
+    "modeldbVersioningEntry": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "key_location_map": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/vertamodeldbLocation"
+          }
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -1528,6 +1549,17 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "vertamodeldbLocation": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }

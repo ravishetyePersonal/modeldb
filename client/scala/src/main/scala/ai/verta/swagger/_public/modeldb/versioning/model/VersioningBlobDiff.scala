@@ -12,7 +12,10 @@ import ai.verta.swagger.client.objects._
 case class VersioningBlobDiff (
   location: Option[List[String]] = None,
   status: Option[DiffStatusEnumDiffStatus] = None,
-  dataset: Option[VersioningDatasetDiff] = None
+  dataset: Option[VersioningDatasetDiff] = None,
+  environment: Option[VersioningEnvironmentDiff] = None,
+  code: Option[VersioningCodeDiff] = None,
+  config: Option[VersioningConfigDiff] = None
 ) extends BaseSwagger {
   def toJson(): JValue = VersioningBlobDiff.toJson(this)
 }
@@ -23,7 +26,10 @@ object VersioningBlobDiff {
       List[Option[JField]](
         obj.location.map(x => JField("location", ((x: List[String]) => JArray(x.map(JString)))(x))),
         obj.status.map(x => JField("status", ((x: DiffStatusEnumDiffStatus) => DiffStatusEnumDiffStatus.toJson(x))(x))),
-        obj.dataset.map(x => JField("dataset", ((x: VersioningDatasetDiff) => VersioningDatasetDiff.toJson(x))(x)))
+        obj.dataset.map(x => JField("dataset", ((x: VersioningDatasetDiff) => VersioningDatasetDiff.toJson(x))(x))),
+        obj.environment.map(x => JField("environment", ((x: VersioningEnvironmentDiff) => VersioningEnvironmentDiff.toJson(x))(x))),
+        obj.code.map(x => JField("code", ((x: VersioningCodeDiff) => VersioningCodeDiff.toJson(x))(x))),
+        obj.config.map(x => JField("config", ((x: VersioningConfigDiff) => VersioningConfigDiff.toJson(x))(x)))
       ).flatMap(x => x match {
         case Some(y) => List(y)
         case None => Nil
@@ -39,7 +45,10 @@ object VersioningBlobDiff {
           // TODO: handle required
           location = fieldsMap.get("location").map((x: JValue) => x match {case JArray(elements) => elements.map(JsonConverter.fromJsonString); case _ => throw new IllegalArgumentException(s"unknown type ${x.getClass.toString}")}),
           status = fieldsMap.get("status").map(DiffStatusEnumDiffStatus.fromJson),
-          dataset = fieldsMap.get("dataset").map(VersioningDatasetDiff.fromJson)
+          dataset = fieldsMap.get("dataset").map(VersioningDatasetDiff.fromJson),
+          environment = fieldsMap.get("environment").map(VersioningEnvironmentDiff.fromJson),
+          code = fieldsMap.get("code").map(VersioningCodeDiff.fromJson),
+          config = fieldsMap.get("config").map(VersioningConfigDiff.fromJson)
         )
       }
       case _ => throw new IllegalArgumentException(s"unknown type ${value.getClass.toString}")

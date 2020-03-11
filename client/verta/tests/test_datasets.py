@@ -45,64 +45,6 @@ def bq_location():
     return "US"
 
 
-class TestNewDatasets:
-    def test_s3_bucket(self):
-        # pylint: disable=no-member
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3("s3://verta-starter")
-        assert len(dataset._msg.s3.components) > 1
-
-        for s3_obj_metadata in (component.path for component in dataset._msg.s3.components):
-            assert s3_obj_metadata.path != ""
-            assert s3_obj_metadata.size != 0
-            assert s3_obj_metadata.last_modified_at_source != 0
-            assert s3_obj_metadata.md5 != ""
-
-    def test_s3_key(self):
-        # pylint: disable=no-member
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3("s3://verta-starter/census-test.csv")
-
-        assert len(dataset._msg.s3.components) == 1
-
-        s3_obj_metadata = dataset._msg.s3.components[0].path
-        assert s3_obj_metadata.path != ""
-        assert s3_obj_metadata.size != 0
-        assert s3_obj_metadata.last_modified_at_source != 0
-        assert s3_obj_metadata.md5 != ""
-
-    def test_s3_multiple_keys(self):
-        # pylint: disable=no-member
-        pytest.importorskip("boto3")
-
-        dataset = verta.dataset.S3([
-            "s3://verta-starter/census-test.csv",
-            "s3://verta-starter/census-train.csv",
-        ])
-
-        assert len(dataset._msg.s3.components) == 2
-
-        for s3_obj_metadata in (component.path for component in dataset._msg.s3.components):
-            assert s3_obj_metadata.path != ""
-            assert s3_obj_metadata.size != 0
-            assert s3_obj_metadata.last_modified_at_source != 0
-            assert s3_obj_metadata.md5 != ""
-
-    def test_s3_no_duplicates(self):
-        # pylint: disable=no-member
-        pytest.importorskip("boto3")
-
-        multiple_dataset = verta.dataset.S3([
-            "s3://verta-starter",
-            "s3://verta-starter/census-test.csv",
-        ])
-        bucket_dataset = verta.dataset.S3("s3://verta-starter")
-
-        assert len(multiple_dataset._msg.s3.components) == len(bucket_dataset._msg.s3.components)
-
-
 class TestBaseDatasets:
     def test_creation_from_scratch(self, client, created_datasets):
         dataset = Dataset(client._conn, client._conf,

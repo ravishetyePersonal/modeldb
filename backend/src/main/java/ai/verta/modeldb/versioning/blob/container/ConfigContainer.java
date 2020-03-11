@@ -61,11 +61,14 @@ public class ConfigContainer extends BlobContainer {
             throw new ModelDBException(
                 "Hyperparameter set " + name + " doesn't have interval end", Code.INVALID_ARGUMENT);
           }
+          if (!continuous.hasIntervalStep()) {
+            throw new ModelDBException(
+                "Hyperparameter set " + name + " doesn't have interval step",
+                Code.INVALID_ARGUMENT);
+          }
           validate(name, continuous.getIntervalBegin());
           validate(name, continuous.getIntervalEnd());
-          if (continuous.hasIntervalStep()) {
-            validate(name, continuous.getIntervalStep());
-          }
+          validate(name, continuous.getIntervalStep());
           break;
         case DISCRETE:
           DiscreteHyperparameterSetConfigBlob discrete = hyperparameterSetConfigBlob.getDiscrete();
@@ -127,13 +130,8 @@ public class ConfigContainer extends BlobContainer {
               getValueBlob(session, "", continuous.getIntervalBegin(), valueEntities);
           HyperparameterElementConfigBlobEntity hyperparameterElementConfigBlobEntityEnd =
               getValueBlob(session, "", continuous.getIntervalEnd(), valueEntities);
-          HyperparameterElementConfigBlobEntity hyperparameterElementConfigBlobEntityStep;
-          if (continuous.hasIntervalStep()) {
-            hyperparameterElementConfigBlobEntityStep =
-                getValueBlob(session, "", continuous.getIntervalStep(), valueEntities);
-          } else {
-            hyperparameterElementConfigBlobEntityStep = null;
-          }
+          HyperparameterElementConfigBlobEntity hyperparameterElementConfigBlobEntityStep =
+              getValueBlob(session, "", continuous.getIntervalStep(), valueEntities);
           hyperparameterSetBlobHash =
               computeContinuousSHA(
                   name,
@@ -150,10 +148,8 @@ public class ConfigContainer extends BlobContainer {
               hyperparameterElementConfigBlobEntityBegin);
           hyperparameterSetConfigBlobEntity.setInterval_end_hash(
               hyperparameterElementConfigBlobEntityEnd);
-          if (continuous.hasIntervalStep()) {
-            hyperparameterSetConfigBlobEntity.setInterval_step_hash(
-                hyperparameterElementConfigBlobEntityStep);
-          }
+          hyperparameterSetConfigBlobEntity.setInterval_step_hash(
+              hyperparameterElementConfigBlobEntityStep);
 
           break;
         case DISCRETE:
@@ -262,16 +258,15 @@ public class ConfigContainer extends BlobContainer {
       HyperparameterElementConfigBlobEntity hyperparameterElementConfigBlobEntityEnd,
       HyperparameterElementConfigBlobEntity hyperparameterElementConfigBlobEntityStep)
       throws NoSuchAlgorithmException {
-    String payload =
+    final String payload =
         "name:"
             + name
             + ":begin:"
             + hyperparameterElementConfigBlobEntityBegin.getBlobHash()
             + ":end:"
-            + hyperparameterElementConfigBlobEntityEnd.getBlobHash();
-    if (hyperparameterElementConfigBlobEntityStep != null) {
-      payload += ":step:" + hyperparameterElementConfigBlobEntityStep.getBlobHash();
-    }
+            + hyperparameterElementConfigBlobEntityEnd.getBlobHash()
+            + ":step:"
+            + hyperparameterElementConfigBlobEntityStep.getBlobHash();
     return FileHasher.getSha(payload);
   }
 

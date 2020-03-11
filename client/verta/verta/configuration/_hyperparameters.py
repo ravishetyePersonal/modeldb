@@ -11,7 +11,7 @@ from . import _configuration
 
 class Hyperparameters(_configuration._Configuration):
     """
-
+    Captures hyperparameters.
 
     Parameters
     ----------
