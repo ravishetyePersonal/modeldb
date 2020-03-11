@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -600,36 +601,44 @@ public class BlobDAORdbImpl implements BlobDAO {
           getLocationWiseBlobExpandedMapFromList(locationBlobListCommit);
       Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
       for (BlobDiff blobDiff : request.getDiffsList()) {
+        final ProtocolStringList locationList = blobDiff.getLocationList();
         // Apply the diffs on top of commit_base
         if (blobDiff.getStatus() == DiffStatus.ADDED) {
           // If a blob was added in the diff, add it on top of commit_base (doesn't matter
           // if it was present already or not)
           BlobExpanded blobExpanded = convertBlobDiffToBlobExpand(blobDiff);
           blobContainers.add(blobExpanded);
-        } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
-          // If a blob was deleted, delete if from commit_base if present
-          locationBlobsMapCommit.remove(String.join("#", blobDiff.getLocationList()));
-        } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
-          // If a blob was modified, then:
-          BlobExpanded blobExpanded =
-              locationBlobsMapCommit.get(String.join("#", blobDiff.getLocationList()));
-          // 1) check that the type of the diff is consistent with the type of the blob. If
-          // they are different, raise an error saying so
-          checkType(blobDiff, blobExpanded);
-          // 2) apply the diff to the blob as per the following logic:
-          if (isAtomic(blobDiff)) {
-            // 2a) if the field is atomic (e.g. python version, git repository), use the
-            // newer version (B) from the diff and overwrite what the commit_base has
-            blobContainers.add(atomicResult(blobDiff));
-          } else {
-            // 2b) if the field is not atomic (e.g. list of python requirements, dataset
-            // components), merge the lists by a) copying new values, b) deleting removed
-            // values, c) updating values that are already present based on some reasonable
-            // key
-            blobContainers.add(complexResult(blobDiff, blobExpanded));
-          }
         } else {
-          throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
+          if (blobDiff.getStatus() == DiffStatus.DELETED) {
+            // If a blob was deleted, delete if from commit_base if present
+            locationBlobsMapCommit.remove(String.join("#", locationList));
+          } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
+            // If a blob was modified, then:
+            BlobExpanded blobExpanded =
+                locationBlobsMapCommit.get(String.join("#", locationList));
+            if (blobExpanded == null) {
+              throw new ModelDBException("Blob with path: " + locationList + " not found",
+                  Status.Code.NOT_FOUND);
+            }
+            // 1) check that the type of the diff is consistent with the type of the blob. If
+            // they are different, raise an error saying so
+            checkType(blobDiff, blobExpanded);
+            // 2) apply the diff to the blob as per the following logic:
+            if (isAtomic(blobDiff)) {
+              // 2a) if the field is atomic (e.g. python version, git repository), use the
+              // newer version (B) from the diff and overwrite what the commit_base has
+              blobContainers.add(atomicResult(blobDiff));
+            } else {
+              // 2b) if the field is not atomic (e.g. list of python requirements, dataset
+              // components), merge the lists by a) copying new values, b) deleting removed
+              // values, c) updating values that are already present based on some reasonable
+              // key
+              blobContainers.add(complexResult(blobDiff, blobExpanded).addAllLocation(
+                  locationList).build());
+            }
+          } else {
+            throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
+          }
         }
       }
       Map<String, BlobExpanded> locationBlobsMapNew =
@@ -647,10 +656,11 @@ public class BlobDAORdbImpl implements BlobDAO {
       List<T> configBlob, Function<T, String> getKey) {
     return configBlob.stream()
         .collect(
-            Collectors.toMap(getKey, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob));
+            Collectors.toMap(getKey, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob,
+                (a, b) -> a, HashMap::new));
   }
 
-  private BlobExpanded complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
@@ -747,7 +757,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             break;
         }
     }
-    return blobExpandedNew.build();
+    return blobExpandedNew;
   }
 
   private BlobExpanded atomicResult(BlobDiff blobDiff) throws ModelDBException {

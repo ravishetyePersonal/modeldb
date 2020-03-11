@@ -241,7 +241,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
 
       final RepositoryFunction repositoryFunction =
           (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId());
-      if (request.getBlobsCount() == 0) {
+      if (request.getBlobsCount() != 0) {
         blobContainers = validateBlobs(request);
       } else {
         validateBlobDiffs(request);
