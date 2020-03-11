@@ -4,8 +4,12 @@ import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.ConfigBlob;
 import ai.verta.modeldb.versioning.ConfigDiff;
+import ai.verta.modeldb.versioning.HyperparameterConfigBlob;
 import ai.verta.modeldb.versioning.HyperparameterConfigDiff;
+import ai.verta.modeldb.versioning.HyperparameterSetConfigBlob;
 import ai.verta.modeldb.versioning.HyperparameterSetConfigDiff;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConfigBlobDiffFactory extends BlobDiffFactory {
 
@@ -42,8 +46,34 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
       hyperparameterSetBuilder = HyperparameterSetConfigDiff.newBuilder();
     }
     if (add) {
-      hyperparameterBuilder.addAllA(config.getHyperparametersList());
-      hyperparameterSetBuilder.addAllA(config.getHyperparameterSetList());
+      if (hyperparameterBuilder.getBCount() != 0) {
+        Set<HyperparameterConfigBlob> hyperparameterConfigBlobsA =
+            new HashSet<>(config.getHyperparametersList());
+        HashSet<HyperparameterConfigBlob> commonElements =
+            new HashSet<>(hyperparameterConfigBlobsA);
+        HashSet<HyperparameterConfigBlob> hyperparameterConfigBlobsB =
+            new HashSet<>(hyperparameterBuilder.getBList());
+        removeCommon(hyperparameterConfigBlobsA, commonElements, hyperparameterConfigBlobsB);
+        hyperparameterBuilder.clear();
+        hyperparameterBuilder.addAllA(hyperparameterConfigBlobsA);
+        hyperparameterBuilder.addAllB(hyperparameterConfigBlobsB);
+      } else {
+        hyperparameterBuilder.addAllA(config.getHyperparametersList());
+      }
+      if (hyperparameterBuilder.getBCount() != 0) {
+        Set<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsA =
+            new HashSet<>(config.getHyperparameterSetList());
+        HashSet<HyperparameterSetConfigBlob> commonElements =
+            new HashSet<>(hyperparameterSetConfigBlobsA);
+        HashSet<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsB =
+            new HashSet<>(hyperparameterSetBuilder.getBList());
+        removeCommon(hyperparameterSetConfigBlobsA, commonElements, hyperparameterSetConfigBlobsB);
+        hyperparameterSetBuilder.clear();
+        hyperparameterSetBuilder.addAllA(hyperparameterSetConfigBlobsA);
+        hyperparameterSetBuilder.addAllB(hyperparameterSetConfigBlobsB);
+      } else {
+        hyperparameterSetBuilder.addAllA(config.getHyperparameterSetList());
+      }
     } else {
       hyperparameterBuilder.addAllB(config.getHyperparametersList());
       hyperparameterSetBuilder.addAllB(config.getHyperparameterSetList());
@@ -52,5 +82,13 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
     configBuilder.setHyperparameters(hyperparameterBuilder);
     configBuilder.setHyperparameterSet(hyperparameterSetBuilder);
     blobDiffBuilder.setConfig(configBuilder);
+  }
+
+  protected static <T> void removeCommon(Set<T> hyperparameterConfigBlobsA,
+      HashSet<T> commonElements,
+      HashSet<T> hyperparameterConfigBlobsB) {
+    commonElements.retainAll(hyperparameterConfigBlobsB);
+    hyperparameterConfigBlobsA.removeAll(commonElements);
+    hyperparameterConfigBlobsB.removeAll(commonElements);
   }
 }

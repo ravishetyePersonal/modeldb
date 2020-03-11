@@ -2,10 +2,10 @@ package ai.verta.modeldb.versioning.blob.diff_factory;
 
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
+import ai.verta.modeldb.versioning.DockerEnvironmentDiff;
 import ai.verta.modeldb.versioning.EnvironmentBlob;
 import ai.verta.modeldb.versioning.EnvironmentDiff;
 import ai.verta.modeldb.versioning.PythonEnvironmentDiff;
-import ai.verta.modeldb.versioning.DockerEnvironmentDiff;
 
 public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
 

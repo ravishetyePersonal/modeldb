@@ -1,11 +1,17 @@
 package ai.verta.modeldb.versioning.blob.diff_factory;
 
+import static ai.verta.modeldb.versioning.blob.diff_factory.ConfigBlobDiffFactory.removeCommon;
+
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.DatasetBlob;
 import ai.verta.modeldb.versioning.DatasetDiff;
+import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
 import ai.verta.modeldb.versioning.PathDatasetDiff;
+import ai.verta.modeldb.versioning.S3DatasetComponentBlob;
 import ai.verta.modeldb.versioning.S3DatasetDiff;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DatasetBlobDiffFactory extends BlobDiffFactory {
 
@@ -45,7 +51,20 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           pathBuilder = PathDatasetDiff.newBuilder();
         }
         if (add) {
-          pathBuilder.addAllA(dataset.getPath().getComponentsList());
+          if (pathBuilder.getBCount() != 0) {
+            Set<PathDatasetComponentBlob> pathDatasetComponentBlobsA =
+                new HashSet<>(dataset.getPath().getComponentsList());
+            HashSet<PathDatasetComponentBlob> commonElements =
+                new HashSet<>(pathDatasetComponentBlobsA);
+            HashSet<PathDatasetComponentBlob> pathDatasetComponentBlobsB =
+                new HashSet<>(pathBuilder.getBList());
+            removeCommon(pathDatasetComponentBlobsA, commonElements, pathDatasetComponentBlobsB);
+            pathBuilder.clear();
+            pathBuilder.addAllA(pathDatasetComponentBlobsA);
+            pathBuilder.addAllB(pathDatasetComponentBlobsB);
+          } else {
+            pathBuilder.addAllA(dataset.getPath().getComponentsList());
+          }
         } else {
           pathBuilder.addAllB(dataset.getPath().getComponentsList());
         }
@@ -60,7 +79,20 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           s3Builder = S3DatasetDiff.newBuilder();
         }
         if (add) {
-          s3Builder.addAllA(dataset.getS3().getComponentsList());
+          if (s3Builder.getBCount() != 0) {
+            Set<S3DatasetComponentBlob> s3DatasetComponentBlobsA =
+                new HashSet<>(dataset.getS3().getComponentsList());
+            HashSet<S3DatasetComponentBlob> commonElements =
+                new HashSet<>(s3DatasetComponentBlobsA);
+            HashSet<S3DatasetComponentBlob> s3DatasetComponentBlobsB =
+                new HashSet<>(s3Builder.getBList());
+            removeCommon(s3DatasetComponentBlobsA, commonElements, s3DatasetComponentBlobsB);
+            s3Builder.clear();
+            s3Builder.addAllA(s3DatasetComponentBlobsA);
+            s3Builder.addAllB(s3DatasetComponentBlobsB);
+          } else {
+            s3Builder.addAllA(dataset.getS3().getComponentsList());
+          }
         } else {
           s3Builder.addAllB(dataset.getS3().getComponentsList());
         }
