@@ -193,6 +193,17 @@ message CreateCommitRequest {
     Commit commit = 2;
     repeated BlobExpanded blobs = 3;
 
+    // Apply the diffs on top of commit_base
+    // If a blob was added in the diff, add it on top of commit_base (doesn't matter if it was present already or not)
+    // If a blob was deleted, delete if from commit_base if present
+    // If a blob was modified, then:
+    // 1) check that the type of the diff is consistent with the type of the blob. If they are different, raise an error saying so
+    // 2) apply the diff to the blob as per the following logic:
+    // 2a) if the field is atomic (e.g. python version, git repository), use the newer version (B) from the diff and overwrite what the commit_base has
+    // 2b) if the field is not atomic (e.g. list of python requirements, dataset components), merge the lists by a) copying new values, b) deleting removed values, c) updating values that are already present based on some reasonable key
+    string commit_base = 4;
+    repeated BlobDiff diffs = 5;
+
     message Response {
         Commit commit = 1;
     }
