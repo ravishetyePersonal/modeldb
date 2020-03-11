@@ -758,8 +758,8 @@ public class BlobDAORdbImpl implements BlobDAO {
   }
 
   private boolean isAtomic(BlobDiff blobDiff) {
-    return blobDiff.getContentCase() == ContentCase.DATASET
-        || blobDiff.getContentCase() == ContentCase.CONFIG;
+    return blobDiff.getContentCase() == ContentCase.CODE
+        || blobDiff.getContentCase() == ContentCase.ENVIRONMENT;
   }
 
   private void checkType(BlobDiff blobDiff, BlobExpanded existingBlob) throws ModelDBException {
@@ -769,7 +769,7 @@ public class BlobDAORdbImpl implements BlobDAO {
         .getContentCase()
         .equals(existingBlob.getBlob().getContentCase())) {
       throw new ModelDBException(
-          "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+          "Modified blob type not matched with actual blob type", Status.Code.INVALID_ARGUMENT);
     } else {
       Blob newBlob = blobDiffExpanded.getBlob();
       switch (blobDiff.getContentCase()) {
@@ -779,12 +779,29 @@ public class BlobDAORdbImpl implements BlobDAO {
               .getContentCase()
               .equals(existingBlob.getBlob().getDataset().getContentCase())) {
             throw new ModelDBException(
-                "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+                "Modified dataset blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
           }
           break;
         case ENVIRONMENT:
+          if (!newBlob
+              .getEnvironment()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getEnvironment().getContentCase())) {
+            throw new ModelDBException(
+                "Modified environment blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
+          break;
         case CODE:
-          throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
+          if (!newBlob
+              .getCode()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getCode().getContentCase())) {
+            throw new ModelDBException(
+                "Modified code blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
         case CONFIG:
           // do nothing to check
           break;
