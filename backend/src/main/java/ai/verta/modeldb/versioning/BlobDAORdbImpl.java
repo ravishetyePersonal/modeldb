@@ -11,7 +11,6 @@ import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
-
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -609,7 +608,7 @@ public class BlobDAORdbImpl implements BlobDAO {
           blobContainers.add(blobExpanded);
         } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
           // If a blob was deleted, delete if from commit_base if present
-          // TODO: delete but from where? any clarification at this step?
+          locationBlobsMapCommit.remove(String.join("#", blobDiff.getLocationList()));
         } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
           // If a blob was modified, then:
           BlobExpanded blobExpanded =
@@ -621,15 +620,13 @@ public class BlobDAORdbImpl implements BlobDAO {
           if (isAtomic(blobDiff)) {
             // 2a) if the field is atomic (e.g. python version, git repository), use the
             // newer version (B) from the diff and overwrite what the commit_base has
-            Set<BlobExpanded> atomicResult = atomicResult(blobDiff);
-            blobContainers.addAll(atomicResult);
+            blobContainers.add(atomicResult(blobDiff));
           } else {
             // 2b) if the field is not atomic (e.g. list of python requirements, dataset
             // components), merge the lists by a) copying new values, b) deleting removed
             // values, c) updating values that are already present based on some reasonable
             // key
-            Set<BlobExpanded> complexResultBlobExpands = complexResult(blobDiff, blobExpanded);
-            blobContainers.addAll(complexResultBlobExpands);
+            blobContainers.add(complexResult(blobDiff, blobExpanded));
           }
         } else {
           throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
@@ -653,7 +650,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             Collectors.toMap(getKey, hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob));
   }
 
-  private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+  private BlobExpanded complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
@@ -750,11 +747,11 @@ public class BlobDAORdbImpl implements BlobDAO {
             break;
         }
     }
-    return Collections.singleton(blobExpandedNew.build());
+    return blobExpandedNew.build();
   }
 
   private BlobExpanded atomicResult(BlobDiff blobDiff) throws ModelDBException {
-    switch (blobDiff.getContentCase()){
+    switch (blobDiff.getContentCase()) {
       case ENVIRONMENT:
       case CODE:
         return convertBlobDiffToBlobExpand(blobDiff);
@@ -762,13 +759,14 @@ public class BlobDAORdbImpl implements BlobDAO {
       case CONFIG:
       case CONTENT_NOT_SET:
       default:
-        throw new ModelDBException("Invalid blob type found in BlobDiff", Status.Code.INVALID_ARGUMENT);
+        throw new ModelDBException(
+            "Invalid blob type found in BlobDiff", Status.Code.INVALID_ARGUMENT);
     }
   }
 
   private boolean isAtomic(BlobDiff blobDiff) {
-    return blobDiff.getContentCase() == ContentCase.ENVIRONMENT
-            || blobDiff.getContentCase() == ContentCase.CODE;
+    return blobDiff.getContentCase() == ContentCase.CODE
+        || blobDiff.getContentCase() == ContentCase.ENVIRONMENT;
   }
 
   private void checkType(BlobDiff blobDiff, BlobExpanded existingBlob) throws ModelDBException {
@@ -778,7 +776,7 @@ public class BlobDAORdbImpl implements BlobDAO {
         .getContentCase()
         .equals(existingBlob.getBlob().getContentCase())) {
       throw new ModelDBException(
-          "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+          "Modified blob type not matched with actual blob type", Status.Code.INVALID_ARGUMENT);
     } else {
       Blob newBlob = blobDiffExpanded.getBlob();
       switch (blobDiff.getContentCase()) {
@@ -788,12 +786,29 @@ public class BlobDAORdbImpl implements BlobDAO {
               .getContentCase()
               .equals(existingBlob.getBlob().getDataset().getContentCase())) {
             throw new ModelDBException(
-                "Modified blob type not matched with actual blob type", Status.Code.UNKNOWN);
+                "Modified dataset blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
           }
           break;
         case ENVIRONMENT:
+          if (!newBlob
+              .getEnvironment()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getEnvironment().getContentCase())) {
+            throw new ModelDBException(
+                "Modified environment blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
+          break;
         case CODE:
-          throw new ModelDBException("Blob type not implemented", Status.Code.UNIMPLEMENTED);
+          if (!newBlob
+              .getCode()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getCode().getContentCase())) {
+            throw new ModelDBException(
+                "Modified code blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
         case CONFIG:
           // do nothing to check
           break;
@@ -832,10 +847,11 @@ public class BlobDAORdbImpl implements BlobDAO {
             .build();
       case ENVIRONMENT:
         EnvironmentDiff environmentDiff = blobDiff.getEnvironment();
-        EnvironmentBlob.Builder environmentBlob = EnvironmentBlob.newBuilder()
+        EnvironmentBlob.Builder environmentBlob =
+            EnvironmentBlob.newBuilder()
                 .addAllCommandLine(environmentDiff.getCommandLineAList())
                 .addAllEnvironmentVariables(environmentDiff.getEnvironmentVariablesAList());
-        switch (environmentDiff.getContentCase()){
+        switch (environmentDiff.getContentCase()) {
           case DOCKER:
             environmentBlob.setDocker(environmentDiff.getDocker().getA());
             break;
@@ -847,13 +863,13 @@ public class BlobDAORdbImpl implements BlobDAO {
             throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
         }
         return BlobExpanded.newBuilder()
-                .addAllLocation(blobDiff.getLocationList())
-                .setBlob(Blob.newBuilder().setEnvironment(environmentBlob.build()).build())
-                .build();
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setEnvironment(environmentBlob.build()).build())
+            .build();
       case CODE:
         CodeBlob.Builder codeBlobBuilder = CodeBlob.newBuilder();
         CodeDiff codeDiff = blobDiff.getCode();
-        switch (codeDiff.getContentCase()){
+        switch (codeDiff.getContentCase()) {
           case GIT:
             codeBlobBuilder.setGit(codeDiff.getGit().getA());
             break;
@@ -865,9 +881,9 @@ public class BlobDAORdbImpl implements BlobDAO {
             throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
         }
         return BlobExpanded.newBuilder()
-                .addAllLocation(blobDiff.getLocationList())
-                .setBlob(Blob.newBuilder().setCode(codeBlobBuilder.build()).build())
-                .build();
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setCode(codeBlobBuilder.build()).build())
+            .build();
       case CONFIG:
         HyperparameterConfigDiff hyperparameterConfigDiff =
             blobDiff.getConfig().getHyperparameters();

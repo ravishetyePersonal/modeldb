@@ -3,9 +3,7 @@ package ai.verta.modeldb.versioning;
 import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
-import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import org.hibernate.Session;
 
 interface CommitDAO {
