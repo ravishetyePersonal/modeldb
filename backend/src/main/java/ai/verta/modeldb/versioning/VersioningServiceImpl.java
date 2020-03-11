@@ -246,7 +246,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       } else {
         validateBlobDiffs(request);
         blobContainers =
-            commitDAO.convertBlobDiffsToBlobs(
+            blobDAO.convertBlobDiffsToBlobs(
                 request,
                 repositoryFunction,
                 (session, repository) ->

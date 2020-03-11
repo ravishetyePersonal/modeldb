@@ -5,10 +5,13 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
+import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
+import com.google.rpc.Code;
 import io.grpc.Status;
+import io.grpc.protobuf.StatusProto;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -576,5 +579,87 @@ public class BlobDAORdbImpl implements BlobDAO {
                 // TODO: - the `#` then this functionality will break.
                 blobExpanded -> String.join("#", blobExpanded.getLocationList()),
                 blobExpanded -> blobExpanded));
+  }
+
+  @Override
+  public List<BlobContainer> convertBlobDiffsToBlobs(
+      CreateCommitRequest request,
+      RepositoryFunction repositoryFunction,
+      CommitFunction commitFunction)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
+      CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
+      Set<BlobExpanded> locationBlobListCommit =
+          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>());
+      Map<String, BlobExpanded> locationBlobsMapCommit =
+          getLocationWiseBlobExpandedMapFromList(locationBlobListCommit);
+      Set<BlobExpanded> newBlobs = request.getDiffsList().stream()
+          .flatMap(
+              blobDiff -> {
+                // Apply the diffs on top of commit_base
+                Set<BlobExpanded> result;
+                if (blobDiff.getStatus() == DiffStatus.ADDED) {
+                  // If a blob was added in the diff, add it on top of commit_base (doesn't matter
+                  // if it was present already or not)
+                  result = Collections.emptySet();
+                } else if (blobDiff.getStatus() == DiffStatus.DELETED) {
+                  // If a blob was deleted, delete if from commit_base if present
+                  result = Collections.emptySet();
+                } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
+                  // If a blob was modified, then:
+                  BlobExpanded blobExpanded = locationBlobsMapCommit
+                      .get(String.join("#", blobDiff.getLocationList()));
+                  // 1) check that the type of the diff is consistent with the type of the blob. If
+                  // they are different, raise an error saying so
+                  checkType(blobDiff, blobExpanded);
+                  // 2) apply the diff to the blob as per the following logic:
+                  if (isAtomic(blobDiff)) {
+                    // 2a) if the field is atomic (e.g. python version, git repository), use the
+                    // newer version (B) from the diff and overwrite what the commit_base has
+                    result = atomicResult(blobDiff, blobExpanded);
+                  } else {
+                    // 2b) if the field is not atomic (e.g. list of python requirements, dataset
+                    // components), merge the lists by a) copying new values, b) deleting removed
+                    // values, c) updating values that are already present based on some reasonable
+                    // key
+                    result = complexResult(blobDiff, blobExpanded);
+                  }
+                } else {
+                  com.google.rpc.Status status =
+                      com.google.rpc.Status.newBuilder()
+                          .setCode(Code.INTERNAL_VALUE)
+                          .setMessage("Invalid ModelDB diff type")
+                          .build();
+                  throw StatusProto.toStatusRuntimeException(status);
+                }
+                return result.stream();
+              })
+          .collect(Collectors.toSet());
+    }
+    return null;
+  }
+
+  private Set<BlobExpanded> complexResult(BlobDiff blobDiff, BlobExpanded blob) {
+    return null;
+  }
+
+  private Set<BlobExpanded> atomicResult(BlobDiff blobDiff, BlobExpanded blob) {
+    return null;
+  }
+
+  private boolean isAtomic(BlobDiff blobDiff) {
+    return false;
+  }
+
+  private void checkType(BlobDiff blobDiff, BlobExpanded blob) {}
+
+  private BlobContainer getBlob(
+      Session session, CommitEntity commitEntity, ProtocolStringList locationList) {
+    return null;
+  }
+
+  private List<BlobContainer> convertBlobDiffToAddDiff(BlobDiff blobDiff) {
+    return null;
   }
 }

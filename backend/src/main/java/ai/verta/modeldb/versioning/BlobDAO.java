@@ -22,4 +22,10 @@ interface BlobDAO {
   ComputeRepositoryDiffRequest.Response computeRepositoryDiff(
       RepositoryFunction repositoryFunction, ComputeRepositoryDiffRequest request)
       throws ModelDBException;
+
+  List<BlobContainer> convertBlobDiffsToBlobs(
+      CreateCommitRequest request,
+      RepositoryFunction repositoryFunction,
+      CommitFunction commitFunction)
+      throws ModelDBException;
 }

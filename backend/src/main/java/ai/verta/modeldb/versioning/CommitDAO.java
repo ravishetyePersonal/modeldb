@@ -25,9 +25,4 @@ interface CommitDAO {
   DeleteCommitRequest.Response deleteCommit(String commitHash, RepositoryFunction getRepository)
       throws ModelDBException;
 
-  List<BlobContainer> convertBlobDiffsToBlobs(
-      CreateCommitRequest request,
-      RepositoryFunction repositoryFunction,
-      CommitFunction commitFunction)
-      throws ModelDBException;
 }
