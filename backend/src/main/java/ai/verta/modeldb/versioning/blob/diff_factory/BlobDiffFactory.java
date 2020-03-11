@@ -31,7 +31,7 @@ public abstract class BlobDiffFactory {
     return blobExpanded;
   }
 
-  public List<BlobDiff> compare(BlobDiffFactory blobDiffFactory, String location) {
+  public List<BlobDiff> compare(BlobDiffFactory blobDiffFactoryB, String location) {
     // TODO: Here used the `#` for split the locations but if folder
     // TODO: - contain the `#` then this functionality will break.
     final Builder builder = BlobDiff.newBuilder()
