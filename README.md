@@ -7,15 +7,43 @@ ModelDB is an end-to-end system for tracking, versioning and auditing  machine l
 This version of ModelDB is built upon its [predecessor](https://mitdbg.github.io/modeldb/) from [CSAIL, MIT](https://www.csail.mit.edu/). The previous version can be found on Github [here](https://github.com/mitdbg/modeldb).
 
 ----
-
-![Docker Image Version (latest by date)](https://img.shields.io/docker/v/vertaaiofficial/modeldb-backend?color=534eb5&label=Docker%20image%20version&style=plastic) ![PyPI](https://img.shields.io/pypi/v/verta?color=534eb5&style=plastic) ![Conda](https://img.shields.io/conda/v/conda-forge/verta?color=534eb5&style=plastic) ![PyPI - License](https://img.shields.io/pypi/l/verta?color=534eb5&style=plastic)
-
-![Docker Pulls](https://img.shields.io/docker/pulls/vertaaiofficial/modeldb-backend?color=534eb5&style=plastic) ![PyPI - Downloads](https://img.shields.io/pypi/dm/verta?color=534eb5&label=PyPI%20Downloads&style=plastic) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/vertaai/modeldb?color=534eb5&style=plastic) ![GitHub last commit](https://img.shields.io/github/last-commit/vertaai/modeldb?color=534eb5&style=plastic)
-
-![GitHub stars](https://img.shields.io/github/stars/vertaai/modeldb?style=social) ![GitHub forks](https://img.shields.io/github/forks/Vertaai/modeldb?label=Fork&style=social) 
-![Twitter Follow](https://img.shields.io/twitter/follow/VertaAI?label=VertaAI&style=social) 
-
-Questions? Join us in [slack](http://bit.ly/modeldb-mlops).
+<p align="center">
+  <a href="https://hub.docker.com/u/vertaaiofficial">
+    <img src="https://img.shields.io/docker/v/vertaaiofficial/modeldb-backend?color=534eb5&label=Docker%20image%20version&style=plastic" alt="docker hub" />
+  </a>
+  <a href="https://pypi.org/project/verta/">
+    <img src="https://img.shields.io/pypi/v/verta?color=534eb5&style=plastic" alt="PyPI" />
+  </a>
+  <a href="https://anaconda.org/conda-forge/verta">
+    <img src="https://img.shields.io/conda/v/conda-forge/verta?color=534eb5&style=plastic" alt="Conda" />
+  </a>
+  <a href="https://github.com/VertaAI/modeldb/blob/master/LICENSE">
+    <img src="https://img.shields.io/pypi/l/verta?color=534eb5&style=plastic" alt="License" />
+  </a>
+  <br>
+  <a href="https://hub.docker.com/u/vertaaiofficial">
+    <img src="https://img.shields.io/docker/pulls/vertaaiofficial/modeldb-backend?color=534eb5&style=plastic" alt="docker hub" />
+  </a>
+  <a href="https://pypi.org/project/verta/">
+    <img src="https://img.shields.io/pypi/dm/verta?color=534eb5&label=PyPI%20Downloads&style=plastic" alt="PyPI" />
+  </a>
+  <a href="https://github.com/VertaAI/modeldb/graphs/commit-activity">
+    <img src="https://img.shields.io/github/commit-activity/w/vertaai/modeldb?color=534eb5&style=plastic" alt="Commits" />
+  </a>
+  <a href="https://github.com/VertaAI/modeldb/graphs/commit-activity">
+    <img src="https://img.shields.io/github/last-commit/vertaai/modeldb?color=534eb5&style=plastic" alt="Last Commit" />
+  </a>
+  <br>
+  <a href="https://github.com/VertaAI/modeldb/graphs/commit-activity">
+    <img src="https://img.shields.io/github/stars/vertaai/modeldb?style=social" alt="Forks" />
+  </a>
+  <a href="https://twitter.com/intent/follow?screen_name=VertaAI">
+    <img src="https://img.shields.io/twitter/follow/VertaAI?label=VertaAI&style=social" alt="Twitter" />
+  </a>
+  <a href="http://bit.ly/modeldb-mlops">
+    <img src="https://cdn.brandfolder.io/5H442O3W/as/pl546j-7le8zk-5guop3/Slack_RGB.png" alt="Slack" height =30px/>
+  </a>
+</p>
 
 ## Architecture
 
