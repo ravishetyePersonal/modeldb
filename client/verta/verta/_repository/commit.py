@@ -333,7 +333,7 @@ class Commit(object):
 
     def _to_heap_element(self):
         # Most recent has higher priority
-        return (-self.date, self.id, self)
+        return (-self.date, self.id, self)  # pylint: disable=invalid-unary-operand-type
 
     def get_common_parent(self, other):
         # TODO: check other is a Commit

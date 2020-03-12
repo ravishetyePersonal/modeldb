@@ -113,7 +113,7 @@ class Repository(object):
 
             parent_ids.append(parent.id)
 
-        return commit.Commit(self._conn, self.id, parent_ids)
+        return commit.Commit(self._conn, self, parent_ids)
 
     def get_commit(self, branch=None, tag=None, id=None):
         """

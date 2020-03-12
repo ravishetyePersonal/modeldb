@@ -3811,7 +3811,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         msg = _ExperimentRunService.LogVersionedInput()
         msg.id = self.id
-        msg.versioned_inputs.repository_id = commit._repo_id
+        msg.versioned_inputs.repository_id = commit._repo.id
         msg.versioned_inputs.commit = commit.id
         for key, path in six.viewitems(key_paths or {}):
             location = commit_module.path_to_location(path)
@@ -3852,9 +3852,9 @@ class ExperimentRun(_ModelDBEntity):
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        repo_id = response_msg.versioned_inputs.repository_id
+        repo = _repository.Repository(self._conn, response_msg.versioned_inputs.repository_id)
         commit_id = response_msg.versioned_inputs.commit
-        commit = commit_module.Commit._from_id(self._conn, repo_id, commit_id)
+        commit = commit_module.Commit._from_id(self._conn, repo, commit_id)
 
         key_paths = {
             key: '/'.join(location_msg.location)

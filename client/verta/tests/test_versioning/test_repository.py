@@ -121,7 +121,7 @@ class TestCommit:
             commit.save()
             assert commit.id != original_id
         finally:
-            utils.delete_commit(commit._repo_id, original_id, commit._conn)
+            utils.delete_commit(commit._repo.id, original_id, commit._conn)
 
     def test_set_parent(self, repository):
         blob1 = verta.environment.Python(["a==1"])
@@ -217,6 +217,6 @@ class TestBranch:
                 assert commit.id != original_id
                 assert repository.get_commit(branch=branch).id == commit.id
             finally:
-                utils.delete_commit(commit._repo_id, commit.id, commit._conn)
+                utils.delete_commit(commit._repo.id, commit.id, commit._conn)
         finally:
-            utils.delete_commit(commit._repo_id, original_id, commit._conn)
+            utils.delete_commit(commit._repo.id, original_id, commit._conn)
