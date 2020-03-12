@@ -645,6 +645,43 @@ class Client(object):
         """
         return _dataset.DatasetVersion(self._conn, self._conf, _dataset_version_id=id)
 
+    # set aliases for get-or-create functions for API compatibility
+    def get_or_create_project(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_project()`.
+
+        """
+        self.set_project(*args, **kwargs)
+
+    def get_or_create_experiment(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_experiment()`.
+
+        """
+        self.set_experiment(*args, **kwargs)
+
+    def get_or_create_experiment_run(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_experiment_run()`.
+
+        """
+        self.set_experiment_run(*args, **kwargs)
+
+    def get_or_create_dataset(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_dataset()`.
+
+        """
+        self.set_dataset(*args, **kwargs)
+
+    def set_repository(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.get_or_create_repository()`.
+
+        """
+        self.get_or_create_repository(*args, **kwargs)
+
+
 
 class _ModelDBEntity(object):
     def __init__(self, conn, conf, service_module, service_url_component, id):
