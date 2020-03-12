@@ -1,12 +1,9 @@
-CREATE  INDEX kv_kv_val ON keyvalue (kv_value(255));
-CREATE  INDEX kv_kv_key ON keyvalue (kv_key(255));
 CREATE  INDEX kv_dsv_id on keyvalue (dataset_version_id);
 CREATE  INDEX kv_p_id on keyvalue (project_id);
 CREATE  INDEX kv_j_id on keyvalue (job_id);
 CREATE  INDEX kv_e_id on keyvalue (experiment_id);
 CREATE  INDEX kv_d_id on keyvalue (dataset_id);
 CREATE  INDEX kv_er_id on keyvalue (experiment_run_id);
-create  index at_kv_key on attribute (kv_key(255));
 create  index at_d_id on attribute (dataset_id);
 create  index at_dsv_id on attribute (dataset_version_id);
 create  index at_e_id on attribute (experiment_id);

@@ -173,13 +173,6 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="rshetye" id="commit_root_sha_mapping_fk">
-        <addForeignKeyConstraint baseColumnNames="root_sha"
-                                 baseTableName="commit"
-                                 constraintName="fk_root_sha"
-                                 referencedColumnNames="folder_sha"
-                                 referencedTableName="folder_element"/>
-    </changeSet>
     <changeSet id="branch_create_table" author="anandJ">
         <preConditions onFail="MARK_RAN">
             <not>
