@@ -267,8 +267,8 @@ public class BlobDAORdbImpl implements BlobDAO {
    * @return
    * @throws ModelDBException
    */
-  Map<String, BlobExpanded> getCommitBlobList(Session session, String folderHash, List<String> locationList)
-      throws ModelDBException {
+  Map<String, BlobExpanded> getCommitBlobList(
+      Session session, String folderHash, List<String> locationList) throws ModelDBException {
 
     String parentLocation = locationList.size() == 0 ? null : locationList.get(0);
     List<InternalFolderElementEntity> parentFolderElementList =
@@ -318,8 +318,8 @@ public class BlobDAORdbImpl implements BlobDAO {
       if (!VersioningUtils.commitRepositoryMappingExists(session, commitHash, repository.getId())) {
         throw new ModelDBException("No such commit found in the repository", Status.Code.NOT_FOUND);
       }
-      Set<BlobExpanded> locationBlobList = new HashSet<>(
-          getCommitBlobList(session, commit.getRootSha(), locationList).values());
+      Set<BlobExpanded> locationBlobList =
+          new HashSet<>(getCommitBlobList(session, commit.getRootSha(), locationList).values());
       return ListCommitBlobsRequest.Response.newBuilder().addAllBlobs(locationBlobList).build();
     } catch (Throwable throwable) {
       throwable.printStackTrace();
@@ -470,10 +470,10 @@ public class BlobDAORdbImpl implements BlobDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
       CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
-      Set<BlobExpanded> commitBlobExpandedListFromRoot =
-          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>());
+      Collection<BlobExpanded> commitBlobExpandedListFromRoot = getCommitBlobList(session,
+          commitEntity.getRootSha(), new ArrayList<>()).values();
       Map<String, BlobExpanded> locationBlobsMap =
-          getLocationWiseBlobExpandedMapFromList(commitBlobExpandedListFromRoot);
+          getLocationWiseBlobExpandedMapFromCollection(commitBlobExpandedListFromRoot);
       Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
       for (BlobDiff blobDiff : request.getDiffsList()) {
         final ProtocolStringList locationList = blobDiff.getLocationList();
@@ -521,7 +521,7 @@ public class BlobDAORdbImpl implements BlobDAO {
         }
       }
       Map<String, BlobExpanded> locationBlobsMapNew =
-          getLocationWiseBlobExpandedMapFromList(blobContainers);
+          getLocationWiseBlobExpandedMapFromCollection(blobContainers);
       locationBlobsMap.putAll(locationBlobsMapNew);
       List<BlobContainer> blobContainerList = new LinkedList<>();
       for (Map.Entry<String, BlobExpanded> blobExpandedEntry : locationBlobsMap.entrySet()) {

@@ -80,10 +80,8 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
     blobDiffBuilder.setConfig(configBuilder);
   }
 
-  static <T> void removeCommon(Set<T> componentsBlobsA,
-      Set<T> componentsBlobsB) {
-    Set<T> commonElements =
-        new HashSet<>(componentsBlobsA);
+  static <T> void removeCommon(Set<T> componentsBlobsA, Set<T> componentsBlobsB) {
+    Set<T> commonElements = new HashSet<>(componentsBlobsA);
     commonElements.retainAll(componentsBlobsB);
     componentsBlobsA.removeAll(commonElements);
     componentsBlobsB.removeAll(commonElements);
