@@ -242,8 +242,12 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
             "Blob list and commit base with diffs should not be allowed together",
             Code.INVALID_ARGUMENT);
       }
-      List<BlobContainer> blobContainers;
 
+      if (request.getCommit().getMessage().isEmpty()) {
+        throw new ModelDBException("Commit message should not be empty", Code.INVALID_ARGUMENT);
+      }
+      
+      List<BlobContainer> blobContainers;
       final RepositoryFunction repositoryFunction =
           (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId());
       if (request.getBlobsCount() != 0) {
@@ -257,8 +261,8 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
                 (session, repository) ->
                     commitDAO.getCommitEntity(session, request.getCommitBase(), repository));
       }
-
       UserInfo currentLoginUserInfo = authService.getCurrentLoginUserInfo();
+
       CreateCommitRequest.Response response =
           commitDAO.setCommit(
               authService.getVertaIdFromUserInfo(currentLoginUserInfo),
