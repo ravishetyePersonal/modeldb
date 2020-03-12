@@ -8,6 +8,7 @@ import ai.verta.modeldb.versioning.Blob;
 import ai.verta.modeldb.versioning.CodeBlob;
 import ai.verta.modeldb.versioning.CodeBlob.Builder;
 import ai.verta.modeldb.versioning.NotebookCodeBlob;
+import ai.verta.modeldb.versioning.PathDatasetBlob;
 import org.hibernate.Session;
 
 public class CodeBlobFactory extends BlobFactory {
@@ -29,11 +30,13 @@ public class CodeBlobFactory extends BlobFactory {
         NotebookCodeBlobEntity notebookCodeBlobEntity =
             session.get(NotebookCodeBlobEntity.class, getElementSha());
         String datasetBlobHash = notebookCodeBlobEntity.getPath_dataset_blob_hash();
+        final NotebookCodeBlob.Builder builder = NotebookCodeBlob.newBuilder();
+        PathDatasetBlob pathBlob = DatasetBlobFactory.getPathBlob(session, datasetBlobHash);
+        if (pathBlob != null) {
+          builder.setPath(pathBlob);
+        }
         codeBlobBuilder.setNotebook(
-            NotebookCodeBlob.newBuilder()
-                .setGitRepo(notebookCodeBlobEntity.getGitCodeBlobEntity().toProto())
-                .setPath(DatasetBlobFactory.getPathBlob(session, datasetBlobHash))
-                .build());
+            builder.setGitRepo(notebookCodeBlobEntity.getGitCodeBlobEntity().toProto()).build());
         break;
     }
     return Blob.newBuilder().setCode(codeBlobBuilder).build();

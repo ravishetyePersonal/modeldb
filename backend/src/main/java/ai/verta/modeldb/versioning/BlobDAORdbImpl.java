@@ -8,15 +8,17 @@ import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.versioning.BlobDiff.ContentCase;
 import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
+import ai.verta.modeldb.versioning.blob.diffFactory.BlobDiffFactory;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,7 +216,7 @@ public class BlobDAORdbImpl implements BlobDAO {
     return Collections.indexOfSubList(new LinkedList<>(list), new LinkedList<>(sublist)) != -1;
   }
 
-  private Set<BlobExpanded> getChildFolderBlobList(
+  private Map<String, BlobExpanded> getChildFolderBlobList(
       Session session,
       List<String> requestedLocation,
       Set<String> parentLocation,
@@ -228,14 +230,14 @@ public class BlobDAORdbImpl implements BlobDAO {
     fetchTreeQuery.setParameter("folderHash", parentFolderHash);
     List<InternalFolderElementEntity> childElementFolders = fetchTreeQuery.list();
 
-    Set<BlobExpanded> childBlobExpanded = new LinkedHashSet<>();
+    Map<String, BlobExpanded> childBlobExpanded = new LinkedHashMap<>();
     for (InternalFolderElementEntity childElementFolder : childElementFolders) {
       if (childElementFolder.getElement_type().equals(TREE)) {
         Set<String> childLocation = new LinkedHashSet<>(parentLocation);
         childLocation.add(childElementFolder.getElement_name());
         if (childContains(new LinkedHashSet<>(requestedLocation), childLocation)
             || childLocation.containsAll(requestedLocation)) {
-          childBlobExpanded.addAll(
+          childBlobExpanded.putAll(
               getChildFolderBlobList(
                   session, requestedLocation, childLocation, childElementFolder.getElement_sha()));
         }
@@ -248,7 +250,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                   .addLocation(childElementFolder.getElement_name())
                   .setBlob(blob)
                   .build();
-          childBlobExpanded.add(blobExpanded);
+          childBlobExpanded.put(childElementFolder.getElement_sha(), blobExpanded);
         }
       }
     }
@@ -265,8 +267,8 @@ public class BlobDAORdbImpl implements BlobDAO {
    * @return
    * @throws ModelDBException
    */
-  Set<BlobExpanded> getCommitBlobList(Session session, String folderHash, List<String> locationList)
-      throws ModelDBException {
+  Map<String, BlobExpanded> getCommitBlobList(
+      Session session, String folderHash, List<String> locationList) throws ModelDBException {
 
     String parentLocation = locationList.size() == 0 ? null : locationList.get(0);
     List<InternalFolderElementEntity> parentFolderElementList =
@@ -279,7 +281,7 @@ public class BlobDAORdbImpl implements BlobDAO {
       }
     }
 
-    Set<BlobExpanded> finalLocationBlobList = new LinkedHashSet<>();
+    Map<String, BlobExpanded> finalLocationBlobList = new LinkedHashMap<>();
     for (InternalFolderElementEntity parentFolderElement : parentFolderElementList) {
       if (!parentFolderElement.getElement_type().equals(TREE)) {
         Blob blob = getBlob(session, parentFolderElement);
@@ -288,13 +290,13 @@ public class BlobDAORdbImpl implements BlobDAO {
                 .addLocation(parentFolderElement.getElement_name())
                 .setBlob(blob)
                 .build();
-        finalLocationBlobList.add(blobExpanded);
+        finalLocationBlobList.put(parentFolderElement.getElement_sha(), blobExpanded);
       } else {
         // if this is tree, search further
         Set<String> location = new LinkedHashSet<>();
-        Set<BlobExpanded> locationBlobList =
+        Map<String, BlobExpanded> locationBlobList =
             getChildFolderBlobList(session, locationList, location, folderHash);
-        finalLocationBlobList.addAll(locationBlobList);
+        finalLocationBlobList.putAll(locationBlobList);
       }
     }
     return finalLocationBlobList;
@@ -317,7 +319,7 @@ public class BlobDAORdbImpl implements BlobDAO {
         throw new ModelDBException("No such commit found in the repository", Status.Code.NOT_FOUND);
       }
       Set<BlobExpanded> locationBlobList =
-          getCommitBlobList(session, commit.getRootSha(), locationList);
+          new HashSet<>(getCommitBlobList(session, commit.getRootSha(), locationList).values());
       return ListCommitBlobsRequest.Response.newBuilder().addAllBlobs(locationBlobList).build();
     } catch (Throwable throwable) {
       throwable.printStackTrace();
@@ -362,40 +364,41 @@ public class BlobDAORdbImpl implements BlobDAO {
             Status.Code.NOT_FOUND);
       }
       // get list of blob expanded in both commit and group them in a map based on location
-      Set<BlobExpanded> locationBlobListCommitA =
+      Map<String, BlobExpanded> hashBlobMapCommitA =
           getCommitBlobList(session, internalCommitA.getRootSha(), new ArrayList<>());
       Map<String, BlobExpanded> locationBlobsMapCommitA =
-          getLocationWiseBlobExpandedMapFromList(locationBlobListCommitA);
+          getLocationWiseBlobExpandedMapFromCollection(hashBlobMapCommitA.values());
 
-      Set<BlobExpanded> locationBlobListCommitB =
+      Map<String, BlobExpanded> hashBlobMapCommitB =
           getCommitBlobList(session, internalCommitB.getRootSha(), new ArrayList<>());
       Map<String, BlobExpanded> locationBlobsMapCommitB =
-          getLocationWiseBlobExpandedMapFromList(locationBlobListCommitB);
+          getLocationWiseBlobExpandedMapFromCollection(hashBlobMapCommitB.values());
 
       session.getTransaction().commit();
 
-      // TODO: minor optimization on set diff
-      // replace the flow of  B+A-B to A-B
-      // Added new blob location in the CommitA, locations in
+      // Added new blob location in the CommitB, locations in
       Set<String> addedLocations = new HashSet<>(locationBlobsMapCommitB.keySet());
-      addedLocations.addAll(locationBlobsMapCommitA.keySet());
-      addedLocations.removeAll(locationBlobsMapCommitB.keySet());
+      addedLocations.removeAll(locationBlobsMapCommitA.keySet());
       LOGGER.debug("Added location for Diff : {}", addedLocations);
 
       // deleted new blob location from the CommitA
       Set<String> deletedLocations = new HashSet<>(locationBlobsMapCommitA.keySet());
-      deletedLocations.addAll(locationBlobsMapCommitB.keySet());
-      deletedLocations.removeAll(locationBlobsMapCommitA.keySet());
+      deletedLocations.removeAll(locationBlobsMapCommitB.keySet());
       LOGGER.debug("Deleted location for Diff : {}", deletedLocations);
 
       // modified new blob location from the CommitA
-      Set<String> modifiedLocations = new HashSet<>(locationBlobsMapCommitA.keySet());
+      Set<String> modifiedLocations = new HashSet<>(locationBlobsMapCommitB.keySet());
       modifiedLocations.removeAll(addedLocations);
+      HashMap<String, BlobExpanded> commonBlobs = new HashMap<>(hashBlobMapCommitA);
+      commonBlobs.keySet().retainAll(hashBlobMapCommitB.keySet());
+      Map<String, BlobExpanded> locationBlobsCommon =
+          getLocationWiseBlobExpandedMapFromCollection(commonBlobs.values());
+      modifiedLocations.removeAll(locationBlobsCommon.keySet());
       LOGGER.debug("Modified location for Diff : {}", modifiedLocations);
 
-      List<BlobDiff> addedBlobDiffList = getAddedBlobDiff(addedLocations, locationBlobsMapCommitA);
+      List<BlobDiff> addedBlobDiffList = getAddedBlobDiff(addedLocations, locationBlobsMapCommitB);
       List<BlobDiff> deletedBlobDiffList =
-          getDeletedBlobDiff(deletedLocations, locationBlobsMapCommitB);
+          getDeletedBlobDiff(deletedLocations, locationBlobsMapCommitA);
       List<BlobDiff> modifiedBlobDiffList =
           getModifiedBlobDiff(modifiedLocations, locationBlobsMapCommitA, locationBlobsMapCommitB);
 
@@ -408,107 +411,25 @@ public class BlobDAORdbImpl implements BlobDAO {
   }
 
   List<BlobDiff> getAddedBlobDiff(
-      Set<String> addedLocations, Map<String, BlobExpanded> locationBlobsMapCommitA) {
+      Set<String> addedLocations, Map<String, BlobExpanded> locationBlobsMapCommitB) {
     return addedLocations.stream()
         .map(
             location -> {
-              BlobExpanded blobExpanded = locationBlobsMapCommitA.get(location);
-              Blob blob = blobExpanded.getBlob();
-              switch (blob.getContentCase()) {
-                case DATASET:
-                  switch (blob.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlob = blob.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllA(pathDatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.ADDED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlob = blob.getDataset().getS3();
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllA(s3DatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setStatus(DiffStatusEnum.DiffStatus.ADDED)
-                          .setDataset(finalS3DatasetDiff)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobExpanded blobExpanded = locationBlobsMapCommitB.get(location);
+              BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
+              return result.add(location);
             })
         .collect(Collectors.toList());
   }
 
   List<BlobDiff> getDeletedBlobDiff(
-      Set<String> deletedLocations, Map<String, BlobExpanded> locationBlobsMapCommitB) {
+      Set<String> deletedLocations, Map<String, BlobExpanded> locationBlobsMapCommitA) {
     return deletedLocations.stream()
         .map(
             location -> {
-              BlobExpanded blobExpanded = locationBlobsMapCommitB.get(location);
-              Blob blob = blobExpanded.getBlob();
-              switch (blob.getContentCase()) {
-                case DATASET:
-                  switch (blob.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlob = blob.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllB(pathDatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.DELETED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlob = blob.getDataset().getS3();
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllB(s3DatasetBlob.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(finalS3DatasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.DELETED)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobExpanded blobExpanded = locationBlobsMapCommitA.get(location);
+              BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
+              return result.delete(location);
             })
         .collect(Collectors.toList());
   }
@@ -518,65 +439,19 @@ public class BlobDAORdbImpl implements BlobDAO {
       Map<String, BlobExpanded> locationBlobsMapCommitA,
       Map<String, BlobExpanded> locationBlobsMapCommitB) {
     return modifiedLocations.stream()
-        .map(
+        .flatMap(
             location -> {
               BlobExpanded blobExpandedCommitA = locationBlobsMapCommitA.get(location);
               BlobExpanded blobExpandedCommitB = locationBlobsMapCommitB.get(location);
-              Blob blobCommitA = blobExpandedCommitA.getBlob();
-              Blob blobCommitB = blobExpandedCommitB.getBlob();
-              switch (blobCommitA.getContentCase()) {
-                case DATASET:
-                  switch (blobCommitA.getDataset().getContentCase()) {
-                    case PATH:
-                      PathDatasetBlob pathDatasetBlobCommitA = blobCommitA.getDataset().getPath();
-                      PathDatasetBlob pathDatasetBlobCommitB = blobCommitB.getDataset().getPath();
-                      PathDatasetDiff pathDatasetDiff =
-                          PathDatasetDiff.newBuilder()
-                              .addAllA(pathDatasetBlobCommitA.getComponentsList())
-                              .addAllB(pathDatasetBlobCommitB.getComponentsList())
-                              .build();
-                      DatasetDiff datasetDiff =
-                          DatasetDiff.newBuilder().setPath(pathDatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(datasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.MODIFIED)
-                          .build();
-                    case S3:
-                      S3DatasetBlob s3DatasetBlobCommitA = blobCommitA.getDataset().getS3();
-                      S3DatasetBlob s3DatasetBlobCommitB = blobCommitB.getDataset().getS3();
-
-                      S3DatasetDiff s3DatasetDiff =
-                          S3DatasetDiff.newBuilder()
-                              .addAllA(s3DatasetBlobCommitA.getComponentsList())
-                              .addAllB(s3DatasetBlobCommitB.getComponentsList())
-                              .build();
-                      DatasetDiff finalS3DatasetDiff =
-                          DatasetDiff.newBuilder().setS3(s3DatasetDiff).build();
-                      return BlobDiff.newBuilder()
-                          // TODO: Here used the `#` for split the locations but if folder
-                          // TODO: - contain the `#` then this functionality will break.
-                          .addAllLocation(Arrays.asList(location.split("#")))
-                          .setDataset(finalS3DatasetDiff)
-                          .setStatus(DiffStatusEnum.DiffStatus.MODIFIED)
-                          .build();
-                  }
-                  break;
-                  // TODO: Implement Diff logic after main functionality done
-                case ENVIRONMENT:
-                case CODE:
-                case CONFIG:
-                  break;
-              }
-              return BlobDiff.newBuilder().build();
+              BlobDiffFactory a = BlobDiffFactory.create(blobExpandedCommitA);
+              BlobDiffFactory b = BlobDiffFactory.create(blobExpandedCommitB);
+              return a.compare(b, location).stream();
             })
         .collect(Collectors.toList());
   }
 
-  private Map<String, BlobExpanded> getLocationWiseBlobExpandedMapFromList(
-      Set<BlobExpanded> blobExpandeds) {
+  private Map<String, BlobExpanded> getLocationWiseBlobExpandedMapFromCollection(
+      Collection<BlobExpanded> blobExpandeds) {
     return blobExpandeds.stream()
         .collect(
             Collectors.toMap(
@@ -595,10 +470,10 @@ public class BlobDAORdbImpl implements BlobDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
       CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
-      Set<BlobExpanded> commitBlobExpandedListFromRoot =
-          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>());
+      Collection<BlobExpanded> commitBlobExpandedListFromRoot =
+          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>()).values();
       Map<String, BlobExpanded> locationBlobsMap =
-          getLocationWiseBlobExpandedMapFromList(commitBlobExpandedListFromRoot);
+          getLocationWiseBlobExpandedMapFromCollection(commitBlobExpandedListFromRoot);
       Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
       for (BlobDiff blobDiff : request.getDiffsList()) {
         final ProtocolStringList locationList = blobDiff.getLocationList();
@@ -646,7 +521,7 @@ public class BlobDAORdbImpl implements BlobDAO {
         }
       }
       Map<String, BlobExpanded> locationBlobsMapNew =
-          getLocationWiseBlobExpandedMapFromList(blobContainers);
+          getLocationWiseBlobExpandedMapFromCollection(blobContainers);
       locationBlobsMap.putAll(locationBlobsMapNew);
       List<BlobContainer> blobContainerList = new LinkedList<>();
       for (Map.Entry<String, BlobExpanded> blobExpandedEntry : locationBlobsMap.entrySet()) {
@@ -656,7 +531,7 @@ public class BlobDAORdbImpl implements BlobDAO {
     }
   }
 
-  private <T> Map<String, T> convertComponentsSetToMap(
+  private <T> Map<String, T> convertComponentsListToMap(
       List<T> configBlob, Function<T, String> getKey) {
     return configBlob.stream()
         .collect(
@@ -667,12 +542,13 @@ public class BlobDAORdbImpl implements BlobDAO {
                 HashMap::new));
   }
 
-  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded)
+      throws ModelDBException {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
         Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap =
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
                 HyperparameterSetConfigBlob::getName);
 
@@ -684,12 +560,12 @@ public class BlobDAORdbImpl implements BlobDAO {
                 hyperparameterSetConfigBlob ->
                     hyperparameterSetMap.remove(hyperparameterSetConfigBlob.getName()));
         hyperparameterSetMap.putAll(
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobDiff.getConfig().getHyperparameterSet().getBList(),
                 HyperparameterSetConfigBlob::getName));
 
         Map<String, HyperparameterConfigBlob> hyperparameterMap =
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobExpanded.getBlob().getConfig().getHyperparametersList(),
                 HyperparameterConfigBlob::getName);
 
@@ -701,7 +577,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                 hyperparameterConfigBlob ->
                     hyperparameterMap.remove(hyperparameterConfigBlob.getName()));
         hyperparameterMap.putAll(
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobDiff.getConfig().getHyperparameters().getBList(),
                 HyperparameterConfigBlob::getName));
 
@@ -713,12 +589,13 @@ public class BlobDAORdbImpl implements BlobDAO {
                             .addAllHyperparameters(hyperparameterMap.values())
                             .addAllHyperparameterSet(hyperparameterSetMap.values())))
             .build();
+        break;
       case DATASET:
         final DatasetBlob dataset = blobExpanded.getBlob().getDataset();
         switch (dataset.getContentCase()) {
           case PATH:
             Map<String, PathDatasetComponentBlob> pathMap =
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     dataset.getPath().getComponentsList(), PathDatasetComponentBlob::getPath);
 
             blobDiff
@@ -728,7 +605,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                 .forEach(
                     pathDatasetComponentBlob -> pathMap.remove(pathDatasetComponentBlob.getPath()));
             pathMap.putAll(
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     blobDiff.getDataset().getPath().getBList(), PathDatasetComponentBlob::getPath));
 
             blobExpandedNew.setBlob(
@@ -740,7 +617,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             break;
           case S3:
             Map<String, S3DatasetComponentBlob> s3Map =
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     dataset.getS3().getComponentsList(),
                     s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
 
@@ -752,7 +629,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                     s3DatasetComponentBlob ->
                         s3Map.remove(s3DatasetComponentBlob.getPath().getPath()));
             s3Map.putAll(
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     blobDiff.getDataset().getS3().getBList(),
                     s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
 
@@ -762,16 +639,92 @@ public class BlobDAORdbImpl implements BlobDAO {
                         DatasetBlob.newBuilder()
                             .setS3(S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
             break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
         }
+        break;
+      case ENVIRONMENT:
+        EnvironmentDiff environmentDiff = blobDiff.getEnvironment();
+        EnvironmentBlob.Builder environmentBlob = EnvironmentBlob.newBuilder();
+        final EnvironmentBlob environment = blobExpanded.getBlob().getEnvironment();
+        Map<String, EnvironmentVariablesBlob> environmentVariablesBlobMap =
+            convertComponentsListToMap(
+                environment.getEnvironmentVariablesList(), EnvironmentVariablesBlob::getName);
+        environmentDiff
+            .getEnvironmentVariablesAList()
+            .forEach(
+                environmentVariablesBlob ->
+                    environmentVariablesBlobMap.remove(environmentVariablesBlob.getName()));
+        environmentVariablesBlobMap.putAll(
+            convertComponentsListToMap(
+                environmentDiff.getEnvironmentVariablesBList(), EnvironmentVariablesBlob::getName));
+        environmentBlob.addAllEnvironmentVariables(environmentVariablesBlobMap.values());
+        environmentBlob.addAllCommandLine(environmentDiff.getCommandLineBList());
+        switch (environmentDiff.getContentCase()) {
+          case DOCKER:
+            environmentBlob.setDocker(environmentDiff.getDocker().getB());
+            break;
+          case PYTHON:
+            final PythonEnvironmentDiff pythonDiff = environmentDiff.getPython();
+            Map<String, PythonRequirementEnvironmentBlob> pythonRequirementEnvironmentBlobMap =
+                convertComponentsListToMap(
+                    environment.getPython().getRequirementsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary);
+            pythonDiff
+                .getA()
+                .getRequirementsList()
+                .forEach(
+                    pythonRequirementEnvironmentBlob ->
+                        pythonRequirementEnvironmentBlobMap.remove(
+                            pythonRequirementEnvironmentBlob.getLibrary()));
+            pythonRequirementEnvironmentBlobMap.putAll(
+                convertComponentsListToMap(
+                    pythonDiff.getB().getRequirementsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary));
+            Map<String, PythonRequirementEnvironmentBlob> pythonConstraintEnvironmentBlobMap =
+                convertComponentsListToMap(
+                    environment.getPython().getConstraintsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary);
+            pythonDiff
+                .getA()
+                .getConstraintsList()
+                .forEach(
+                    pythonConstraintEnvironmentBlob ->
+                        pythonConstraintEnvironmentBlobMap.remove(
+                            pythonConstraintEnvironmentBlob.getLibrary()));
+            pythonConstraintEnvironmentBlobMap.putAll(
+                convertComponentsListToMap(
+                    pythonDiff.getB().getConstraintsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary));
+            environmentBlob.setPython(
+                environmentDiff
+                    .getPython()
+                    .getB()
+                    .toBuilder()
+                    .clearRequirements()
+                    .clearConstraints()
+                    .addAllRequirements(pythonRequirementEnvironmentBlobMap.values())
+                    .addAllConstraints(pythonConstraintEnvironmentBlobMap.values()));
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+        return blobExpandedNew.setBlob(
+            Blob.newBuilder().setEnvironment(environmentBlob.build()).build());
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
     }
     return blobExpandedNew;
   }
 
   private BlobExpanded atomicResult(BlobDiff blobDiff) throws ModelDBException {
     switch (blobDiff.getContentCase()) {
-      case ENVIRONMENT:
       case CODE:
         return convertBlobDiffToBlobExpand(blobDiff);
+      case ENVIRONMENT:
       case DATASET:
       case CONFIG:
       case CONTENT_NOT_SET:
@@ -782,7 +735,7 @@ public class BlobDAORdbImpl implements BlobDAO {
   }
 
   private boolean isAtomic(ContentCase contentCase) {
-    return contentCase == ContentCase.CODE || contentCase == ContentCase.ENVIRONMENT;
+    return contentCase == ContentCase.CODE;
   }
 
   /**
