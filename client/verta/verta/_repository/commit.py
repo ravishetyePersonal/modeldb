@@ -298,8 +298,8 @@ class Commit(object):
             self._conn.scheme,
             self._conn.socket,
             self._repo.id,
-            self.id,
             reference_id,
+            self.id,
         )
         response = _utils.make_request("GET", endpoint, self._conn)
         _utils.raise_for_http_error(response)
