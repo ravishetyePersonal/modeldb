@@ -38,9 +38,7 @@ public class DatasetBlobFactory extends BlobFactory {
         if (pathBlob == null) {
           throw new ModelDBException("Path blob not found", Code.INTERNAL);
         }
-        return Blob.newBuilder()
-            .setDataset(datasetBlobBuilder.setPath(pathBlob))
-            .build();
+        return Blob.newBuilder().setDataset(datasetBlobBuilder.setPath(pathBlob)).build();
     }
     return Blob.newBuilder().setDataset(datasetBlobBuilder).build();
   }

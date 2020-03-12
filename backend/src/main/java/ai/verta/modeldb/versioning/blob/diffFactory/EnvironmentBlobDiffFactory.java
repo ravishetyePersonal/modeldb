@@ -9,6 +9,7 @@ import ai.verta.modeldb.versioning.EnvironmentBlob;
 import ai.verta.modeldb.versioning.EnvironmentDiff;
 import ai.verta.modeldb.versioning.EnvironmentVariablesBlob;
 import ai.verta.modeldb.versioning.PythonEnvironmentBlob;
+import ai.verta.modeldb.versioning.PythonEnvironmentBlob.Builder;
 import ai.verta.modeldb.versioning.PythonEnvironmentDiff;
 import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
 import com.google.protobuf.ProtocolStringList;
@@ -51,7 +52,7 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
     final EnvironmentDiff environmentDiff = blobBuilder.getEnvironment();
     if (add) {
       if (environmentDiff.getEnvironmentVariablesACount() != 0
-      || environmentDiff.getCommandLineACount() != 0) {
+          || environmentDiff.getCommandLineACount() != 0) {
         Set<EnvironmentVariablesBlob> environmentVariablesBlobsA =
             new HashSet<>(environmentDiff.getEnvironmentVariablesAList());
         Set<EnvironmentVariablesBlob> environmentVariablesBlobsB =
@@ -59,8 +60,10 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
         removeCommon(environmentVariablesBlobsA, environmentVariablesBlobsB);
         environmentBuilder.addAllEnvironmentVariablesA(environmentVariablesBlobsA);
         environmentBuilder.addAllEnvironmentVariablesB(environmentVariablesBlobsB);
-        environmentBuilder.addAllCommandLineA(environmentDiff.getCommandLineAList());
-        environmentBuilder.addAllCommandLineB(commandLineList);
+        if (!commandLineList.equals(environmentDiff.getCommandLineAList())) {
+          environmentBuilder.addAllCommandLineA(environmentDiff.getCommandLineAList());
+          environmentBuilder.addAllCommandLineB(commandLineList);
+        }
       } else {
         environmentBuilder.addAllEnvironmentVariablesB(environmentValiablesList);
         environmentBuilder.addAllCommandLineB(commandLineList);
@@ -90,17 +93,21 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
             Set<PythonRequirementEnvironmentBlob> pythonConstraintsBlobsB =
                 new HashSet<>(python.getConstraintsList());
             removeCommon(pythonConstraintsBlobsA, pythonConstraintsBlobsB);
+            final Builder aBuilder = pythonDiff.getA().toBuilder();
+            final Builder bBuilder = python.toBuilder();
+            final boolean atomicEquals = aBuilder.getVersion().equals(bBuilder.getVersion());
+            if (atomicEquals) {
+              aBuilder.clear();
+              bBuilder.clear();
+            }
             pythonDiff.setA(
-                pythonDiff
-                    .getA()
-                    .toBuilder()
+                aBuilder
                     .clearRequirements()
                     .clearConstraints()
                     .addAllRequirements(pythonRequirementsBlobsA)
                     .addAllConstraints(pythonConstraintsBlobsA));
             pythonDiff.setB(
-                python
-                    .toBuilder()
+                bBuilder
                     .clearRequirements()
                     .clearConstraints()
                     .addAllRequirements(pythonRequirementsBlobsB)

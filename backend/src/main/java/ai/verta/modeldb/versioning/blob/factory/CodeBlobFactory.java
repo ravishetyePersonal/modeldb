@@ -31,15 +31,12 @@ public class CodeBlobFactory extends BlobFactory {
             session.get(NotebookCodeBlobEntity.class, getElementSha());
         String datasetBlobHash = notebookCodeBlobEntity.getPath_dataset_blob_hash();
         final NotebookCodeBlob.Builder builder = NotebookCodeBlob.newBuilder();
-        PathDatasetBlob pathBlob = DatasetBlobFactory
-            .getPathBlob(session, datasetBlobHash);
+        PathDatasetBlob pathBlob = DatasetBlobFactory.getPathBlob(session, datasetBlobHash);
         if (pathBlob != null) {
           builder.setPath(pathBlob);
         }
         codeBlobBuilder.setNotebook(
-            builder
-                .setGitRepo(notebookCodeBlobEntity.getGitCodeBlobEntity().toProto())
-                .build());
+            builder.setGitRepo(notebookCodeBlobEntity.getGitCodeBlobEntity().toProto()).build());
         break;
     }
     return Blob.newBuilder().setCode(codeBlobBuilder).build();
