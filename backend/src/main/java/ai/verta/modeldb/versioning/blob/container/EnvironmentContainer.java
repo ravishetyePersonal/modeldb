@@ -93,8 +93,8 @@ public class EnvironmentContainer extends BlobContainer {
         Set<PythonRequirementKey> pythonRequirementKeys = new HashSet<>();
         for (PythonRequirementEnvironmentBlob requirement : python.getRequirementsList()) {
           if (requirement.getLibrary().isEmpty()) {
-            throw new ModelDBException("Requirement library name should not be empty",
-                Code.INVALID_ARGUMENT);
+            throw new ModelDBException(
+                "Requirement library name should not be empty", Code.INVALID_ARGUMENT);
           }
           pythonRequirementKeys.add(new PythonRequirementKey(requirement, true));
         }
@@ -103,8 +103,8 @@ public class EnvironmentContainer extends BlobContainer {
         }
         for (PythonRequirementEnvironmentBlob constraint : python.getConstraintsList()) {
           if (constraint.getLibrary().isEmpty()) {
-            throw new ModelDBException("Constraint library name should not be empty",
-                Code.INVALID_ARGUMENT);
+            throw new ModelDBException(
+                "Constraint library name should not be empty", Code.INVALID_ARGUMENT);
           }
           pythonRequirementKeys.add(new PythonRequirementKey(constraint, false));
         }

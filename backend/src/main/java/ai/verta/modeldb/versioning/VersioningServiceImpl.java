@@ -30,7 +30,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
   private final RoleService roleService;
   private final RepositoryDAO repositoryDAO;
   private final CommitDAO commitDAO;
-  private final DatasetComponentDAO datasetComponentDAO;
+  private final BlobDAO blobDAO;
   private final ExperimentDAO experimentDAO;
   private final ExperimentRunDAO experimentRunDAO;
   private final ModelDBAuthInterceptor modelDBAuthInterceptor;
@@ -41,7 +41,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       RoleService roleService,
       RepositoryDAO repositoryDAO,
       CommitDAO commitDAO,
-      DatasetComponentDAO datasetComponentDAO,
+      BlobDAO blobDAO,
       ExperimentDAO experimentDAO,
       ExperimentRunDAO experimentRunDAO,
       ModelDBAuthInterceptor modelDBAuthInterceptor,
@@ -50,7 +50,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     this.roleService = roleService;
     this.repositoryDAO = repositoryDAO;
     this.commitDAO = commitDAO;
-    this.datasetComponentDAO = datasetComponentDAO;
+    this.blobDAO = blobDAO;
     this.experimentDAO = experimentDAO;
     this.experimentRunDAO = experimentRunDAO;
     this.modelDBAuthInterceptor = modelDBAuthInterceptor;
@@ -228,20 +228,43 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       if (request.getBlobsCount() == 0) {
-        throw new ModelDBException("Blob list should not be empty", Code.INVALID_ARGUMENT);
+        if (request.getCommitBase().isEmpty() || request.getDiffsCount() == 0) {
+          throw new ModelDBException(
+              "Blob list should not be empty or commit base and diffs should be specified",
+              Code.INVALID_ARGUMENT);
+        }
       } else if (request.getCommit().getParentShasList().isEmpty()) {
         throw new ModelDBException(
             "Parent commits not found in the CreateCommitRequest", Code.INVALID_ARGUMENT);
+      } else if (request.getBlobsCount() > 0
+          && (!request.getCommitBase().isEmpty() || request.getDiffsCount() > 0)) {
+        throw new ModelDBException(
+            "Blob list and commit base with diffs should not be allowed together",
+            Code.INVALID_ARGUMENT);
       }
-      List<BlobContainer> blobContainers = validateBlobs(request);
-      UserInfo currentLoginUserInfo = authService.getCurrentLoginUserInfo();
+      List<BlobContainer> blobContainers;
 
+      final RepositoryFunction repositoryFunction =
+          (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId());
+      if (request.getBlobsCount() != 0) {
+        blobContainers = validateBlobs(request);
+      } else {
+        validateBlobDiffs(request);
+        blobContainers =
+            blobDAO.convertBlobDiffsToBlobs(
+                request,
+                repositoryFunction,
+                (session, repository) ->
+                    commitDAO.getCommitEntity(session, request.getCommitBase(), repository));
+      }
+
+      UserInfo currentLoginUserInfo = authService.getCurrentLoginUserInfo();
       CreateCommitRequest.Response response =
           commitDAO.setCommit(
               authService.getVertaIdFromUserInfo(currentLoginUserInfo),
               request.getCommit(),
-              () -> datasetComponentDAO.setBlobs(blobContainers, fileHasher),
-              (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()));
+              () -> blobDAO.setBlobs(blobContainers, fileHasher),
+              repositoryFunction);
 
       responseObserver.onNext(response);
       responseObserver.onCompleted();
@@ -250,6 +273,9 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
           responseObserver, e, CreateCommitRequest.Response.getDefaultInstance());
     }
   }
+
+  // TODO: add validation VR-3587
+  private void validateBlobDiffs(CreateCommitRequest request) throws ModelDBException {}
 
   private List<BlobContainer> validateBlobs(CreateCommitRequest request) throws ModelDBException {
     List<BlobContainer> blobContainers = new LinkedList<>();
@@ -298,7 +324,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       }
 
       ListCommitBlobsRequest.Response response =
-          datasetComponentDAO.getCommitBlobsList(
+          blobDAO.getCommitBlobsList(
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
               request.getCommitSha(),
               request.getLocationPrefixList());
@@ -322,7 +348,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       }
 
       GetCommitComponentRequest.Response response =
-          datasetComponentDAO.getCommitComponent(
+          blobDAO.getCommitComponent(
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
               request.getCommitSha(),
               request.getLocationList());
@@ -358,7 +384,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
     try (RequestLatencyResource latencyResource =
         new RequestLatencyResource(modelDBAuthInterceptor.getMethodName())) {
       ComputeRepositoryDiffRequest.Response response =
-          datasetComponentDAO.computeRepositoryDiff(
+          blobDAO.computeRepositoryDiff(
               (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId()),
               request);
       responseObserver.onNext(response);
