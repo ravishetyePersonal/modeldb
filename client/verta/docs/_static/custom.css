@@ -529,3 +529,7 @@ ul.search li {
 li > p {
   padding: 0 !important;
 }
+
+ul.simple {
+  margin: 0;
+}
