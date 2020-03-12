@@ -13,7 +13,7 @@ from verta._internal_utils import _utils
 
 import hypothesis
 import pytest
-import utils
+from . import utils
 
 
 RANDOM_SEED = 0

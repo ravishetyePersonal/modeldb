@@ -166,4 +166,4 @@ class Repository(object):
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        return commit.Commit._from_id(self._conn, self.id, response_msg.commit.commit_sha, branch_name=branch)
+        return commit.Commit._from_id(self._conn, self, response_msg.commit.commit_sha, branch_name=branch)

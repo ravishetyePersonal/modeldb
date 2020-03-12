@@ -6,7 +6,7 @@ import os
 import sys
 import zipfile
 
-import utils
+from . import utils
 
 
 class TestArtifacts:
@@ -37,7 +37,11 @@ class TestArtifacts:
             experiment_run.get_artifact(holdout)
 
     def test_upload_file(self, experiment_run, strs):
-        filepaths = (filepath for filepath in os.listdir('.') if filepath.endswith('.py'))
+        filepaths = (
+            filepath for filepath in os.listdir('.')
+            if filepath.endswith('.py')
+            and os.path.basename(filepath) != "__init__.py"
+        )
         artifacts = list(zip(strs, filepaths))
 
         # log using file handle

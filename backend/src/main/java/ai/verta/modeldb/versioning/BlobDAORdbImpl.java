@@ -5,6 +5,8 @@ import ai.verta.modeldb.entities.versioning.CommitEntity;
 import ai.verta.modeldb.entities.versioning.InternalFolderElementEntity;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
+import ai.verta.modeldb.versioning.BlobDiff.ContentCase;
+import ai.verta.modeldb.versioning.DiffStatusEnum.DiffStatus;
 import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import ai.verta.modeldb.versioning.blob.diffFactory.BlobDiffFactory;
 import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
@@ -23,13 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-public class BlobDAORdbImpl implements DatasetComponentDAO {
+public class BlobDAORdbImpl implements BlobDAO {
+
   private static final Logger LOGGER = LogManager.getLogger(BlobDAORdbImpl.class);
 
   public static final String TREE = "TREE";
@@ -93,8 +97,11 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
                 })
             .reduce((a, b) -> ((Folder) a).toBuilder().mergeFrom((Folder) b).build());
 
-    if (result.isPresent()) return (Folder) result.get();
-    else return null;
+    if (result.isPresent()) {
+      return (Folder) result.get();
+    } else {
+      return null;
+    }
   }
 
   // TODO : check if there is a way to optimize on the calls to data base.
@@ -452,5 +459,347 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
                 // TODO: - the `#` then this functionality will break.
                 blobExpanded -> String.join("#", blobExpanded.getLocationList()),
                 blobExpanded -> blobExpanded));
+  }
+
+  @Override
+  public List<BlobContainer> convertBlobDiffsToBlobs(
+      CreateCommitRequest request,
+      RepositoryFunction repositoryFunction,
+      CommitFunction commitFunction)
+      throws ModelDBException {
+    try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
+      RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
+      CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
+      Set<BlobExpanded> commitBlobExpandedListFromRoot =
+          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>());
+      Map<String, BlobExpanded> locationBlobsMap =
+          getLocationWiseBlobExpandedMapFromList(commitBlobExpandedListFromRoot);
+      Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
+      for (BlobDiff blobDiff : request.getDiffsList()) {
+        final ProtocolStringList locationList = blobDiff.getLocationList();
+        if (locationList == null || locationList.isEmpty()) {
+          throw new ModelDBException(
+              "Location in BlobDiff should not be empty", Status.Code.INVALID_ARGUMENT);
+        }
+        // Apply the diffs on top of commit_base
+        if (blobDiff.getStatus() == DiffStatus.ADDED) {
+          // If a blob was added in the diff, add it on top of commit_base (doesn't matter
+          // if it was present already or not)
+          BlobExpanded blobExpanded = convertBlobDiffToBlobExpand(blobDiff);
+          blobContainers.add(blobExpanded);
+        } else {
+          if (blobDiff.getStatus() == DiffStatus.DELETED) {
+            // If a blob was deleted, delete if from commit_base if present
+            locationBlobsMap.remove(String.join("#", locationList));
+          } else if (blobDiff.getStatus() == DiffStatus.MODIFIED) {
+            // If a blob was modified, then:
+            BlobExpanded blobExpanded = locationBlobsMap.get(String.join("#", locationList));
+            if (blobExpanded == null) {
+              throw new ModelDBException(
+                  "Blob with path: " + locationList + " not found", Status.Code.NOT_FOUND);
+            }
+            // 1) check that the type of the diff is consistent with the type of the blob. If
+            // they are different, raise an error saying so
+            BlobExpanded blobDiffExpanded = convertBlobDiffToBlobExpand(blobDiff);
+            checkType(blobDiffExpanded, blobExpanded);
+            // 2) apply the diff to the blob as per the following logic:
+            if (isAtomic(blobDiff.getContentCase())) {
+              // 2a) if the field is atomic (e.g. python version, git repository), use the
+              // newer version (B) from the diff and overwrite what the commit_base has
+              blobContainers.add(atomicResult(blobDiff));
+            } else {
+              // 2b) if the field is not atomic (e.g. list of python requirements, dataset
+              // components), merge the lists by a) copying new values, b) deleting removed
+              // values, c) updating values that are already present based on some reasonable
+              // key
+              blobContainers.add(
+                  complexResult(blobDiff, blobExpanded).addAllLocation(locationList).build());
+            }
+          } else {
+            throw new ModelDBException("Invalid ModelDB diff type", Status.Code.INTERNAL);
+          }
+        }
+      }
+      Map<String, BlobExpanded> locationBlobsMapNew =
+          getLocationWiseBlobExpandedMapFromList(blobContainers);
+      locationBlobsMap.putAll(locationBlobsMapNew);
+      List<BlobContainer> blobContainerList = new LinkedList<>();
+      for (Map.Entry<String, BlobExpanded> blobExpandedEntry : locationBlobsMap.entrySet()) {
+        blobContainerList.add(BlobContainer.create(blobExpandedEntry.getValue()));
+      }
+      return blobContainerList;
+    }
+  }
+
+  private <T> Map<String, T> convertComponentsSetToMap(
+      List<T> configBlob, Function<T, String> getKey) {
+    return configBlob.stream()
+        .collect(
+            Collectors.toMap(
+                getKey,
+                hyperparameterSetConfigBlob -> hyperparameterSetConfigBlob,
+                (a, b) -> a,
+                HashMap::new));
+  }
+
+  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+    BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
+    switch (blobDiff.getContentCase()) {
+      case CONFIG:
+        Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap =
+            convertComponentsSetToMap(
+                blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
+                HyperparameterSetConfigBlob::getName);
+
+        blobDiff
+            .getConfig()
+            .getHyperparameterSet()
+            .getAList()
+            .forEach(
+                hyperparameterSetConfigBlob ->
+                    hyperparameterSetMap.remove(hyperparameterSetConfigBlob.getName()));
+        hyperparameterSetMap.putAll(
+            convertComponentsSetToMap(
+                blobDiff.getConfig().getHyperparameterSet().getBList(),
+                HyperparameterSetConfigBlob::getName));
+
+        Map<String, HyperparameterConfigBlob> hyperparameterMap =
+            convertComponentsSetToMap(
+                blobExpanded.getBlob().getConfig().getHyperparametersList(),
+                HyperparameterConfigBlob::getName);
+
+        blobDiff
+            .getConfig()
+            .getHyperparameters()
+            .getAList()
+            .forEach(
+                hyperparameterConfigBlob ->
+                    hyperparameterMap.remove(hyperparameterConfigBlob.getName()));
+        hyperparameterMap.putAll(
+            convertComponentsSetToMap(
+                blobDiff.getConfig().getHyperparameters().getBList(),
+                HyperparameterConfigBlob::getName));
+
+        blobExpandedNew
+            .setBlob(
+                Blob.newBuilder()
+                    .setConfig(
+                        ConfigBlob.newBuilder()
+                            .addAllHyperparameters(hyperparameterMap.values())
+                            .addAllHyperparameterSet(hyperparameterSetMap.values())))
+            .build();
+      case DATASET:
+        final DatasetBlob dataset = blobExpanded.getBlob().getDataset();
+        switch (dataset.getContentCase()) {
+          case PATH:
+            Map<String, PathDatasetComponentBlob> pathMap =
+                convertComponentsSetToMap(
+                    dataset.getPath().getComponentsList(), PathDatasetComponentBlob::getPath);
+
+            blobDiff
+                .getDataset()
+                .getPath()
+                .getAList()
+                .forEach(
+                    pathDatasetComponentBlob -> pathMap.remove(pathDatasetComponentBlob.getPath()));
+            pathMap.putAll(
+                convertComponentsSetToMap(
+                    blobDiff.getDataset().getPath().getBList(), PathDatasetComponentBlob::getPath));
+
+            blobExpandedNew.setBlob(
+                Blob.newBuilder()
+                    .setDataset(
+                        DatasetBlob.newBuilder()
+                            .setPath(
+                                PathDatasetBlob.newBuilder().addAllComponents(pathMap.values()))));
+            break;
+          case S3:
+            Map<String, S3DatasetComponentBlob> s3Map =
+                convertComponentsSetToMap(
+                    dataset.getS3().getComponentsList(),
+                    s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
+
+            blobDiff
+                .getDataset()
+                .getS3()
+                .getAList()
+                .forEach(
+                    s3DatasetComponentBlob ->
+                        s3Map.remove(s3DatasetComponentBlob.getPath().getPath()));
+            s3Map.putAll(
+                convertComponentsSetToMap(
+                    blobDiff.getDataset().getS3().getBList(),
+                    s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
+
+            blobExpandedNew.setBlob(
+                Blob.newBuilder()
+                    .setDataset(
+                        DatasetBlob.newBuilder()
+                            .setS3(S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
+            break;
+        }
+    }
+    return blobExpandedNew;
+  }
+
+  private BlobExpanded atomicResult(BlobDiff blobDiff) throws ModelDBException {
+    switch (blobDiff.getContentCase()) {
+      case ENVIRONMENT:
+      case CODE:
+        return convertBlobDiffToBlobExpand(blobDiff);
+      case DATASET:
+      case CONFIG:
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException(
+            "Invalid blob type found in BlobDiff", Status.Code.INVALID_ARGUMENT);
+    }
+  }
+
+  private boolean isAtomic(ContentCase contentCase) {
+    return contentCase == ContentCase.CODE || contentCase == ContentCase.ENVIRONMENT;
+  }
+
+  /**
+   * checks that the type of blobs are same till the inner most level.
+   *
+   * @param existingBlob : existing blob of the commit_base
+   * @param blobDiffExpanded : new BlobDiff
+   * @throws ModelDBException modelDBException
+   */
+  private void checkType(BlobExpanded blobDiffExpanded, BlobExpanded existingBlob)
+      throws ModelDBException {
+    if (!blobDiffExpanded
+        .getBlob()
+        .getContentCase()
+        .equals(existingBlob.getBlob().getContentCase())) {
+      throw new ModelDBException(
+          "Modified blob type not matched with actual blob type", Status.Code.INVALID_ARGUMENT);
+    } else {
+      Blob newBlob = blobDiffExpanded.getBlob();
+      switch (newBlob.getContentCase()) {
+        case DATASET:
+          if (!newBlob
+              .getDataset()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getDataset().getContentCase())) {
+            throw new ModelDBException(
+                "Modified dataset blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
+          break;
+        case ENVIRONMENT:
+          if (!newBlob
+              .getEnvironment()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getEnvironment().getContentCase())) {
+            throw new ModelDBException(
+                "Modified environment blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
+          break;
+        case CODE:
+          if (!newBlob
+              .getCode()
+              .getContentCase()
+              .equals(existingBlob.getBlob().getCode().getContentCase())) {
+            throw new ModelDBException(
+                "Modified code blob type not matched with actual blob type",
+                Status.Code.INVALID_ARGUMENT);
+          }
+        case CONFIG:
+          // do nothing to check
+          break;
+        case CONTENT_NOT_SET:
+        default:
+          throw new ModelDBException("Unknown blob type found", Status.Code.INVALID_ARGUMENT);
+      }
+    }
+  }
+
+  private BlobExpanded convertBlobDiffToBlobExpand(BlobDiff blobDiff) throws ModelDBException {
+    switch (blobDiff.getContentCase()) {
+      case DATASET:
+        DatasetBlob datasetBlob;
+        switch (blobDiff.getDataset().getContentCase()) {
+          case PATH:
+            PathDatasetDiff pathDatasetDiff = blobDiff.getDataset().getPath();
+            PathDatasetBlob pathDatasetBlob =
+                PathDatasetBlob.newBuilder().addAllComponents(pathDatasetDiff.getBList()).build();
+            datasetBlob = DatasetBlob.newBuilder().setPath(pathDatasetBlob).build();
+            break;
+          case S3:
+            S3DatasetDiff s3DatasetDiff = blobDiff.getDataset().getS3();
+            S3DatasetBlob s3DatasetBlob =
+                S3DatasetBlob.newBuilder().addAllComponents(s3DatasetDiff.getBList()).build();
+            datasetBlob = DatasetBlob.newBuilder().setS3(s3DatasetBlob).build();
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+
+        return BlobExpanded.newBuilder()
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setDataset(datasetBlob).build())
+            .build();
+      case ENVIRONMENT:
+        EnvironmentDiff environmentDiff = blobDiff.getEnvironment();
+        EnvironmentBlob.Builder environmentBlob =
+            EnvironmentBlob.newBuilder()
+                .addAllCommandLine(environmentDiff.getCommandLineBList())
+                .addAllEnvironmentVariables(environmentDiff.getEnvironmentVariablesBList());
+        switch (environmentDiff.getContentCase()) {
+          case DOCKER:
+            environmentBlob.setDocker(environmentDiff.getDocker().getB());
+            break;
+          case PYTHON:
+            environmentBlob.setPython(environmentDiff.getPython().getB());
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+        return BlobExpanded.newBuilder()
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setEnvironment(environmentBlob.build()).build())
+            .build();
+      case CODE:
+        CodeBlob.Builder codeBlobBuilder = CodeBlob.newBuilder();
+        CodeDiff codeDiff = blobDiff.getCode();
+        switch (codeDiff.getContentCase()) {
+          case GIT:
+            codeBlobBuilder.setGit(codeDiff.getGit().getB());
+            break;
+          case NOTEBOOK:
+            codeBlobBuilder.setNotebook(codeDiff.getNotebook().getB());
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+        return BlobExpanded.newBuilder()
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setCode(codeBlobBuilder.build()).build())
+            .build();
+      case CONFIG:
+        HyperparameterConfigDiff hyperparameterConfigDiff =
+            blobDiff.getConfig().getHyperparameters();
+        HyperparameterSetConfigDiff hyperparameterSetConfigDiff =
+            blobDiff.getConfig().getHyperparameterSet();
+
+        ConfigBlob configBlob =
+            ConfigBlob.newBuilder()
+                .addAllHyperparameters(hyperparameterConfigDiff.getBList())
+                .addAllHyperparameterSet(hyperparameterSetConfigDiff.getBList())
+                .build();
+        return BlobExpanded.newBuilder()
+            .addAllLocation(blobDiff.getLocationList())
+            .setBlob(Blob.newBuilder().setConfig(configBlob).build())
+            .build();
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+    }
   }
 }

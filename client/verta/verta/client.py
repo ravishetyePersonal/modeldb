@@ -42,6 +42,7 @@ from ._internal_utils import _utils
 
 from . import _dataset
 from . import _repository
+from ._repository import commit as commit_module
 from . import deployment
 from . import utils
 
@@ -3754,3 +3755,74 @@ class ExperimentRun(_ModelDBEntity):
 
         status = self.get_deployment_status()
         return deployment.DeployedModel.from_url(status['url'], status['token'])
+
+    def log_commit(self, commit, key_paths=None):
+        """
+        Associate a Commit with this Experiment Run.
+
+        .. versionadded:: 0.14.1
+
+        Parameters
+        ----------
+        commit : :class:`verta._repository.commit.Commit`
+            Verta Commit.
+        key_paths : dict of `key` to `path`, optional
+            A mapping between descriptive keys and paths of particular interest within `commit`.
+            This can be useful for, say, highlighting a particular file as *the* training dataset
+            used for this Experiment Run.
+
+        """
+        msg = _ExperimentRunService.LogVersionedInput()
+        msg.id = self.id
+        msg.versioned_inputs.repository_id = commit._repo_id
+        msg.versioned_inputs.commit = commit.id
+        for key, path in six.viewitems(key_paths or {}):
+            location = commit_module.path_to_location(path)
+            location_msg = msg.versioned_inputs.key_location_map.get_or_create(key)
+            location_msg.location.extend(location)
+
+        data = _utils.proto_to_json(msg)
+        endpoint = "{}://{}/api/v1/modeldb/experiment-run/logVersionedInput".format(
+            self._conn.scheme,
+            self._conn.socket,
+        )
+        response = _utils.make_request("POST", endpoint, self._conn, json=data)
+        _utils.raise_for_http_error(response)
+
+    def get_commit(self):
+        """
+        Gets the Commit associated with this Experiment Run.
+
+        .. versionadded:: 0.14.1
+
+        Returns
+        -------
+        commit : :class:`verta._repository.commit.Commit`
+            Verta Commit.
+        key_paths : dict of `key` to `path`
+            A mapping between descriptive keys and paths of particular interest within `commit`.
+
+        """
+        msg = _ExperimentRunService.GetVersionedInput()
+        msg.id = self.id
+
+        data = _utils.proto_to_json(msg)
+        endpoint = "{}://{}/api/v1/modeldb/experiment-run/getVersionedInput".format(
+            self._conn.scheme,
+            self._conn.socket,
+        )
+        response = _utils.make_request("GET", endpoint, self._conn, params=data)
+        _utils.raise_for_http_error(response)
+
+        response_msg = _utils.json_to_proto(response.json(), msg.Response)
+        repo_id = response_msg.versioned_inputs.repository_id
+        commit_id = response_msg.versioned_inputs.commit
+        commit = commit_module.Commit._from_id(self._conn, repo_id, commit_id)
+
+        key_paths = {
+            key: '/'.join(location_msg.location)
+            for key, location_msg
+            in response_msg.versioned_inputs.key_location_map.items()
+        }
+
+        return commit, key_paths

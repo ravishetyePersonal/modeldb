@@ -6,9 +6,6 @@ import verta.dataset
 import verta.environment
 
 
-pytest.skip("unstable back end support", allow_module_level=True)
-
-
 class TestRepository:
     def test_get_by_name(self, client, repository):
         retrieved_repo = client.get_or_create_repository(repository.name)
@@ -139,6 +136,23 @@ class TestCommit:
             assert commit2.get(path1)
         finally:
             utils.delete_commit(repository.id, commit1.id, repository._conn)
+
+    def test_log_to_run(self, experiment_run, commit):
+        blob1 = verta.dataset.Path(__file__)
+        blob2 = verta.environment.Python()
+        path1 = "data/1"
+        path2 = "env/1"
+
+        commit.update(path1, blob1)
+        commit.update(path2, blob2)
+        commit.save()
+
+        key_paths = {'my machine': path1}
+        experiment_run.log_commit(commit, key_paths)
+
+        retrieved_commit, retrieved_key_paths = experiment_run.get_commit()
+        assert retrieved_commit.id == commit.id
+        assert retrieved_key_paths == key_paths
 
 class TestBranch:
     def test_set(self, repository):

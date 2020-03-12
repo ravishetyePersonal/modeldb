@@ -6,7 +6,7 @@ import os
 import time
 import shutil
 
-import utils
+from . import utils
 
 import verta
 import verta.dataset
