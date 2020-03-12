@@ -496,6 +496,8 @@ class Client(object):
                 else:
                     six.raise_from(e, None)
                 print("set existing Repository: {} from {}".format(name, workspace_str))
+            else:
+                print("created new Repository: {} in {}".format(name, workspace_str))
             return repo
         else:
             raise ValueError("must specify either `name` or `id`")
