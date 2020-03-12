@@ -44,7 +44,7 @@ class TestHyperparameters:
             hyperparameters=self.HYPERPARAMETERS,
         )
 
-        name, value = self.HYPERPARAMETERS.items()[0]
+        name, value = list(self.HYPERPARAMETERS.items())[0]
 
         hyperparam_msg = config._msg.hyperparameters[0]
         assert hyperparam_msg.name == name
@@ -56,7 +56,7 @@ class TestHyperparameters:
             hyperparameter_ranges=self.HYPERPARAMETER_RANGES,
         )
 
-        name, (begin, end, step) = self.HYPERPARAMETER_RANGES.items()[0]
+        name, (begin, end, step) = list(self.HYPERPARAMETER_RANGES.items())[0]
 
         hyperparam_msg = config._msg.hyperparameter_set[0]
         assert hyperparam_msg.name == name
@@ -72,7 +72,7 @@ class TestHyperparameters:
             hyperparameter_sets=self.HYPERPARAMETER_SETS,
         )
 
-        name, sequence = self.HYPERPARAMETER_SETS.items()[0]
+        name, sequence = list(self.HYPERPARAMETER_SETS.items())[0]
 
         hyperparam_msg = config._msg.hyperparameter_set[0]
         assert hyperparam_msg.name == name
