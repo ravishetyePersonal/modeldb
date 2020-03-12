@@ -93,7 +93,7 @@ For help or questions about ModelDB usage around "How To"s see the [docs](https:
 
 To report a bug, file a documentation issue, or submit a feature request, please open a GitHub issue.
 
-For release announcements and other discussions, please join us in [Slack](https://tinyurl.com/mlflow-slack).
+For release announcements and other discussions, please join us in [Slack](http://bit.ly/modeldb-mlops).
 
 ## Repo Structure
 
