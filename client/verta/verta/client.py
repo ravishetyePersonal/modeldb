@@ -3317,7 +3317,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         if isinstance(requirements, six.string_types):
             with open(requirements, 'r') as f:
-                requirements = _pip_requirements_utils.read_reqs_file_lines(f)
+                requirements = _pip_requirements_utils.clean_reqs_file_lines(f.readlines())
         elif (isinstance(requirements, list)
               and all(isinstance(req, six.string_types) for req in requirements)):
             requirements = copy.copy(requirements)

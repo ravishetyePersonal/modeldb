@@ -132,7 +132,7 @@ class Python(_environment._Environment):
 
         """
         with open(filepath, 'r') as f:
-            return _pip_requirements_utils.read_reqs_file_lines(f)
+            return _pip_requirements_utils.clean_reqs_file_lines(f.readlines())
 
     @staticmethod
     def read_pip_environment():
