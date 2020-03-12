@@ -8,6 +8,15 @@ This version of ModelDB is built upon its [predecessor](https://mitdbg.github.io
 
 ----
 
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/vertaaiofficial/modeldb-backend?color=534eb5&label=Docker%20image%20version&style=plastic) ![PyPI](https://img.shields.io/pypi/v/verta?color=534eb5&style=plastic) ![Conda](https://img.shields.io/conda/v/conda-forge/verta?color=534eb5&style=plastic) ![PyPI - License](https://img.shields.io/pypi/l/verta?color=534eb5&style=plastic)
+
+![Docker Pulls](https://img.shields.io/docker/pulls/vertaaiofficial/modeldb-backend?color=534eb5&style=plastic) ![PyPI - Downloads](https://img.shields.io/pypi/dm/verta?color=534eb5&label=PyPI%20Downloads&style=plastic) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/vertaai/modeldb?color=534eb5&style=plastic) ![GitHub last commit](https://img.shields.io/github/last-commit/vertaai/modeldb?color=534eb5&style=plastic)
+
+![GitHub stars](https://img.shields.io/github/stars/vertaai/modeldb?style=social) ![GitHub forks](https://img.shields.io/github/forks/Vertaai/modeldb?label=Fork&style=social) 
+![Twitter Follow](https://img.shields.io/twitter/follow/VertaAI?label=VertaAI&style=social) 
+
+Questions? Join us in [slack](http://bit.ly/modeldb-mlops).
+
 ## Architecture
 
 At a high level the architecture of ModelDB in a Kubernetes cluster or a Docker application looks as below:
