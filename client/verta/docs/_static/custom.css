@@ -525,3 +525,7 @@ ul.search {
 ul.search li {
   margin-bottom: 2px;
 }
+
+li > p {
+  padding: 0 !important;
+}
