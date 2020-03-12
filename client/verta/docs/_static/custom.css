@@ -493,6 +493,7 @@ table.docutils tbody tr {
 
 table.docutils td,
 table.docutils th {
+  border: none;
   padding: 10px;
 }
 
@@ -532,4 +533,8 @@ li > p {
 
 ul.simple {
   margin: 0;
+}
+
+table.docutils {
+  border: none;
 }
