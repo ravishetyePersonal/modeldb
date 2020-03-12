@@ -108,6 +108,7 @@ p.logo {
   padding: 2rem;
   border-bottom: 1px solid #e6ecf1;
   margin: 0;
+  margin-bottom: 8px;
 }
 
 .footer {
@@ -509,4 +510,12 @@ ul.simple ol.simple p {
 
 ul.simple li {
   padding: 10px 0;
+}
+
+.sphinxsidebarwrapper > h3 {
+  display: none;
+}
+
+.toctree-l1 {
+  margin-bottom: 10px !important;
 }
