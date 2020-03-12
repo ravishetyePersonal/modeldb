@@ -51,20 +51,20 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           pathBuilder = PathDatasetDiff.newBuilder();
         }
         if (add) {
-          if (pathBuilder.getBCount() != 0) {
-            Set<PathDatasetComponentBlob> pathDatasetComponentBlobsA =
+          if (pathBuilder.getACount() != 0) {
+            HashSet<PathDatasetComponentBlob> pathDatasetComponentBlobsA =
+                new HashSet<>(pathBuilder.getAList());
+            Set<PathDatasetComponentBlob> pathDatasetComponentBlobsB =
                 new HashSet<>(dataset.getPath().getComponentsList());
-            HashSet<PathDatasetComponentBlob> pathDatasetComponentBlobsB =
-                new HashSet<>(pathBuilder.getBList());
             removeCommon(pathDatasetComponentBlobsA, pathDatasetComponentBlobsB);
             pathBuilder.clear();
             pathBuilder.addAllA(pathDatasetComponentBlobsA);
             pathBuilder.addAllB(pathDatasetComponentBlobsB);
           } else {
-            pathBuilder.addAllA(dataset.getPath().getComponentsList());
+            pathBuilder.addAllB(dataset.getPath().getComponentsList());
           }
         } else {
-          pathBuilder.addAllB(dataset.getPath().getComponentsList());
+          pathBuilder.addAllA(dataset.getPath().getComponentsList());
         }
 
         datasetBuilder.setPath(pathBuilder).build();
@@ -77,20 +77,20 @@ public class DatasetBlobDiffFactory extends BlobDiffFactory {
           s3Builder = S3DatasetDiff.newBuilder();
         }
         if (add) {
-          if (s3Builder.getBCount() != 0) {
-            Set<S3DatasetComponentBlob> s3DatasetComponentBlobsA =
+          if (s3Builder.getACount() != 0) {
+            HashSet<S3DatasetComponentBlob> s3DatasetComponentBlobsA =
+                new HashSet<>(s3Builder.getAList());
+            Set<S3DatasetComponentBlob> s3DatasetComponentBlobsB =
                 new HashSet<>(dataset.getS3().getComponentsList());
-            HashSet<S3DatasetComponentBlob> s3DatasetComponentBlobsB =
-                new HashSet<>(s3Builder.getBList());
             removeCommon(s3DatasetComponentBlobsA, s3DatasetComponentBlobsB);
             s3Builder.clear();
             s3Builder.addAllA(s3DatasetComponentBlobsA);
             s3Builder.addAllB(s3DatasetComponentBlobsB);
           } else {
-            s3Builder.addAllA(dataset.getS3().getComponentsList());
+            s3Builder.addAllB(dataset.getS3().getComponentsList());
           }
         } else {
-          s3Builder.addAllB(dataset.getS3().getComponentsList());
+          s3Builder.addAllA(dataset.getS3().getComponentsList());
         }
 
         datasetBuilder.setS3(s3Builder).build();

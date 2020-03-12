@@ -46,33 +46,33 @@ public class ConfigBlobDiffFactory extends BlobDiffFactory {
       hyperparameterSetBuilder = HyperparameterSetConfigDiff.newBuilder();
     }
     if (add) {
-      if (hyperparameterBuilder.getBCount() != 0) {
+      if (hyperparameterBuilder.getACount() != 0) {
         Set<HyperparameterConfigBlob> hyperparameterConfigBlobsA =
-            new HashSet<>(config.getHyperparametersList());
+            new HashSet<>(hyperparameterBuilder.getAList());
         HashSet<HyperparameterConfigBlob> hyperparameterConfigBlobsB =
-            new HashSet<>(hyperparameterBuilder.getBList());
+            new HashSet<>(config.getHyperparametersList());
         removeCommon(hyperparameterConfigBlobsA, hyperparameterConfigBlobsB);
         hyperparameterBuilder.clear();
         hyperparameterBuilder.addAllA(hyperparameterConfigBlobsA);
         hyperparameterBuilder.addAllB(hyperparameterConfigBlobsB);
       } else {
-        hyperparameterBuilder.addAllA(config.getHyperparametersList());
+        hyperparameterBuilder.addAllB(config.getHyperparametersList());
       }
-      if (hyperparameterBuilder.getBCount() != 0) {
+      if (hyperparameterSetBuilder.getACount() != 0) {
         Set<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsA =
-            new HashSet<>(config.getHyperparameterSetList());
+            new HashSet<>(hyperparameterSetBuilder.getAList());
         HashSet<HyperparameterSetConfigBlob> hyperparameterSetConfigBlobsB =
-            new HashSet<>(hyperparameterSetBuilder.getBList());
+            new HashSet<>(config.getHyperparameterSetList());
         removeCommon(hyperparameterSetConfigBlobsA, hyperparameterSetConfigBlobsB);
         hyperparameterSetBuilder.clear();
         hyperparameterSetBuilder.addAllA(hyperparameterSetConfigBlobsA);
         hyperparameterSetBuilder.addAllB(hyperparameterSetConfigBlobsB);
       } else {
-        hyperparameterSetBuilder.addAllA(config.getHyperparameterSetList());
+        hyperparameterSetBuilder.addAllB(config.getHyperparameterSetList());
       }
     } else {
-      hyperparameterBuilder.addAllB(config.getHyperparametersList());
-      hyperparameterSetBuilder.addAllB(config.getHyperparameterSetList());
+      hyperparameterBuilder.addAllA(config.getHyperparametersList());
+      hyperparameterSetBuilder.addAllA(config.getHyperparameterSetList());
     }
 
     configBuilder.setHyperparameters(hyperparameterBuilder);

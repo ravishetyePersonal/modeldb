@@ -45,9 +45,9 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
           gitBuilder = GitCodeDiff.newBuilder();
         }
         if (add) {
-          gitBuilder.setA(code.getGit());
-        } else {
           gitBuilder.setB(code.getGit());
+        } else {
+          gitBuilder.setA(code.getGit());
         }
 
         codeBuilder.setGit(gitBuilder).build();
@@ -60,9 +60,9 @@ public class CodeBlobDiffFactory extends BlobDiffFactory {
           notebookBuilder = NotebookCodeDiff.newBuilder();
         }
         if (add) {
-          notebookBuilder.setA(code.getNotebook());
-        } else {
           notebookBuilder.setB(code.getNotebook());
+        } else {
+          notebookBuilder.setA(code.getNotebook());
         }
 
         codeBuilder.setNotebook(notebookBuilder).build();

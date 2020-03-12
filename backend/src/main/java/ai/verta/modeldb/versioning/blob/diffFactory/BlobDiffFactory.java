@@ -39,8 +39,8 @@ public abstract class BlobDiffFactory {
       final Builder builder =
           BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
       builder.setStatus(DiffStatus.MODIFIED);
-      blobDiffFactoryB.delete(builder);
-      add(builder);
+      delete(builder);
+      blobDiffFactoryB.add(builder);
       return Collections.singletonList(builder.build());
     } else {
       // use delete and add
@@ -50,9 +50,9 @@ public abstract class BlobDiffFactory {
           BlobDiff.newBuilder().addAllLocation(Arrays.asList(location.split("#")));
       final Builder newBlobDiff = oldBlobDiff.clone();
       oldBlobDiff.setStatus(DiffStatus.DELETED);
-      blobDiffFactoryB.delete(oldBlobDiff);
+      delete(oldBlobDiff);
       newBlobDiff.setStatus(DiffStatus.ADDED);
-      add(newBlobDiff);
+      blobDiffFactoryB.add(newBlobDiff);
       return Stream.of(oldBlobDiff, newBlobDiff).map(Builder::build).collect(Collectors.toList());
     }
   }

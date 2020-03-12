@@ -366,28 +366,24 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
 
       session.getTransaction().commit();
 
-      // TODO: minor optimization on set diff
-      // replace the flow of  B+A-B to A-B
-      // Added new blob location in the CommitA, locations in
+      // Added new blob location in the CommitB, locations in
       Set<String> addedLocations = new HashSet<>(locationBlobsMapCommitB.keySet());
-      addedLocations.addAll(locationBlobsMapCommitA.keySet());
-      addedLocations.removeAll(locationBlobsMapCommitB.keySet());
+      addedLocations.removeAll(locationBlobsMapCommitA.keySet());
       LOGGER.debug("Added location for Diff : {}", addedLocations);
 
       // deleted new blob location from the CommitA
       Set<String> deletedLocations = new HashSet<>(locationBlobsMapCommitA.keySet());
-      deletedLocations.addAll(locationBlobsMapCommitB.keySet());
-      deletedLocations.removeAll(locationBlobsMapCommitA.keySet());
+      deletedLocations.removeAll(locationBlobsMapCommitB.keySet());
       LOGGER.debug("Deleted location for Diff : {}", deletedLocations);
 
       // modified new blob location from the CommitA
-      Set<String> modifiedLocations = new HashSet<>(locationBlobsMapCommitA.keySet());
+      Set<String> modifiedLocations = new HashSet<>(locationBlobsMapCommitB.keySet());
       modifiedLocations.removeAll(addedLocations);
       LOGGER.debug("Modified location for Diff : {}", modifiedLocations);
 
-      List<BlobDiff> addedBlobDiffList = getAddedBlobDiff(addedLocations, locationBlobsMapCommitA);
+      List<BlobDiff> addedBlobDiffList = getAddedBlobDiff(addedLocations, locationBlobsMapCommitB);
       List<BlobDiff> deletedBlobDiffList =
-          getDeletedBlobDiff(deletedLocations, locationBlobsMapCommitB);
+          getDeletedBlobDiff(deletedLocations, locationBlobsMapCommitA);
       List<BlobDiff> modifiedBlobDiffList =
           getModifiedBlobDiff(modifiedLocations, locationBlobsMapCommitA, locationBlobsMapCommitB);
 
@@ -400,11 +396,11 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
   }
 
   List<BlobDiff> getAddedBlobDiff(
-      Set<String> addedLocations, Map<String, BlobExpanded> locationBlobsMapCommitA) {
+      Set<String> addedLocations, Map<String, BlobExpanded> locationBlobsMapCommitB) {
     return addedLocations.stream()
         .map(
             location -> {
-              BlobExpanded blobExpanded = locationBlobsMapCommitA.get(location);
+              BlobExpanded blobExpanded = locationBlobsMapCommitB.get(location);
               BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
               return result.add(location);
             })
@@ -412,11 +408,11 @@ public class BlobDAORdbImpl implements DatasetComponentDAO {
   }
 
   List<BlobDiff> getDeletedBlobDiff(
-      Set<String> deletedLocations, Map<String, BlobExpanded> locationBlobsMapCommitB) {
+      Set<String> deletedLocations, Map<String, BlobExpanded> locationBlobsMapCommitA) {
     return deletedLocations.stream()
         .map(
             location -> {
-              BlobExpanded blobExpanded = locationBlobsMapCommitB.get(location);
+              BlobExpanded blobExpanded = locationBlobsMapCommitA.get(location);
               BlobDiffFactory result = BlobDiffFactory.create(blobExpanded);
               return result.delete(location);
             })

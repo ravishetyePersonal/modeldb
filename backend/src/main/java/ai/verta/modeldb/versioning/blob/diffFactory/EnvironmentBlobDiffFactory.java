@@ -45,9 +45,9 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
           pythonBuilder = PythonEnvironmentDiff.newBuilder();
         }
         if (add) {
-          pythonBuilder.setA(environment.getPython());
-        } else {
           pythonBuilder.setB(environment.getPython());
+        } else {
+          pythonBuilder.setA(environment.getPython());
         }
 
         environmentBuilder.setPython(pythonBuilder).build();
@@ -60,9 +60,9 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
           dockerBuilder = DockerEnvironmentDiff.newBuilder();
         }
         if (add) {
-          dockerBuilder.setA(environment.getDocker());
-        } else {
           dockerBuilder.setB(environment.getDocker());
+        } else {
+          dockerBuilder.setA(environment.getDocker());
         }
 
         environmentBuilder.setDocker(dockerBuilder).build();
