@@ -48,7 +48,7 @@ This version of ModelDB is built upon its [predecessor](https://mitdbg.github.io
 ----
 
 <h3 align="center">
-  <a href="#quick-start">Quickstart</a>
+  <a href="#quick-start">Quick-start</a>
   <span> · </span>
   <a href="https://docs.verta.ai/en/master/guides/workflow.html">Workflow</a>
   <span> · </span>
@@ -62,6 +62,13 @@ This version of ModelDB is built upon its [predecessor](https://mitdbg.github.io
 ----
 
 ## What’s In This Document
+
+- [Get Up and Running in less than 5 Minutes](#-quick-start)
+- [Community](#-community)
+- [Architecture](#-architecture)
+- [How to Contribute](#-how-to-contribute)
+- [License](#-license)
+- [Thanks to Our Contributors and Sponsors](#-thanks)
 
 ----
 
@@ -80,9 +87,22 @@ Logs will have an entry similar to `Backend server started listening on 8085` to
 *Once the command finishes it might take a couple of minutes for the proxy, backend and frontend to establish connection. During this time any access through frontend or client may result in 502.*
 
 Other ways to deploy ModelDB are:
+
 1. [Building the source code and deploying](DEPLOY.md#build-images-from-source-and-deploy)
 1. [Deploy on kubernetes using help](DEPLOY.md#kubernetes-setUp)
 1. [Spin up a AWS EC2 machine using a modeldb ami](DEPLOY.md#AWS)
+
+----
+
+## Community
+
+For Getting Started guides, Tutorials, and API reference [docs](https://docs.verta.ai/en/master/).
+
+To report a bug, file a documentation issue, or submit a feature request, please open a GitHub issue.
+
+For help, questions, contribution discussions and release announcements, please join us in [Slack](http://bit.ly/modeldb-mlops).
+
+----
 
 ## Architecture
 
@@ -105,22 +125,7 @@ At a high level the architecture of ModelDB in a Kubernetes cluster or a Docker 
 
 *Volumes : The relational database and the artifact store in backend need volumes attached to enable persistent storage.*
 
-----
-
-----
-
-## Community
-
-For `Getting Started` guides, Tutorials, and API reference [docs](https://docs.verta.ai/en/master/).
-
-To report a bug, file a documentation issue, or submit a feature request, please open a GitHub issue.
-
-For help, questions, and release announcements, please join us in [Slack](https://tinyurl.com/mlflow-slack).
-
-----
-
-
-## Repo Structure
+### Repo Structure
 
 Each module in the architecture diagram has a designated folder in this repository, and has their own README covering in depth documentation and contribution guidelines.
 
@@ -133,3 +138,28 @@ Other supporting material for deployment and documentation is at:
 
 1. **chart** has the helm chart to deploy ModelDB onto your Kubernetes cluster. More details [here](chart/modeldb/README.md).
 1. **doc-resources** has images for documentation.
+
+----
+
+## Contributions
+
+As seen from the [Architecture](#architecture) ModelDB provides a full stack solution to tracking, versioning and auditing  machine learning models.
+We are open to contributions to any of the modules in form of Pull Requests. 
+
+The main skill sets for each module are as below:
+
+1. backend : If you are interested in `Java` development or are interested in database design using technologies like `Hibernate` and `Liquibase` please take a look at [backed README](backend/README.md) for setup and development instructions.
+1. client : If you are interested in `Python` or `Scala` development or are interested in building examples notebooks on various ML frameworks logging data to Modeldb please take a look at [client CONTRIBUTING] for contribution instructions.
+1. protos : If you are interested  in `Node`,`React` or `Redux`based development please take a look at [webapp README](webapp/README.md)
+
+----
+
+## License
+
+ModelDB is licensed under Apache 2.0.
+
+----
+
+## Thanks
+
+Thanks to our many [contributors](CONTRIBUTORS.md) and users.
