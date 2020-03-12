@@ -63,12 +63,12 @@ This version of ModelDB is built upon its [predecessor](https://mitdbg.github.io
 
 ## What’s In This Document
 
-- [Get Up and Running in less than 5 Minutes](#-quick-start)
+- [Quick-start](#-quick-start)
 - [Community](#-community)
 - [Architecture](#-architecture)
 - [How to Contribute](#-how-to-contribute)
 - [License](#-license)
-- [Thanks to Our Contributors and Sponsors](#-thanks)
+- [Thanks to Our Contributors](#-thanks)
 
 ----
 
@@ -86,7 +86,7 @@ Logs will have an entry similar to `Backend server started listening on 8085` to
 
 *Once the command finishes it might take a couple of minutes for the proxy, backend and frontend to establish connection. During this time any access through frontend or client may result in 502.*
 
-Other ways to deploy ModelDB are:
+**Other ways to deploy ModelDB are:**
 
 1. [Building the source code and deploying](DEPLOY.md#build-images-from-source-and-deploy)
 1. [Deploy on kubernetes using help](DEPLOY.md#kubernetes-setUp)
