@@ -88,6 +88,13 @@ helm del --purge <release-name-used-install-cmd>
 
 ----
 
+## Community
+For help or questions about ModelDB usage around "How To"s see the [docs](https://docs.verta.ai/en/master/).
+
+To report a bug, file a documentation issue, or submit a feature request, please open a GitHub issue.
+
+For release announcements and other discussions, please join us in [Slack](https://tinyurl.com/mlflow-slack).
+
 ## Repo Structure
 
 Each module in the architecture diagram has a designated folder in this repository, and has their own README covering in depth documentation and contribution guidelines.
