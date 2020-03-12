@@ -43,6 +43,9 @@ public class DatasetContainer extends BlobContainer {
         }
         break;
       case PATH:
+        if (!dataset.hasPath()) {
+          throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
+        }
         validate(dataset.getPath());
         break;
       default:

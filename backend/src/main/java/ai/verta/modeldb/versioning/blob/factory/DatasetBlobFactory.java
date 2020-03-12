@@ -11,6 +11,7 @@ import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
 import ai.verta.modeldb.versioning.S3DatasetBlob;
 import ai.verta.modeldb.versioning.S3DatasetComponentBlob;
 import io.grpc.Status;
+import io.grpc.Status.Code;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.hibernate.Session;
@@ -33,8 +34,12 @@ public class DatasetBlobFactory extends BlobFactory {
             .setDataset(datasetBlobBuilder.setS3(getS3Blob(session, getElementSha())))
             .build();
       case PATH_DATASET_BLOB:
+        final PathDatasetBlob pathBlob = getPathBlob(session, getElementSha());
+        if (pathBlob == null) {
+          throw new ModelDBException("Path blob not found", Code.INTERNAL);
+        }
         return Blob.newBuilder()
-            .setDataset(datasetBlobBuilder.setPath(getPathBlob(session, getElementSha())))
+            .setDataset(datasetBlobBuilder.setPath(pathBlob))
             .build();
     }
     return Blob.newBuilder().setDataset(datasetBlobBuilder).build();
@@ -61,7 +66,7 @@ public class DatasetBlobFactory extends BlobFactory {
     }
   }
 
-  static PathDatasetBlob getPathBlob(Session session, String blobHash) throws ModelDBException {
+  static PathDatasetBlob getPathBlob(Session session, String blobHash) {
     String pathComponentQueryHQL =
         "From "
             + PathDatasetComponentBlobEntity.class.getSimpleName()
@@ -80,7 +85,7 @@ public class DatasetBlobFactory extends BlobFactory {
               .collect(Collectors.toList());
       return PathDatasetBlob.newBuilder().addAllComponents(componentBlobs).build();
     } else {
-      throw new ModelDBException("Path dataset Blob not found", Status.Code.NOT_FOUND);
+      return null;
     }
   }
 }

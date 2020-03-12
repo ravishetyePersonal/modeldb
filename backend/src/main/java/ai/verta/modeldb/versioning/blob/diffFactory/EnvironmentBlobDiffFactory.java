@@ -1,11 +1,20 @@
 package ai.verta.modeldb.versioning.blob.diffFactory;
 
+import static ai.verta.modeldb.versioning.blob.diffFactory.ConfigBlobDiffFactory.removeCommon;
+
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.DockerEnvironmentDiff;
 import ai.verta.modeldb.versioning.EnvironmentBlob;
 import ai.verta.modeldb.versioning.EnvironmentDiff;
+import ai.verta.modeldb.versioning.EnvironmentVariablesBlob;
+import ai.verta.modeldb.versioning.PythonEnvironmentBlob;
 import ai.verta.modeldb.versioning.PythonEnvironmentDiff;
+import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
+import com.google.protobuf.ProtocolStringList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
 
@@ -36,21 +45,74 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
   private void modify(BlobDiff.Builder blobBuilder, boolean add) {
     final EnvironmentDiff.Builder environmentBuilder = EnvironmentDiff.newBuilder();
     final EnvironmentBlob environment = getBlobExpanded().getBlob().getEnvironment();
+    List<EnvironmentVariablesBlob> environmentValiablesList =
+        environment.getEnvironmentVariablesList();
+    ProtocolStringList commandLineList = environment.getCommandLineList();
+    final EnvironmentDiff environmentDiff = blobBuilder.getEnvironment();
+    if (add) {
+      if (environmentDiff.getEnvironmentVariablesACount() != 0
+      || environmentDiff.getCommandLineACount() != 0) {
+        Set<EnvironmentVariablesBlob> environmentVariablesBlobsA =
+            new HashSet<>(environmentDiff.getEnvironmentVariablesAList());
+        Set<EnvironmentVariablesBlob> environmentVariablesBlobsB =
+            new HashSet<>(environmentValiablesList);
+        removeCommon(environmentVariablesBlobsA, environmentVariablesBlobsB);
+        environmentBuilder.addAllEnvironmentVariablesA(environmentVariablesBlobsA);
+        environmentBuilder.addAllEnvironmentVariablesB(environmentVariablesBlobsB);
+        environmentBuilder.addAllCommandLineA(environmentDiff.getCommandLineAList());
+        environmentBuilder.addAllCommandLineB(commandLineList);
+      } else {
+        environmentBuilder.addAllEnvironmentVariablesB(environmentValiablesList);
+        environmentBuilder.addAllCommandLineB(commandLineList);
+      }
+    } else {
+      environmentBuilder.addAllEnvironmentVariablesA(environmentValiablesList);
+      environmentBuilder.addAllCommandLineA(commandLineList);
+    }
     switch (environment.getContentCase()) {
       case PYTHON:
-        PythonEnvironmentDiff.Builder pythonBuilder;
+        PythonEnvironmentDiff.Builder pythonDiff;
         if (blobBuilder.hasEnvironment()) {
-          pythonBuilder = blobBuilder.getEnvironment().getPython().toBuilder();
+          pythonDiff = environmentDiff.getPython().toBuilder();
         } else {
-          pythonBuilder = PythonEnvironmentDiff.newBuilder();
+          pythonDiff = PythonEnvironmentDiff.newBuilder();
         }
+        final PythonEnvironmentBlob python = environment.getPython();
         if (add) {
-          pythonBuilder.setB(environment.getPython());
+          if (pythonDiff.hasA()) {
+            Set<PythonRequirementEnvironmentBlob> pythonRequirementsBlobsA =
+                new HashSet<>(pythonDiff.getA().getRequirementsList());
+            Set<PythonRequirementEnvironmentBlob> pythonRequirementsBlobsB =
+                new HashSet<>(python.getRequirementsList());
+            removeCommon(pythonRequirementsBlobsA, pythonRequirementsBlobsB);
+            Set<PythonRequirementEnvironmentBlob> pythonConstraintsBlobsA =
+                new HashSet<>(pythonDiff.getA().getConstraintsList());
+            Set<PythonRequirementEnvironmentBlob> pythonConstraintsBlobsB =
+                new HashSet<>(python.getConstraintsList());
+            removeCommon(pythonConstraintsBlobsA, pythonConstraintsBlobsB);
+            pythonDiff.setA(
+                pythonDiff
+                    .getA()
+                    .toBuilder()
+                    .clearRequirements()
+                    .clearConstraints()
+                    .addAllRequirements(pythonRequirementsBlobsA)
+                    .addAllConstraints(pythonConstraintsBlobsA));
+            pythonDiff.setB(
+                python
+                    .toBuilder()
+                    .clearRequirements()
+                    .clearConstraints()
+                    .addAllRequirements(pythonRequirementsBlobsB)
+                    .addAllConstraints(pythonConstraintsBlobsB));
+          } else {
+            pythonDiff.setB(python);
+          }
         } else {
-          pythonBuilder.setA(environment.getPython());
+          pythonDiff.setA(python);
         }
 
-        environmentBuilder.setPython(pythonBuilder).build();
+        environmentBuilder.setPython(pythonDiff).build();
         break;
       case DOCKER:
         DockerEnvironmentDiff.Builder dockerBuilder;

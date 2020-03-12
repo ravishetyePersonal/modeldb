@@ -470,8 +470,8 @@ public class BlobDAORdbImpl implements BlobDAO {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       RepositoryEntity repositoryEntity = repositoryFunction.apply(session);
       CommitEntity commitEntity = commitFunction.apply(session, session1 -> repositoryEntity);
-      Collection<BlobExpanded> commitBlobExpandedListFromRoot = getCommitBlobList(session,
-          commitEntity.getRootSha(), new ArrayList<>()).values();
+      Collection<BlobExpanded> commitBlobExpandedListFromRoot =
+          getCommitBlobList(session, commitEntity.getRootSha(), new ArrayList<>()).values();
       Map<String, BlobExpanded> locationBlobsMap =
           getLocationWiseBlobExpandedMapFromCollection(commitBlobExpandedListFromRoot);
       Set<BlobExpanded> blobContainers = new LinkedHashSet<>();
@@ -531,7 +531,7 @@ public class BlobDAORdbImpl implements BlobDAO {
     }
   }
 
-  private <T> Map<String, T> convertComponentsSetToMap(
+  private <T> Map<String, T> convertComponentsListToMap(
       List<T> configBlob, Function<T, String> getKey) {
     return configBlob.stream()
         .collect(
@@ -542,12 +542,13 @@ public class BlobDAORdbImpl implements BlobDAO {
                 HashMap::new));
   }
 
-  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded) {
+  private BlobExpanded.Builder complexResult(BlobDiff blobDiff, BlobExpanded blobExpanded)
+      throws ModelDBException {
     BlobExpanded.Builder blobExpandedNew = BlobExpanded.newBuilder();
     switch (blobDiff.getContentCase()) {
       case CONFIG:
         Map<String, HyperparameterSetConfigBlob> hyperparameterSetMap =
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobExpanded.getBlob().getConfig().getHyperparameterSetList(),
                 HyperparameterSetConfigBlob::getName);
 
@@ -559,12 +560,12 @@ public class BlobDAORdbImpl implements BlobDAO {
                 hyperparameterSetConfigBlob ->
                     hyperparameterSetMap.remove(hyperparameterSetConfigBlob.getName()));
         hyperparameterSetMap.putAll(
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobDiff.getConfig().getHyperparameterSet().getBList(),
                 HyperparameterSetConfigBlob::getName));
 
         Map<String, HyperparameterConfigBlob> hyperparameterMap =
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobExpanded.getBlob().getConfig().getHyperparametersList(),
                 HyperparameterConfigBlob::getName);
 
@@ -576,7 +577,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                 hyperparameterConfigBlob ->
                     hyperparameterMap.remove(hyperparameterConfigBlob.getName()));
         hyperparameterMap.putAll(
-            convertComponentsSetToMap(
+            convertComponentsListToMap(
                 blobDiff.getConfig().getHyperparameters().getBList(),
                 HyperparameterConfigBlob::getName));
 
@@ -588,12 +589,13 @@ public class BlobDAORdbImpl implements BlobDAO {
                             .addAllHyperparameters(hyperparameterMap.values())
                             .addAllHyperparameterSet(hyperparameterSetMap.values())))
             .build();
+        break;
       case DATASET:
         final DatasetBlob dataset = blobExpanded.getBlob().getDataset();
         switch (dataset.getContentCase()) {
           case PATH:
             Map<String, PathDatasetComponentBlob> pathMap =
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     dataset.getPath().getComponentsList(), PathDatasetComponentBlob::getPath);
 
             blobDiff
@@ -603,7 +605,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                 .forEach(
                     pathDatasetComponentBlob -> pathMap.remove(pathDatasetComponentBlob.getPath()));
             pathMap.putAll(
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     blobDiff.getDataset().getPath().getBList(), PathDatasetComponentBlob::getPath));
 
             blobExpandedNew.setBlob(
@@ -615,7 +617,7 @@ public class BlobDAORdbImpl implements BlobDAO {
             break;
           case S3:
             Map<String, S3DatasetComponentBlob> s3Map =
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     dataset.getS3().getComponentsList(),
                     s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath());
 
@@ -627,7 +629,7 @@ public class BlobDAORdbImpl implements BlobDAO {
                     s3DatasetComponentBlob ->
                         s3Map.remove(s3DatasetComponentBlob.getPath().getPath()));
             s3Map.putAll(
-                convertComponentsSetToMap(
+                convertComponentsListToMap(
                     blobDiff.getDataset().getS3().getBList(),
                     s3DatasetComponentBlob -> s3DatasetComponentBlob.getPath().getPath()));
 
@@ -637,16 +639,92 @@ public class BlobDAORdbImpl implements BlobDAO {
                         DatasetBlob.newBuilder()
                             .setS3(S3DatasetBlob.newBuilder().addAllComponents(s3Map.values()))));
             break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
         }
+        break;
+      case ENVIRONMENT:
+        EnvironmentDiff environmentDiff = blobDiff.getEnvironment();
+        EnvironmentBlob.Builder environmentBlob = EnvironmentBlob.newBuilder();
+        final EnvironmentBlob environment = blobExpanded.getBlob().getEnvironment();
+        Map<String, EnvironmentVariablesBlob> environmentVariablesBlobMap =
+            convertComponentsListToMap(
+                environment.getEnvironmentVariablesList(), EnvironmentVariablesBlob::getName);
+        environmentDiff
+            .getEnvironmentVariablesAList()
+            .forEach(
+                environmentVariablesBlob ->
+                    environmentVariablesBlobMap.remove(environmentVariablesBlob.getName()));
+        environmentVariablesBlobMap.putAll(
+            convertComponentsListToMap(
+                environmentDiff.getEnvironmentVariablesBList(), EnvironmentVariablesBlob::getName));
+        environmentBlob.addAllEnvironmentVariables(environmentVariablesBlobMap.values());
+        environmentBlob.addAllCommandLine(environmentDiff.getCommandLineBList());
+        switch (environmentDiff.getContentCase()) {
+          case DOCKER:
+            environmentBlob.setDocker(environmentDiff.getDocker().getB());
+            break;
+          case PYTHON:
+            final PythonEnvironmentDiff pythonDiff = environmentDiff.getPython();
+            Map<String, PythonRequirementEnvironmentBlob> pythonRequirementEnvironmentBlobMap =
+                convertComponentsListToMap(
+                    environment.getPython().getRequirementsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary);
+            pythonDiff
+                .getA()
+                .getRequirementsList()
+                .forEach(
+                    pythonRequirementEnvironmentBlob ->
+                        pythonRequirementEnvironmentBlobMap.remove(
+                            pythonRequirementEnvironmentBlob.getLibrary()));
+            pythonRequirementEnvironmentBlobMap.putAll(
+                convertComponentsListToMap(
+                    pythonDiff.getB().getRequirementsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary));
+            Map<String, PythonRequirementEnvironmentBlob> pythonConstraintEnvironmentBlobMap =
+                convertComponentsListToMap(
+                    environment.getPython().getConstraintsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary);
+            pythonDiff
+                .getA()
+                .getConstraintsList()
+                .forEach(
+                    pythonConstraintEnvironmentBlob ->
+                        pythonConstraintEnvironmentBlobMap.remove(
+                            pythonConstraintEnvironmentBlob.getLibrary()));
+            pythonConstraintEnvironmentBlobMap.putAll(
+                convertComponentsListToMap(
+                    pythonDiff.getB().getConstraintsList(),
+                    PythonRequirementEnvironmentBlob::getLibrary));
+            environmentBlob.setPython(
+                environmentDiff
+                    .getPython()
+                    .getB()
+                    .toBuilder()
+                    .clearRequirements()
+                    .clearConstraints()
+                    .addAllRequirements(pythonRequirementEnvironmentBlobMap.values())
+                    .addAllConstraints(pythonConstraintEnvironmentBlobMap.values()));
+            break;
+          case CONTENT_NOT_SET:
+          default:
+            throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
+        }
+        return blobExpandedNew.setBlob(
+            Blob.newBuilder().setEnvironment(environmentBlob.build()).build());
+      case CONTENT_NOT_SET:
+      default:
+        throw new ModelDBException("Unknown blob type", Status.Code.INVALID_ARGUMENT);
     }
     return blobExpandedNew;
   }
 
   private BlobExpanded atomicResult(BlobDiff blobDiff) throws ModelDBException {
     switch (blobDiff.getContentCase()) {
-      case ENVIRONMENT:
       case CODE:
         return convertBlobDiffToBlobExpand(blobDiff);
+      case ENVIRONMENT:
       case DATASET:
       case CONFIG:
       case CONTENT_NOT_SET:
@@ -657,7 +735,7 @@ public class BlobDAORdbImpl implements BlobDAO {
   }
 
   private boolean isAtomic(ContentCase contentCase) {
-    return contentCase == ContentCase.CODE || contentCase == ContentCase.ENVIRONMENT;
+    return contentCase == ContentCase.CODE;
   }
 
   /**
