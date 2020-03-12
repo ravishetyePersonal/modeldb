@@ -1,6 +1,7 @@
 package ai.verta.modeldb;
 
 import ai.verta.modeldb.lineage.LineageServiceImplNegativeTest;
+import ai.verta.modeldb.metadata.MetadataTest;
 import ai.verta.modeldb.utils.ModelDBUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,7 +23,9 @@ import org.junit.runners.Suite;
   LineageServiceImplNegativeTest.class,
   FindProjectEntitiesTest.class,
   FindDatasetEntitiesTest.class,
-  RepositoryTest.class
+  RepositoryTest.class,
+  CommitTest.class,
+  MetadataTest.class
   //  ArtifactStoreTest.class
 })
 public class TestSequenceSuite {}

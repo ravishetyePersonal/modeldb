@@ -28,7 +28,7 @@ public class HyperparameterElementConfigBlobEntity {
         this.int_value = hyperparameterValuesConfigBlob.getIntValue();
         break;
       case FLOAT_VALUE:
-        this.float_value = hyperparameterValuesConfigBlob.getFloatValue();
+        this.float_value = (double) hyperparameterValuesConfigBlob.getFloatValue();
         break;
       case STRING_VALUE:
         this.string_value = hyperparameterValuesConfigBlob.getStringValue();
@@ -57,7 +57,7 @@ public class HyperparameterElementConfigBlobEntity {
   private Long int_value;
 
   @Column(name = "float_value")
-  private Float float_value;
+  private Double float_value;
 
   @Column(name = "string_value", columnDefinition = "varchar")
   private String string_value;
@@ -72,7 +72,7 @@ public class HyperparameterElementConfigBlobEntity {
       builder.setIntValue(this.int_value);
     }
     if (this.float_value != null) {
-      builder.setFloatValue(this.float_value);
+      builder.setFloatValue(this.float_value.floatValue());
     }
     if (this.string_value != null && !this.string_value.isEmpty()) {
       builder.setStringValue(this.string_value);

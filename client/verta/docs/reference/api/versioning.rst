@@ -1,12 +1,19 @@
 Versioning
 ==========
+ExperimentRun
+-------------
+See ``ExperimentRun``'s :ref:`experiment-run-versioning` section.
 
+Repository
+----------
 .. automethod:: verta.Client.get_or_create_repository
 .. autoclass:: verta._repository.Repository
     :members:
 .. autoclass:: verta._repository.commit.Commit
     :members:
 
+Blobs
+-----
 Code
 ^^^^
 .. autoclass:: verta.code._git.Git

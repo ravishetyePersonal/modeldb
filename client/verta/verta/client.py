@@ -496,6 +496,8 @@ class Client(object):
                 else:
                     six.raise_from(e, None)
                 print("set existing Repository: {} from {}".format(name, workspace_str))
+            else:
+                print("created new Repository: {} in {}".format(name, workspace_str))
             return repo
         else:
             raise ValueError("must specify either `name` or `id`")
@@ -644,6 +646,43 @@ class Client(object):
         :class:`DatasetVersion`
         """
         return _dataset.DatasetVersion(self._conn, self._conf, _dataset_version_id=id)
+
+    # set aliases for get-or-create functions for API compatibility
+    def get_or_create_project(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_project()`.
+
+        """
+        self.set_project(*args, **kwargs)
+
+    def get_or_create_experiment(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_experiment()`.
+
+        """
+        self.set_experiment(*args, **kwargs)
+
+    def get_or_create_experiment_run(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_experiment_run()`.
+
+        """
+        self.set_experiment_run(*args, **kwargs)
+
+    def get_or_create_dataset(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.set_dataset()`.
+
+        """
+        self.set_dataset(*args, **kwargs)
+
+    def set_repository(self, *args, **kwargs):
+        """
+        Alias for :meth:`Client.get_or_create_repository()`.
+
+        """
+        self.get_or_create_repository(*args, **kwargs)
+
 
 
 class _ModelDBEntity(object):
@@ -3280,7 +3319,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         if isinstance(requirements, six.string_types):
             with open(requirements, 'r') as f:
-                requirements = _pip_requirements_utils.read_reqs_file_lines(f)
+                requirements = _pip_requirements_utils.clean_reqs_file_lines(f.readlines())
         elif (isinstance(requirements, list)
               and all(isinstance(req, six.string_types) for req in requirements)):
             requirements = copy.copy(requirements)
@@ -3774,7 +3813,7 @@ class ExperimentRun(_ModelDBEntity):
         """
         msg = _ExperimentRunService.LogVersionedInput()
         msg.id = self.id
-        msg.versioned_inputs.repository_id = commit._repo_id
+        msg.versioned_inputs.repository_id = commit._repo.id
         msg.versioned_inputs.commit = commit.id
         for key, path in six.viewitems(key_paths or {}):
             location = commit_module.path_to_location(path)
@@ -3815,9 +3854,9 @@ class ExperimentRun(_ModelDBEntity):
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        repo_id = response_msg.versioned_inputs.repository_id
+        repo = _repository.Repository(self._conn, response_msg.versioned_inputs.repository_id)
         commit_id = response_msg.versioned_inputs.commit
-        commit = commit_module.Commit._from_id(self._conn, repo_id, commit_id)
+        commit = commit_module.Commit._from_id(self._conn, repo, commit_id)
 
         key_paths = {
             key: '/'.join(location_msg.location)

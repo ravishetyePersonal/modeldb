@@ -53,7 +53,10 @@ class Commit(object):
     def __repr__(self):
         self._lazy_load_blobs()
 
-        branch_prefix = '(Branch: {}) '.format(self.branch_name) if self.branch_name is not None else ''
+        branch_and_tag = ' '.join((
+            "(Branch: {})".format(self.branch_name) if self.branch_name is not None else '',
+            # TODO: put tag here
+        ))
         if self.id is None:
             header = "unsaved Commit containing:"
         else:
@@ -65,7 +68,7 @@ class Commit(object):
         ))
         if not contents:
             contents = "<no contents>"
-        return '\n'.join((branch_prefix + header, contents))
+        return '\n'.join((branch_and_tag, header, contents))
 
     @classmethod
     def _from_id(cls, conn, repo, id_, **kwargs):
@@ -298,8 +301,8 @@ class Commit(object):
             self._conn.scheme,
             self._conn.socket,
             self._repo.id,
-            self.id,
             reference_id,
+            self.id,
         )
         response = _utils.make_request("GET", endpoint, self._conn)
         _utils.raise_for_http_error(response)
@@ -333,7 +336,7 @@ class Commit(object):
 
     def _to_heap_element(self):
         # Most recent has higher priority
-        return (-self.date, self.id, self)
+        return (-self.date, self.id, self)  # pylint: disable=invalid-unary-operand-type
 
     def get_common_parent(self, other):
         # TODO: check other is a Commit

@@ -154,20 +154,26 @@ public class CommitDAORdbImpl implements CommitDAO {
       throws ModelDBException {
     try (Session session = ModelDBHibernateUtil.getSessionFactory().openSession()) {
       session.beginTransaction();
-      RepositoryEntity repositoryEntity = getRepository.apply(session);
-      boolean exists =
-          VersioningUtils.commitRepositoryMappingExists(
-              session, commitHash, repositoryEntity.getId());
-      if (!exists) {
-        throw new ModelDBException(
-            "Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
-      }
-
-      CommitEntity commitEntity = session.load(CommitEntity.class, commitHash);
+      CommitEntity commitEntity = getCommitEntity(session, commitHash, getRepository);
 
       session.getTransaction().commit();
       return commitEntity.toCommitProto();
     }
+  }
+
+  @Override
+  public CommitEntity getCommitEntity(
+      Session session, String commitHash, RepositoryFunction getRepositoryFunction)
+      throws ModelDBException {
+    RepositoryEntity repositoryEntity = getRepositoryFunction.apply(session);
+    boolean exists =
+        VersioningUtils.commitRepositoryMappingExists(
+            session, commitHash, repositoryEntity.getId());
+    if (!exists) {
+      throw new ModelDBException("Commit_hash and repository_id mapping not found", Code.NOT_FOUND);
+    }
+
+    return session.load(CommitEntity.class, commitHash);
   }
 
   @Override

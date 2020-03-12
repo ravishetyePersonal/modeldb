@@ -29,6 +29,7 @@ Functionality
   - `Code Versioning`_
   - `Data Versioning`_
   - `Deployment`_
+  - `Versioning`_
 
 Miscellaneous
 -------------
@@ -139,3 +140,10 @@ Deprecated
 """"""""""
 .. automethod:: ExperimentRun.log_model_for_deployment
 .. automethod:: ExperimentRun.log_modules
+
+.. _experiment-run-versioning:
+
+Versioning
+^^^^^^^^^^
+.. automethod:: ExperimentRun.log_commit
+.. automethod:: ExperimentRun.get_commit

@@ -49,9 +49,7 @@ def get_pip_freeze():
 
     req_specs = pip_freeze.splitlines()
 
-    # remove libraries installed through a VCS
-    # TODO: upgrade protos and Client to handle these
-    req_specs = list(filter(lambda req: not is_vcs_req(req), req_specs))
+    req_specs = clean_reqs_file_lines(req_specs)
 
     return req_specs
 
@@ -134,11 +132,6 @@ def parse_version(version):
         patch = 0
 
     return major, minor, patch, suffix
-
-
-def is_vcs_req(req_spec):
-    # https://pip.pypa.io/en/stable/reference/pip_install/#vcs-support
-    return req_spec.startswith(('-e ', 'git:', 'git+', 'hg+', 'svn+', 'bzr+'))
 
 
 def process_requirements(requirements):
@@ -299,21 +292,21 @@ def add_verta_and_cloudpickle(requirements):
         requirements.append(cloudpickle_req)
 
 
-def read_reqs_file_lines(reqs_fp):
+def clean_reqs_file_lines(requirements):
     """
-    Performs basic preprocessing on a requirements file so it's easier to handle downstream.
+    Performs basic preprocessing on a requirements file's lines so it's easier to handle downstream.
 
     Parameters
     ----------
-    reqs_fp : file-like
+    requirements : list of str
+        ``requirements_file.readlines()``.
 
     Returns
     -------
-    requirements : list of str
+    cleaned_requirements : list of str
+        Requirement specifiers.
 
     """
-    requirements = reqs_fp.readlines()
-
     requirements = [req.strip() for req in requirements]
 
     requirements = [req for req in requirements if req]  # empty line
@@ -322,8 +315,11 @@ def read_reqs_file_lines(reqs_fp):
     # remove unsupported options
     #     https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
     requirements = [req for req in requirements if not req.startswith('--')]
-    requirements = [req for req in requirements if not req.startswith(('-c ', '-e ', '-f ', '-i '))]
-    # TODO: follow references to other requirements files
+    requirements = [req for req in requirements if not req.startswith(('-c ', '-f ', '-i '))]
+    #     https://pip.pypa.io/en/stable/reference/pip_install/#vcs-support
+    #     TODO: upgrade protos and Client to handle VCS-installed packages
+    requirements = [req for req in requirements if not req.startswith(('-e ', 'git:', 'git+', 'hg+', 'svn+', 'bzr+'))]
+    #     TODO: follow references to other requirements files
     requirements = [req for req in requirements if not req.startswith('-r ')]
 
     return requirements

@@ -917,7 +917,7 @@ public class RepositoryTest {
     LOGGER.info("Diff Response: {}", ModelDBUtils.getStringFromProtoObject(repositoryDiffResponse));
     LOGGER.info("Diff Response: {}", repositoryDiffResponse);
     List<BlobDiff> blobDiffs = repositoryDiffResponse.getDiffsList();
-    Assert.assertEquals("blob count not match with expected blob count", 5, blobDiffs.size());
+    Assert.assertEquals("blob count not match with expected blob count", 3, blobDiffs.size());
 
     DeleteCommitRequest deleteCommitRequest =
         DeleteCommitRequest.newBuilder()

@@ -6,7 +6,7 @@ import com.google.protobuf.ProtocolStringList;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-interface DatasetComponentDAO {
+interface BlobDAO {
 
   String setBlobs(List<BlobContainer> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException, ModelDBException;
@@ -21,5 +21,11 @@ interface DatasetComponentDAO {
 
   ComputeRepositoryDiffRequest.Response computeRepositoryDiff(
       RepositoryFunction repositoryFunction, ComputeRepositoryDiffRequest request)
+      throws ModelDBException;
+
+  List<BlobContainer> convertBlobDiffsToBlobs(
+      CreateCommitRequest request,
+      RepositoryFunction repositoryFunction,
+      CommitFunction commitFunction)
       throws ModelDBException;
 }

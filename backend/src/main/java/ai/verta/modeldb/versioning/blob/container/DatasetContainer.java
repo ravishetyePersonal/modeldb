@@ -35,6 +35,9 @@ public class DatasetContainer extends BlobContainer {
   public void validate() throws ModelDBException {
     switch (dataset.getContentCase()) {
       case S3:
+        if (dataset.getS3().getComponentsCount() == 0) {
+          throw new ModelDBException("Blob should not be empty", Code.INVALID_ARGUMENT);
+        }
         for (S3DatasetComponentBlob component : dataset.getS3().getComponentsList()) {
           if (!component.hasPath()) {
             throw new ModelDBException("Blob path should not be empty", Code.INVALID_ARGUMENT);
@@ -43,6 +46,9 @@ public class DatasetContainer extends BlobContainer {
         }
         break;
       case PATH:
+        if (dataset.getPath().getComponentsCount() == 0) {
+          throw new ModelDBException("Blob should not be empty", Code.INVALID_ARGUMENT);
+        }
         validate(dataset.getPath());
         break;
       default:

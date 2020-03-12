@@ -18,7 +18,7 @@ class Hyperparameters(_configuration._Configuration):
     hyperparameters : dict of `name` to `value`
         Hyperparameter names to individual values.
     hyperparameter_ranges : dict of `name` to tuple of (`start`, `stop`, `step`)
-        Hyperparameyter names to a specified range of values.
+        Hyperparameter names to a specified range of values.
     hyperparameter_sets : dict of `name` to list of `values`
         Hyperparameter names to sets of specific values.
 

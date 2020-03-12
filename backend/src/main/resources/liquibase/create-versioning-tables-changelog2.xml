@@ -58,7 +58,7 @@
 			<column name="commit_hash" type="varchar(64)" />
 			<column name="value_type" type="int4" />
 			<column name="int_value" type="BIGINT" />
-			<column name="float_value" type="float" />
+			<column name="float_value" type="double" />
 			<column name="string_value" type="varchar(255)" />
 		</createTable>
 	</changeSet>
