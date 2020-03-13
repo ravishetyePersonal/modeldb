@@ -15,6 +15,8 @@ import ai.verta.modeldb.versioning.blob.factory.BlobFactory;
 import com.google.protobuf.ProtocolStringList;
 import io.grpc.Status;
 import java.security.NoSuchAlgorithmException;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -219,7 +222,7 @@ public class BlobDAORdbImpl implements BlobDAO {
     return Collections.indexOfSubList(new LinkedList<>(list), new LinkedList<>(sublist)) != -1;
   }
 
-  private Map<String, BlobExpanded> getChildFolderBlobMap(
+  private Map<String, Map.Entry<BlobExpanded, String>> getChildFolderBlobMap(
       Session session,
       List<String> requestedLocation,
       Set<String> parentLocation,
@@ -233,7 +236,7 @@ public class BlobDAORdbImpl implements BlobDAO {
     fetchTreeQuery.setParameter("folderHash", parentFolderHash);
     List<InternalFolderElementEntity> childElementFolders = fetchTreeQuery.list();
 
-    Map<String, BlobExpanded> childBlobExpandedMap = new LinkedHashMap<>();
+    Map<String, Map.Entry<BlobExpanded, String>> childBlobExpandedMap = new LinkedHashMap<>();
     for (InternalFolderElementEntity childElementFolder : childElementFolders) {
       if (childElementFolder.getElement_type().equals(TREE)) {
         Set<String> childLocation = new LinkedHashSet<>(parentLocation);
@@ -254,7 +257,8 @@ public class BlobDAORdbImpl implements BlobDAO {
                   .setBlob(blob)
                   .build();
           childBlobExpandedMap.put(
-              getStringFromLocationList(blobExpanded.getLocationList()), blobExpanded);
+              getStringFromLocationList(blobExpanded.getLocationList()),
+              new AbstractMap.SimpleEntry<>(blobExpanded, childElementFolder.getElement_sha()));
         }
       }
     }
@@ -274,6 +278,19 @@ public class BlobDAORdbImpl implements BlobDAO {
   @Override
   public Map<String, BlobExpanded> getCommitBlobMap(
       Session session, String folderHash, List<String> locationList) throws ModelDBException {
+    return convertToLocationBlobMap(getCommitBlobMapWithHash(session, folderHash, locationList));
+  }
+
+  private Map<String, BlobExpanded> convertToLocationBlobMap(
+      Map<String, Map.Entry<BlobExpanded, String>> commitBlobMapWithHash) {
+    return commitBlobMapWithHash.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                Entry::getKey, stringEntryEntry -> stringEntryEntry.getValue().getKey()));
+  }
+
+  Map<String, Map.Entry<BlobExpanded, String>> getCommitBlobMapWithHash(
+      Session session, String folderHash, List<String> locationList) throws ModelDBException {
 
     String parentLocation = locationList.size() == 0 ? null : locationList.get(0);
     List<InternalFolderElementEntity> parentFolderElementList =
@@ -286,7 +303,7 @@ public class BlobDAORdbImpl implements BlobDAO {
       }
     }
 
-    Map<String, BlobExpanded> finalLocationBlobMap = new LinkedHashMap<>();
+    Map<String, Map.Entry<BlobExpanded, String>> finalLocationBlobMap = new LinkedHashMap<>();
     for (InternalFolderElementEntity parentFolderElement : parentFolderElementList) {
       if (!parentFolderElement.getElement_type().equals(TREE)) {
         Blob blob = getBlob(session, parentFolderElement);
@@ -296,18 +313,21 @@ public class BlobDAORdbImpl implements BlobDAO {
                 .setBlob(blob)
                 .build();
         finalLocationBlobMap.put(
-            getStringFromLocationList(blobExpanded.getLocationList()), blobExpanded);
+            getStringFromLocationList(blobExpanded.getLocationList()),
+            new SimpleEntry<>(blobExpanded, parentFolderElement.getElement_sha()));
       } else {
         // if this is tree, search further
         Set<String> location = new LinkedHashSet<>();
-        Map<String, BlobExpanded> locationBlobList =
+        Map<String, Map.Entry<BlobExpanded, String>> locationBlobList =
             getChildFolderBlobMap(session, locationList, location, folderHash);
         finalLocationBlobMap.putAll(locationBlobList);
       }
     }
 
-    Comparator<Map.Entry<String, BlobExpanded>> locationComparator =
-        Comparator.comparing((Map.Entry<String, BlobExpanded> o) -> o.getKey().replaceAll("#", ""));
+    Comparator<Map.Entry<String, Map.Entry<BlobExpanded, String>>> locationComparator =
+        Comparator.comparing(
+            (Map.Entry<String, Map.Entry<BlobExpanded, String>> o) ->
+                o.getKey().replaceAll("#", ""));
 
     finalLocationBlobMap =
         finalLocationBlobMap.entrySet().stream()
@@ -382,11 +402,11 @@ public class BlobDAORdbImpl implements BlobDAO {
             Status.Code.NOT_FOUND);
       }
       // get list of blob expanded in both commit and group them in a map based on location
-      Map<String, BlobExpanded> locationBlobsMapCommitA =
-          getCommitBlobMap(session, internalCommitA.getRootSha(), new ArrayList<>());
+      Map<String, Map.Entry<BlobExpanded, String>> locationBlobsMapCommitA =
+          getCommitBlobMapWithHash(session, internalCommitA.getRootSha(), new ArrayList<>());
 
-      Map<String, BlobExpanded> locationBlobsMapCommitB =
-          getCommitBlobMap(session, internalCommitB.getRootSha(), new ArrayList<>());
+      Map<String, Map.Entry<BlobExpanded, String>> locationBlobsMapCommitB =
+          getCommitBlobMapWithHash(session, internalCommitB.getRootSha(), new ArrayList<>());
 
       session.getTransaction().commit();
 
@@ -403,18 +423,28 @@ public class BlobDAORdbImpl implements BlobDAO {
       // modified new blob location from the CommitA
       Set<String> modifiedLocations = new LinkedHashSet<>(locationBlobsMapCommitB.keySet());
       modifiedLocations.removeAll(addedLocations);
-      HashMap<String, BlobExpanded> commonBlobs = new HashMap<>(locationBlobsMapCommitA);
-      commonBlobs.keySet().retainAll(locationBlobsMapCommitB.keySet());
+      Map<String, BlobExpanded> commonBlobs =
+          locationBlobsMapCommitA.values().stream().collect(toMap(Entry::getValue, Entry::getKey));
+      commonBlobs
+          .keySet()
+          .retainAll(
+              locationBlobsMapCommitB.values().stream()
+                  .map(Entry::getValue)
+                  .collect(Collectors.toSet()));
       Map<String, BlobExpanded> locationBlobsCommon =
           getLocationWiseBlobExpandedMapFromCollection(commonBlobs.values());
       modifiedLocations.removeAll(locationBlobsCommon.keySet());
       LOGGER.debug("Modified location for Diff : {}", modifiedLocations);
 
-      List<BlobDiff> addedBlobDiffList = getAddedBlobDiff(addedLocations, locationBlobsMapCommitB);
+      List<BlobDiff> addedBlobDiffList =
+          getAddedBlobDiff(addedLocations, convertToLocationBlobMap(locationBlobsMapCommitB));
       List<BlobDiff> deletedBlobDiffList =
-          getDeletedBlobDiff(deletedLocations, locationBlobsMapCommitA);
+          getDeletedBlobDiff(deletedLocations, convertToLocationBlobMap(locationBlobsMapCommitA));
       List<BlobDiff> modifiedBlobDiffList =
-          getModifiedBlobDiff(modifiedLocations, locationBlobsMapCommitA, locationBlobsMapCommitB);
+          getModifiedBlobDiff(
+              modifiedLocations,
+              convertToLocationBlobMap(locationBlobsMapCommitA),
+              convertToLocationBlobMap(locationBlobsMapCommitB));
 
       return ComputeRepositoryDiffRequest.Response.newBuilder()
           .addAllDiffs(addedBlobDiffList)
