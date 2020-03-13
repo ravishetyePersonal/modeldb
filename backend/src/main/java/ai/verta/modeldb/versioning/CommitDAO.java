@@ -6,7 +6,7 @@ import ai.verta.modeldb.versioning.CreateCommitRequest.Response;
 import java.security.NoSuchAlgorithmException;
 import org.hibernate.Session;
 
-interface CommitDAO {
+public interface CommitDAO {
   Response setCommit(
       String author, Commit commit, BlobFunction setBlobs, RepositoryFunction getRepository)
       throws ModelDBException, NoSuchAlgorithmException;

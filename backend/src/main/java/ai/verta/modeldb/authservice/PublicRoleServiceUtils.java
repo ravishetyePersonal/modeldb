@@ -10,6 +10,9 @@ import ai.verta.modeldb.experimentRun.ExperimentRunDAO;
 import ai.verta.modeldb.experimentRun.ExperimentRunDAORdbImpl;
 import ai.verta.modeldb.project.ProjectDAO;
 import ai.verta.modeldb.project.ProjectDAORdbImpl;
+import ai.verta.modeldb.versioning.BlobDAORdbImpl;
+import ai.verta.modeldb.versioning.CommitDAORdbImpl;
+import ai.verta.modeldb.versioning.RepositoryDAORdbImpl;
 import ai.verta.uac.Actions;
 import ai.verta.uac.GetCollaboratorResponse;
 import ai.verta.uac.ModelDBActionEnum.ModelDBServiceActions;
@@ -35,7 +38,12 @@ public class PublicRoleServiceUtils implements RoleService {
 
   public PublicRoleServiceUtils(AuthService authService) {
     ExperimentDAO experimentDAO = new ExperimentDAORdbImpl(authService);
-    ExperimentRunDAO experimentRunDAO = new ExperimentRunDAORdbImpl(authService);
+    ExperimentRunDAO experimentRunDAO =
+        new ExperimentRunDAORdbImpl(
+            authService,
+            new RepositoryDAORdbImpl(authService, this),
+            new CommitDAORdbImpl(),
+            new BlobDAORdbImpl());
     this.projectDAO = new ProjectDAORdbImpl(authService, this, experimentDAO, experimentRunDAO);
     this.datasetDAO = new DatasetDAORdbImpl(authService, this);
   }

@@ -4,7 +4,7 @@ import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.entities.versioning.RepositoryEntity;
 import org.hibernate.Session;
 
-interface RepositoryDAO {
+public interface RepositoryDAO {
 
   GetRepositoryRequest.Response getRepository(GetRepositoryRequest request) throws Exception;
 

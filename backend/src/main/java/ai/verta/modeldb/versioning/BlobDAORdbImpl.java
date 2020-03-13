@@ -271,7 +271,8 @@ public class BlobDAORdbImpl implements BlobDAO {
    * @return
    * @throws ModelDBException
    */
-  Map<String, BlobExpanded> getCommitBlobMap(
+  @Override
+  public Map<String, BlobExpanded> getCommitBlobMap(
       Session session, String folderHash, List<String> locationList) throws ModelDBException {
 
     String parentLocation = locationList.size() == 0 ? null : locationList.get(0);

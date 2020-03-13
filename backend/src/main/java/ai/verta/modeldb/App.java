@@ -46,9 +46,12 @@ import ai.verta.modeldb.project.ProjectServiceImpl;
 import ai.verta.modeldb.telemetry.TelemetryCron;
 import ai.verta.modeldb.utils.ModelDBHibernateUtil;
 import ai.verta.modeldb.utils.ModelDBUtils;
+import ai.verta.modeldb.versioning.BlobDAO;
 import ai.verta.modeldb.versioning.BlobDAORdbImpl;
+import ai.verta.modeldb.versioning.CommitDAO;
 import ai.verta.modeldb.versioning.CommitDAORdbImpl;
 import ai.verta.modeldb.versioning.FileHasher;
+import ai.verta.modeldb.versioning.RepositoryDAO;
 import ai.verta.modeldb.versioning.RepositoryDAORdbImpl;
 import ai.verta.modeldb.versioning.VersioningServiceImpl;
 import io.grpc.Server;
@@ -342,8 +345,13 @@ public class App implements ApplicationContextAware {
       RoleService roleService) {
 
     // --------------- Start Initialize DAO --------------------------
+    CommitDAO commitDAO = new CommitDAORdbImpl();
+    RepositoryDAO repositoryDAO = new RepositoryDAORdbImpl(authService, roleService);
+    BlobDAO blobDAO = new BlobDAORdbImpl();
+
     ExperimentDAO experimentDAO = new ExperimentDAORdbImpl(authService);
-    ExperimentRunDAO experimentRunDAO = new ExperimentRunDAORdbImpl(authService);
+    ExperimentRunDAO experimentRunDAO =
+        new ExperimentRunDAORdbImpl(authService, repositoryDAO, commitDAO, blobDAO);
     ProjectDAO projectDAO =
         new ProjectDAORdbImpl(authService, roleService, experimentDAO, experimentRunDAO);
     ArtifactStoreDAO artifactStoreDAO = new ArtifactStoreDAORdbImpl(artifactStoreService);
@@ -367,6 +375,9 @@ public class App implements ApplicationContextAware {
         commentDAO,
         lineageDAO,
         metadataDAO,
+        repositoryDAO,
+        commitDAO,
+        blobDAO,
         authService,
         roleService);
   }
@@ -383,6 +394,9 @@ public class App implements ApplicationContextAware {
       CommentDAO commentDAO,
       LineageDAO lineageDAO,
       MetadataDAO metadataDAO,
+      RepositoryDAO repositoryDAO,
+      CommitDAO commitDAO,
+      BlobDAO blobDAO,
       AuthService authService,
       RoleService roleService) {
     App app = App.getInstance();
@@ -445,9 +459,9 @@ public class App implements ApplicationContextAware {
         new VersioningServiceImpl(
             authService,
             roleService,
-            new RepositoryDAORdbImpl(authService, roleService),
-            new CommitDAORdbImpl(),
-            new BlobDAORdbImpl(),
+            repositoryDAO,
+            commitDAO,
+            blobDAO,
             experimentDAO,
             experimentRunDAO,
             new ModelDBAuthInterceptor(),

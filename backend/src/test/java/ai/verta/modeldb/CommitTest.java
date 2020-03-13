@@ -247,7 +247,7 @@ public class CommitTest {
     return setConfigBlobs;
   }
 
-  private CreateCommitRequest getCreateCommitRequest(
+  public static CreateCommitRequest getCreateCommitRequest(
       Long repoId, long commitTime, Commit parentCommit, Blob.ContentCase contentCase)
       throws ModelDBException {
 
@@ -904,5 +904,4 @@ public class CommitTest {
 
     LOGGER.info("List commit blob test end................................");
   }
-
 }

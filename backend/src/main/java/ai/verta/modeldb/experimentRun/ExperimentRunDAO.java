@@ -8,6 +8,7 @@ import ai.verta.modeldb.ExperimentRun;
 import ai.verta.modeldb.FindExperimentRuns;
 import ai.verta.modeldb.GetVersionedInput;
 import ai.verta.modeldb.LogVersionedInput;
+import ai.verta.modeldb.ModelDBException;
 import ai.verta.modeldb.Observation;
 import ai.verta.modeldb.Project;
 import ai.verta.modeldb.SortExperimentRuns;
@@ -29,7 +30,7 @@ public interface ExperimentRunDAO {
    * @throws InvalidProtocolBufferException
    */
   ExperimentRun insertExperimentRun(ExperimentRun experimentRun)
-      throws InvalidProtocolBufferException;
+      throws InvalidProtocolBufferException, ModelDBException;
 
   /**
    * Delete the ExperimentRun from database using experimentRunId.
@@ -466,7 +467,7 @@ public interface ExperimentRunDAO {
       throws InvalidProtocolBufferException;
 
   LogVersionedInput.Response logVersionedInput(LogVersionedInput request)
-      throws InvalidProtocolBufferException;
+      throws InvalidProtocolBufferException, ModelDBException;
 
   GetVersionedInput.Response getVersionedInputs(GetVersionedInput request)
       throws InvalidProtocolBufferException;

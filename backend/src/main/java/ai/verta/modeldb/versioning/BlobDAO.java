@@ -5,8 +5,10 @@ import ai.verta.modeldb.versioning.blob.container.BlobContainer;
 import com.google.protobuf.ProtocolStringList;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
+import org.hibernate.Session;
 
-interface BlobDAO {
+public interface BlobDAO {
 
   String setBlobs(List<BlobContainer> blobsList, FileHasher fileHasher)
       throws NoSuchAlgorithmException, ModelDBException;
@@ -18,6 +20,9 @@ interface BlobDAO {
   ListCommitBlobsRequest.Response getCommitBlobsList(
       RepositoryFunction repositoryFunction, String commitHash, ProtocolStringList locationList)
       throws NoSuchAlgorithmException, ModelDBException;
+
+  Map<String, BlobExpanded> getCommitBlobMap(
+      Session session, String folderHash, List<String> locationList) throws ModelDBException;
 
   ComputeRepositoryDiffRequest.Response computeRepositoryDiff(
       RepositoryFunction repositoryFunction, ComputeRepositoryDiffRequest request)
