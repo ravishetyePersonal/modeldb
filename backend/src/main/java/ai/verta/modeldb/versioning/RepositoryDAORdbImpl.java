@@ -31,6 +31,7 @@ import org.hibernate.query.Query;
 public class RepositoryDAORdbImpl implements RepositoryDAO {
 
   private static final Logger LOGGER = LogManager.getLogger(RepositoryDAORdbImpl.class);
+  public static final String WHERE = " where ";
   private final AuthService authService;
   private final RoleService roleService;
 
@@ -41,7 +42,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(RepositoryEntity.class.getSimpleName())
           .append(" ")
           .append(SHORT_NAME)
-          .append(" where ")
+          .append(WHERE)
           .append(" ")
           .append(SHORT_NAME)
           .append(".")
@@ -54,7 +55,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(RepositoryEntity.class.getSimpleName())
           .append(" ")
           .append(SHORT_NAME)
-          .append(" where ")
+          .append(WHERE)
           .append(" ")
           .append(SHORT_NAME)
           .append(".")
@@ -67,7 +68,6 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(RepositoryEntity.class.getSimpleName())
           .append(" ")
           .append(SHORT_NAME)
-          .append(" where ")
           .toString();
 
   private static final String GET_REPOSITORY_PREFIX_HQL =
@@ -75,14 +75,13 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(RepositoryEntity.class.getSimpleName())
           .append(" ")
           .append(SHORT_NAME)
-          .append(" where ")
           .toString();
 
   private static final String GET_TAG_HQL =
       new StringBuilder("From ")
           .append(TagsEntity.class.getSimpleName())
           .append(" t ")
-          .append(" where ")
+          .append(WHERE)
           .append(" t.id.")
           .append(ModelDBConstants.REPOSITORY_ID)
           .append(" = :repositoryId ")
@@ -99,7 +98,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       new StringBuilder("From ")
           .append(BranchEntity.class.getSimpleName())
           .append(" br ")
-          .append(" where ")
+          .append(WHERE)
           .append(" br.id.")
           .append(ModelDBConstants.REPOSITORY_ID)
           .append(" = :repositoryId ")
@@ -283,11 +282,17 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
                           .setWorkspaceName(request.getWorkspaceName()))
                   .build(),
               false);
+      String queryPrefix = GET_REPOSITORY_PREFIX_HQL;
+      String queryPrefixCount = GET_REPOSITORY_COUNT_PREFIX_HQL;
+      if (workspaceDTO.getWorkspaceId() != null) {
+        queryPrefix += WHERE;
+        queryPrefixCount += WHERE;
+      }
       Query query =
           ModelDBHibernateUtil.getWorkspaceEntityQuery(
               session,
               SHORT_NAME,
-              GET_REPOSITORY_PREFIX_HQL,
+              queryPrefix,
               "repositoryName",
               null,
               ModelDBConstants.WORKSPACE_ID,
@@ -308,7 +313,7 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           ModelDBHibernateUtil.getWorkspaceEntityQuery(
               session,
               SHORT_NAME,
-              GET_REPOSITORY_COUNT_PREFIX_HQL,
+              queryPrefixCount,
               "repositoryName",
               null,
               ModelDBConstants.WORKSPACE_ID,
