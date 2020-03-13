@@ -60,6 +60,7 @@ class Commit(object):
         if self.id is None:
             header = "unsaved Commit containing:"
         else:
+            # TODO: fetch commit message
             header = "Commit {} containing:".format(self.id)
         contents = '\n'.join((
             "{} ({})".format(path, blob.__class__.__name__)
@@ -122,12 +123,13 @@ class Commit(object):
         self._parent_ids = [self.id]
         self.id = None
 
-    def _to_create_msg(self):
+    def _to_create_msg(self, commit_message):
         self._lazy_load_blobs()
 
         msg = _VersioningService.CreateCommitRequest()
         msg.repository_id.repo_id = self._repo.id  # pylint: disable=no-member
         msg.commit.parent_shas.extend(self._parent_ids)  # pylint: disable=no-member
+        msg.commit.message = commit_message
 
         for path, blob in six.viewitems(self._blobs):
             blob_msg = _VersioningService.BlobExpanded()
@@ -233,8 +235,8 @@ class Commit(object):
         except KeyError:
             self._raise_lookup_error(path)
 
-    def save(self):
-        msg = self._to_create_msg()
+    def save(self, message):
+        msg = self._to_create_msg(commit_message=message)
         data = _utils.proto_to_json(msg)
         endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits".format(
             self._conn.scheme,
@@ -313,10 +315,11 @@ class Commit(object):
                                             _VersioningService.ComputeRepositoryDiffRequest.Response)
         return diff_module.Diff(response_msg.diffs)
 
-    def apply_diff(self, diff):
+    def apply_diff(self, diff, message):
         msg = _VersioningService.CreateCommitRequest()
         msg.repository_id.repo_id = self._repo.id
         msg.commit.parent_shas.append(self.id)
+        msg.commit.message = message
         msg.commit_base = self.id
         msg.diffs.extend(diff._diffs)
 
@@ -381,8 +384,11 @@ class Commit(object):
         # Should never happen, since we have the initial commit
         return None
 
-    def merge(self, other):
-        self.apply_diff(other.diff_from(self.get_common_parent(other)))
+    def merge(self, other, message=None):
+        if message is None:
+            message = "Merge {} into {}".format(other.id, self.id)
+
+        self.apply_diff(other.diff_from(self.get_common_parent(other)), message=message)
 
 
 def blob_msg_to_object(blob_msg):

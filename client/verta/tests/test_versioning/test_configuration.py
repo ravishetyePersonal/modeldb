@@ -87,5 +87,5 @@ class TestHyperparameters:
         )
 
         commit.update('config', config)
-        commit.save()
+        commit.save(message="banana")
         assert commit.get('config')

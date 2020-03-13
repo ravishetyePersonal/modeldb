@@ -83,7 +83,7 @@ class TestPython:
         env = verta.environment.Python()
 
         commit.update('env', env)
-        commit.save()
+        commit.save(message="banana")
         assert commit.get('env')
 
     def test_reqs_from_env(self):

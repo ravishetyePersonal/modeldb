@@ -48,7 +48,7 @@ class TestCommit:
 
         commit.update(path, blob)
 
-        commit.save()
+        commit.save(message="banana")
 
         assert commit.id
 
@@ -60,7 +60,7 @@ class TestCommit:
         commit.update("a/file-3", verta.dataset.S3("s3://verta-starter/imdb_master.csv"))
         commit.update("a/b/file-4", verta.dataset.S3("s3://verta-starter/reviews.ann"))
         commit.update("a/c/file-5", verta.dataset.S3("s3://verta-starter/spam.csv"))
-        commit.save()
+        commit.save(message="banana")
 
         # alphabetical order
         walk = commit.walk()
@@ -83,7 +83,7 @@ class TestCommit:
 
         commit = repository.get_commit()
         commit.update(path, blob)
-        commit.save()
+        commit.save(message="banana")
         try:
             commit.tag("banana")
 
@@ -97,7 +97,7 @@ class TestCommit:
 
         commit = repository.get_commit()
         commit.update(path, blob)
-        commit.save()
+        commit.save(message="banana")
         try:
             assert commit.id == repository.get_commit(id=commit.id).id
         finally:
@@ -110,7 +110,7 @@ class TestCommit:
         path2 = "path/to/still-bananas"
 
         commit.update(path1, blob1)
-        commit.save()
+        commit.save(message="banana")
         original_id = commit.id
         try:
             commit.update(path2, blob2)
@@ -118,7 +118,7 @@ class TestCommit:
             assert original_id in commit._parent_ids
             assert commit.get(path1)
 
-            commit.save()
+            commit.save(message="banana")
             assert commit.id != original_id
         finally:
             utils.delete_commit(commit._repo.id, original_id, commit._conn)
@@ -129,7 +129,7 @@ class TestCommit:
 
         commit1 = repository.get_commit()
         commit1.update(path1, blob1)
-        commit1.save()
+        commit1.save(message="banana")
         try:
             commit2 = repository.new_commit(parents=[commit1])
             assert commit1.id in commit2._parent_ids
@@ -145,7 +145,7 @@ class TestCommit:
 
         commit.update(path1, blob1)
         commit.update(path2, blob2)
-        commit.save()
+        commit.save(message="banana")
 
         key_paths = {'my machine': path1}
         experiment_run.log_commit(commit, key_paths)
@@ -163,7 +163,7 @@ class TestBranch:
 
         commit = repository.get_commit()
         commit.update(path, blob)
-        commit.save()
+        commit.save(message="banana")
         try:
             commit.branch(branch)
             assert repository.get_commit(branch=branch).id == commit.id
@@ -181,11 +181,11 @@ class TestBranch:
         commit1 = repository.get_commit()
         root_id = commit1.id
         commit1.update(path1, blob1)
-        commit1.save()
+        commit1.save(message="banana")
         try:
             commit2 = repository.get_commit(id=root_id)
             commit2.update(path2, blob2)
-            commit2.save()
+            commit2.save(message="banana")
             try:
                 commit1.branch(branch)
 
@@ -206,13 +206,13 @@ class TestBranch:
 
         commit = repository.get_commit()
         commit.update(path1, blob1)
-        commit.save()
+        commit.save(message="banana")
         original_id = commit.id
         try:
             commit.branch(branch)
 
             commit.update(path2, blob2)
-            commit.save()
+            commit.save(message="banana")
             try:
                 assert commit.id != original_id
                 assert repository.get_commit(branch=branch).id == commit.id
