@@ -250,19 +250,12 @@ class Commit(object):
         _utils.raise_for_http_error(response)
 
         response_msg = _utils.json_to_proto(response.json(), proto_message.Response)
-        original_id = self.id
-        self.id = response_msg.commit.commit_sha
+        new_commit = self._repo.get_commit(id=response_msg.commit.commit_sha)
 
         if self.branch_name is not None:
             # update branch to child commit
-            try:
-                self.branch(self.branch_name)
-            except Exception as e:
-                # consider save failed, restore original ID
-                self.id = original_id
-                six.raise_from(e, None)
+            new_commit.branch(self.branch_name)
 
-        new_commit = self._repo.get_commit(id=response_msg.commit.commit_sha)
         self.__dict__ = new_commit.__dict__
 
     def tag(self, tag):
