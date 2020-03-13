@@ -87,6 +87,7 @@ public class ConfigContainer extends BlobContainer {
               throw new ModelDBException(
                   "beginSetConfigBlob has a STRING_VALUE which is not in a valid numeric notation");
             }
+          }
           if (endSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
             try {
               Double.parseDouble(endSetConfigBlob.getStringValue());
@@ -94,6 +95,7 @@ public class ConfigContainer extends BlobContainer {
               throw new ModelDBException(
                   "endSetConfigBlob has a STRING_VALUE which is not in a valid numeric notation");
             }
+          }
           if (stepSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
             try {
               Double.parseDouble(stepSetConfigBlob.getStringValue());
