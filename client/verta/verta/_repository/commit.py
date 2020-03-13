@@ -68,7 +68,9 @@ class Commit(object):
         ))
         if not contents:
             contents = "<no contents>"
-        return '\n'.join((branch_and_tag, header, contents))
+
+        repr_components = filter(None, (branch_and_tag, header, contents))  # skip empty components
+        return '\n'.join(repr_components)
 
     @classmethod
     def _from_id(cls, conn, repo, id_, **kwargs):
