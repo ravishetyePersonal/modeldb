@@ -237,7 +237,10 @@ class Commit(object):
 
     def save(self, message):
         msg = self._to_create_msg(commit_message=message)
-        data = _utils.proto_to_json(msg)
+        self._save(msg)
+
+    def _save(self, proto_message):
+        data = _utils.proto_to_json(proto_message)
         endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits".format(
             self._conn.scheme,
             self._conn.socket,
@@ -246,7 +249,7 @@ class Commit(object):
         response = _utils.make_request("POST", endpoint, self._conn, json=data)
         _utils.raise_for_http_error(response)
 
-        response_msg = _utils.json_to_proto(response.json(), msg.Response)
+        response_msg = _utils.json_to_proto(response.json(), proto_message.Response)
         original_id = self.id
         self.id = response_msg.commit.commit_sha
 
@@ -258,6 +261,10 @@ class Commit(object):
                 # consider save failed, restore original ID
                 self.id = original_id
                 six.raise_from(e, None)
+
+
+        new_commit = self._repo.get_commit(id=response_msg.commit.commit_sha)
+        self.__dict__ = new_commit.__dict__
 
     def tag(self, tag):
         if self.id is None:
@@ -323,21 +330,16 @@ class Commit(object):
         msg.commit_base = self.id
         msg.diffs.extend(diff._diffs)
 
-        data = _utils.proto_to_json(msg)
-        endpoint = "{}://{}/api/v1/modeldb/versioning/repositories/{}/commits".format(
-            self._conn.scheme,
-            self._conn.socket,
-            self._repo.id,
-        )
-        response = _utils.make_request("POST", endpoint, self._conn, json=data)
-        _utils.raise_for_http_error(response)
-
-        response_msg = _utils.json_to_proto(response.json(), msg.Response)
-        new_commit = self._repo.get_commit(id=response_msg.commit.commit_sha)
-        self.__dict__ = new_commit.__dict__
+        self._save(msg)
 
     def get_revert_diff(self):
         return self.parent.diff_from(self)
+
+    def revert(self, message, other=None):
+        if other is None:
+            other = self
+
+        self.apply_diff(other.get_revert_diff(), message)
 
     def _to_heap_element(self):
         # Most recent has higher priority
