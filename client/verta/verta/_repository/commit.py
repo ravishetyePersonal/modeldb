@@ -262,7 +262,6 @@ class Commit(object):
                 self.id = original_id
                 six.raise_from(e, None)
 
-
         new_commit = self._repo.get_commit(id=response_msg.commit.commit_sha)
         self.__dict__ = new_commit.__dict__
 
