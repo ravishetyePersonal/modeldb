@@ -83,11 +83,23 @@ public class ConfigContainer extends BlobContainer {
           if (beginSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
             try {
               Double.parseDouble(beginSetConfigBlob.getStringValue());
+            } catch (Exception ex) {
+              throw new ModelDBException(
+                  "beginSetConfigBlob has a STRING_VALUE which is not in a valid numeric notation");
+            }
+          if (endSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
+            try {
               Double.parseDouble(endSetConfigBlob.getStringValue());
+            } catch (Exception ex) {
+              throw new ModelDBException(
+                  "endSetConfigBlob has a STRING_VALUE which is not in a valid numeric notation");
+            }
+          if (stepSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
+            try {
               Double.parseDouble(stepSetConfigBlob.getStringValue());
             } catch (Exception ex) {
               throw new ModelDBException(
-                  "ContinuousHyperparameterSetConfigBlob found the STRING_VALUE which is not valid scientific notation");
+                  "stepSetConfigBlob has a STRING_VALUE which is not in a valid numeric notation");
             }
           }
 
