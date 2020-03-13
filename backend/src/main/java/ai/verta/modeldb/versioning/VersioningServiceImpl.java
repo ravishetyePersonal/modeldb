@@ -246,7 +246,7 @@ public class VersioningServiceImpl extends VersioningServiceImplBase {
       if (request.getCommit().getMessage().isEmpty()) {
         throw new ModelDBException("Commit message should not be empty", Code.INVALID_ARGUMENT);
       }
-      
+
       List<BlobContainer> blobContainers;
       final RepositoryFunction repositoryFunction =
           (session) -> repositoryDAO.getRepositoryById(session, request.getRepositoryId());
