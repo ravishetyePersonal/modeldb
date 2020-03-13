@@ -14,6 +14,7 @@ import ai.verta.modeldb.versioning.FileHasher;
 import ai.verta.modeldb.versioning.HyperparameterConfigBlob;
 import ai.verta.modeldb.versioning.HyperparameterSetConfigBlob;
 import ai.verta.modeldb.versioning.HyperparameterValuesConfigBlob;
+import ai.verta.modeldb.versioning.HyperparameterValuesConfigBlob.ValueCase;
 import ai.verta.modeldb.versioning.TreeElem;
 import io.grpc.Status.Code;
 import java.security.NoSuchAlgorithmException;
@@ -66,6 +67,30 @@ public class ConfigContainer extends BlobContainer {
                 "Hyperparameter set " + name + " doesn't have interval step",
                 Code.INVALID_ARGUMENT);
           }
+
+          HyperparameterValuesConfigBlob beginSetConfigBlob = continuous.getIntervalBegin();
+          HyperparameterValuesConfigBlob endSetConfigBlob = continuous.getIntervalEnd();
+          HyperparameterValuesConfigBlob stepSetConfigBlob = continuous.getIntervalStep();
+
+          if (beginSetConfigBlob.getValueCase().equals(ValueCase.VALUE_NOT_SET)
+              || endSetConfigBlob.getValueCase().equals(ValueCase.VALUE_NOT_SET)
+              || stepSetConfigBlob.getValueCase().equals(ValueCase.VALUE_NOT_SET)) {
+            throw new ModelDBException(
+                "Hyperparameter continuous set doesn't have one of the INT_VALUE, FLOAT_VALUE, STRING_VALUE",
+                Code.INVALID_ARGUMENT);
+          }
+
+          if (beginSetConfigBlob.getValueCase().equals(ValueCase.STRING_VALUE)) {
+            try {
+              Double.parseDouble(beginSetConfigBlob.getStringValue());
+              Double.parseDouble(endSetConfigBlob.getStringValue());
+              Double.parseDouble(stepSetConfigBlob.getStringValue());
+            } catch (Exception ex) {
+              throw new ModelDBException(
+                  "ContinuousHyperparameterSetConfigBlob found the STRING_VALUE which is not valid scientific notation");
+            }
+          }
+
           validate(name, continuous.getIntervalBegin());
           validate(name, continuous.getIntervalEnd());
           validate(name, continuous.getIntervalStep());
