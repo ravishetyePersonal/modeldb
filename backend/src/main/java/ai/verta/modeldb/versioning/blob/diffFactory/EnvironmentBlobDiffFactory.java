@@ -9,7 +9,6 @@ import ai.verta.modeldb.versioning.EnvironmentBlob;
 import ai.verta.modeldb.versioning.EnvironmentDiff;
 import ai.verta.modeldb.versioning.EnvironmentVariablesBlob;
 import ai.verta.modeldb.versioning.PythonEnvironmentBlob;
-import ai.verta.modeldb.versioning.PythonEnvironmentBlob.Builder;
 import ai.verta.modeldb.versioning.PythonEnvironmentDiff;
 import ai.verta.modeldb.versioning.PythonRequirementEnvironmentBlob;
 import com.google.protobuf.ProtocolStringList;
@@ -93,8 +92,8 @@ public class EnvironmentBlobDiffFactory extends BlobDiffFactory {
             Set<PythonRequirementEnvironmentBlob> pythonConstraintsBlobsB =
                 new HashSet<>(python.getConstraintsList());
             removeCommon(pythonConstraintsBlobsA, pythonConstraintsBlobsB);
-            final Builder aBuilder = pythonDiff.getA().toBuilder();
-            final Builder bBuilder = python.toBuilder();
+            final PythonEnvironmentBlob.Builder aBuilder = pythonDiff.getA().toBuilder();
+            final PythonEnvironmentBlob.Builder bBuilder = python.toBuilder();
             pythonDiff.setA(
                 aBuilder
                     .clearRequirements()

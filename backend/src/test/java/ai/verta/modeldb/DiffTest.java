@@ -1,8 +1,7 @@
 package ai.verta.modeldb;
 
-import static ai.verta.modeldb.utils.TestConstants.RESOURCE_OWNER_ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static ai.verta.modeldb.CommitTest.getBlobFromPath;
+import static ai.verta.modeldb.RepositoryTest.createRepository;
 
 import ai.verta.modeldb.authservice.AuthService;
 import ai.verta.modeldb.authservice.AuthServiceUtils;
@@ -11,41 +10,20 @@ import ai.verta.modeldb.authservice.PublicRoleServiceUtils;
 import ai.verta.modeldb.authservice.RoleService;
 import ai.verta.modeldb.authservice.RoleServiceUtils;
 import ai.verta.modeldb.utils.ModelDBUtils;
-import ai.verta.modeldb.versioning.Blob;
 import ai.verta.modeldb.versioning.BlobDiff;
 import ai.verta.modeldb.versioning.BlobExpanded;
 import ai.verta.modeldb.versioning.Commit;
 import ai.verta.modeldb.versioning.ComputeRepositoryDiffRequest;
 import ai.verta.modeldb.versioning.CreateCommitRequest;
-import ai.verta.modeldb.versioning.DatasetBlob;
-import ai.verta.modeldb.versioning.DeleteBranchRequest;
 import ai.verta.modeldb.versioning.DeleteCommitRequest;
 import ai.verta.modeldb.versioning.DeleteRepositoryRequest;
-import ai.verta.modeldb.versioning.DeleteTagRequest;
 import ai.verta.modeldb.versioning.GetBranchRequest;
-import ai.verta.modeldb.versioning.GetCommitComponentRequest;
-import ai.verta.modeldb.versioning.GetRepositoryRequest;
-import ai.verta.modeldb.versioning.GetTagRequest;
-import ai.verta.modeldb.versioning.ListBranchCommitsRequest;
-import ai.verta.modeldb.versioning.ListBranchesRequest;
-import ai.verta.modeldb.versioning.ListCommitBlobsRequest;
-import ai.verta.modeldb.versioning.ListTagsRequest;
-import ai.verta.modeldb.versioning.PathDatasetBlob;
-import ai.verta.modeldb.versioning.PathDatasetComponentBlob;
-import ai.verta.modeldb.versioning.Repository;
 import ai.verta.modeldb.versioning.RepositoryIdentification;
-import ai.verta.modeldb.versioning.RepositoryNamedIdentification;
-import ai.verta.modeldb.versioning.SetBranchRequest;
-import ai.verta.modeldb.versioning.SetRepository;
-import ai.verta.modeldb.versioning.SetRepository.Response;
-import ai.verta.modeldb.versioning.SetTagRequest;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc;
 import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceBlockingStub;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status.Code;
-import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
@@ -70,11 +48,9 @@ import org.junit.runners.MethodSorters;
 
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RepositoryTest {
+public class DiffTest {
 
-  private static final Logger LOGGER = LogManager.getLogger(RepositoryTest.class);
-  private static final String NAME = "repository_name";
-  private static final String NAME_2 = "repository_name2";
+  private static final Logger LOGGER = LogManager.getLogger(DiffTest.class);
   /**
    * This rule manages automatic graceful shutdown for the registered servers and channels at the
    * end of test.
@@ -167,93 +143,117 @@ public class RepositoryTest {
     }
   }
 
-  public static Long createRepository(VersioningServiceBlockingStub versioningServiceBlockingStub) {
-    SetRepository setRepository =
-        SetRepository.newBuilder()
-            .setId(
-                RepositoryIdentification.newBuilder()
-                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME).build())
-                    .build())
-            .setRepository(Repository.newBuilder().setName(NAME))
-            .build();
-    Response result = versioningServiceBlockingStub.createRepository(setRepository);
-    return result.getRepository().getId();
-  }
-
   @Test
-  public void repositoryTest() {
-    LOGGER.info("Create and delete repository test start................................");
+  public void computeRepositoryDiffTest() throws InvalidProtocolBufferException {
+    LOGGER.info("Compute repository diff test start................................");
 
     VersioningServiceBlockingStub versioningServiceBlockingStub =
         VersioningServiceGrpc.newBlockingStub(channel);
 
     long id = createRepository(versioningServiceBlockingStub);
-    try {
-      SetRepository setRepository =
-          SetRepository.newBuilder()
-              .setId(
-                  RepositoryIdentification.newBuilder()
-                      .setNamedId(
-                          RepositoryNamedIdentification.newBuilder()
-                              .setWorkspaceName("test1verta_gmail_com")
-                              .setName(NAME_2)
-                              .build())
-                      .build())
-              .setRepository(Repository.newBuilder().setName(NAME))
-              .build();
-      versioningServiceBlockingStub.createRepository(setRepository);
-      Assert.fail();
-    } catch (StatusRuntimeException e) {
-      Assert.assertEquals(Code.PERMISSION_DENIED, e.getStatus().getCode());
-      e.printStackTrace();
-    }
-
-    // check id
-    GetRepositoryRequest getRepositoryRequest =
-        GetRepositoryRequest.newBuilder()
-            .setId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+    GetBranchRequest getBranchRequest =
+        GetBranchRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setBranch(ModelDBConstants.MASTER_BRANCH)
             .build();
-    GetRepositoryRequest.Response getByIdResult =
-        versioningServiceBlockingStub.getRepository(getRepositoryRequest);
-    Assert.assertTrue(getByIdResult.hasRepository());
+    GetBranchRequest.Response getBranchResponse =
+        versioningServiceBlockingStub.getBranch(getBranchRequest);
 
-    SetRepository setRepository =
-        SetRepository.newBuilder()
-            .setId(
-                RepositoryIdentification.newBuilder()
-                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME).build())
+    String path1 = "/protos/proto/public/versioning/versioning.proto";
+    List<String> location1 = new ArrayList<>();
+    location1.add("modeldb");
+    location1.add("environment");
+    location1.add("march");
+    location1.add("train.json"); // file
+    BlobExpanded blobExpanded1 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path1)).addAllLocation(location1).build();
+
+    String path2 = "/protos/proto/public/test.txt";
+    List<String> location2 = new ArrayList<>();
+    location2.add("modeldb");
+    location2.add("environment");
+    location2.add("environment.json");
+    BlobExpanded blobExpanded2 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path2)).addAllLocation(location2).build();
+
+    String path3 = "/protos/proto/public/test2.txt";
+    List<String> location3 = new ArrayList<>();
+    location3.add("modeldb");
+    location3.add("dataset");
+    location3.add("march");
+    location3.add("dataset.json");
+    BlobExpanded blobExpanded3 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path3)).addAllLocation(location3).build();
+
+    String path4 = "xyz.txt";
+    List<String> location4 = new ArrayList<>();
+    location4.add("modeldb.json");
+    BlobExpanded blobExpanded4 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path4)).addAllLocation(location4).build();
+
+    CreateCommitRequest createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .addParentShas(getBranchResponse.getCommit().getCommitSha())
                     .build())
-            .setRepository(Repository.newBuilder().setName(NAME_2))
+            .addBlobs(blobExpanded1)
+            .addBlobs(blobExpanded2)
+            .addBlobs(blobExpanded3)
+            .addBlobs(blobExpanded4)
             .build();
-    SetRepository.Response result = versioningServiceBlockingStub.updateRepository(setRepository);
-    Assert.assertTrue(result.hasRepository());
-    Assert.assertEquals(NAME_2, result.getRepository().getName());
 
-    try {
-      // check name
-      getRepositoryRequest =
-          GetRepositoryRequest.newBuilder()
-              .setId(
-                  RepositoryIdentification.newBuilder()
-                      .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME)))
-              .build();
-      versioningServiceBlockingStub.getRepository(getRepositoryRequest);
-      Assert.fail();
-    } catch (StatusRuntimeException e) {
-      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
-      e.printStackTrace();
-    }
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+    Commit commitB = commitResponse.getCommit();
 
-    getRepositoryRequest =
-        GetRepositoryRequest.newBuilder()
-            .setId(
-                RepositoryIdentification.newBuilder()
-                    .setNamedId(RepositoryNamedIdentification.newBuilder().setName(NAME_2)))
+    String path5 = "/protos/proto/public/algebra.txt";
+    List<String> location5 = new ArrayList<>();
+    location5.add("maths/algebra");
+    BlobExpanded blobExpanded5 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path5)).addAllLocation(location5).build();
+
+    createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .addParentShas(commitB.getCommitSha())
+                    .build())
+            .addBlobs(blobExpanded2)
+            .addBlobs(blobExpanded3)
+            .addBlobs(blobExpanded5)
             .build();
-    GetRepositoryRequest.Response getByNameResult =
-        versioningServiceBlockingStub.getRepository(getRepositoryRequest);
-    Assert.assertTrue(getByNameResult.hasRepository());
-    Assert.assertEquals(RESOURCE_OWNER_ID, getByNameResult.getRepository().getOwner());
+
+    commitResponse = versioningServiceBlockingStub.createCommit(createCommitRequest);
+    Commit commitA = commitResponse.getCommit();
+
+    ComputeRepositoryDiffRequest repositoryDiffRequest =
+        ComputeRepositoryDiffRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitA(commitA.getCommitSha())
+            .setCommitB(commitB.getCommitSha())
+            .build();
+    ComputeRepositoryDiffRequest.Response repositoryDiffResponse =
+        versioningServiceBlockingStub.computeRepositoryDiff(repositoryDiffRequest);
+    LOGGER.info("Diff Response: {}", ModelDBUtils.getStringFromProtoObject(repositoryDiffResponse));
+    LOGGER.info("Diff Response: {}", repositoryDiffResponse);
+    List<BlobDiff> blobDiffs = repositoryDiffResponse.getDiffsList();
+    Assert.assertEquals("blob count not match with expected blob count", 3, blobDiffs.size());
+
+    DeleteCommitRequest deleteCommitRequest =
+        DeleteCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .build();
+    versioningServiceBlockingStub.deleteCommit(deleteCommitRequest);
 
     DeleteRepositoryRequest deleteRepository =
         DeleteRepositoryRequest.newBuilder()
@@ -263,6 +263,6 @@ public class RepositoryTest {
         versioningServiceBlockingStub.deleteRepository(deleteRepository);
     Assert.assertTrue(deleteResult.getStatus());
 
-    LOGGER.info("Create and delete repository test end................................");
+    LOGGER.info("Compute repository diff test end................................");
   }
 }

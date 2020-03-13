@@ -1,6 +1,8 @@
 package ai.verta.modeldb;
 
+import static ai.verta.modeldb.RepositoryTest.createRepository;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import ai.verta.modeldb.authservice.AuthService;
@@ -20,6 +22,7 @@ import ai.verta.modeldb.versioning.DatasetBlob;
 import ai.verta.modeldb.versioning.DeleteCommitRequest;
 import ai.verta.modeldb.versioning.DeleteRepositoryRequest;
 import ai.verta.modeldb.versioning.GetBranchRequest;
+import ai.verta.modeldb.versioning.GetCommitComponentRequest;
 import ai.verta.modeldb.versioning.GetCommitRequest;
 import ai.verta.modeldb.versioning.HyperparameterConfigBlob;
 import ai.verta.modeldb.versioning.HyperparameterSetConfigBlob;
@@ -34,13 +37,16 @@ import ai.verta.modeldb.versioning.VersioningServiceGrpc.VersioningServiceBlocki
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
+import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +69,6 @@ import org.junit.runners.MethodSorters;
 public class CommitTest {
 
   private static final Logger LOGGER = LogManager.getLogger(CommitTest.class);
-  public static final String NAME_2 = "name2";
   /**
    * This rule manages automatic graceful shutdown for the registered servers and channels at the
    * end of test.
@@ -156,7 +161,7 @@ public class CommitTest {
     }
   }
 
-  private PathDatasetComponentBlob getPathDatasetComponentBlob(String blobLocation) {
+  private static PathDatasetComponentBlob getPathDatasetComponentBlob(String blobLocation) {
     return PathDatasetComponentBlob.newBuilder()
         .setPath(blobLocation)
         .setSize(2)
@@ -164,14 +169,14 @@ public class CommitTest {
         .build();
   }
 
-  private PathDatasetBlob getPathDatasetBlob() {
+  private static PathDatasetBlob getPathDatasetBlob() {
     return PathDatasetBlob.newBuilder()
         .addComponents(
             getPathDatasetComponentBlob("/protos/proto/public/versioning/versioning.proto"))
         .build();
   }
 
-  private Blob getBlob(Blob.ContentCase contentCase) throws ModelDBException {
+  static Blob getBlob(Blob.ContentCase contentCase) throws ModelDBException {
     switch (contentCase) {
       case DATASET:
         DatasetBlob datasetBlob = DatasetBlob.newBuilder().setPath(getPathDatasetBlob()).build();
@@ -196,7 +201,7 @@ public class CommitTest {
     throw new ModelDBException("Invalid blob type found", Status.Code.INVALID_ARGUMENT);
   }
 
-  List<HyperparameterConfigBlob> getHyperparameterConfigList() {
+  static List<HyperparameterConfigBlob> getHyperparameterConfigList() {
     List<HyperparameterConfigBlob> hyperparameterConfigBlobs = new ArrayList<>();
     hyperparameterConfigBlobs.add(
         HyperparameterConfigBlob.newBuilder()
@@ -211,7 +216,7 @@ public class CommitTest {
     return hyperparameterConfigBlobs;
   }
 
-  List<HyperparameterSetConfigBlob> getContinuesList() {
+  static List<HyperparameterSetConfigBlob> getContinuesList() {
     List<HyperparameterSetConfigBlob> setConfigBlobs = new ArrayList<>();
     setConfigBlobs.add(
         HyperparameterSetConfigBlob.newBuilder()
@@ -270,7 +275,7 @@ public class CommitTest {
     VersioningServiceBlockingStub versioningServiceBlockingStub =
         VersioningServiceGrpc.newBlockingStub(channel);
 
-    long id = RepositoryTest.createRepository(versioningServiceBlockingStub);
+    long id = createRepository(versioningServiceBlockingStub);
     GetBranchRequest getBranchRequest =
         GetBranchRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
@@ -323,7 +328,7 @@ public class CommitTest {
     VersioningServiceBlockingStub versioningServiceBlockingStub =
         VersioningServiceGrpc.newBlockingStub(channel);
 
-    long id = RepositoryTest.createRepository(versioningServiceBlockingStub);
+    long id = createRepository(versioningServiceBlockingStub);
     GetBranchRequest getBranchRequest =
         GetBranchRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
@@ -434,7 +439,7 @@ public class CommitTest {
     VersioningServiceBlockingStub versioningServiceBlockingStub =
         VersioningServiceGrpc.newBlockingStub(channel);
 
-    long id = RepositoryTest.createRepository(versioningServiceBlockingStub);
+    long id = createRepository(versioningServiceBlockingStub);
     GetBranchRequest getBranchRequest =
         GetBranchRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
@@ -492,4 +497,412 @@ public class CommitTest {
 
     LOGGER.info("Hyperparameter config test end................................");
   }
+
+  @Test
+  public void getCommitBlobTest() {
+    LOGGER.info("Get commit blob test start................................");
+
+    VersioningServiceBlockingStub versioningServiceBlockingStub =
+        VersioningServiceGrpc.newBlockingStub(channel);
+
+    long id = createRepository(versioningServiceBlockingStub);
+
+    GetBranchRequest getBranchRequest =
+        GetBranchRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setBranch(ModelDBConstants.MASTER_BRANCH)
+            .build();
+    GetBranchRequest.Response getBranchResponse =
+        versioningServiceBlockingStub.getBranch(getBranchRequest);
+
+    String path = "/protos/proto/public/versioning/versioning.proto";
+    List<String> location = new ArrayList<>();
+    location.add("modeldb");
+    location.add("environment");
+    location.add("train");
+    Blob blob =
+        Blob.newBuilder()
+            .setDataset(
+                DatasetBlob.newBuilder()
+                    .setPath(
+                        PathDatasetBlob.newBuilder()
+                            .addComponents(
+                                PathDatasetComponentBlob.newBuilder()
+                                    .setPath(path)
+                                    .setSize(2)
+                                    .setLastModifiedAtSource(
+                                        Calendar.getInstance().getTimeInMillis())
+                                    .build())
+                            .build())
+                    .build())
+            .build();
+    CreateCommitRequest createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .addParentShas(getBranchResponse.getCommit().getCommitSha())
+                    .build())
+            .addBlobs(BlobExpanded.newBuilder().setBlob(blob).addAllLocation(location).build())
+            .build();
+
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+
+    GetCommitComponentRequest getCommitBlobRequest =
+        GetCommitComponentRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .addAllLocation(location)
+            .build();
+    GetCommitComponentRequest.Response getCommitBlobResponse =
+        versioningServiceBlockingStub.getCommitComponent(getCommitBlobRequest);
+    assertEquals(
+        "Blob path not match with expected blob path",
+        path,
+        getCommitBlobResponse.getBlob().getDataset().getPath().getComponents(0).getPath());
+
+    location.add("xyz");
+    getCommitBlobRequest =
+        GetCommitComponentRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .addAllLocation(location)
+            .build();
+    try {
+      versioningServiceBlockingStub.getCommitComponent(getCommitBlobRequest);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
+      e.printStackTrace();
+    }
+
+    // TODO: Add Delete Commit code here
+
+    DeleteRepositoryRequest deleteRepository =
+        DeleteRepositoryRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id))
+            .build();
+    DeleteRepositoryRequest.Response deleteResult =
+        versioningServiceBlockingStub.deleteRepository(deleteRepository);
+    Assert.assertTrue(deleteResult.getStatus());
+
+    LOGGER.info("Get commit blob test end................................");
+  }
+
+  static Blob getBlobFromPath(String path) {
+    return Blob.newBuilder()
+        .setDataset(
+            DatasetBlob.newBuilder()
+                .setPath(
+                    PathDatasetBlob.newBuilder()
+                        .addComponents(
+                            PathDatasetComponentBlob.newBuilder()
+                                .setPath(path)
+                                .setSize(2)
+                                .setLastModifiedAtSource(Calendar.getInstance().getTimeInMillis())
+                                .build())
+                        .build())
+                .build())
+        .build();
+  }
+
+  @Test
+  public void getCommitBlobListTest() {
+    LOGGER.info("List commit blob test start................................");
+
+    VersioningServiceBlockingStub versioningServiceBlockingStub =
+        VersioningServiceGrpc.newBlockingStub(channel);
+
+    long id = createRepository(versioningServiceBlockingStub);
+
+    GetBranchRequest getBranchRequest =
+        GetBranchRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setBranch(ModelDBConstants.MASTER_BRANCH)
+            .build();
+    GetBranchRequest.Response getBranchResponse =
+        versioningServiceBlockingStub.getBranch(getBranchRequest);
+
+    String path1 = "/protos/proto/public/versioning/versioning.proto";
+    List<String> location1 = new ArrayList<>();
+    location1.add("modeldb");
+    location1.add("environment");
+    location1.add("train.json"); // file
+    BlobExpanded blobExpanded1 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path1)).addAllLocation(location1).build();
+
+    String path2 = "/protos/proto/public/test.txt";
+    List<String> location2 = new ArrayList<>();
+    location2.add("modeldb");
+    location2.add("environment.json");
+    BlobExpanded blobExpanded2 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path2)).addAllLocation(location2).build();
+
+    String path3 = "xyz.txt";
+    List<String> location3 = new ArrayList<>();
+    location3.add("modeldb.json");
+    BlobExpanded blobExpanded3 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path3)).addAllLocation(location3).build();
+
+    CreateCommitRequest createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .addParentShas(getBranchResponse.getCommit().getCommitSha())
+                    .build())
+            .addBlobs(blobExpanded1)
+            .addBlobs(blobExpanded2)
+            .addBlobs(blobExpanded3)
+            .build();
+
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+
+    ListCommitBlobsRequest listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .build();
+
+    ListCommitBlobsRequest.Response listCommitBlobsResponse =
+        versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        2,
+        listCommitBlobsResponse.getBlobsCount());
+    Assert.assertEquals(
+        "blob data not match with expected blob data",
+        new HashSet<>(Arrays.asList(blobExpanded1, blobExpanded2)),
+        new HashSet<>(listCommitBlobsResponse.getBlobsList()));
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb.json")
+            .build();
+
+    listCommitBlobsResponse = versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        1,
+        listCommitBlobsResponse.getBlobsCount());
+    Assert.assertEquals(
+        "blob data not match with expected blob data",
+        blobExpanded3,
+        listCommitBlobsResponse.getBlobs(0));
+    // TODO: Add Delete Commit code here
+
+    DeleteRepositoryRequest deleteRepository =
+        DeleteRepositoryRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id))
+            .build();
+    DeleteRepositoryRequest.Response deleteResult =
+        versioningServiceBlockingStub.deleteRepository(deleteRepository);
+    Assert.assertTrue(deleteResult.getStatus());
+
+    LOGGER.info("List commit blob test end................................");
+  }
+
+  @Test
+  public void getCommitBlobListUsecase2Test() {
+    LOGGER.info("List commit blob test start................................");
+
+    VersioningServiceBlockingStub versioningServiceBlockingStub =
+        VersioningServiceGrpc.newBlockingStub(channel);
+
+    long id = createRepository(versioningServiceBlockingStub);
+    GetBranchRequest getBranchRequest =
+        GetBranchRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setBranch(ModelDBConstants.MASTER_BRANCH)
+            .build();
+    GetBranchRequest.Response getBranchResponse =
+        versioningServiceBlockingStub.getBranch(getBranchRequest);
+
+    String path1 = "/protos/proto/public/versioning/versioning.proto";
+    List<String> location1 = new ArrayList<>();
+    location1.add("modeldb");
+    location1.add("environment");
+    location1.add("march");
+    location1.add("train.json"); // file
+    BlobExpanded blobExpanded1 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path1)).addAllLocation(location1).build();
+
+    String path2 = "/protos/proto/public/test.txt";
+    List<String> location2 = new ArrayList<>();
+    location2.add("modeldb");
+    location2.add("environment");
+    location2.add("environment.json");
+    BlobExpanded blobExpanded2 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path2)).addAllLocation(location2).build();
+
+    String path3 = "/protos/proto/public/test2.txt";
+    List<String> location3 = new ArrayList<>();
+    location3.add("modeldb");
+    location3.add("dataset");
+    location3.add("march");
+    location3.add("dataset.json");
+    BlobExpanded blobExpanded3 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path3)).addAllLocation(location3).build();
+
+    String path4 = "xyz.txt";
+    List<String> location4 = new ArrayList<>();
+    location4.add("modeldb.json");
+    BlobExpanded blobExpanded4 =
+        BlobExpanded.newBuilder().setBlob(getBlobFromPath(path4)).addAllLocation(location4).build();
+
+    CreateCommitRequest createCommitRequest =
+        CreateCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommit(
+                Commit.newBuilder()
+                    .setAuthor(authClientInterceptor.getClient1Email())
+                    .setMessage("this is the test commit message")
+                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
+                    .addParentShas(getBranchResponse.getCommit().getCommitSha())
+                    .build())
+            .addBlobs(blobExpanded1)
+            .addBlobs(blobExpanded2)
+            .addBlobs(blobExpanded3)
+            .addBlobs(blobExpanded4)
+            .build();
+
+    CreateCommitRequest.Response commitResponse =
+        versioningServiceBlockingStub.createCommit(createCommitRequest);
+
+    ListCommitBlobsRequest listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .addLocationPrefix("environment")
+            .build();
+
+    ListCommitBlobsRequest.Response listCommitBlobsResponse =
+        versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        2,
+        listCommitBlobsResponse.getBlobsCount());
+    assertTrue(
+        "blob data not match with expected blob data",
+        listCommitBlobsResponse.getBlobsList().contains(blobExpanded1));
+    assertTrue(
+        "blob data not match with expected blob data",
+        listCommitBlobsResponse.getBlobsList().contains(blobExpanded2));
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .addLocationPrefix("dataset")
+            .build();
+
+    listCommitBlobsResponse = versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        1,
+        listCommitBlobsResponse.getBlobsCount());
+    Assert.assertEquals(
+        "blob data not match with expected blob data",
+        blobExpanded3,
+        listCommitBlobsResponse.getBlobs(0));
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .addLocationPrefix("march")
+            .addLocationPrefix("dataset")
+            .build();
+
+    listCommitBlobsResponse = versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        0,
+        listCommitBlobsResponse.getBlobsCount());
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .addLocationPrefix("dataset")
+            .addLocationPrefix("march")
+            .build();
+
+    listCommitBlobsResponse = versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        1,
+        listCommitBlobsResponse.getBlobsCount());
+    Assert.assertEquals(
+        "blob data not match with expected blob data",
+        blobExpanded3,
+        listCommitBlobsResponse.getBlobs(0));
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("modeldb")
+            .build();
+
+    listCommitBlobsResponse = versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+    Assert.assertEquals(
+        "blob count not match with expected blob count",
+        3,
+        listCommitBlobsResponse.getBlobsCount());
+    assertTrue(
+        "blob data not match with expected blob data",
+        listCommitBlobsResponse.getBlobsList().contains(blobExpanded1));
+    assertTrue(
+        "blob data not match with expected blob data",
+        listCommitBlobsResponse.getBlobsList().contains(blobExpanded3));
+
+    listCommitBlobsRequest =
+        ListCommitBlobsRequest.newBuilder()
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .addLocationPrefix("dataset.json")
+            .build();
+
+    try {
+      versioningServiceBlockingStub.listCommitBlobs(listCommitBlobsRequest);
+      Assert.fail();
+    } catch (StatusRuntimeException e) {
+      Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
+      e.printStackTrace();
+    }
+
+    DeleteCommitRequest deleteCommitRequest =
+        DeleteCommitRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
+            .setCommitSha(commitResponse.getCommit().getCommitSha())
+            .build();
+    versioningServiceBlockingStub.deleteCommit(deleteCommitRequest);
+
+    DeleteRepositoryRequest deleteRepository =
+        DeleteRepositoryRequest.newBuilder()
+            .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id))
+            .build();
+    DeleteRepositoryRequest.Response deleteResult =
+        versioningServiceBlockingStub.deleteRepository(deleteRepository);
+    Assert.assertTrue(deleteResult.getStatus());
+
+    LOGGER.info("List commit blob test end................................");
+  }
+
 }
