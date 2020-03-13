@@ -653,35 +653,35 @@ class Client(object):
         Alias for :meth:`Client.set_project()`.
 
         """
-        self.set_project(*args, **kwargs)
+        return self.set_project(*args, **kwargs)
 
     def get_or_create_experiment(self, *args, **kwargs):
         """
         Alias for :meth:`Client.set_experiment()`.
 
         """
-        self.set_experiment(*args, **kwargs)
+        return self.set_experiment(*args, **kwargs)
 
     def get_or_create_experiment_run(self, *args, **kwargs):
         """
         Alias for :meth:`Client.set_experiment_run()`.
 
         """
-        self.set_experiment_run(*args, **kwargs)
+        return self.set_experiment_run(*args, **kwargs)
 
     def get_or_create_dataset(self, *args, **kwargs):
         """
         Alias for :meth:`Client.set_dataset()`.
 
         """
-        self.set_dataset(*args, **kwargs)
+        return self.set_dataset(*args, **kwargs)
 
     def set_repository(self, *args, **kwargs):
         """
         Alias for :meth:`Client.get_or_create_repository()`.
 
         """
-        self.get_or_create_repository(*args, **kwargs)
+        return self.get_or_create_repository(*args, **kwargs)
 
 
 
