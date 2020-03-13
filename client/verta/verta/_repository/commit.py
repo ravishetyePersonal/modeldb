@@ -387,7 +387,7 @@ class Commit(object):
 
     def merge(self, other, message=None):
         if message is None:
-            message = "Merge {} into {}".format(other.id, self.id)
+            message = "Merge {} into {}".format(other.id[:7], self.id[:7])
 
         self.apply_diff(other.diff_from(self.get_common_parent(other)), message=message)
 
