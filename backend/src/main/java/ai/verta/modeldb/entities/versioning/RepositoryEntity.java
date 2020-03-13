@@ -25,9 +25,15 @@ public class RepositoryEntity {
     this.name = name;
     this.date_created = new Date().getTime();
     this.date_updated = new Date().getTime();
-    this.workspace_id = workspaceDTO.getWorkspaceId();
-    this.workspace_type = workspaceDTO.getWorkspaceType().getNumber();
-    this.owner = owner;
+    if (workspaceDTO.getWorkspaceId() != null) {
+      this.workspace_id = workspaceDTO.getWorkspaceId();
+      this.workspace_type = workspaceDTO.getWorkspaceType().getNumber();
+      this.owner = owner;
+    } else {
+      this.workspace_id = "";
+      this.workspace_type = 0;
+      this.owner = "";
+    }
   }
 
   @Id

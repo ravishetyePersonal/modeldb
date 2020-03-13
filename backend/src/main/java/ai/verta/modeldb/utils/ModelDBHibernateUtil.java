@@ -536,7 +536,7 @@ public class ModelDBHibernateUtil {
       boolean shouldSetName,
       List<String> ordering) {
     StringBuilder stringQueryBuilder = new StringBuilder(command);
-    if (!workspaceId.isEmpty()) {
+    if (workspaceId != null && !workspaceId.isEmpty()) {
       if (shouldSetName) {
         stringQueryBuilder.append(" AND ");
       }
@@ -563,7 +563,7 @@ public class ModelDBHibernateUtil {
     if (shouldSetName) {
       query.setParameter(fieldName, name);
     }
-    if (!workspaceId.isEmpty()) {
+    if (workspaceId != null && !workspaceId.isEmpty()) {
       query.setParameter(workspaceColumnName, workspaceId);
       query.setParameter(ModelDBConstants.WORKSPACE_TYPE, workspaceType.getNumber());
     }
