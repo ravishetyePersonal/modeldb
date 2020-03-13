@@ -191,16 +191,19 @@ public class DiffTest {
     BlobExpanded blobExpanded4 =
         BlobExpanded.newBuilder().setBlob(getBlobFromPath(path4)).addAllLocation(location4).build();
 
+    Commit.Builder commitBuilder =
+        Commit.newBuilder()
+            .setMessage("this is the test commit message")
+            .setDateCreated(Calendar.getInstance().getTimeInMillis())
+            .addParentShas(getBranchResponse.getCommit().getCommitSha());
+    if (app.getAuthServerHost() != null && app.getAuthServerPort() != null) {
+      commitBuilder.setAuthor(authClientInterceptor.getClient1Email());
+    }
+
     CreateCommitRequest createCommitRequest =
         CreateCommitRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
-            .setCommit(
-                Commit.newBuilder()
-                    .setAuthor(authClientInterceptor.getClient1Email())
-                    .setMessage("this is the test commit message")
-                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
-                    .addParentShas(getBranchResponse.getCommit().getCommitSha())
-                    .build())
+            .setCommit(commitBuilder.build())
             .addBlobs(blobExpanded1)
             .addBlobs(blobExpanded2)
             .addBlobs(blobExpanded3)
@@ -217,16 +220,19 @@ public class DiffTest {
     BlobExpanded blobExpanded5 =
         BlobExpanded.newBuilder().setBlob(getBlobFromPath(path5)).addAllLocation(location5).build();
 
+    commitBuilder =
+        Commit.newBuilder()
+            .setMessage("this is the test commit message")
+            .setDateCreated(Calendar.getInstance().getTimeInMillis())
+            .addParentShas(commitB.getCommitSha());
+    if (app.getAuthServerHost() != null && app.getAuthServerPort() != null) {
+      commitBuilder.setAuthor(authClientInterceptor.getClient1Email());
+    }
+
     createCommitRequest =
         CreateCommitRequest.newBuilder()
             .setRepositoryId(RepositoryIdentification.newBuilder().setRepoId(id).build())
-            .setCommit(
-                Commit.newBuilder()
-                    .setAuthor(authClientInterceptor.getClient1Email())
-                    .setMessage("this is the test commit message")
-                    .setDateCreated(Calendar.getInstance().getTimeInMillis())
-                    .addParentShas(commitB.getCommitSha())
-                    .build())
+            .setCommit(commitBuilder.build())
             .addBlobs(blobExpanded2)
             .addBlobs(blobExpanded3)
             .addBlobs(blobExpanded5)

@@ -177,8 +177,9 @@ public class RepositoryTest {
       versioningServiceBlockingStub.createRepository(setRepository);
       Assert.fail();
     } catch (StatusRuntimeException e) {
-      Assert.assertEquals(Code.PERMISSION_DENIED, e.getStatus().getCode());
-      e.printStackTrace();
+      Assert.assertTrue(
+          Code.PERMISSION_DENIED.equals(e.getStatus().getCode())
+              || Code.ALREADY_EXISTS.equals(e.getStatus().getCode()));
     }
 
     // check id
@@ -214,7 +215,6 @@ public class RepositoryTest {
       Assert.fail();
     } catch (StatusRuntimeException e) {
       Assert.assertEquals(Code.NOT_FOUND, e.getStatus().getCode());
-      e.printStackTrace();
     }
 
     getRepositoryRequest =
@@ -226,7 +226,9 @@ public class RepositoryTest {
     GetRepositoryRequest.Response getByNameResult =
         versioningServiceBlockingStub.getRepository(getRepositoryRequest);
     Assert.assertTrue(getByNameResult.hasRepository());
-    Assert.assertEquals(RESOURCE_OWNER_ID, getByNameResult.getRepository().getOwner());
+    if (app.getAuthServerHost() != null && app.getAuthServerPort() != null) {
+      Assert.assertEquals(RESOURCE_OWNER_ID, getByNameResult.getRepository().getOwner());
+    }
 
     DeleteRepositoryRequest deleteRepository =
         DeleteRepositoryRequest.newBuilder()

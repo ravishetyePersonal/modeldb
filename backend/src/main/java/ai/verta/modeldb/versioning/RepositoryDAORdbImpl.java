@@ -69,6 +69,12 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(SHORT_NAME)
           .append(" where ")
           .toString();
+  private static final String GET_REPOSITORY_COUNT_PREFIX_HQL_OSS =
+      new StringBuilder("Select count(*) From ")
+          .append(RepositoryEntity.class.getSimpleName())
+          .append(" ")
+          .append(SHORT_NAME)
+          .toString();
 
   private static final String GET_REPOSITORY_PREFIX_HQL =
       new StringBuilder("From ")
@@ -78,6 +84,12 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
           .append(" where ")
           .toString();
 
+  private static final String GET_REPOSITORY_PREFIX_HQL_OSS =
+      new StringBuilder("From ")
+          .append(RepositoryEntity.class.getSimpleName())
+          .append(" ")
+          .append(SHORT_NAME)
+          .toString();
   private static final String GET_TAG_HQL =
       new StringBuilder("From ")
           .append(TagsEntity.class.getSimpleName())
@@ -283,11 +295,15 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
                           .setWorkspaceName(request.getWorkspaceName()))
                   .build(),
               false);
+      String query_prefix =
+          workspaceDTO.getWorkspaceId() == null
+              ? GET_REPOSITORY_PREFIX_HQL_OSS
+              : GET_REPOSITORY_PREFIX_HQL;
       Query query =
           ModelDBHibernateUtil.getWorkspaceEntityQuery(
               session,
               SHORT_NAME,
-              GET_REPOSITORY_PREFIX_HQL,
+              query_prefix,
               "repositoryName",
               null,
               ModelDBConstants.WORKSPACE_ID,
@@ -304,11 +320,15 @@ public class RepositoryDAORdbImpl implements RepositoryDAO {
       List list = query.list();
       ListRepositoriesRequest.Response.Builder builder =
           ListRepositoriesRequest.Response.newBuilder();
+      query_prefix =
+          workspaceDTO.getWorkspaceId() == null
+              ? GET_REPOSITORY_COUNT_PREFIX_HQL_OSS
+              : GET_REPOSITORY_COUNT_PREFIX_HQL;
       query =
           ModelDBHibernateUtil.getWorkspaceEntityQuery(
               session,
               SHORT_NAME,
-              GET_REPOSITORY_COUNT_PREFIX_HQL,
+              query_prefix,
               "repositoryName",
               null,
               ModelDBConstants.WORKSPACE_ID,
